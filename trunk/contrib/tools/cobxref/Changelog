@@ -1,0 +1,52 @@
+2008-12-21  Vince Coen <vbcoen@btconnect.com>
+        v0.95.13  * Added in updated reserved.c lists which include
+                    SUBSTITUTE and some new functions
+                  * System reserved names are deliberately omitted so
+                    that they appear in xref listings.
+                  * Cleared some more cosmetic bugs in reports
+                  * Issued version to sourceforge
+
+2008-12-19  Vince Coen <vbcoen@btconnect.com>
+        v0.95.10  * Fixed program name in reports for case as indicated by
+	 	    commandline -l
+	          * Added module name in reports if nested source
+		  * fixed bug for undeclared indexes reported in wrong section
+		    (proc)
+                  * Unused Globals now reported by module sub-report
+		  * Cleaned up some Cobol code ie tighter & maybe faster & added
+		    code for profiling
+
+2008-12-14  Vince Coen <vbcoen@btconnect.com>
+        v0.95.02  * Input changed, now input comes via cobc using progname.i 
+	            (filename.i) ONLY. All COPY verb processing removed as the 
+		    .i file has already processed COPY verbs & compiler 
+		    directives
+                  * Changed source to free format & related code & removed 
+		    source outputs as no longer needed.
+                  * Omit source on report unless requested (-R) 
+                  * Added compiled date and build no. on headings to help bug 
+		    reporting.
+                  * Any new changes/bug fixes will increment build no.
+                  * fixed odd bug in proc div in form with ["kk") and/or] format
+                  * Code for producing 01 record layout sizing but should it be 
+		    added?
+
+2008-03-29  Vince Coen <vbcoen@btconnect.com>
+        v0.94.00  * On multi progs in source not sending to .src 1st  line of 
+		    new prog ie ID Division but ok in .lst
+                    This may relate to the next bug.
+                  * Incorrect processing of srcs with min. headers, ie, not 
+		    going to ba000 section etc 
+                  * literals using ' not treated as " in places
+
+2008-01-07  Vince Coen <vbcoen@btconnect.com>
+        v0.93.00  * Reserved words changed to reflect OC v1.1 as 3/1/08.
+
+2007-04-01  Vince Coen <vbcoen@btconnect.com>
+        v0.92.00  * Support for Copy to 99 levels.
+
+2007-03-19  Vince Coen <vbcoen@btconnect.com>
+        v0.91.00  * Added extra features and clear out bugs.
+
+2007-03-10  Vince Coen <vbcoen@btconnect.com>
+        v0.90.00  * Fast major rewrite to clear many bugs & add features
