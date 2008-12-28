@@ -119,7 +119,7 @@
 011900     03  SdSortKey         pic x(40).
 012000/
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.13".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.15".
 012300 77  String-Pointer        pic s9(5) comp  value 1.
 012400 77  String-Pointer2       pic s9(5) comp  value 1.
 012500 77  S-Pointer             pic s9(5) comp  value zero.
@@ -194,7 +194,7 @@
 019400 77  HoldWSorPD            pic 9           value 0.
 019500 77  HoldWSorPD2           pic 9           value 0.
 019600 77  HoldFoundWord         pic x(40)       value spaces.
-019700 77  Save-Res-Word         pic x(20)       value spaces.
+019700 77  Save-Res-Word         pic x(23)       value spaces.
 019800 77  saveSkaDataName       pic x(32)       value spaces.
 019900 77  Saved-Variable        pic x(30)       value spaces.
 020000 77  saveSkaWSorPD         pic 9           value zero.
@@ -356,7 +356,7 @@
 035700                    value "Error: File not present Try Again!".
 035800     03 Msg10     pic x(36) 
 035900                    value "Error: Git Table size exceeds 10,000".
-036000     03 Msg16     pic x(66)  value "Error: Eof on source probable 
+036000     03 Msg16     pic x(66)  value "Error: Eof on source possible 
 036100-              "logic error at aa047 ASSUMING again".
 036200*
 036300 01  SectTable.
@@ -1032,21 +1032,24 @@
 103100 01  Resvd-Table-Size        pic s999   comp    value 526.
 103200*
 103300 01  Condition-Table                           value high-values.
-103400     03  Con-Tab-Blocks occurs 250 to 5000
+103400     03  Con-Tab-Blocks occurs 250 to 5001
 103500                                       depending on Con-Tab-Size.
+      * +1 used, when testing for max table size
 103600       05  Conditions      pic x(30).
 103700       05  Variables       pic x(30).
 103800 01  Con-Tab-Size          pic s9(5) comp value 250.
 103900 01  Con-Tab-Count         pic s9(5) comp value zero.
 104000*
 104100 01  Global-Item-Table                         value high-values.
-104200     03  Git-Elements  occurs 250 to 10000
+104200     03  Git-Elements  occurs 250 to 10001
 104300                                     depending on Git-Table-Size.
+      * +1 used, when testing for max table size
 104400       05  Git-Word        pic x(30).
 104500       05  Git-Prog-Name   pic x(30).
 104600       05  Git-RefNo       pic 9(6).
 104700       05  Git-HoldWSorPD  pic 9.
 104800       05  Git-HoldWSorPD2 pic 9.
+             05  Git-Build-No    pic 99.
 104900 01  Git-Table-Size        pic s9(5) comp value 250.
 105000 01  Git-Table-Count       pic s9(5) comp value zero.
 105100/
@@ -1195,7 +1198,7 @@
 119400* 
 119500     if       a < 9
 119600              go to aa060-ReadLoop3a.
-119700     perform  aa046-Search-4-Copy thru aa046-Exit.
+119700*     perform  aa046-Search-4-Copy thru aa046-Exit.  *>   ??????
 119800     go       to aa040-ReadLoop2.
 119900*
 120000 aa041-Get-SN.
@@ -1250,17 +1253,17 @@
 124900 aa045-Exit.
 125000     exit.
 125100*
-125200 aa046-Search-4-Copy.
+125200* aa046-Search-4-Copy.  *> ????????????????????????????
 125300*
 125400*  This might be done with having removed the COPY verb processing
 125500*
-125600     perform  zz110-Get-A-Word thru zz110-Exit.
-125700     subtract 1 from Source-Line-End giving a.
-125800     if       S-Pointer2 < a
-125900              go to aa046-Search-4-Copy.
+125600*     perform  zz110-Get-A-Word thru zz110-Exit.
+125700*     subtract 1 from Source-Line-End giving a.
+125800*     if       S-Pointer2 < a
+125900*              go to aa046-Search-4-Copy.
 126000*
-126100 aa046-Exit.
-126200     exit.
+126100* aa046-Exit.
+126200*     exit.
 126300*
 126400 aa047-GetIO.
 126500*
@@ -1366,9 +1369,9 @@
 136500*    Now for the data division or beyond
 136600*
 136700     perform  zz100-Get-A-Source-Record thru zz100-Exit.
-136800     perform  aa046-Search-4-Copy thru aa046-Exit.
+136800*     perform  aa046-Search-4-Copy thru aa046-Exit. *> ??????????
 136900*
-137000 aa060-ReadLoop3a.
+137000 aa060-ReadLoop3a.   *> a < 9  ??
 137100     perform  zz170-Check-4-Section thru zz170-Exit.
 137200     if       GotASection = "Y"
 137300              go to aa050-ReadLoop3.
@@ -1402,7 +1405,8 @@
 140100              write PrintLine
 140200              move  zero to sw-End-Prog
 140300              go    to aa020-Bypass-Open.
-140400     goback.         *> one of these is right for standalone and being called by cobc (C code).
+140400     goback.
+      *> one of these is right for standalone and being called by cobc (C code).
 140500     exit     program.
 140600     stop     run.
 140700/
@@ -1412,9 +1416,9 @@
 141100* this should be getting first word of source record
 141200*
 141300     perform  zz110-Get-A-Word thru zz110-Exit.
-141400     if       GotASection = "Y"
+141400     if       GotASection = "Y" *> check for Proc. Div
 141500         and  HoldWSorPD = 8
-141600              go to ba000-Exit.
+141600              go to ba000-Exit. *> done, so process proc. div
 141700     if       GotASection = "Y"
 141800              move space to GotASection
 141900              perform zz100-Get-A-Source-Record thru zz100-Exit
@@ -1423,49 +1427,63 @@
 142200* lets get a file section element out of the way
 142300*
 142400     if       wsFoundWord2 (1:3) = "FD " or = "RD "
-142500              move zero to Global-Current-Level
+142500              move zero to Global-Current-Level  *> Global only for these
 142600     else
-142700      if      wsFoundWord2 (1:3) = "CD " or = "SD "
+142700      if      wsFoundWord2 (1:3) = "CD " or = "SD "   *> and not for these
 142800              move high-values to Global-Current-Level.
 142900* Clears Global-Active
+      *
+      * note that for CD & SD setting Global-current-* not needed
+      *                           is it a problem
 143000     if       wsFoundWord2 (1:3) = "FD " or = "SD "
 143100                                or = "RD " or = "CD "
-143200              perform zz110-Get-A-Word thru zz110-Exit
+143200              perform zz110-Get-A-Word thru zz110-Exit   *> get filename
 143300              move zero to HoldWSorPD2
-143400              move zero to sw-Git
+143400              move zero to sw-Git                   *> reset Global flag
 143500              move wsFoundWord2 (1:30) to Global-Current-Word
 143600              move Gen-RefNo1 to Global-Current-RefNo
 143700              perform zz030-Write-Sort
 143800              perform ba040-Clear-To-Next-Period thru ba040-Exit
 143900              go to ba020-GetAWord.
 144000*
-144100* we now have basic ws records
+144100* we now have basic ws records, ie starting 01-49,66,77,78,88 etc
 144200*
 144300      if      wsFoundWord2 (1:Word-Length) not numeric
-144400              display Msg4 wsFoundWord2 (1:Word-Length)
-144500              perform ba030-Word-Sweep thru ba030-Exit
-144600              go to ba020-GetAWord.
+144400              display "ba020:" Msg4 wsFoundWord2 (1:Word-Length)
+144500*              perform ba030-Word-Sweep thru ba030-Exit
+                close Source-Listing SourceInput Supplemental-Part1-Out
+                stop run. *> if here, its broke
+144600*              go to ba020-GetAWord.
 144700*
 144800* word = Build-Number
 144900*
 145000      perform zz160-Clean-Number thru zz160-Exit.
+            if      Build-Number > 0 and < 50
+                    move spaces to Saved-Variable.
+      *
 145100      if      Build-Number = 01
 145200         and  (Global-Current-Level = high-values
 145300           or HoldWSorPD > 1)
 145400              move zero to sw-Git
 145500              move 1 to Global-Current-Level.
+      *
 145600      if      Build-Number = 88 or = 78 or = 77 or = 66
 145700                                or (Build-Number > 0 and < 50)
 145800              go to ba050-Get-User-Word.
 145900* Should never happen
-146000      display Msg5 wsFoundWord2 (1:32).
+146000      display "ba020:" Msg5 "bld=" Build-Number
+                    " word=" wsFoundWord2 (1:32).
 146100      display "Source = " SourceInWS (1:60).
-146200      perform ba040-Clear-To-Next-Period thru ba040-Exit.
-146300      go      to ba020-GetAWord.
+                close Source-Listing SourceInput Supplemental-Part1-Out
+                stop run. *> if here, its broke
+146200*      perform ba040-Clear-To-Next-Period thru ba040-Exit.
+146300*      go      to ba020-GetAWord.
 146400*
 146500 ba030-Word-Sweep.
 146600*
-146700* abnormal processing such as screen section.
+146700* abnormal processing such as screen section. could b here if lost
+      *   This should now never be called  27/12/8 <<<<<<<<<<<<<<
+      *  test with a screen section before removal  <<<<<<<<<<<<<
 146800*  We will just look at each word until period if word not reserved
 146900*   nor numeric add to sort
 147000*
@@ -1514,31 +1532,47 @@
 151300     exit.
 151400*
 151500 ba050-Get-User-Word.
+      *
+      * to here with nn ^ word but word could be pic/value etc ie no dataname
+      *
 151600     perform  zz110-Get-A-Word thru zz110-Exit.
 151700     if       wsFoundWord2 (1:7) = "FILLER "
+                    move "FILLER" to Saved-Variable
 151800              go to ba051-After-DataName.
 151900     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-152000     move     wsFoundWord2 (1:20) to Save-Res-Word.
-152100     move     a to Saved-a.
-152200     move     Build-Number to Saved-Build-Number.
+      *
+      * Trap for no dataname, ie reserved word
+      * this (if) MUST be left in here
+      *
+           if       a not = zero
+              and   wsFoundWord2 (1:7) not = "FILLER "
+                    display "Program Not been Syntax checked and it nee"
+                    & "ds it:" wsFoundWord2.
+           if       a not = zero
+                    move "FILLER" to Saved-Variable
+                    go to ba051-After-New-Word.
+152000     move     wsFoundWord2 (1:23) to Saved-Variable.
+152100     move     a to Saved-a.   *> these 2 not needed ???<<<<<<<
+152200     move     Build-Number to Saved-Build-Number. *> ^^<<<<<<<
 152300*
-152400* not a reserved word and a 77 or 88
-152500* looking for 01 - 49 and 77
+152400* not a reserved word and a 88
+152500* looking for 01 - 49
 152600*
-152700     if       a = zero
-152800          and Build-Number not = 66 and not = 78 and not = 88
+152700*     if       a = zero
+152800      if      Build-Number > 0 and < 50
 152900              move wsFoundWord2 (1:30)
 153000                   to Saved-Variable.
-153100     if       a = zero
-153200          and Build-Number = 88
+153100*     if       a = zero
+153200      if      Build-Number = 88
 153300          and Con-Tab-Count not < Con-Tab-Size
 153400              add 250 to Con-Tab-Size.
 153500     if       Con-Tab-Size > 5000
+                    move 5001 to Con-Tab-Size             *> just in case
 153600              display Msg6
 153700              go to ba050-Bypass-Add-2-Con-Table.
-153800*
-153900     if       a = zero
-154000          and Build-Number = 88
+153800* add 88 dataname to constant table
+153900*     if       a = zero
+154000      if      Build-Number = 88
 154100          and Con-Tab-Count < Con-Tab-Size
 154200              add 1 to Con-Tab-Count
 154300              if  Reports-In-Lower
@@ -1552,30 +1586,41 @@
 155100                     to Conditions (Con-Tab-Count)
 155200              end-if
 155300     end-if.
+      *
+      * Not coping with Global related Conditions for nested modules
+      *    after module 1 or the defining module
+      *  need to use the Git table and print it.
+      *
 155400*
 155500 ba050-Bypass-Add-2-Con-Table.
 155600*
-155700* Do we have a reserved word? a = 0 = no
+155700* we don't have a reserved word! a = 0 = no
 155800*
-155900     if       a = zero
-156000         and  Global-Current-Level not = high-values
+155900*     if       a = zero
+156000      if      Global-Current-Level not = high-values
 156100              move Gen-RefNo1 to Global-Current-RefNo
 156200              move wsFoundWord2 (1:30) to Global-Current-Word.
-156300     if       a = zero
-156400              perform zz030-Write-Sort
-156500              go to ba051-After-DataName.
-156600* Should never happen
-156700     perform  ba030-Word-Sweep thru ba030-Exit.
-156800     go       to ba020-GetAWord.
+156300*     if       a = zero
+156400      perform zz030-Write-Sort.
+156500      go      to ba051-After-DataName.
+156600* YES, Should never happen  but it does often enough if no dataname??
+           display "ba050: Major logic error 01".
+              close Source-Listing SourceInput Supplemental-Part1-Out.
+              stop run. *> if here, its broke
+156700*     perform  ba030-Word-Sweep thru ba030-Exit.
+156800*     go       to ba020-GetAWord.
 156900*
 157000 ba051-After-DataName.
 157100     if       Word-Delimit = "."
 157200          and Build-Number not = 66 and not = 77 and not = 78
+                and Saved-Variable not = "FILLER"
 157300          and Global-Active
 157400              perform zz200-Load-Git thru zz200-Exit.
 157500     if       Word-Delimit = "."
 157600              go to ba020-GetAWord.
 157700     perform  zz110-Get-A-Word thru zz110-Exit.
+      *
+       ba051-After-New-Word.
 157800     if       wsFoundWord2 (1:10) = "REDEFINES " or
 157900              wsFoundWord2 (1:8) = "RENAMES "
 158000              perform zz110-Get-A-Word thru zz110-Exit
@@ -1587,6 +1632,7 @@
 158600      else
 158700       if     Global-Active
 158800          and Build-Number not = 66 and not = 77 and not = 78
+                and Saved-Variable not = "FILLER"
 158900              perform zz200-Load-Git thru zz200-Exit.
 159000*
 159100     perform  ba040-Clear-To-Next-Period thru ba040-Exit.
@@ -1625,7 +1671,7 @@
 162400*
 162500 bb030-Chk1.
 162600     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-162700     move     wsFoundWord2 (1:20) to Save-Res-Word.
+162700     move     wsFoundWord2 (1:23) to Save-Res-Word.
 162800     move     a to Saved-a.
 162900*
 163000* Do we have a reserved word? a = 0 means no or a number so ignore
@@ -2396,14 +2442,14 @@
 239500*
 239600     if       (SourceIn8-160 (1:1) = "#" or = "$")
 239700              go to zz100-Get-A-Source-Record.
-239800*
+239800* won't happen with fn.i input
 239900     if       (SourceIn8-160 (1:1) = "*" or = "/")
 240000              perform zz000-Inc-CobolRefNo
 240100              perform zz000-Outputsource
 240200              go to zz100-Get-A-Source-Record.
 240300*
 240400* remove unwanted chars and all multi spaces
-240500*  so that unstrings can work easier
+240500*  so that unstrings can work easier Includes literals " " etc
 240600*
 240700     inspect  SourceIn8-160 replacing all x"09" by space.
 240800     inspect  SourceIn8-160 replacing all ";" by space.
@@ -2414,9 +2460,9 @@
 241300*
 241400* count but do not O/P blank lines
 241500*
-241600     if       d < 2
-241700              perform zz000-Inc-CobolRefNo
-241800              go to zz100-Get-A-Source-Record.
+241600      if       d < 1
+241700               perform zz000-Inc-CobolRefNo
+241800               go to zz100-Get-A-Source-Record.
 241900*
 242000     if       SourceIn8-160 (1:12) = "END PROGRAM "
 242100              perform zz000-Inc-CobolRefNo
@@ -2427,8 +2473,16 @@
 242600        and   (SourceIn8-160 (1:12) = "ID DIVISION."
 242700         or   SourceIn8-160 (1:20) = "IDENTIFICATION DIVIS")
 242800              move 1 to sw-End-Prog sw-Had-End-Prog sw-Nested
+                    if we-are-testing
+                       display "Found a ID DIVISION"
+                    end-if
 242900              go to zz100-Exit.
 243000*
+           if we-are-testing  
+            and HoldWSorPD < 8
+            and SourceIn8-160 (1:15) = "PROCEDURE DIVIS"
+            display "Found a PROCEDURE DIVISION"
+           end-if
 243100*  check if we have literals
 243200*
 243300     move     zero to v y2.
@@ -2573,6 +2627,9 @@
 257200 zz110-Get-A-Word-Copy-Check.
 257300*
 257400     add      1 to Source-Words.
+           if we-are-testing
+              display "zz110: WD=" word-delimit
+                      " WSF2=" wsfoundword2 (1:word-length).
 257500*
 257600 zz110-Exit.
 257700     exit.
@@ -2589,16 +2646,30 @@
 258800     perform  varying d from 160 by -1
 258900                   until SourceIn8-160 (d:1) not = space
 259000     end-perform
-259100     if       d < 2
+      *     if       d > zero       *> d currently pointing to first tailing space
+      *              subtract 1 from d.
+259100     if       d < 1
 259200              go to zz120-Exit.
 259300*
-259400     move     zero to b c.
+259400     move     zero to a b c.
 259500     move     spaces to wsFoundNewWord5.
-259600     move     zero to a.
-259700     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
-259800     move     spaces to SourceIn8-160.
-259900     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
-260000     move     b to Line-End.
+      *
+      * now that source is from OC lets clean up fast as cc1 is only 
+      *   poss space filled
+      *
+           if       SourceIn8-160 (1:1) = space
+                    move SourceIn8-160 (2:d) to wsFoundNewWord5
+                    move wsFoundNewWord5 to SourceIn8-160
+                    move spaces to wsFoundNewWord5.
+      * this should not be needed
+      *  so lets try & rem this all out
+259700*     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
+259800*     move     spaces to SourceIn8-160.
+259900*     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
+260000*     move     b to Line-End.
+           if we-are-testing
+              display "zz120A d=" d " after=" SourceIn8-160 (1:d).
+260000     subtract 1 from d giving Line-End.
 260100     go       to zz120-Exit.
 260200*
 260300 zz120-Kill-Space.
@@ -2632,11 +2703,12 @@
 263100 zz130-Extra-Reserved-Word-Check.
 263200********************************
 263300*  Check for any other reserved words not in other checks
-263400*
+263400*  note that max reserved word is 23 characters, so comare like 4 like
+      *
 263500     move     zero to a.
 263600     search   all Reserved-Names
 263700                  at end go to zz130-exit
-263800              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:20)
+263800              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:23)
 263900                set a to Resvd-Idx
 264000                go to zz130-Exit.
 264100     display "Oops: logic error at zz130-reserved-word-check".
@@ -2813,7 +2885,11 @@
 281100              move 8 to HoldWSorPD
 281200              move "Y" to GotASection
 281300              move zero to HoldWSorPD2.
-281400*
+      *
+281400* Changed section so we can clear Global flag
+      *
+           if       GotASection = "Y"
+                    move zero to sw-Git.
 281500 zz170-Exit.
 281600     exit.
 281700/
@@ -3034,13 +3110,19 @@
 303200         and  Git-Table-Size < 10000
 303300              add 250 to Git-Table-Size.
 303400     if       Git-Table-Size > 10000
+303300              move 10001 to Git-Table-Size           *> just in case
 303500              display Msg10
 303600              go to zz200-Exit.
 303700     move     Global-Current-Word to Git-Word (Git-Table-Count).
 303800     move     Global-Current-RefNo to Git-RefNo (Git-Table-Count).
+303800     move     Build-Number to Git-Build-No (Git-Table-Count).
 303900     move     HoldID to Git-Prog-Name (Git-Table-Count).
 304000     move     HoldWSorPD  to Git-HoldWSorPD (Git-Table-Count).
 304100     move     HoldWSorPD2 to Git-HoldWSorPD2 (Git-Table-Count).
+           if we-are-testing
+              display "#=" Git-Table-Count
+                      " BN=" Git-Build-No (Git-Table-Count)
+                      " Git=" Git-Elements (Git-Table-Count).
 304200*
 304300 zz200-Exit.
 304400     exit.
