@@ -119,7 +119,7 @@
 011900     03  SdSortKey         pic x(40).
 012000/
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.15".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.19".
 012300 77  String-Pointer        pic s9(5) comp  value 1.
 012400 77  String-Pointer2       pic s9(5) comp  value 1.
 012500 77  S-Pointer             pic s9(5) comp  value zero.
@@ -135,8 +135,6 @@
 013500 77  Arg-Number            pic 99          value zero.
 013600 77  Gen-RefNo1            pic 9(6)        value zero.
 013700 77  Build-Number          pic 9(6)        value zero.
-013800 77  Saved-Build-Number    pic 9(6)        value zero.
-013900 77  Saved-a               pic s9(5) comp  value zero.
 014000 77  a                     pic s9(5) comp  value zero.
 014100 77  b                     pic s9(5) comp  value zero.
 014200 77  c                     pic s9(5) comp  value zero.
@@ -194,13 +192,11 @@
 019400 77  HoldWSorPD            pic 9           value 0.
 019500 77  HoldWSorPD2           pic 9           value 0.
 019600 77  HoldFoundWord         pic x(40)       value spaces.
-019700 77  Save-Res-Word         pic x(23)       value spaces.
 019800 77  saveSkaDataName       pic x(32)       value spaces.
 019900 77  Saved-Variable        pic x(30)       value spaces.
 020000 77  saveSkaWSorPD         pic 9           value zero.
 020100 77  saveSkaWSorPD2        pic 9           value zero.
 020200 77  WS-Anal1              pic 9           value zero.
-020300 77  line-word-1           pic 9           value zero.
 020400 77  fs-reply              pic xx          value zeros.
 020500 77  SourceFileName        pic x(64)       value spaces.
 020600 77  Print-FileName        pic x(64)       value spaces.
@@ -257,7 +253,7 @@
 025800     03  filler            pic x     value ":".
 025900     03  H1-Min            pic xx.
 026000     03  filler            pic xx   value ") ".
-026100     03  filler            pic x(20) value "Dictionary file for ".
+026100     03  filler            pic x(20) value "Dictionary File for ".
 026200     03  h1programid       pic x(60).
 026300*
 026400 01  HDR2.
@@ -270,7 +266,7 @@
 027100     03  filler            pic x(63) value all "-".
 027200*
 027300 01  hdr5-symbols.
-027400     03  filler            pic x(19) value "Symbols of module: ".
+027400     03  filler            pic x(19) value "Symbols of Module: ".
 027500     03  hdr5-Prog-Name    pic x(67) value spaces.
 027600*
 027700 01  hdr6-symbols.
@@ -294,14 +290,14 @@
 029500*
 029600 01  hdr9.
 029700     03  filler            pic x(36)
-029800                     value "Unreferenced Working Storage symbols".
+029800                     value "Unreferenced Working Storage Symbols".
 029900*
 030000 01  hdr10.
 030100     03  filler            pic x(23)
 030200                                  value "Unreferenced Procedures".
 030300*
 030400 01  hdr11.
-030500     03  filler            pic x(31) value "Variable tested".
+030500     03  filler            pic x(31) value "Variable Tested".
 030600     03  filler            pic x(8)  value "Symbol (".
 030700     03  filler            pic x(23) value "88-Conditions)".
 030800*
@@ -1236,6 +1232,9 @@
 123200          and wsFoundWord2 (1:3) not = "OFF"
 123300              go to aa044-Getword3.
 123400     perform  zz110-Get-A-Word thru zz110-Exit.
+      *
+      *` no need to test table size, there can't be 250+ let alone 5000
+      *
 123500     add      1 to Con-Tab-Count.
 123600     move     Saved-Variable to Variables (Con-Tab-Count).
 123700     move     wsFoundWord2 (1:30) to Conditions (Con-Tab-Count).
@@ -1393,7 +1392,8 @@
 138900*
 139000     if       not We-Are-Testing
 139100          and not End-Prog
-139200*             call "CBL_DELETE_FILE" using SourceFileName  *> kill temp input file but not yet
+139200*             call "CBL_DELETE_FILE" using SourceFileName  
+      *> kill temp input file but not yet
 139300              call "CBL_DELETE_FILE" using "Part2.tmp"
 139400              call "CBL_DELETE_FILE" using "Part1.tmp".
 139500*
@@ -1545,25 +1545,17 @@
       * this (if) MUST be left in here
       *
            if       a not = zero
-              and   wsFoundWord2 (1:7) not = "FILLER "
-                    display "Program Not been Syntax checked and it nee"
-                    & "ds it:" wsFoundWord2.
-           if       a not = zero
                     move "FILLER" to Saved-Variable
                     go to ba051-After-New-Word.
-152000     move     wsFoundWord2 (1:23) to Saved-Variable.
-152100     move     a to Saved-a.   *> these 2 not needed ???<<<<<<<
-152200     move     Build-Number to Saved-Build-Number. *> ^^<<<<<<<
 152300*
 152400* not a reserved word and a 88
-152500* looking for 01 - 49
+152500* looking for 01 - 49 [ or 77]
 152600*
-152700*     if       a = zero
-152800      if      Build-Number > 0 and < 50
-152900              move wsFoundWord2 (1:30)
-153000                   to Saved-Variable.
-153100*     if       a = zero
-153200      if      Build-Number = 88
+152700*
+152800     if       (Build-Number > 0 and < 50) or = 77
+152900              move wsFoundWord2 (1:30) to Saved-Variable.
+153100*
+153200     if       Build-Number = 88
 153300          and Con-Tab-Count not < Con-Tab-Size
 153400              add 250 to Con-Tab-Size.
 153500     if       Con-Tab-Size > 5000
@@ -1571,7 +1563,7 @@
 153600              display Msg6
 153700              go to ba050-Bypass-Add-2-Con-Table.
 153800* add 88 dataname to constant table
-153900*     if       a = zero
+153900*
 154000      if      Build-Number = 88
 154100          and Con-Tab-Count < Con-Tab-Size
 154200              add 1 to Con-Tab-Count
@@ -1596,11 +1588,10 @@
 155600*
 155700* we don't have a reserved word! a = 0 = no
 155800*
-155900*     if       a = zero
 156000      if      Global-Current-Level not = high-values
 156100              move Gen-RefNo1 to Global-Current-RefNo
 156200              move wsFoundWord2 (1:30) to Global-Current-Word.
-156300*     if       a = zero
+156300*
 156400      perform zz030-Write-Sort.
 156500      go      to ba051-After-DataName.
 156600* YES, Should never happen  but it does often enough if no dataname??
@@ -1618,6 +1609,11 @@
 157400              perform zz200-Load-Git thru zz200-Exit.
 157500     if       Word-Delimit = "."
 157600              go to ba020-GetAWord.
+           if       Global-Active
+                and Build-Number = 88
+                    perform zz200-Load-Git thru zz200-Exit
+                    perform ba040-Clear-To-Next-Period thru ba040-Exit
+                    go to ba020-GetAWord.
 157700     perform  zz110-Get-A-Word thru zz110-Exit.
       *
        ba051-After-New-Word.
@@ -1671,8 +1667,6 @@
 162400*
 162500 bb030-Chk1.
 162600     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-162700     move     wsFoundWord2 (1:23) to Save-Res-Word.
-162800     move     a to Saved-a.
 162900*
 163000* Do we have a reserved word? a = 0 means no or a number so ignore
 163100*
@@ -3090,7 +3084,7 @@
 301200     move     high-values to Condition-Table.
 301300*
 301400     move     zeros to GotEndProgram
-301500              sw-Source-Eof line-word-1 Section-Used-Table 
+301500              sw-Source-Eof Section-Used-Table 
 301600              HoldWSorPD HoldWSorPD2 Con-Tab-Count.
 301700*
 301800     move     1 to S-Pointer F-Pointer S-Pointer2 S-Pointer3
