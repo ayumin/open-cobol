@@ -119,7 +119,7 @@
 011900     03  SdSortKey         pic x(40).
 012000/
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.19".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.20".
 012300 77  String-Pointer        pic s9(5) comp  value 1.
 012400 77  String-Pointer2       pic s9(5) comp  value 1.
 012500 77  S-Pointer             pic s9(5) comp  value zero.
@@ -142,7 +142,6 @@
 014400 77  e                     pic s9(5) comp  value zero.
 014500 77  s                     pic s9(5) comp  value zero.
 014600 77  t                     pic s9(5) comp  value zero.
-014700 77  v                     pic s9(5) comp  value zero.
 014800 77  y                     pic s9(5) comp  value zero.
 014900 77  y2                    pic s9(5) comp  value zero.
 015000 77  z                     pic s9(5) comp  value zero.
@@ -151,34 +150,30 @@
 015300* System parameters control how xref works or reports
 015400*  May be add extra func for default.conf ?
 015500*
-015600 77  sw-1                  pic x           value "N".
-015700*  command line input -G, -GA or -GB
-015800  88 Group-Report-Only                     value "Y".
-015900  88 Both-Reports                          value "B".
-016000  88 All-Reports                           value "A".
-016100  88 Block-Group                           value "C".
 016200 77  sw-2                  pic x           value "N".
 016300  88 List-Source                           value "Y".
-016400 77  sw-3                  pic x           value space.
-016500  88  Do-One-Only                          value "Y".
+017400 77  sw-4                  pic 9           value zero.
+017500  88  Dump-Reserved-Words                  value 1.
 016600*  Command line input -Test
 016700 77  sw-5                  pic x           value "N".
 016800  88 We-Are-Testing                        value "Y".
 016900*  Command line input -L
 017000 77  sw-6                  pic 9           value zero.
 017100  88  Reports-In-Lower                     value 1.
-017200 77  sw-7                  pic 9           value zero.
-017300  88  Condition-Sort                       value 1.
-017400 77  sw-8                  pic 9           value zero.
-017500  88  Dump-Reserved-Words                  value 1.
+017200* 77  sw-7                  pic 9           value zero.
+017300*  88  Condition-Sort                       value 1.
+      *
+      * Switches used during processing
+      *
 017600 77  sw-Source-Eof         pic 9           value 0.
 017700  88 Source-Eof                            value 1.
-017800 77 sw-11                  pic x           value "N".
-017900  88 Verbose-Output                        value "Y".
+      * got end of program
 018000 77  sw-End-Prog           pic 9           value zero.
 018100  88 End-Prog                              value 1.
+      * Had end of program (nested) - Confused yet? you will be!
 018200 77  sw-Had-End-Prog       pic 9           value zero.
 018300  88 Had-End-Prog                          value 1.
+      * We have found a Global verb 
 018400 77  sw-Git                pic 9           value zero.
 018500  88 Global-Active                         value 1.
 018600*  Multi modules in one source file flag
@@ -256,10 +251,6 @@
 026100     03  filler            pic x(20) value "Dictionary File for ".
 026200     03  h1programid       pic x(60).
 026300*
-026400 01  HDR2.
-026500     03  filler            pic X(34) value "All Data/Proc Names".
-026600     03  filler            pic X(19) value "Defn     Reference".
-026700*
 026800 01  hdr3.
 026900     03  filler            pic x(33) value all "-".
 027000     03  filler            pic x     value "+".
@@ -297,9 +288,13 @@
 030200                                  value "Unreferenced Procedures".
 030300*
 030400 01  hdr11.
-030500     03  filler            pic x(31) value "Variable Tested".
+030500     03  filler            pic x(16) value "Variable Tested".
+           03  hdr11a-sorted     pic xxx.
+           03  filler            pic x(12) value spaces.
 030600     03  filler            pic x(8)  value "Symbol (".
-030700     03  filler            pic x(23) value "88-Conditions)".
+030700     03  filler            pic x(15) value "88-Conditions)".
+           03  hdr11b-sorted     pic xxx.
+           03  filler            pic x(5)  value spaces.
 030800*
 030900 01  hdr12-hyphens.
 031000     03  filler            pic x(62) value all "-".
@@ -364,7 +359,7 @@
 036900     03  USect             pic 9  occurs 9.
 037000* holds program parameter values from command line
 037100 01  Arg-Vals                       value spaces.
-037200     03  Arg-Value         pic x(128)  occurs 10.
+037200     03  Arg-Value         pic x(128)  occurs 6.
 037300*
 037400 01  Section-Names-Table.
 037500     03  filler pic x(24) value "FILE SECTION.           ".
@@ -1866,95 +1861,20 @@
 182500              ascending key SdSortKey
 182600              using  Supplemental-Part1-Out
 182700              giving Supplemental-Part2-In.
-182800     if       Condition-Sort
-182900              sort Con-Tab-Blocks ascending Conditions
-183000     else
-183100              sort Con-Tab-Blocks ascending Variables.
 183200     if       Git-Table-Count > 1
 183300              sort  Git-Elements ascending Git-Word.
-183400     if   not All-Reports and not Block-Group
-183500              go to bc090-Last-Pass2.
-183600*
-183700* produce group W-S xref & procedure used in testing
-183800*  and taken from original code circa 1983 and earlier.
-183900*  ------- Leave in just in case needed for testing ----
-184000*
-184100     move     spaces to saveSkaDataName.
-184200     open     input Supplemental-Part2-In.
-184300     read     Supplemental-Part2-In at end
-184400              display Msg1
-184500              go to bc000-Exit.
-184600     perform  zz150-WriteHdb thru zz150-Exit.
-184700     perform  zz150-WriteHdb6 thru zz150-Exit.
-184800     move     zero to q.
-184900     go       to bc030-IsX.
-185000*
-185100 bc020-Read-Sorter.
-185200     read     Supplemental-Part2-In at end
-185300              perform bc050-Check-Q
-185400              close Supplemental-Part2-In
-185500              go to bc090-Last-Pass2.
-185600*
-185700 bc030-IsX.
-185800     if       SkaDataName = spaces
-185900              go to bc020-Read-Sorter.
-186000     perform  bc040-PrintXRef thru bc080-Exit.
-186100     go       to bc020-Read-Sorter.
-186200*
-186300 bc040-PrintXRef.
-186400     if       SkaDataName = saveSkaDataName
-186500              go to bc070-ConnectD.
-186600     move     SkaDataName to saveSkaDataName.
-186700*
-186800 bc050-Check-Q.
-186900     if       XrDataName not = spaces
-187000         and  q = zero
-187100              move 1 to q.
-187200     if       q > zero
-187300              write PrintLine
-187400              move zero to q
-187500              move spaces to PrintLine.
-187600*
-187700 bc060-ConnectC.
-187800     move     spaces to PrintLine.
-187900     move     SkaDataName to XrDataName.
-188000     move     SkaRefNo to XrDefn.
-188100     move     LSect (SkaWSorPD) to XrType.
-188200     go       to bc080-Exit.
-188300*
-188400 bc070-ConnectD.
-188500     if       q > 7
-188600              perform bc050-Check-Q.
-188700     add      1 to q.
-188800     move     SkaRefNo to XrReference (q).
-188900*
-189000 bc080-Exit.
-189100     exit.
 189200*
 189300 bc090-Last-Pass2.
 189400*****************
-189500* printout in W-S section blocks as requested
+189500* printout W-S section blocks as needed
 189600* Check if any w-s used in module if not, do procedure xref only
 189700*
-189800     if       Block-Group
-189900              go to bc190-Do-Conditions.
 190000     move     70 to Line-Count.
-190100     if       Section-Used-Table = zeros
-190200              go to bc091-Git.
-190300*
-190400     if       not Group-Report-Only
+190100     if       Section-Used-Table not = zeros
 190500              move  1 to WS-Anal1
-190600              move  "Y" to sw-3
 190700              perform bc100-Working-Storage-Report
 190800                    thru bc180-Exit 7 times.
 190900*
-191000     if       Group-Report-Only or Both-Reports
-191100              move "N" to sw-3
-191200              move 7 to WS-Anal1
-191300              perform bc100-Working-Storage-Report
-191400                thru bc180-Exit.
-191500*
-191600 bc091-Git.
 191700     if       Git-Table-Count > zero
 191800              perform bc600-Print-Globals thru bc600-Exit.
 191900     go       to bc190-Do-Conditions.
@@ -1963,8 +1883,7 @@
 192200*****************************
 192300*  skip section if no data
 192400*
-192500     if       Do-One-Only
-192600          and USect (WS-Anal1) = zero
+192500     if       USect (WS-Anal1) = zero
 192700              add 1 to WS-Anal1
 192800              go to bc180-Exit.
 192900*
@@ -1984,7 +1903,7 @@
 194300 bc110-Read-Sorter.
 194400     read     Supplemental-Part2-In at end
 194500              add 1 to WS-Anal1
-194600              perform  bc050-Check-Q
+194600              perform  bc140-Check-Q
 194700              close Supplemental-Part2-In
 194800              go to bc180-Exit.
 194900*
@@ -2001,9 +1920,8 @@
 196000*
 196100     if       SkaWSorPD > WS-Anal1
 196200              go to bc170-Exit.
-196300     if       Do-One-Only
-196400         and  SkaWSorPD not = WS-Anal1
-196500              go to bc170-Exit.
+192700     if       SkaWSorPD not = WS-Anal1
+192900              go to bc170-Exit.
 196600*
 196700* new variable groups 1 thru 7
 196800*
@@ -2011,8 +1929,15 @@
 197000     move     SkaWSorPD   to saveSkaWSorPD.
 197100     move     SkaWSorPD2  to saveSkaWSorPD2.
 197200*
-197300     perform  bc050-Check-Q.
-197400*
+197300 bc140-Check-Q.
+197310     if       XrDataName not = spaces
+197320         and  q = zero
+197330              move 1 to q.
+197340     if       q > zero
+197350              write PrintLine
+197400              move zero to q
+197410              move spaces to PrintLine.
+197420*
 197500 bc150-ConnectC2.
 197600     move     spaces to PrintLine.
 197700     move     SkaDataName to XrDataName.
@@ -2022,10 +1947,9 @@
 198100*
 198200 bc160-ConnectD2.
 198300     if       q > 7
-198400              perform bc050-Check-Q.
+198400              perform bc140-Check-Q.
 198500     add      1 to q.
 198600     move     SkaRefNo to XrReference (q).
-198700     go       to bc170-Exit.
 198800*
 198900 bc170-Exit.
 199000     exit.
@@ -2034,13 +1958,20 @@
 199300     exit.
 199400*
 199500 bc190-Do-Conditions.
+      *
+      * start with sorted variables 
+      *
 199600     if       Con-Tab-Count = zero
-199700              go to bc200-Last-Pass3.
-199800     perform zz150-WriteHdb.
-199900     perform zz150-WriteHdb7 thru zz150-Exit.
-200000     move    zero to a.
-200100     perform bc192-Print-Conditions thru bc192-Exit.
-200200     go      to bc200-Last-Pass3.
+199700              go to bc195-Done.
+           if       Con-Tab-Count > 1
+183100              sort  Con-Tab-Blocks ascending Variables.
+           move     "[S]" to hdr11a-sorted.
+           move     spaces to hdr11b-sorted.
+199800     perform  zz150-WriteHdb.
+199900     perform  zz150-WriteHdb7 thru zz150-Exit.
+200000     move     zero to a.
+200100     perform  bc192-Print-Conditions.
+200200     go       to bc194-Now-Reverse.
 200300*
 200400 bc192-Print-Conditions.
 200500     if       a < Con-Tab-Count
@@ -2050,15 +1981,27 @@
 200900              move  Variables (a) to P-Conditions
 201000              write PrintLine2
 201100              go to bc192-Print-Conditions.
-201200 bc192-Exit.
-201300     exit.
+      *
+201200 bc194-Now-Reverse.
+      *
+      * now sort conditions if more than 1 element in table
+      *
+           if       Con-Tab-Count > 1
+201300              sort  Con-Tab-Blocks ascending Conditions
+                    move     "[S]" to hdr11b-sorted
+                    move     spaces to hdr11a-sorted
+199800              perform  zz150-WriteHdb
+199900              perform  zz150-WriteHdb7 thru zz150-Exit
+200000              move     zero to a
+200100              perform  bc192-Print-Conditions.
 201400*
+       bc195-Done.
+           perform  bc300-Last-Pass4 thru bc360-Exit.
+      *
 201500 bc200-Last-Pass3.
 201600*****************
 201700* now do procedure div and ref to procedure div but no functions
 201800*
-201900     if       Block-Group
-202000              go to bc300-Last-Pass4.
 202100     move     spaces to saveSkaDataName.
 202200     move     zero to saveSkaWSorPD saveSkaWSorPD2.
 202300     open     input Supplemental-Part2-In.
@@ -2073,9 +2016,9 @@
 203200*
 203300 bc210-Read-Sorter3.
 203400     read     Supplemental-Part2-In at end
-203500              perform bc050-Check-Q
+203500              perform bc140-Check-Q
 203600              close Supplemental-Part2-In
-203700              go to bc300-Last-Pass4.
+203700              go to bc400-Last-Pass5.
 203800*
 203900 bc220-IsX3.
 204000     if       SkaDataName = spaces
@@ -2114,7 +2057,7 @@
 207300     move     SkaWSorPD   to saveSkaWSorPD.
 207400     move     SkaWSorPD2  to saveSkaWSorPD2.
 207500*
-207600     perform  bc050-Check-Q.
+207600     perform  bc140-Check-Q.
 207700*
 207800 bc250-ConnectC3.
 207900     move     spaces to PrintLine.
@@ -2131,7 +2074,7 @@
 209000*
 209100 bc260-ConnectD3.
 209200     if       q > 7
-209300              perform bc050-Check-Q.
+209300              perform bc140-Check-Q.
 209400     add      1 to q.
 209500     move     SkaRefNo to XrReference (q).
 209600*
@@ -2157,7 +2100,7 @@
 211600              perform bc335-Check-Q
 211700              close Supplemental-Part2-In
 211800              move 70 to Line-Count
-211900              go to bc400-Last-Pass5.
+211900              go to bc360-Exit.
 212000*
 212100 bc320-IsX4.
 212200     if       SkaDataName = spaces
@@ -2476,13 +2419,7 @@
             and HoldWSorPD < 8
             and SourceIn8-160 (1:15) = "PROCEDURE DIVIS"
             display "Found a PROCEDURE DIVISION"
-           end-if
-243100*  check if we have literals
-243200*
-243300     move     zero to v y2.
-243400     inspect  SourceIn8-160 tallying v for all quotes.
-243500     inspect  SourceIn8-160 tallying y2 for all "'".
-243600     add      y2 to v.
+           end-if  .
 243700*
 243800 zz100-New-Program-point.
 243900     perform  zz000-Inc-CobolRefNo.
@@ -2631,7 +2568,7 @@
 257900 zz120-Replace-Multi-Spaces.
 258000***************************
 258100* remove any multi spaces within a source line
-258200* Fixed: clear cols 73-80, now find actual lengh of record in d
+258200*   find actual lengh of record in d
 258300*     Now that code is all free taken from fn.i this lot shouldnt be needed
 258400*   nope need to start at cc1 and fn.i can start cc1 and cc2.
 258500*
@@ -2640,7 +2577,7 @@
 258800     perform  varying d from 160 by -1
 258900                   until SourceIn8-160 (d:1) not = space
 259000     end-perform
-      *     if       d > zero       *> d currently pointing to first tailing space
+      *     if       d > zero    *> d currently pointing to first trailing space
       *              subtract 1 from d.
 259100     if       d < 1
 259200              go to zz120-Exit.
@@ -2654,42 +2591,44 @@
            if       SourceIn8-160 (1:1) = space
                     move SourceIn8-160 (2:d) to wsFoundNewWord5
                     move wsFoundNewWord5 to SourceIn8-160
-                    move spaces to wsFoundNewWord5.
+                    move spaces to wsFoundNewWord5
+                    subtract 1 from d.
+260000     move     d to Line-End.
+           if we-are-testing
+              display "zz120A d=" d " after=" SourceIn8-160 (1:d).
+260100     go       to zz120-Exit.
+      *
       * this should not be needed
       *  so lets try & rem this all out
 259700*     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
 259800*     move     spaces to SourceIn8-160.
 259900*     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
 260000*     move     b to Line-End.
-           if we-are-testing
-              display "zz120A d=" d " after=" SourceIn8-160 (1:d).
-260000     subtract 1 from d giving Line-End.
-260100     go       to zz120-Exit.
 260200*
-260300 zz120-Kill-Space.
-260400     add      1 to a.
-260500     if       a > d
-260600              go to zz120-Kill-Space-Exit.
-260700     if       SourceIn8-160 (a:1) = space and c = 1
-260800              add 1 to b
-260900              move zero to c
-261000              go to zz120-Kill-Space.
+260300*zz120-Kill-Space.
+260400*    add      1 to a.
+260500*    if       a > d
+260600*             go to zz120-Kill-Space-Exit.
+260700*    if       SourceIn8-160 (a:1) = space and c = 1
+260800*             add 1 to b
+260900*             move zero to c
+261000*             go to zz120-Kill-Space.
 261100*
-261200     if       SourceIn8-160 (a:1) = space
-261300              go to zz120-Kill-Space.
-261400     subtract 1 from a giving e.
-261500     if       SourceIn8-160 (a:1) = "("
-261600         and  SourceIn8-160 (e:1) not = space
-261700         and  HoldWSorPD > 7
-261800              add 2 to b
-261900     else
-262000              add 1 to b.
-262100     move     SourceIn8-160 (a:1) to wsFoundNewWord5 (b:1).
-262200     move     1 to c.
-262300     go       to zz120-Kill-Space.
+261200*    if       SourceIn8-160 (a:1) = space
+261300*             go to zz120-Kill-Space.
+261400*    subtract 1 from a giving e.
+261500*    if       SourceIn8-160 (a:1) = "("
+261600*        and  SourceIn8-160 (e:1) not = space
+261700*        and  HoldWSorPD > 7
+261800*             add 2 to b
+261900*    else
+262000*             add 1 to b.
+262100*    move     SourceIn8-160 (a:1) to wsFoundNewWord5 (b:1).
+262200*    move     1 to c.
+262300*    go       to zz120-Kill-Space.
 262400*
-262500 zz120-Kill-Space-Exit.
-262600     exit.
+262500*zz120-Kill-Space-Exit.
+262600*    exit.
 262700*
 262800 zz120-Exit.
 262900     exit.
@@ -2697,7 +2636,7 @@
 263100 zz130-Extra-Reserved-Word-Check.
 263200********************************
 263300*  Check for any other reserved words not in other checks
-263400*  note that max reserved word is 23 characters, so comare like 4 like
+263400*  note that max reserved word is 23 characters, so compare like 4 like
       *
 263500     move     zero to a.
 263600     search   all Reserved-Names
@@ -2720,7 +2659,7 @@
 265300* Do we have an intrinsic function name
 265400*           if so modify sort rec for section printing
 265500* Note that P-oc-implemented = zero if not implemented,
-265600*    but treated as the same
+265600*    but treated as the same as its still a reserved word
 265700*
 265800     move     zero to F-Pointer.
 265900     search   all All-Functions
@@ -2780,13 +2719,9 @@
 271200 zz150-WriteHdb2.
 271300     move     spaces to PrintLine.
 271400     write    PrintLine.
-271500     if       Do-One-Only
-271600              move spaces to hdr7-variable
-271700              string Full-Section-Name (WS-Anal1) delimited space
-271800                     ")" delimited by size
-271900                     into hdr7-variable
-272000     else
-272100              move "ALL WORKING)" to hdr7-variable.
+271600     move     spaces to hdr7-variable.
+271700     string   Full-Section-Name (WS-Anal1) delimited space
+271800                ")" delimited by size into hdr7-variable.
 272200     write    PrintLine from hdr7-ws.
 272300     write    PrintLine from hdr3.
 272400     move     spaces to PrintLine.
@@ -2817,12 +2752,6 @@
 274900     move     spaces to PrintLine.
 275000     write    PrintLine.
 275100     go       to zz150-Exit.
-275200 zz150-WriteHdb6.
-275300     write    PrintLine from hdr2.
-275400     write    PrintLine from hdr3.
-275500     move     spaces to PrintLine.
-275600     write    PrintLine.
-275700     go       to zz150-Exit.
 275800 zz150-WriteHdb7.
 275900     write    PrintLine from hdr11.
 276000     write    PrintLine from hdr12-hyphens.
@@ -2916,29 +2845,16 @@
 284400              display "1: Source File name (Mandatory)"
 284500              display "2: -R    Print out source code prior to xre
 284600-             "ference listings"
-284700              display "3: -G    produce only group W-S xref"
-284800              display "   -A    produce Full group/procedure only"
-284900              display "   -GA   produce both Full group/procedure
-285000-             "and individual"
-285100              display "   -GB   produce both group and individual
-285200-             "W-S xref"
-285300              display "         Defaults to individual reports per
-285400-             " section"
-285500              display "4: -L    reports in lowercase else upper"
-285600              display "5: -SC   Sort Conditions in Var/Cond Table
-285700-             "instead of Variables"
-285800              display "6: -DR   Display All reserved words & stop"
-285900              display "7: -TEST produces testing info"
-286000              display "8: -V    Verbose output"
-286100              display "9: -H    Display this help message"
+285500              display "3: -L    reports in lowercase else upper"
+285900              display "4: -TEST produces testing info"
+285800              display "5: -DR   Display All reserved words & stop"
+286100              display "6: -H    Display this help message"
 286200              display "   --H   as -H"
 286300              stop run returning 16.
 286400*
 286500     move     1 to String-Pointer String-Pointer2.
 286600     unstring Arg-Value (1) delimited by "." into Prog-BaseName
 286700              with pointer String-Pointer.
-286800*     unstring Arg-Value (1) delimited by space into Source-Extent
-286900*              with pointer String-Pointer.
 287000     string   Prog-BaseName delimited by space
 287100              ".lst"        delimited by size into Print-FileName
 287200              with pointer String-Pointer2.
@@ -2951,110 +2867,38 @@
 287900*
 288000     if       "-H" = Arg-Value (2) or Arg-Value (3)
 288100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-288200           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
 288300              move zero to String-Pointer
 288400              go to zz180-Check-For-Param-Errors.
 288500     if       "--H" = Arg-Value (2) or Arg-Value (3)
 288600           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-288700           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
 288800              move zero to String-Pointer
 288900              go to zz180-Check-For-Param-Errors.
-289000*
-289100* Check v11 if verbose output required
-289200*
-289300     if       "-V" = Arg-Value (2) or Arg-Value (3)
-289400           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-289500           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-289600              move "Y" to sw-11.
-289700*
-289800* Check v8 if we are dumping all reserved words
-289900*
-290000     if       "-DR" = Arg-Value (2) or Arg-Value (3)
-290100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-290200           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-290300              move 1 to sw-8
-290400              go to zz180-Exit.
-290500*
-290600     if       Verbose-Output
-290700              display  "Using input = " SourceFileName
-290800              display  "  list file = " Print-FileName.
-290900*
-291000*  Now have the file names for source, print & reseq (if wanted)
-291100*
-291200*
-291300* Check v1 if we are are only doing a group xref ie W-S and procedure
-291400*
-291500     if       "-G " = Arg-Value (2) or Arg-Value (3)
-291600           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-291700           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-291800              move "Y" to sw-1.
-291900*
-292000* Check v1 if we are are doing Both group xref
-292100*
-292200     if       "-GB" = Arg-Value (2) or Arg-Value (3)
-292300           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-292400           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-292500              move "B" to sw-1.
-292600*
-292700* Check v1 if we are are doing All groups xref
-292800*
-292900     if       "-GA" = Arg-Value (2) or Arg-Value (3)
-293000           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-293100           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-293200              move "A" to sw-1.
-293300*
-293400* Check v1 if we are are doing One group xref
-293500*
-293600     if       "-A" = Arg-Value (2) or Arg-Value (3)
-293700           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-293800           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-293900              move "C" to sw-1.
 294000*
 294100* Check v2 if we are listing the source
 294200*
 294300      if      "-R" = Arg-Value (2) or Arg-Value (3)
 294400           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-294500           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
 294600              move "Y" to sw-2.
-294700*
-294800* Check v6 if we are are doing Lower case reports insted of upper
-294900*
-295000     if       "-L" = Arg-Value (2) or Arg-Value (3)
-295100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-295200           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-295300              move 1 to sw-6.
-295400*
-295500* Check v7 if we are sorting var/cond table different
-295600*
-295700     if       "-SC" = Arg-Value (2) or Arg-Value (3)
-295800           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-295900           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-296000              move 1 to sw-7.
-296100* finish off v?
-296200     if       not Verbose-Output
-296300              go to zz180-Test.
-296400     if       Group-Report-Only
-296500              display " Group xref only".
-296600     if       Both-Reports
-296700              display " Group & individual sections xref".
-296800     if       Reports-In-Lower
-296900              display " Reports in Lower Case"
-297000      else
-297100              display " Reports in Upper Case".
-297200     if       Condition-Sort
-297300              display " Selected Conditions Sort"
-297400     else
-297500              display " Selected Variables Sort".
-297600 zz180-Test.
+289700*
+289800* Check v4 if we are dumping all reserved words
+289900*
+290000     if       "-DR" = Arg-Value (2) or Arg-Value (3)
+290100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
+290300              move 1 to sw-4
+290400              go to zz180-Exit.
 297700*
 297800* Check v5 if we are testing
 297900*
 298000     if       "-TEST" = Arg-Value (2) or Arg-Value (3)
 298100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-298200           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-298300*           or Arg-Value (10)
 298400              display " extra information for testing"
 298500              move "Y" to sw-5.
+294700*
+294800* Check v6 if we are are doing Lower case reports insted of upper
+294900*
+295000     if       "-L" = Arg-Value (2) or Arg-Value (3)
+295100           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
+295300              move 1 to sw-6.
 298600*
 298700     open     input SourceInput.
 298800     if       fs-reply not = "00"
@@ -3083,8 +2927,8 @@
 301100*
 301200     move     high-values to Condition-Table.
 301300*
-301400     move     zeros to GotEndProgram
-301500              sw-Source-Eof Section-Used-Table 
+301400     move     zeros to GotEndProgram sw-Source-Eof 
+                    Section-Used-Table
 301600              HoldWSorPD HoldWSorPD2 Con-Tab-Count.
 301700*
 301800     move     1 to S-Pointer F-Pointer S-Pointer2 S-Pointer3

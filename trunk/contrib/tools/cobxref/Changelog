@@ -1,12 +1,14 @@
 2008-12-30  Vince Coen <vbcoen@btconnect.com>
         v0.95.20  * Clear loop on processing nested programs due copy proc 
-                    removal to cobc o/p (fn.i) and others corelated.
-                  * Bugs related to value 0/1. due copy code removal.
+                    removal to cobc o/p (fn.i) and others co-related issues.
+                  * Bugs related to value 0/1. due copy code removal, again.
                   * clear other bugs also related to above.
+                  * Removed un-needed parameters to xref
+                  * Removed very old unused reports & rearranged function report
                   * Found problems related to nested progs not showing global 
                     conditions in nested after 1st - To DO
                   * Unref'd fields in nested to be reported at end - TO DO
-                  * Remove v.old unused reports  - TO DO
+                  * Issued version to sourceforge & add1tocobol
 
 2008-12-21  Vince Coen <vbcoen@btconnect.com>
         v0.95.13  * Added in updated reserved.c lists which include
@@ -37,8 +39,9 @@
                   * Added compiled date and build no. on headings to help bug 
 		    reporting.
                   * Any new changes/bug fixes will increment build no.
+                  * Added version/build nos plus build date to headings & help.
                   * fixed odd bug in proc div in form with ["kk") and/or] format
-                  * Code for producing 01 record layout sizing but should it be 
+                  * Code for producing 01 record layout sizing but should it be
 		    added?
 
 2008-03-29  Vince Coen <vbcoen@btconnect.com>

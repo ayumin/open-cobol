@@ -1,49 +1,57 @@
 Cobxref - Cobol Cross Reference program / module for Open Cobol
 
-Documentation for Beta release version 0.95.13            Dated 21st Dec 2008
+Documentation for Beta release version 0.95.20            Dated 30th Dec 2008
 
 Parameters for running program are in the form:
 
-cobxref 1 [2 3 4 5 6 7 8 9] where params 2 through 9 are all optional   
+cobxref 1 [2 3 4 5 6] where params 2 through 6 are all optional   
 
-Note: Param 1 MUST be first param, 2 through A can be in any order
+Note: Param 1 MUST be first param, 2 through 6 can be in any order
 
-1: SFN [Source File name] (Mandatory)
+1: SFN.i [Source File name] (Mandatory) file produced from cobc 
+         using -save-temps or -E (Also see below)
 
 2: -R	 Print out source code prior to cross reference listings
 
-3: -G    produce only group W-S xref
-   -A    produce Full group/procedure only
-   -GA   produce both Full group/procedure and individual
-   -GB   produce both group and individual W-S xref
-         Defaults to individual reports per section ie, File, Working-Storage etc.
+3: -L    reports all in lowercase (defaults to uppercase or actual case used).
 
-4: -L    reports all in lowercase (defaults to uppercase or actual case used).
+4: -DR   Display All reserved words & stop. Note: Must still specify a source file
+         name of at least 5 charascters in length even if it's a dummy.
 
-5: -SC   Sorts Conditions in Var/Cond table instead of Variables.
+5: -TEST Produces testing info (and this can be a lot of output). Used for Debugging
+         by or on behalf of programmer. (See below for command line example)
 
-6: -DR   Display All reserved words & stop. Note: Must still specify a source file
-         even if a dummy.
-
-7: -TEST Produces testing info (and this can be a lot of output). Used for Debugging
-         by or on behalf of programmer.
-
-8: -V	 Verbose output (show more info on screen when running)
-
-9: -H	 Displays program parameter info (same as when run without any params}
+6: -H	 Displays program parameter info (same as when run without any params}
    --H	 as -H
 
-For normal usage just call as 'cobxref sourcefilename.i
+Prior to running cobxref:
+************************
+You must supply SFN.i as created from cobc with -save-temps or -E set, this is 
+a free format source file of your program with insignificant leading spaces 
+removed and all copy verbs pre-processed. Specifically, prior to running cobxref
+you need to run your program through cobc by running:
+cobc -save-temps -x your-prog.cbl   or to just create the input for cobxref
+having only preprocessed your source  run: 
+cobc -E your-prog.cbl > your-prog.i
 
-This will assume that source is in free format and that all cobol sections will 
-be reported individually as well as separate reports for: variable and conditions, 
-Procedure, Unreferenced working storage, unreferenced procedure sections and 
-paragraphs.
+REMEMBER to run this every time prior to running cobxref otherwise it might be
+running against a old version of your source code. It is hoped that cobxref will 
+be included with cobc during 2009.
 
-You must supply SFN.i as created from cobc with -save-temps set, this is a free 
-format source file of your program with insignificant leading spaces removed and
-all copy verbs pre-processed.
-When using OC this is the normal and now, the only method of usage.
+When using OC (Open Cobol). this is the only method of usage. It might be an 
+idea to create a shell script to run both programs against a specific source 
+file.
+
+Running cobxref:
+***************
+For normal usage just call as 'cobxref sourcefilename.i'
+This assumes you have run 'chmod +x cobxref' and that your run path includes 
+the current directory otherwise use './cobxref sourcefilename.i'
+
+This will assume that source is taken from cobc as described above and that all 
+cobol sections will be reported individually as well as separate reports for: 
+variable and conditions, sorted both by conditions then by variables, Procedure 
+sections, Unreferenced working storage, unreferenced procedure sections and paragraphs.
 
 Tarbell is supplied with cobxref object with static code (self contained).
 
@@ -55,7 +63,7 @@ and mods is pointing in the correct direction ie, /usr/local/lib and
 If recompiling from cobol source use cobc -x cobxref.cbl.
 Please do not make changes without recording the amendment in code with notation 
 at or near actual code changes. After your tests, please advise of changes direct 
-to myself at vbcoen@btconnect.com and thru the OC forum.
+to myself at vbcoen@btconnect.com and through the OC forum.
 
 
 I have been testing this program against a range of my own code as well as some 
@@ -67,13 +75,5 @@ tool to see if it is producing the same results and advise of any discrepancies.
 Please provide any and all reports of bugs through the open cobol forum.
 
 
-After in the field testing I will try and have it linked into the open cobol 
+After, in field testing, I will try and have it linked into the open cobol 
 compiler.
-
-
-TODO Lists subject to demand:
-
-1. Support for qualifiers in Working Storage or paragraph/section names etc.
-
-2. Support for taking params through the standard cobol config file/s.
-   or via cobc.
