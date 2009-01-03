@@ -1,3 +1,11 @@
+2009-01-03  Vince Coen <vbcoen@btconnect.com>
+        v0.95.24  * added Check for unreferenced Globals in nested modules
+                    and extra report for it
+                  * More code clean ups
+                  * Removed unneeded we-are-testing code and shrunk performs
+                    but more to do
+                  * Tidied up some of the reports
+
 2008-12-30  Vince Coen <vbcoen@btconnect.com>
         v0.95.20  * Clear loop on processing nested programs due copy proc 
                     removal to cobc o/p (fn.i) and others co-related issues.
