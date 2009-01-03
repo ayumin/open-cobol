@@ -36,9 +36,10 @@ Just place cobxref in directory of source code to be cross referenced. Making
 sure that the execute flag is set (chmod +x cobxref). In the event that the 
 binary does not work you will need to recompile the GCC C source code or the 
 Cobol source code. The easiest way to compile the C code is to run the 
-comp-cobxrefc.sh script but only after you have checked and modified it to 
-reflect the location where you have installed the needed libraries. As supplied
-it will point to /usr/local/include and /usr/local/lib for the cobol libs.
+comp-cobxrefc.sh script via bash but only after you have checked and modified it
+to reflect the location where you have installed the needed libraries. As 
+supplied it will point to /usr/local/include and /usr/local/lib for the cobol 
+libs.
 
 Windows/Mac:
 Compile the Cobol source see below.
@@ -68,7 +69,7 @@ cobxref.c.h		Pre-processed C Headers from OpenCobol
 cobxref.c.l.h           Pre-Processed defaulted C headers from OpenCobol
 cobxref.txt		Usage procedure for cobxref
 cobxref.cbl		Original Cobol source of cobxref
-comp-cobxrefc.sh 	Script to compile the C code.
+comp-cobxrefc.sh 	Script to compile the C code under bash.
 COPYING                 Software License for copying code.
 readme                  This file
 TODO                    Lists any outstanding programming or new functionality.
