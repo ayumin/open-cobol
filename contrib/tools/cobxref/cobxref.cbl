@@ -120,7 +120,7 @@
 011900     03  SdSortKey         pic x(40).
 012000/
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.24".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.27".
 012300 77  String-Pointer        pic s9(5) comp  value 1.
 012400 77  String-Pointer2       pic s9(5) comp  value 1.
 012500 77  S-Pointer             pic s9(5) comp  value zero.
@@ -1597,7 +1597,7 @@
 164700*                 PROCEDURE (as in DIVISION) as wsFoundWord2
       * but 1st, sort Global  table prior to running search(es)
 164800*  and I know it will happen for every module in src after 1st one
-      *
+      *    this needs a rewrite as well as process a word etc complete mess
            if       Git-Table-Count > 1
 186100              sort  Git-Elements ascending Git-Word.
       *
@@ -1612,7 +1612,10 @@
 165700              go to bb020-GetAWord.
 165800*
 165900 bb030-Chk1.
-166000     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
+           if       wsFoundWord2 (1:1) alphabetic
+166000           perform zz130-Extra-Reserved-Word-Check thru zz130-Exit
+           else
+                    move zero to a.
 166100*
 166200* Do we have a reserved word? a = 0 means no or a number so ignore
 166300*
@@ -1634,6 +1637,9 @@
 167900     if       wsf1-1 = "H"
 168000        and   wsFoundWord2 (2:1) = quote or = "'"
 168100              go to bb020-GetAWord.
+           if       wsf1-1 = ":"
+              and   Word-Length = 1
+                    go to bb020-GetAWord.
 168200     if       wsf1-1 = "("
 168300              go to bb050-Check-SubScripts.
 168400*
@@ -1682,7 +1688,7 @@
 172700     move     spaces to wsFoundNewWord3.
 172800     move     zero to a b c d q s y y2.
 172900     subtract 2 from Word-Length giving z.
-173000* z = subscript length less ()
+173000* z = subscript length less () & here we skip 1st char '('
 173100     inspect  wsFoundWord2 (2:z) tallying a for all "(".
 173200     inspect  wsFoundWord2 (2:z) tallying b for all ")".
 173300     inspect  wsFoundWord2 (2:z) tallying c for all ":".
@@ -1699,37 +1705,46 @@
 174400              move space to wsFoundWord2 (Word-Length:1)
 174500              subtract 1 from Word-Length.
 174600* still need to deal with (aaa))
-174700     subtract 1 from Word-Length giving t
+174700     subtract 1 from Word-Length giving t.
 174800     if       b > a
 174900         and  wsFoundWord2 (Word-Length:1) = ")"
 175000         and  wsFoundWord2 (t:1) = ")"
 175100              move space to wsFoundWord2 (Word-Length:1)
 175200              move t to Word-Length.
-175300     if       y > zero
+175300     if       y > zero   *> quotes?
 175400              move  zero to q s t
 175500              go to bb060-Scan4-Quotes.
-175600     if       c > zero
+175600     if       c > zero   *> colon?
 175700              move  zero to q s t
 175800              go to bb100-scan4-colon.
 175900*
 176000     subtract 2 from Word-Length giving z.
-176100     if      z < 1
-176200             move 1 to z.
-176300     if      d = zero
-176400         and wsFoundWord2 (2:z) numeric
-176500             go to bb020-GetAWord.
+176100     if       z < 1
+176200              move 1 to z.
+176300     if       d = zero
+176400          and wsFoundWord2 (2:z) numeric
+176500              go to bb020-GetAWord.
 176600* for (abcd  instance
 176700     if       wsFoundWord2 (Word-Length:1) not = ")"
-176800        and  d = zero
+176800         and  d = zero
 176900              add 1 to Word-Length.
-177000*
-177100     if      d = zero
-177200             move spaces to wsFoundNewWord
-177300             subtract 2 from Word-Length giving z
-177400             move wsFoundWord2 (2:z) to wsFoundNewWord
-177500             move wsFoundNewWord to wsFoundWord2
-177600             perform zz030-Write-Sort
-177700             go to bb020-GetAWord.
+177000* err word and length is pointing to (
+           if       d = zero
+                    move spaces to wsFoundNewWord
+                    subtract 2 from Word-Length giving z
+                    move wsFoundWord2 (2:z) to wsFoundNewWord
+                    move wsFoundNewWord to wsFoundWord2
+                    perform zz130-Extra-Reserved-Word-Check 
+                                                   thru zz130-Exit
+                    if  a > zero
+                        go to bb020-GetAWord.
+177100*     if       d = zero
+177200*              move spaces to wsFoundNewWord
+177300*              subtract 2 from Word-Length giving z
+177400*              move wsFoundWord2 (2:z) to wsFoundNewWord
+177500*              move wsFoundNewWord to wsFoundWord2
+177600              perform zz030-Write-Sort
+177700              go to bb020-GetAWord.
 177800* cockup trap
 177900     display Msg7
 178000     go to bb020-GetAWord.
@@ -2593,47 +2608,50 @@
 258400* now that source is from OC lets clean up fast as cc1 is only 
 258500*   poss space filled
 258600*
-258700     if       SourceIn8-160 (1:1) = space
-258800              move SourceIn8-160 (2:d) to wsFoundNewWord5
-258900              move wsFoundNewWord5 to SourceIn8-160
-259000              move spaces to wsFoundNewWord5
-259100              subtract 1 from d.
-259200     move     d to Line-End.
-259300     if we-are-testing
-259400        display "zz120A d=" d " after=" SourceIn8-160 (1:d).
-259500     go       to zz120-Exit.
+258700*     if       SourceIn8-160 (1:1) = space
+258800*              move SourceIn8-160 (2:d) to wsFoundNewWord5
+258900*              move wsFoundNewWord5 to SourceIn8-160
+259000*              move spaces to wsFoundNewWord5
+259100*              subtract 1 from d.
+259200*     move     d to Line-End.
+259300*     if we-are-testing
+259400*        display "zz120A d=" d " after=" SourceIn8-160 (1:d).
+259500*     go       to zz120-Exit.
 259600*
 259700* this should not be needed
 259800*  so lets try & rem this all out
-259900*     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
-260000*     move     spaces to SourceIn8-160.
-260100*     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
-260200*     move     b to Line-End.
+259900     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
+260000     move     spaces to SourceIn8-160.
+260100     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
+260200     move     b to Line-End.
+259300     if we-are-testing
+259400        display "zz120A b=" b " after=" SourceIn8-160 (1:b).
+259500     go       to zz120-Exit.
 260300*
-260400*zz120-Kill-Space.
-260500*    add      1 to a.
-260600*    if       a > d
-260700*             go to zz120-Kill-Space-Exit.
-260800*    if       SourceIn8-160 (a:1) = space and c = 1
-260900*             add 1 to b
-261000*             move zero to c
-261100*             go to zz120-Kill-Space.
+260400 zz120-Kill-Space.
+260500     add      1 to a.
+260600     if       a > d
+260700              go to zz120-Kill-Space-Exit.
+260800     if       SourceIn8-160 (a:1) = space and c = 1
+260900              add 1 to b
+261000              move zero to c
+261100              go to zz120-Kill-Space.
 261200*
-261300*    if       SourceIn8-160 (a:1) = space
-261400*             go to zz120-Kill-Space.
-261500*    subtract 1 from a giving e.
-261600*    if       SourceIn8-160 (a:1) = "("
-261700*        and  SourceIn8-160 (e:1) not = space
-261800*        and  HoldWSorPD > 7
-261900*             add 2 to b
-262000*    else
-262100*             add 1 to b.
-262200*    move     SourceIn8-160 (a:1) to wsFoundNewWord5 (b:1).
-262300*    move     1 to c.
-262400*    go       to zz120-Kill-Space.
+261300     if       SourceIn8-160 (a:1) = space
+261400              go to zz120-Kill-Space.
+261500     subtract 1 from a giving e.
+261600     if       SourceIn8-160 (a:1) = "("
+261700         and  SourceIn8-160 (e:1) not = space
+261800         and  HoldWSorPD > 7
+261900              add 2 to b
+262000     else
+262100              add 1 to b.
+262200     move     SourceIn8-160 (a:1) to wsFoundNewWord5 (b:1).
+262300     move     1 to c.
+262400     go       to zz120-Kill-Space.
 262500*
-262600*zz120-Kill-Space-Exit.
-262700*    exit.
+262600 zz120-Kill-Space-Exit.
+262700     exit.
 262800*
 262900 zz120-Exit.
 263000     exit.
@@ -2682,6 +2700,7 @@
 267300     exit.
 267400/
 267500 zz150-WriteHdb.
+           move     spaces to h1programid.
 267600     accept   hddate from date.
 267700     if       hddate not = "000000"
 267800              move hd-y to hd2-y
