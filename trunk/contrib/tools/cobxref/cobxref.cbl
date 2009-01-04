@@ -120,7 +120,7 @@
 011900     03  SdSortKey         pic x(40).
 012000/
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.27".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.31".
 012300 77  String-Pointer        pic s9(5) comp  value 1.
 012400 77  String-Pointer2       pic s9(5) comp  value 1.
 012500 77  S-Pointer             pic s9(5) comp  value zero.
@@ -405,11 +405,7 @@
 039800     03  filler pic X(28) value "1DAY-OF-INTEGER             ".
 039900     03  filler pic X(28) value "1DAY-TO-YYYYDDD             ".
 040000     03  filler pic X(28) value "0DISPLAY-OF                 ".
-040100*
-040200* Can't deal with the next one so rem'd out
-040300*    Alright so, I don't know how to!
-040400*
-040500*     03  filler pic X(28) value "0E                          ".
+040500     03  filler pic X(28) value "0E                          ".
 040600     03  filler pic X(28) value "1EXCEPTION-FILE             ".
 040700     03  filler pic X(28) value "0EXCEPTION-FILE-N           ".
 040800     03  filler pic X(28) value "1EXCEPTION-LOCATION         ".
@@ -477,11 +473,11 @@
 047000     03  filler pic X(28) value "1YEAR-TO-YYYY               ".
 047100*
 047200 01  filler redefines Function-Table.
-047300     03  All-Functions                 occurs 82
+047300     03  All-Functions                 occurs 83
 047400               ascending key P-Function indexed by All-Fun-Idx.
 047500         05  P-oc-implemented pic x.
 047600         05  P-Function       pic x(27).
-047700 01  Function-Table-Size   pic s99  comp  value 82.
+047700 01  Function-Table-Size   pic s99  comp  value 83.
 047800*
 047900* Note that system names are omitted so thatr they turn up
 048000*  in the cross refs
@@ -1471,6 +1467,8 @@
 151800              perform zz200-Load-Git thru zz200-Exit.
 151900     if       wsFoundWord2 (1:8) = "INDEXED "
 152000              perform ba052-After-Index.
+           if       wsFoundWord2 (1:10) = "DEPENDING "
+                    perform ba053-After-Depending.
 152100     go       to ba040-Clear-To-Next-Period.
       *
 152200 ba040-Exit.
@@ -1579,13 +1577,28 @@
 162900*
 163000* if Index found ignore 'by' if present
 163100*
-163200     perform zz110-Get-A-Word thru zz110-Exit.
-163300     if      wsFoundWord2 (1:3) = "BY "
-163400             go to ba052-After-Index.
+163200     perform  zz110-Get-A-Word thru zz110-Exit.
+163300     if       wsFoundWord2 (1:3) = "BY "
+163400              go to ba052-After-Index.
 163500*
-163600* Should have index name
+163600* Should have index name and might be global
 163700*
-163800     perform   zz030-Write-Sort.
+163800     perform  zz030-Write-Sort.
+160300     if       Global-Active
+158400              move wsFoundWord2 (1:30) to Global-Current-Word
+160500              perform zz200-Load-Git thru zz200-Exit.
+163900*
+       ba053-After-Depending.
+      *
+      * If depending found ignore 'on' if present, no global processing
+      *
+163200     perform  zz110-Get-A-Word thru zz110-Exit.
+163300     if       wsFoundWord2 (1:3) = "ON "
+163400              go to ba053-After-Depending.
+163500*
+163600* Should have depending name
+163700*
+163800     perform  zz030-Write-Sort.
 163900*
 164000 ba000-Exit.
 164100     exit.
@@ -1823,18 +1836,30 @@
 185200***********************
 185300*  Report Phase
 185400*
-185500 bc010-Start.
 185600     sort     SortFile
 185700              ascending key SdSortKey
 185800              using  Supplemental-Part1-Out
 185900              giving Supplemental-Part2-In.
 186000     if       Git-Table-Count > 1
 186100              sort  Git-Elements ascending Git-Word.
-186200*
+186200* Print order:
+      * Note that although some sections are not yet supported in OC they
+      *       are, in cobxref.
+      *   Xref'd - 
+      *     At bc090 = In order: File Section, Working-Storage, Local-Storage,
+      *                 Linkage, Communication, Report, Screen
+      *     At bc600 = Globals (in nested modules)
+      *     At bc190 = Special-names & Conditions (& linked variables),
+      *     At bc300 = Functions, 
+      *     At bc200 = Procedure Div, 
+      *     At bc400 = Unreferenced: File & WS, 
+      *     At bc500 = Unreferenced Procedure, 
+      *     At bc620 = Unreferenced Globals (throughout source)
+      *
 186300 bc090-Last-Pass2.
 186400*****************
 186500* printout W-S section blocks as needed
-186600* Check if any w-s used in module if not, do procedure xref only
+186600* Check if any w-s used in module if not, do conditions, functions etc
 186700*
 186800     move     70 to Line-Count.
 186900     if       Section-Used-Table not = zeros
@@ -1974,11 +1999,11 @@
 199800*****************
 199900* now do procedure div and ref to procedure div but no functions
 200000*
-222000     if       q2 = zero
-222100              move spaces to PrintLine
-222200              move "None" to XrDataName
-222300              write PrintLine
-222300              write PrintLine.
+222000*     if       q2 = zero
+222100*              move spaces to PrintLine
+222200*              move "None" to XrDataName
+222300*              write PrintLine
+222300*              write PrintLine.
 200100     move     spaces to saveSkaDataName.
 200200     move     zero to saveSkaWSorPD saveSkaWSorPD2 q2.
 200300     open     input Supplemental-Part2-In.
@@ -2067,8 +2092,10 @@
 208100*****************
 208200* now do functions
 208300*
+188200     if       USect (9) = zero
+188400              go to bc399-Exit.
 208400     move     spaces to saveSkaDataName.
-208500     move     zero to saveSkaWSorPD saveSkaWSorPD2.
+208500     move     zero to saveSkaWSorPD saveSkaWSorPD2 q2.
 208600     move     70 to Line-Count.
 208700     open     input Supplemental-Part2-In.
 208800     read     Supplemental-Part2-In at end
@@ -2081,8 +2108,8 @@
 209500     read     Supplemental-Part2-In at end
 209600              perform bc335-Check-Q
 209700              close Supplemental-Part2-In
-209800              move 70 to Line-Count
-209900              go to bc360-Exit.
+209800*              move 70 to Line-Count          *> ??? needed?
+209900              go to bc399-Exit.
 210000*
 210100 bc320-IsX4.
 210200     if       SkaDataName = spaces
@@ -2114,6 +2141,7 @@
 212800     if       q > zero
 212900              write PrintLine
 213000              move zero to q
+                    move 1 to q2
 213100              move spaces to PrintLine.
 213200*
 213300 bc340-ConnectC4.
@@ -2155,6 +2183,11 @@
 216600     read     Supplemental-Part2-In at end
 216700              perform bc440-Check-4Old
 216800              close Supplemental-Part2-In
+222000              if   S-Pointer = zero
+222100                   move spaces to PrintLine
+222200                   move "None" to XrDataName
+222300                   write PrintLine
+                    end-if
 216900              go to bc500-Last-Pass6.
 217000*
 217100 bc420-IsX5.
@@ -2206,10 +2239,10 @@
 221700*****************
 221800* now do non referenced procedure paragraphs.
 221900*
-222000     if       S-Pointer = zero
-222100              move spaces to PrintLine
-222200              move "None" to XrDataName
-222300              write PrintLine.
+222000*     if       S-Pointer = zero
+222100*              move spaces to PrintLine
+222200*              move "None" to XrDataName
+222300*              write PrintLine.
 222400     move     spaces to saveSkaDataName.
 222500     move     zero to saveSkaWSorPD S-Pointer.
 222600     open     input Supplemental-Part2-In.
