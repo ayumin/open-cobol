@@ -1,3 +1,9 @@
+2009-01-14  Vince Coen <vbcoen@btconnect.com>
+        v0.95.41  * Support for free format source lines up to 255 chars
+                  * Support for Cobol word sizes of 31 chars and allowance
+                    for this to be increased without major problems
+                    both in compliance for INCITS PL 22.4 20xx
+
 2009-01-13  Vince Coen <vbcoen@btconnect.com>
         v0.95.40  * Cleared bugs related to ws fields used in proc. with
                     )) after, ditto the (1 1 1) format. These bugs traced

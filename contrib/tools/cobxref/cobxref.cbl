@@ -80,7 +80,7 @@
 007800 fd  Source-Listing.
 007900 01  Source-List.
 008000     03  sl-Gen-RefNo1     pic z(5)9bb.
-008100     03  SourceOutput      pic x(162).
+008100     03  SourceOutput      pic x(255).
 008200*>
 008300 01  PrintLine.
 008400     02  XrDataName        pic x(33).
@@ -95,15 +95,15 @@
 009200*>
 009300 01  filler.
 009400     03  filler            pic x(42).
-009500     03  PL-Prog-Name      pic x(30).
+009500     03  PL-Prog-Name      pic x(32).
 009600*>
 009700 01  PrintLine2.
-009800     03  P-Conditions      pic x(31).
-009900     03  P-Variables       pic x(31).
+009800     03  P-Conditions      pic x(32).
+009900     03  P-Variables       pic x(32).
 010000*>
 010100 fd  SourceInput.
 010200*>
-010300 01  SourceRecIn           pic x(160).
+010300 01  SourceRecIn           pic x(255).
 010400*>
 010500 fd  Supplemental-Part1-Out.
 010600*>
@@ -122,7 +122,7 @@
 011900     03  SdSortKey         pic x(40).
 012000*>
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.40".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.41".
 012300 77  String-Pointer        Binary-Long  value 1.
 012400 77  String-Pointer2       Binary-Long  value 1.
 012500 77  S-Pointer             Binary-Long  value zero.
@@ -163,6 +163,12 @@
 016100*>
 016200*> Switches used during processing
 016300*>
+      *> And these two are the size of any Cobol word currently set
+      *> to value specified in PL22.4 20xx
+      *>
+       78  Cobol-Word-Size                       value 31.
+       78  CWS                                   value 31.
+      *>
 016400 77  sw-Source-Eof         pic 9           value 0.
 016500  88 Source-Eof                            value 1.
 016600*> got end of program
@@ -188,16 +194,17 @@
 018000 77  Word-Delimit2         pic x           value space.
        77  OS-Delimiter          pic x           value space.
 018100 77  GotASection           pic x           value space.
+       *> section name + 8 chars
 018500 77  HoldFoundWord         pic x(40)       value spaces.
 018600 77  saveSkaDataName       pic x(32)       value spaces.
-018700 77  Saved-Variable        pic x(30)       value spaces.
+018700 77  Saved-Variable        pic x(32)       value spaces.
 018800 77  saveSkaWSorPD         pic 9           value zero.
 018900 77  saveSkaWSorPD2        pic 9           value zero.
 019000 77  WS-Anal1              pic 9           value zero.
 019100 77  fs-reply              pic xx          value zeros.
-019200 77  SourceFileName        pic x(64)         value spaces.
-019300 77  Print-FileName        pic x(64)         value spaces.
-019400 77  Prog-BaseName         pic x(60)         value spaces.
+019200 77  SourceFileName        pic x(64)       value spaces.
+019300 77  Print-FileName        pic x(64)       value spaces.
+019400 77  Prog-BaseName         pic x(60)       value spaces.
       *>
       *> in theory Linux can go to 4096 and Windoz 32,767
       *>
@@ -205,17 +212,16 @@
 019420 77  Supp-File-1           pic x(1036)     value spaces.
 019430 77  Supp-File-2           pic x(1036)     value spaces.
        77  Sort1tmp              pic x(1036)     value spaces.
-019500 77  Global-Current-Word   pic x(30)       value spaces.
+019500 77  Global-Current-Word   pic x(32)       value spaces.
 019600 77  Global-Current-Refno  pic 9(6)        value zero.
 019700 77  Global-Current-Level  pic 99          value zero.
 019800*>
-019900 01  HoldID                pic x(30)       value spaces.
-020000 01  HoldID-Module         pic x(30)       value spaces.
+019900 01  HoldID                pic x(32)       value spaces.
+020000 01  HoldID-Module         pic x(32)       value spaces.
 020100*>
 020500 01  SourceInWS.
-020800     03  SourceIn8-160.
-020900         05  sv1what       pic x(16).
-021000         05  filler        pic x(144).
+020900     03  sv1what           pic x(16).
+021000     03  filler            pic x(239).
 021100*>
 021200 01  wsFoundWord.
 021300     03  wsf1-3.
@@ -223,19 +229,18 @@
 021500       05  wsf1-1          pic x.
 021600       05  filler          pic x.
 021700      04  filler           pic x.
-021800     03  filler            pic x.
-021900     03  filler            pic x(158).
+021900     03  filler            pic x(252).
 022000*>
 022100 01  wsFoundWord2 redefines wsFoundWord.
-022200     03  wsf3-1            pic 9.
-022300     03  wsf3-2            pic 9.
-022400     03  filler            pic x(160).
+022200     03  wsf3-1            pic 9.    *> only used for Build-Number
+022300     03  wsf3-2            pic 9.    *>   processing
+022400     03  filler            pic x(253).
 022500*>
 022600 01  wsFoundNewWord        pic x(32).
 022700 01  wsFoundNewWord2       pic x(32).
-022800 01  wsFoundNewWord3       pic x(162).
+022800 01  wsFoundNewWord3       pic x(255).  *> max size quot lit 1 lin
 022900 01  wsFoundNewWord4       pic x(32).
-023000 01  wsFoundNewWord5       pic x(160).
+023000 01  wsFoundNewWord5       pic x(255). *> space removal source i/p
 023100*>
 023200 01  HDR1.
 023300     03  filler            pic X(26)
@@ -1029,8 +1034,8 @@
 102200     03  Con-Tab-Blocks occurs 10 to 5001
 102300                                       depending on Con-Tab-Size.
 102400*> +1 used, when testing for max table size
-102500       05  Conditions      pic x(30).
-102600       05  Variables       pic x(30).
+102500       05  Conditions      pic x(32).
+102600       05  Variables       pic x(32).
 102610       05  CT-In-Use-Flag  pic x.
 102620       05  filler          pic x.
 102700 01  Con-Tab-Size          Binary-Long value 10.
@@ -1040,8 +1045,8 @@
 103100     03  Git-Elements  occurs 10 to 10001
 103200                                     depending on Git-Table-Size.
 103300*> +1 used, when testing for max table size
-103400       05  Git-Word        pic x(30).
-103500       05  Git-Prog-Name   pic x(30).
+103400       05  Git-Word        pic x(32).
+103500       05  Git-Prog-Name   pic x(32).
 103600       05  Git-RefNo       pic 9(6).
 103700       05  Git-HoldWSorPD  pic 9.
 103800       05  Git-HoldWSorPD2 pic 9.
@@ -1100,14 +1105,16 @@
 108900*>
 109000     open     output Source-Listing.
 109100     if       Reports-In-Lower
-109200              move function lower-case (Prog-BaseName) to HoldID
+109200              move function lower-case (Prog-BaseName (1:CWS))
+                                          to HoldID
 109300     else
-109400              move function upper-case (Prog-BaseName) to HoldID
+109400              move function upper-case (Prog-BaseName (1:CWS))
+                                          to HoldID
 109500     end-if
 109600     move     HoldID to HoldID-Module.
 109700     move     spaces to Arg-Vals.
 109800*>
-109900*> get program id from source file name in case prog-id not present
+109900*> get program id frm source filename in case prog-id not present
 110000*>
 110100 aa020-Bypass-Open.
 110200     open     output Supplemental-Part1-Out.
@@ -1153,10 +1160,10 @@
 139810              move 16 to return-code
 114300              goback.
 114400     perform  zz110-Get-A-Word thru zz110-Exit.
-114500     IF       SourceIn8-160 = "DATA DIVISION.  "
-114600                          or  "FILE SECTION.   "
-114700                          or  "WORKING-STORAGE SECTION."
-114800                          or  "PROCEDURE DIVISION."
+114500     IF       SourceInWS = "DATA DIVISION.  "
+114600                       or  "FILE SECTION.   "
+114700                       or  "WORKING-STORAGE SECTION."
+114800                       or  "PROCEDURE DIVISION."
 114900              go to aa060-ReadLoop3a.
 115000*>
 115100*> The above should never happen, as all modules have a program-id
@@ -1174,21 +1181,21 @@
 116200                 move function lower-case (wsFoundWord2)
 116300                                      to HoldID
 116400        else
-116500                 move function upper-case (wsFoundWord2 (1:30))
+116500                 move function upper-case (wsFoundWord2)
 116600                                      to HoldID.
 116700     if       Have-Nested  *> found more than 1 module in source
 116800        if       Reports-In-Lower
 116900                 move function lower-case (wsFoundWord2)
 117000                                      to HoldID-Module
 117100        else
-117200                 move function upper-case (wsFoundWord2 (1:30))
+117200                 move function upper-case (wsFoundWord2)
 117300                                      to HoldID-Module.
 117400*>
 117500*> We now have the program-id name so update our info, for reports
 117600*>
 117700 aa040-ReadLoop2.
 117800     perform  zz100-Get-A-Source-Record thru zz100-Exit.
-117900     if       SourceIn8-160 = "SPECIAL-NAMES."
+117900     if       SourceInWS (1:14) = "SPECIAL-NAMES."
 118000              go to aa041-Get-SN.
 118100     move     zero to a.
 118200     perform  aa045-Test-Section thru aa045-Exit.
@@ -1208,12 +1215,12 @@
 119700     perform  aa045-Test-Section thru aa045-Exit.
 119800     if       a < 9
 119900              go to aa060-ReadLoop3a.
-120000     if       SourceIn8-160 (1:13) = "INPUT-OUTPUT "
-120100                                or = "DATA DIVISION"
+120000     if       SourceInWS (1:13) = "INPUT-OUTPUT "
+120100                             or = "DATA DIVISION"
 120200              go to aa041-Get-SN.
-120300     IF       SourceIn8-160 (1:13) = "FILE-CONTROL."
+120300     IF       SourceInWS (1:13) = "FILE-CONTROL."
 120400              go to aa047-GetIO.
-120500     IF       SourceIn8-160 (1:12) = "I-O-CONTROL."
+120500     IF       SourceInWS (1:12) = "I-O-CONTROL."
 120600              go to aa048-GetIOC.
 120700*>
 120800 aa042-Getword.
@@ -1224,7 +1231,7 @@
 121300              go to aa042-Getword.
 121400*>
 121500     perform  zz110-Get-A-Word thru zz110-Exit.
-121600     move     wsFoundWord2 (1:30) to Saved-Variable.
+121600     move     wsFoundWord2 (1:CWS) to Saved-Variable.
 121700*>
 121800 aa044-Getword3.
 121900     perform  zz110-Get-A-Word thru zz110-Exit.
@@ -1240,7 +1247,7 @@
 122900     add      1 to Con-Tab-Count.
 123000     move     Saved-Variable to Variables (Con-Tab-Count).
 123000     move     Space  to CT-In-Use-Flag (Con-Tab-Count).
-123100     move     wsFoundWord2 (1:30) to Conditions (Con-Tab-Count).
+123100     move     wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count).
 123200     if       Word-Delimit = "."
 123300              go to aa041-Get-SN.
 123400     go       to aa044-Getword3.
@@ -1249,7 +1256,7 @@
 123700     add      1 to a.
 123800     if       a > 8
 123900              go to aa045-Exit.
-124000     if       SourceIn8-160 not = Full-Section-Name (a)
+124000     if       SourceInWS (1:24) not = Full-Section-Name (a)
 124100              go to aa045-Test-Section.
 124200*>
 124300 aa045-Exit.
@@ -1264,11 +1271,11 @@
 126400     perform  aa045-Test-Section thru aa045-Exit.
 126500     if       a < 9
 126600              go to aa060-ReadLoop3a.
-126700     IF       SourceIn8-160 (1:12) = "I-O-CONTROL."
+126700     IF       SourceInWS (1:12) = "I-O-CONTROL."
 126800              go to aa048-GetIOC.
-126900     if       SourceIn8-160 (1:12) = "DATA DIVISIO"
+126900     if       SourceInWS (1:12) = "DATA DIVISIO"
 127000              go to aa050-ReadLoop3.
-127100     if       SourceIn8-160 (1:12) = "FILE SECTION"
+127100     if       SourceInWS (1:12) = "FILE SECTION"
 127200              go to aa060-ReadLoop3a.
 127300*>
 127400 aa047-Getword.
@@ -1432,8 +1439,8 @@
 143100              perform zz110-Get-A-Word thru zz110-Exit  *> get fn
 143200              move zero to HoldWSorPD2
 143300              move zero to sw-Git            *> reset Global flag
-143400              move wsFoundWord2 (1:30) to Global-Current-Word
-143500              move Gen-RefNo1 to Global-Current-RefNo
+143400              move wsFoundWord2 to Global-Current-Word
+143500              move Gen-RefNo1   to Global-Current-RefNo
 143600              perform zz030-Write-Sort
 143700              perform ba040-Clear-To-Next-Period thru ba040-Exit
 143800              go to ba020-GetAWord.
@@ -1466,7 +1473,7 @@
 146400*> getting here Should never happen
       *>
 146500      display "ba020:" Msg5 "bld=" Build-Number
-146600              " word=" wsFoundWord2 (1:32).
+146600              " word=" wsFoundWord2 (1:CWS).
 146800     close    Source-Listing SourceInput Supplemental-Part1-Out.
 139810     move     20 to return-code.
 146900     goback.                            *> if here, its broke
@@ -1507,7 +1514,7 @@
 154200*> not a reserved word AND a 88, looking for 01 - 49 [ or 77]
 154500*>
 154600     if       (Build-Number > 0 and < 50) or = 77
-154700              move wsFoundWord2 (1:30) to Saved-Variable.
+154700              move wsFoundWord2 (1:CWS) to Saved-Variable.
 154800*>
 154900     if       Build-Number = 88
 155000          and Con-Tab-Count not < Con-Tab-Size
@@ -1525,11 +1532,11 @@
 156100              if  Reports-In-Lower
 156200                  move function lower-case (Saved-Variable) to
 156300                          Variables (Con-Tab-Count)
-156400                  move function lower-case (wsFoundWord2 (1:30))
+156400                  move function lower-case (wsFoundWord2 (1:CWS))
 156500                       to Conditions (Con-Tab-Count)
 156600              else
 156700                  move Saved-Variable to Variables (Con-Tab-Count)
-156800                  move wsFoundWord2 (1:30)
+156800                  move wsFoundWord2 (1:CWS)
 156900                                     to Conditions (Con-Tab-Count)
 157000              end-if
 157100     end-if
@@ -1540,8 +1547,8 @@
 158000*> we don't have a reserved word! a = 0 = no
 158100*>
 158200      if      Global-Current-Level not = high-values
-158300              move Gen-RefNo1 to Global-Current-RefNo
-158400              move wsFoundWord2 (1:30) to Global-Current-Word.
+158300              move Gen-RefNo1   to Global-Current-RefNo
+158400              move wsFoundWord2 to Global-Current-Word.
 158500*>
 158600      perform zz030-Write-Sort.
 158700      go      to ba051-After-DataName.
@@ -1599,7 +1606,7 @@
 163700*>
 163800     perform  zz030-Write-Sort.
 160300     if       Global-Active
-158400              move wsFoundWord2 (1:30) to Global-Current-Word
+158400              move wsFoundWord2 to Global-Current-Word
 160500              perform zz200-Load-Git thru zz200-Exit.
 163900*>
        ba053-After-Depending.
@@ -1700,7 +1707,7 @@
 171200                into HoldFoundWord.
 171300     add      Word-Length 8 giving a.
 171400     if       HoldWSorPD2 not = zero
-171500         and  SourceIn8-160 (1:a) = HoldFoundWord (1:a)
+171500         and  SourceInWS (1:a) = HoldFoundWord (1:a)
 171600              move 1 to HoldWSorPD2.
 171700     if       wsFoundWord2 (Word-Length:1) = ")"
 171800              move space to wsFoundWord2 (Word-Length:1)
@@ -1818,7 +1825,7 @@
 181300*> Word-Length and wsFoundWord2 less quoted field
 181400*>
 181100     subtract t from Word-Length.
-181500     move     wsFoundNewWord3 to wsFoundWord2 (1:32).
+181500     move     wsFoundNewWord3 (1:CWS) to wsFoundWord2 (1:CWS).
 181600     go       to bb050-Check-SubScripts.
 181700*>
 181800 bb100-scan4-colon.
@@ -2409,9 +2416,9 @@
 233100 zz030-Write-Sort.
 233200     move     HoldWSorPD to SkaWSorPD.
 233300     move     HoldWSorPD2 to SkaWSorPD2.
-233400     move     wsFoundWord2 (1:32) to wsFoundNewWord4.
+233400     move     wsFoundWord2 (1:CWS) to wsFoundNewWord4.
 233700     if       Reports-In-Lower
-233800              move function lower-case (wsFoundWord2 (1:32)) to
+233800              move function lower-case (wsFoundWord2 (1:CWS)) to
 233900                    wsFoundNewWord4.
 233500     if       HoldWSorPD > 7
 233600              perform zz140-Function-Check thru zz140-Exit.
@@ -2448,14 +2455,14 @@
 236800              move 1 to sw-Source-Eof
 236900              GO TO zz100-Exit.
 237100     move     function upper-case (SourceRecIn)
-237200                   to SourceIn8-160.
+237200                   to SourceInWS.
       *>
 237300*> change tabs to spaces prior to printing & remove OC comment lines eg '#'
 237500*>
-237600     if       (SourceIn8-160 (1:1) = "#" or = "$")
+237600     if       (SourceInWS (1:1) = "#" or = "$")
 237700              go to zz100-Get-A-Source-Record.
-237800*> won't happen with fn.i input
-237900     if       (SourceIn8-160 (1:1) = "*" or = "/")
+237800*> won't happen with fn.i or .t input
+237900     if       (SourceInWS (1:1) = "*" or = "/")
 238000              perform zz000-Inc-CobolRefNo
 238100              perform zz000-Outputsource
 238200              go to zz100-Get-A-Source-Record.
@@ -2464,10 +2471,10 @@
 238500*>  so that unstrings can work easier Includes literals " " etc
 238600*> Doesn't matter if literals get screwed up in this way
       *>
-238700     inspect  SourceIn8-160 replacing all x"09" by space.
-238800     inspect  SourceIn8-160 replacing all ";" by space.
-238900     inspect  SourceIn8-160 replacing all "," by space.
-239000     inspect  SourceIn8-160 replacing all "&" by space.
+238700     inspect  SourceInWS replacing all x"09" by space.
+238800     inspect  SourceInWS replacing all ";" by space.
+238900     inspect  SourceInWS replacing all "," by space.
+239000     inspect  SourceInWS replacing all "&" by space.
 239100     perform  zz120-Replace-Multi-Spaces thru zz120-Exit.
 239200     move     Line-End to Source-Line-End.
 239300*>
@@ -2477,26 +2484,17 @@
 239700               perform zz000-Inc-CobolRefNo
 239800               go to zz100-Get-A-Source-Record.
 239900*>
-240000     if       SourceIn8-160 (1:12) = "END PROGRAM "
+240000     if       SourceInWS (1:12) = "END PROGRAM "
 240100              perform zz000-Inc-CobolRefNo
 240200              perform zz000-Outputsource
 240300              go to zz100-Get-A-Source-Record.
 240400*>
 240500     if       HoldWSorPD > 7
-240600        and   (SourceIn8-160 (1:12) = "ID DIVISION."
-240700         or   SourceIn8-160 (1:20) = "IDENTIFICATION DIVIS")
+240600        and   (SourceInWS (1:12) = "ID DIVISION."
+240700         or   SourceInWS (1:20) = "IDENTIFICATION DIVIS")
 240800              move 1 to sw-End-Prog sw-Had-End-Prog sw-Nested
-240900              if we-are-testing
-241000                 display "Found a ID DIVISION"
-241100              end-if
 241200              go to zz100-Exit.
 241300*>
-241400     if we-are-testing
-241500      and HoldWSorPD < 8
-241600      and SourceIn8-160 (1:15) = "PROCEDURE DIVIS"
-241700      display "Found a PROCEDURE DIVISION"
-241800     end-if  .
-241900*>
 242000 zz100-New-Program-point.
 242100     perform  zz000-Inc-CobolRefNo.
 242200     perform  zz000-Outputsource.
@@ -2517,15 +2515,15 @@
 243700          or  End-Prog
 243800              go to zz110-Exit.
 243900     if       S-Pointer2 not < Source-Line-End
-244000         and  SourceIn8-160 (S-Pointer2:1) = "."
+244000         and  SourceInWS (S-Pointer2:1) = "."
 244100              move "." to Word-Delimit
 244200              move zero to Word-Length
-244300              move space to SourceIn8-160 (S-Pointer2:1)
+244300              move space to SourceInWS (S-Pointer2:1)
 244400              move spaces to wsFoundWord2
 244500              go to zz110-Exit.
-244600     inspect SourceIn8-160 tallying S-Pointer2 for leading spaces.
+244600     inspect SourceInWS tallying S-Pointer2 for leading spaces.
 244700     if       S-Pointer2 not < Source-Line-End
-244800          or  S-Pointer2 > 160
+244800          or  S-Pointer2 > 255
 244900              go to zz110-Get-A-Word-OverFlow.
 245000*>
 245100*> S-Pointer2 = 1st non space
@@ -2533,15 +2531,15 @@
 245300 zz110-Get-A-Word-Unstring.
 245400     move     spaces to wsFoundWord2.
 245500     move     S-Pointer2 to s.
-245600     unstring SourceIn8-160 delimited by " " or "."
+245600     unstring SourceInWS delimited by " " or "."
 245700              into wsFoundWord2
 245800               delimiter in Word-Delimit
 245900                with pointer S-Pointer2.
 246000*> check 1st char
-246100     if       S-Pointer2 > 160
+246100     if       S-Pointer2 > 255
 246200              go to zz110-Get-A-Word-OverFlow.
 246300     if       wsf1-1 = space
-246400         and  SourceIn8-160 (S-Pointer2:1) = "."
+246400         and  SourceInWS (S-Pointer2:1) = "."
 246500              move "." to Word-Delimit
 246600              move zero to Word-Length
 246700              move spaces to wsFoundWord2
@@ -2551,30 +2549,30 @@
 247100     if       (wsf1-1 numeric
 247200           or wsf1-1 = "-"
 247300           or wsf1-1 = "+")
-247400         and  SourceIn8-160 (S-Pointer2:1) not = space
+247400         and  SourceInWS (S-Pointer2:1) not = space
 247500              move s to S-Pointer2
-247600              unstring SourceIn8-160 delimited by " "
+247600              unstring SourceInWS delimited by " "
 247700                into wsFoundWord2
 247800                 delimiter in Word-Delimit
 247900                  with pointer S-Pointer2.
 248000*>
 248100     subtract 2 from S-Pointer2 giving e.
 248200     if       Word-Delimit = space
-248300         and  SourceIn8-160 (e:1) = "."
+248300         and  SourceInWS (e:1) = "."
 248400              move "." to Word-Delimit.
 248500
 248600     move     S-Pointer2 to e.
 248700     if       Word-Delimit = "."
-248800        and   (SourceIn8-160 (e:1) = "9" or = "X" or = "A"
+248800        and   (SourceInWS (e:1) = "9" or = "X" or = "A"
                                       or = "Z" or "B")     *> .38 13/01
 248900              move s to S-Pointer2
-249000              unstring SourceIn8-160 delimited by " "
+249000              unstring SourceInWS delimited by " "
 249100                into wsFoundWord2
 249200                 delimiter in Word-Delimit
 249300                  with pointer S-Pointer2
 249400              end-unstring
 249500              subtract 2 from S-Pointer2 giving e
-249600              if  SourceIn8-160 (e:1) = "."
+249600              if  SourceInWS (e:1) = "."
 249700                   move "." to Word-Delimit.
 249800     if       wsf1-1 = "("
 249900         and (wsFoundWord2 (2:1) = quote or = "'")
@@ -2592,7 +2590,7 @@
 251100              go to zz110-Get-A-Word.
 251200*>
 251300     if       wsf1-1 not = quote and not = "'"
-251400              perform  varying z from 160 by -1
+251400              perform  varying z from 255 by -1
 251500                  until wsFoundWord2 (z:1) not = space
 251600              end-perform
 251700              move z to Word-Length
@@ -2602,9 +2600,9 @@
 252100     move     wsf1-1 to Word-Delimit2.
 252200     add      1 to s giving S-Pointer2.
 252300 zz110-Get-A-Word-Literal2.
-252400     move     spaces to wsFoundWord2 (2:161).
-252500     unstring SourceIn8-160 delimited by Word-Delimit2
-252600              into wsFoundWord2 (2:161)
+252400     move     spaces to wsFoundWord2 (2:254).
+252500     unstring SourceInWS delimited by Word-Delimit2
+252600              into wsFoundWord2 (2:254)
 252700               delimiter in Word-Delimit
 252800                with pointer S-Pointer2.
 252900*>
@@ -2612,7 +2610,7 @@
 253100*> have we another Word-Delimit?
 253200*>
 253300     if       Word-Delimit not = Word-Delimit2
-253400              perform  varying z from 160 by -1
+253400              perform  varying z from 255 by -1
 253500                  until wsFoundWord2 (z:1) not = space
 253600              end-perform
 253700              add 1 to z
@@ -2638,6 +2636,9 @@
 255700     if we-are-testing
 255800        display "zz110: WD=" word-delimit
 255900                " WSF2=" wsfoundword2 (1:word-length).
+           if       Word-Length < 1
+                    display "zz110-GAWCH: Oops, zero length word"
+                     display " Report this to support".
 256000*>
 256100 zz110-Exit.
 256200     exit.
@@ -2649,8 +2650,8 @@
 257000*>
 257100*> run profiler against these routines and tidy 'em up if needed
 257200*>
-257300     perform  varying d from 160 by -1
-257400                   until SourceIn8-160 (d:1) not = space
+257300     perform  varying d from 255 by -1
+257400                   until SourceInWS (d:1) not = space
 257500     end-perform
 257800     if       d < 1
 257900              go to zz120-Exit.
@@ -2659,32 +2660,32 @@
 258200     move     spaces to wsFoundNewWord5.
 259600*>
 259900     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
-260000     move     spaces to SourceIn8-160.
-260100     move     wsFoundNewWord5 (1:b) to SourceIn8-160.
+260000     move     spaces to SourceInWS.
+260100     move     wsFoundNewWord5 (1:b) to SourceInWS.
 260200     move     b to Line-End.
 259300     if we-are-testing
-259400        display "zz120A b=" b " after=" SourceIn8-160 (1:b).
+259400        display "zz120A b=" b " after=" SourceInWS (1:b).
 259500     go       to zz120-Exit.
 260300*>
 260400 zz120-Kill-Space.
 260500     add      1 to a.
 260600     if       a > d
 260700              go to zz120-Kill-Space-Exit.
-260800     if       SourceIn8-160 (a:1) = space and c = 1
+260800     if       SourceInWS (a:1) = space and c = 1
 260900              add 1 to b
 261000              move zero to c
 261100              go to zz120-Kill-Space.
 261200*>
-261300     if       SourceIn8-160 (a:1) = space
+261300     if       SourceInWS (a:1) = space
 261400              go to zz120-Kill-Space.
 261500     subtract 1 from a giving e.
-261600     if       SourceIn8-160 (a:1) = "("
-261700         and  SourceIn8-160 (e:1) not = space
+261600     if       SourceInWS (a:1) = "("
+261700         and  SourceInWS (e:1) not = space
 261800         and  HoldWSorPD > 7
 261900              add 2 to b
 262000     else
 262100              add 1 to b.
-262200     move     SourceIn8-160 (a:1) to wsFoundNewWord5 (b:1).
+262200     move     SourceInWS (a:1) to wsFoundNewWord5 (b:1).
 262300     move     1 to c.
 262400     go       to zz120-Kill-Space.
 262500*>
@@ -3070,18 +3071,16 @@
 295500     move     HoldWSorPD2 to Git-HoldWSorPD2 (Git-Table-Count).
 296000*>
 296100 zz200-Exit.
-296200     exit.
+           exit.
       *>
        zz310-Check-For-Globals.
-      *>***********************
-      *>  using wsFoundNewWord4 but only the 1st 30 chars are used
-      *>   i.e., max size of user defined name
-      *>     >>>>>>>>>>>>>  hmm, does wsf4 need to be 32?
+      *>**********************
            move zero to a1.
            perform  varying a1 from 1 by 1 until a1 > Git-Table-Count
-                    if  Git-Word (a1) = wsFoundNewWord4 (1:30)
+                    if  Git-Word (a1) = wsFoundNewWord4
                         move "1" to Git-In-Use-Flag (a1)
                         exit perform
+                    end-if
            end-perform.
       *>
        zz319-Exit.
