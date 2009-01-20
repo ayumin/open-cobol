@@ -1,23 +1,33 @@
 000100 Identification division.
 000200 program-id.            cobxref.
-000300*>author.               Vincent Bryan Coen, Applewood Computers, UK.
+000300*>author.               Vincent Bryan Coen, Applewood Computers,
+000310*>                      Applewood, Epping Road, Roydon, Essex, UK.
 000400*>date-written.         28 July 1983 with code going back to 1967.
 000500*>date-rewriten.        10 March 2007 with code going back to 1967.
-000600*>date-compiled.        Today Don't forget to update prog-name for builds
+000600*>date-compiled.        Today & Don't forget to update prog-name for builds
 000700*>Security.             Copyright (C) 1967-2009, Vincent Bryan Coen.
 000800*>                      Distributed under the GNU General Public License
-000900*>                      v2.0. Only.
-001000*>                      See the file COPYING for details.
+000900*>                      v2.0. Only. See the file COPYING for details.
 001100*>
 001200*> Usage.               Cobol Cross Referencer for Open Cobol from v1.0.
 001300*>
-001400*> Changes.             As of 16-12-2008 see Changelog & Prog-Name.
+001400*> Changes.             See Changelog & Prog-Name.
+      *
+      *TODO: 20.01.09 change WS proc to cater for datanames and not whatever:
+      * re: line|col|column [number|linage is]
+      *     fore|background||control|size|key [is]
+      *     thru|through
+      *     start|length [of]
+      *     footings [at]
+      *     top|bottom
+      *
 001500*>*************************************************************************
 001600*>
 001700*> Copyright Notice.
 001800*>*****************
 001900*>
-002000*> This file/program is part of Cobxref and is copyright (c) Vincent B Coen.
+002000*> This file/program is part of Cobxref & Open Cobol
+002010*>   and is copyright (c) Vincent B Coen.
 002100*>
 002200*> This program is free software; you can redistribute it and/or modify it
 002300*> under the terms of the GNU General Public License as published by the
@@ -26,7 +36,8 @@
 002600*> Cobxref is distributed in the hope that it will be useful, but WITHOUT
 002700*> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 002800*> FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-002900*> for more details.
+002900*> for more details. If it breaks, you own both pieces but I will endevor
+002910*> to fix it, providing you tell me about the problem.
 003000*>
 003100*> You should have received a copy of the GNU General Public License along
 003200*> with Cobxref; see the file COPYING.  If not, write to the Free Software
@@ -53,22 +64,20 @@
 005300 input-Output section.
 005400 file-control.
 005500*>
-005600     select Supplemental-Part2-In assign Supp-File-2
-      *>        "Part2.tmp"
-005700         organization line sequential.
+005600     select   Supplemental-Part2-In assign Supp-File-2
+005700              organization line sequential.
 005800*>
-005900     select Supplemental-Part1-Out assign Supp-File-1
-      *>        "Part1.tmp"
-006000         organization line sequential.
+005900     select   Supplemental-Part1-Out assign Supp-File-1
+006000              organization line sequential.
 006100*>
-006200     select Source-Listing assign Print-FileName
-006300         organization line sequential.
+006200     select   Source-Listing assign Print-FileName
+006300              organization line sequential.
 006400*>
-006500     select SourceInput assign SourceFileName
-006600         organization line sequential
-006700         file status fs-reply.
+006500     select   SourceInput assign SourceFileName
+006600              organization line sequential
+006700              file status fs-reply.
 006800*>
-006900     select SortFile assign Sort1tmp.
+006900     select   SortFile assign Sort1tmp.
 007000*>
 007100 i-o-control.
 007200*>
@@ -86,7 +95,7 @@
 008400     02  XrDataName        pic x(33).
 008500     02  XrDefn            pic 9(6).
 008600     02  XrType            pic x.
-           02  XrCond            pic x.
+000610     02  XrCond            pic x.
 008700     02  filler            pic x.
 008800     02  filler     occurs 8.
 008900       03  XrReference     pic 9(6).
@@ -102,11 +111,9 @@
 009900     03  P-Variables       pic x(32).
 010000*>
 010100 fd  SourceInput.
-010200*>
 010300 01  SourceRecIn           pic x(255).
 010400*>
 010500 fd  Supplemental-Part1-Out.
-010600*>
 010700 01  SortRecord.
 010800     03  SkaDataName       pic x(32).
 010900     03  SkaWSorPD         pic 9.
@@ -114,7 +121,6 @@
 011100     03  SkaRefNo          pic 9(6).
 011200*>
 011300 fd  Supplemental-Part2-In.
-011400*>
 011500 01  filler                pic x(40).
 011600*>
 011700 sd  SortFile.
@@ -122,7 +128,7 @@
 011900     03  SdSortKey         pic x(40).
 012000*>
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.41".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.43".
 012300 77  String-Pointer        Binary-Long  value 1.
 012400 77  String-Pointer2       Binary-Long  value 1.
 012500 77  S-Pointer             Binary-Long  value zero.
@@ -245,7 +251,7 @@
 023200 01  HDR1.
 023300     03  filler            pic X(26)
 023400                               value "ACS Cobol Cross Reference ".
-023500     03  H1Prog-Name       pic x(14).
+023500     03  H1Prog-Name       pic x(14) value spaces.
 023600     03  filler            pic x     value "(".
 023700     03  H1-dd             pic 99.
 023800     03  filler            pic x     value "/".
@@ -258,7 +264,7 @@
 024500     03  H1-Min            pic 99.
 024600     03  filler            pic xx    value ") ".
 024700     03  filler            pic x(20) value "Dictionary File for ".
-024800     03  h1programid       pic x(60).
+024800     03  h1programid       pic x(60) value spaces.
 024900*>
 025000 01  hdr3.
 025100     03  filler            pic x(33) value all "-".
@@ -270,7 +276,7 @@
 025700     03  hdr5-Prog-Name    pic x(67) value spaces.
 025800*>
 025900 01  hdr6-symbols.
-026000     03  filler            pic x(19) value "-------------------".
+026000     03  filler            pic x(19) value all "-".
 026100*>
 026200*> below is replaced with hyphens to size of Prog-Name
 026300*>
@@ -302,11 +308,11 @@
 028500*>
 028600 01  hdr11.
 028700     03  filler            pic x(16) value "Variable Tested".
-028800     03  hdr11a-sorted     pic xxx.
+028800     03  hdr11a-sorted     pic xxx   value spaces.
 028900     03  filler            pic x(12) value spaces.
 029000     03  filler            pic x(8)  value "Symbol (".
 029100     03  filler            pic x(15) value "88-Conditions)".
-029200     03  hdr11b-sorted     pic xxx.
+029200     03  hdr11b-sorted     pic xxx   value spaces.
 029300     03  filler            pic x(5)  value spaces.
 029400*>
 029500 01  hdr12-hyphens.
@@ -345,7 +351,7 @@
 032800     03  WS-WC-Min         pic 99.
 032900     03  filler            pic x(9).
 033000*>
-033100 01  Error-messages.
+033100 01  Error-messages. *> Sorry, English msgs Only
 033200     03 Msg1      pic x(28) value "Aborting: No input stream".
 033300     03 Msg2      pic x(29) value "Aborting: Early eof on source".
 033400     03 Msg4      pic x(42)
@@ -394,7 +400,7 @@
 037700*>
 037800*> Also note that the number 0 or 1 indicates if the
 037900*>  function/reserved word is implemented in Open Cobol
-038000*>   but xref treats all as being reserved
+038000*>   but xref treats all as being reserved as they are so
 038200*>
 038300 01  Function-Table.
 038400     03  filler pic x(28) value "1ABS                        ".
@@ -1083,7 +1089,6 @@
 107100*>
 107200     sort     Reserved-Names ascending Resvd-Word.
 107300     sort     All-Functions ascending P-Function.
-107400*>
 107500     perform  zz180-Open-Source-File thru zz180-Exit.
 107600*>
 107700*> Dump All reserved words from tables then stop
@@ -1322,8 +1327,6 @@
 131300              go to aa047-GetIO.
 131400     if       a not = zero
 131500              go to aa047-Getword3.
-131600*>     if       Word-Delimit = "."
-131700*>              go to aa047-GetIO.
 131800     if       word-length = zero
 131900              go to aa047-GetIO.
 132000*>
@@ -1393,7 +1396,7 @@
 138400     if       not We-Are-Testing
 138500          and not End-Prog
 138600*>            call "CBL_DELETE_FILE" using SourceFileName
-138700*> kill temp input file (anything else?) but not yet
+138700*> kill temp input file (anything else?) but not yet Use when in OC
 138800              call "CBL_DELETE_FILE" using Supp-File-2
 138900              call "CBL_DELETE_FILE" using Supp-File-1.
 139000*>
@@ -1489,6 +1492,11 @@
 152000              perform ba052-After-Index.
            if       wsFoundWord2 (1:10) = "DEPENDING "
                     perform ba053-After-Depending.
+           if       HoldWSorPD = 7 and
+                    wsFoundWord2 (1:6) = "TO    "
+                          or "FROM  " or "USING "
+161300              perform zz110-Get-A-Word thru zz110-Exit
+161400              perform zz030-Write-Sort.
 152100     go       to ba040-Clear-To-Next-Period.
       *>
 152200 ba040-Exit.
@@ -1505,7 +1513,7 @@
 153300     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
 153400*>
 153500*> Trap for no dataname, ie reserved word
-153600*>   this (the 'if') MUST be left in here
+153600*>   this [the 'if'] MUST be left in here
 153700*>
 153800     if       a not = zero
 153900              move "FILLER" to Saved-Variable
@@ -1591,6 +1599,12 @@
 162200          and Saved-Variable not = "FILLER"
 162300              perform zz200-Load-Git thru zz200-Exit.
 162400*>
+           if       HoldWSorPD = 7 and
+                    wsFoundWord2 (1:6) = "TO    "
+                          or "FROM  " or "USING "
+161300              perform zz110-Get-A-Word thru zz110-Exit
+161400              perform zz030-Write-Sort.
+      *>
 162500     perform  ba040-Clear-To-Next-Period thru ba040-Exit.
 162600     go       to ba020-GetAWord.
 162700*>
@@ -1858,7 +1872,6 @@
 184400              move wsFoundNewWord2 (1:s) to wsFoundWord2
 184500              perform zz030-Write-Sort.
 184600     go       to bb020-GetAWord.
-184700*>
 184800 bb000-Exit.
 184900     exit.
 185000*>
@@ -1936,7 +1949,7 @@
 191000     go       to bc110-Read-Sorter.
 191100*>
 191200 bc130-PrintXRef2.
-191300*>  test was 8
+191300*>      test was 8
 191400     if       SkaDataName = saveSkaDataName
 191500              go to bc160-ConnectD2.
 191600*>
@@ -1973,7 +1986,6 @@
 194600              perform bc140-Check-Q.
 194700     add      1 to q.
 194800     move     SkaRefNo to XrReference (q).
-194900*>
 195000 bc170-Exit.
 195100     exit.
 195200*>
@@ -1995,7 +2007,6 @@
 196800     move     zero to a.
 196900     perform  bc192-Print-Conditions.
 197000     go       to bc194-Now-Reverse.
-197100*>
 197200 bc192-Print-Conditions.
 197300     if       a < Con-Tab-Count
 197400              add 1 to a
@@ -2019,7 +2030,6 @@
 199100              move     zero to a
 199200              perform  bc192-Print-Conditions.
 197500     move     spaces to PrintLine2.
-199300*>
 199400 bc195-Done.
 199500     perform  bc300-Last-Pass4 thru bc399-Exit.
       *>
@@ -2029,11 +2039,6 @@
 199800*>****************
 199900*> now do procedure div and ref to procedure div but no functions
 200000*>
-222000*>     if       q2 = zero
-222100*>              move spaces to PrintLine
-222200*>              move "None" to XrDataName
-222300*>              write PrintLine
-222300*>              write PrintLine.
 200100     move     spaces to saveSkaDataName.
 200200     move     zero to saveSkaWSorPD saveSkaWSorPD2 q2.
 200300     open     input Supplemental-Part2-In.
@@ -2043,9 +2048,7 @@
 200700     perform  zz150-WriteHdb.
 200800     perform  zz150-WriteHdb3 thru zz150-Exit.
 200900     move     zero to q.
-201000*>
 201100     go       to bc220-IsX3.
-201200*>
 201300 bc210-Read-Sorter3.
 201400     read     Supplemental-Part2-In at end
 201500              perform bc140-Check-Q
@@ -2093,9 +2096,7 @@
 205200     move     SkaDataName to saveSkaDataName.
 205300     move     SkaWSorPD   to saveSkaWSorPD.
 205400     move     SkaWSorPD2  to saveSkaWSorPD2.
-205500*>
 205600     perform  bc140-Check-Q.
-205700*>
 205800 bc250-ConnectC3.
 205900     move     spaces to PrintLine.
 206000     move     SkaDataName to XrDataName.
@@ -2108,13 +2109,11 @@
 206700     else
 206800              move "S" to XrType.
 206900     go       to bc270-Exit.
-207000*>
 207100 bc260-ConnectD3.
 207200     if       q > 7
 207300              perform bc140-Check-Q.
 207400     add      1 to q.
 207500     move     SkaRefNo to XrReference (q).
-207600*>
 207700 bc270-Exit.
 207800     exit.
 207900*>
@@ -2138,15 +2137,12 @@
 209500     read     Supplemental-Part2-In at end
 209600              perform bc335-Check-Q
 209700              close Supplemental-Part2-In
-209800*>              move 70 to Line-Count          *> ??? needed?
 209900              go to bc399-Exit.
-210000*>
 210100 bc320-IsX4.
 210200     if       SkaDataName = spaces
 210300              go to bc310-Read-Sorter4.
 210400     perform  bc330-PrintXRef4 thru bc360-Exit.
 210500     go       to bc310-Read-Sorter4.
-210600*>
 210700 bc330-PrintXRef4.
 210800*>
 210900*> ignore all working-storage & procedure
@@ -2163,7 +2159,6 @@
 212000     if       SkaDataName = saveSkaDataName
 212100              go to bc350-ConnectD4.
 212200     move     SkaDataName to saveSkaDataName.
-212300*>
 212400 bc335-Check-Q.
 212500     if       XrDataName not = spaces
 212600         and  q = zero
@@ -2173,20 +2168,17 @@
 213000              move zero to q
                     move 1 to q2
 213100              move spaces to PrintLine.
-213200*>
 213300 bc340-ConnectC4.
 213400     move     spaces to PrintLine.
 213500     move     SkaDataName to XrDataName.
 213600     move     SkaRefNo to XrDefn.
 213700     move     LSect (SkaWSorPD) to XrType.
 213800     go       to bc360-Exit.
-213900*>
 214000 bc350-ConnectD4.
 214100     if       q > 7
 214200              perform bc335-Check-Q.
 214300     add      1 to q.
 214400     move     SkaRefNo to XrReference (q).
-214500*>
 214600 bc360-Exit.
 214700     exit.
 214800*>
@@ -2206,7 +2198,6 @@
 215900     perform  zz150-WriteHdb.
 216000     perform  zz150-WriteHdb4 thru zz150-Exit.
 216100     move     zero to q.
-216200*>
 216300     go       to bc420-IsX5.
 216400*>
 216500 bc410-Read-Sorter5.
@@ -2219,7 +2210,6 @@
 222300                   write PrintLine
                     end-if
 216900              go to bc500-Last-Pass6.
-217000*>
 217100 bc420-IsX5.
 217200*>
 217300*> ignore zero refs = Globals  ??????????
@@ -2229,7 +2219,6 @@
 217700              go to bc410-Read-Sorter5.
 217800     perform  bc430-PrintXRef5 thru bc450-Exit.
 217900     go       to bc410-Read-Sorter5.
-218000*>
 218100 bc430-PrintXRef5.
 218200*>
 218300*> ignore redefines - No I won't
@@ -2243,7 +2232,7 @@
 219100*> 1st copy of a name can't be non w-s
 219200     if       SkaWSorPD > 7
 219300              go to bc450-Exit.
-219400*> print only occurance then store new one
+219400*> print Only occurance then store new one
 219500     perform  bc440-Check-4Old.
 219600*>
 219700     move     SkaDataName to saveSkaDataName.
@@ -2256,12 +2245,10 @@
 220400     move     LSect (SkaWSorPD) to XrType.
 220500     move     1 to q.
 220600     go       to bc450-Exit.
-220700*>
 220800 bc440-Check-4Old.
 220900     if       q = 1
 221000              move 1 to S-Pointer
 221100              write PrintLine.
-221200*>
 221300 bc450-Exit.
 221400     exit.
 221500*>
@@ -2269,10 +2256,6 @@
 221700*>****************
 221800*> now do non referenced procedure paragraphs.
 221900*>
-222000*>     if       S-Pointer = zero
-222100*>              move spaces to PrintLine
-222200*>              move "None" to XrDataName
-222300*>              write PrintLine.
 222400     move     spaces to saveSkaDataName.
 222500     move     zero to saveSkaWSorPD S-Pointer.
 222600     open     input Supplemental-Part2-In.
@@ -2282,22 +2265,18 @@
 223000     perform  zz150-WriteHdb.
 223100     perform  zz150-WriteHdb5 thru zz150-Exit.
 223200     move     zero to q.
-223300*>
 223400     go       to bc520-IsX6.
-223500*>
 223600 bc510-Read-Sorter6.
 223700     read     Supplemental-Part2-In at end
 223800              perform bc540-Check-4Old
 223900              perform bc540-Check-4Old6
 224000              close Supplemental-Part2-In
 224100              go to bc000-Exit.
-224200*>
 224300 bc520-IsX6.
 224400     if       SkaDataName = spaces
 224500              go to bc510-Read-Sorter6.
 224600     perform  bc530-PrintXRef6 thru bc550-Exit.
 224700     go       to bc510-Read-Sorter6.
-224800*>
 224900 bc530-PrintXRef6.
 225000*>
 225100*> ignore all non procedure
@@ -2325,18 +2304,15 @@
 227300              move "S" to XrType.
 227400     move     1 to q.
 227500     go       to bc550-Exit.
-227600
 227700 bc540-Check-4Old.
 227800     if       q = 1 and saveSkaWSorPD = 8
 227900              move 1 to S-Pointer
 228000              write PrintLine.
-228100*>
 228200 bc540-Check-4Old6.
 228300     if       S-Pointer = zero
 228400              move spaces to PrintLine
 228500              move "None" to XrDataName
 228600              write PrintLine.
-228700*>
 228800 bc550-Exit.
 228900     exit.
 229000*>
@@ -2395,10 +2371,8 @@
 222100              move spaces to PrintLine
 222200              move "None" to XrDataName
 222300              write PrintLine.
-198000*>
        bc629-Exit.
            exit.
-231600*>
 231700 bc000-Exit.
 231800     exit.
 231900*>
@@ -2467,8 +2441,8 @@
 238100              perform zz000-Outputsource
 238200              go to zz100-Get-A-Source-Record.
 238300*>
-238400*> remove unwanted chars and all multi spaces
-238500*>  so that unstrings can work easier Includes literals " " etc
+238400*> remove unwanted chars and all multi spaces so that unstrings
+      *>  can work easier Includes literals " " etc
 238600*> Doesn't matter if literals get screwed up in this way
       *>
 238700     inspect  SourceInWS replacing all x"09" by space.
@@ -2502,7 +2476,6 @@
 242400     move     zero to Source-Words.
 242500     perform  zz170-Check-4-Section thru zz170-Exit.
 242600     go       to zz100-Exit.
-242700*>
 242800 zz100-Exit.
 242900     exit.
 243000*>
@@ -2564,7 +2537,7 @@
 248600     move     S-Pointer2 to e.
 248700     if       Word-Delimit = "."
 248800        and   (SourceInWS (e:1) = "9" or = "X" or = "A"
-                                      or = "Z" or "B")     *> .38 13/01
+                                   or = "Z" or = "B")
 248900              move s to S-Pointer2
 249000              unstring SourceInWS delimited by " "
 249100                into wsFoundWord2
@@ -2586,7 +2559,6 @@
 250700              add 1 to S-Pointer2
 250800              go to zz110-Get-A-Word.
 250900     if       wsf1-1 = ")"
-251000*>              add 1 to S-Pointer2 *> misses next char after ') '
 251100              go to zz110-Get-A-Word.
 251200*>
 251300     if       wsf1-1 not = quote and not = "'"
@@ -2606,8 +2578,8 @@
 252700               delimiter in Word-Delimit
 252800                with pointer S-Pointer2.
 252900*>
-253000*> so S-Pointer2 = " +1 and s = starter "
-253100*> have we another Word-Delimit?
+253000*> so S-Pointer2 = " +1 & s = starter "
+      *>     have we another Word-Delimit?
 253200*>
 253300     if       Word-Delimit not = Word-Delimit2
 253400              perform  varying z from 255 by -1
@@ -2622,14 +2594,12 @@
 254300*>  word is quoted literal or word so we are done
 254400*>
 254500     go       to zz110-Get-A-Word-Copy-Check.
-254600*>
 254700 zz110-Get-A-Word-OverFlow.
 254800     move     1 to S-Pointer2.
 254900     perform  zz100-Get-A-Source-Record thru zz100-Exit.
 255000     if       Source-Eof
 255100              go to zz110-Exit.
 255200     go       to zz110-Get-A-Word.
-255300*>
 255400 zz110-Get-A-Word-Copy-Check.
 255500*>
 255600     add      1 to Source-Words.
@@ -2638,8 +2608,7 @@
 255900                " WSF2=" wsfoundword2 (1:word-length).
            if       Word-Length < 1
                     display "zz110-GAWCH: Oops, zero length word"
-                     display " Report this to support".
-256000*>
+                    display " Report this to support".
 256100 zz110-Exit.
 256200     exit.
 256300*>
@@ -2658,7 +2627,6 @@
 258000*>
 258100     move     zero to a b c.
 258200     move     spaces to wsFoundNewWord5.
-259600*>
 259900     perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
 260000     move     spaces to SourceInWS.
 260100     move     wsFoundNewWord5 (1:b) to SourceInWS.
@@ -2688,7 +2656,6 @@
 262200     move     SourceInWS (a:1) to wsFoundNewWord5 (b:1).
 262300     move     1 to c.
 262400     go       to zz120-Kill-Space.
-262500*>
 262600 zz120-Kill-Space-Exit.
 262700     exit.
 262800*>
@@ -2708,9 +2675,8 @@
 264200                go to zz130-Exit.
 264300     display  "Oops: logic error at zz130-reserved-word-check".
 264400     display  "Problem with search verb".
-139810     move     16 to return-code
+139810     move     16 to return-code.
 264500     goback.
-264600*>
 264700 zz130-Exit.
 264800     exit.
 264900*>
@@ -2736,7 +2702,6 @@
 266900     display  "Problem with search verb".
 139810     move     16 to return-code
 267000     goback.
-267100*>
 267200 zz140-Exit.
 267300     exit.
 267400*>
@@ -2887,7 +2852,7 @@
 281300     exit.
 281400*>
 281500 zz180-Open-Source-File.
-281600*>**********************
+281600*>*********************
 281700*> get source filename
 281800*>
 281900     accept   Arg-Number from argument-number.
@@ -2906,9 +2871,8 @@
       *> Now get temp environment variable & build temp sort file names
       *>
            perform  zz182-Get-Env-Set-TempFiles thru zz182-Exit.
-283100*>
+      *>
 283200 zz180-Check-For-Param-Errors.
-283300*>
 283400     if       SourceFileName = spaces or
 283500              String-Pointer < 5
 283600              display Prog-Name
@@ -2983,7 +2947,6 @@
 290100              display Msg9
                     move 16 to return-code
 290200              goback.
-290300*>
 290400     go       to zz180-Exit.
 290500*>
 290600 zz180-Get-Program-Args.
@@ -2992,7 +2955,6 @@
 290900*>
        zz182-Get-Env-Set-TempFiles.
       *>**************************
-      *>
            accept   Temp-PathName from Environment "TMPDIR".
            if       Temp-PathName = spaces
                     accept Temp-PathName from Environment "TMP"
@@ -3000,7 +2962,6 @@
                         accept Temp-PathName from Environment "TEMP"
                         if  Temp-PathName = spaces
                             move "/tmp" to Temp-PathName.
-      *>
            if       Temp-PathName (1:1) = "/"   *> Its Linux/Unix
                     move "/" to OS-Delimiter.
            if       Temp-PathName (1:1) = "\"   *> Its Windoz
@@ -3017,9 +2978,8 @@
                      OS-Delimiter delimited by size
                        "Sort1tmp" delimited by size
                     into Sort1tmp.
-
-       zz182-Exit.  Exit.
-      *>*********   ****
+       zz182-Exit.
+           Exit.
       *>
 291000 zz180-Exit.
 291100     exit.
@@ -3034,17 +2994,13 @@
 292000              saveSkaDataName SourceFileName Print-FileName
 292100              wsFoundNewWord4 wsFoundNewWord3
 292200              wsFoundNewWord2 wsFoundNewWord.
-292300*>
 292400     move     high-values to Condition-Table.
            move     10 to Con-Tab-Size.
-292500*>
 292600     move     zeros to GotEndProgram sw-Source-Eof
 292700              Section-Used-Table
 292800              HoldWSorPD HoldWSorPD2 Con-Tab-Count.
-292900*>
 293000     move     1 to S-Pointer F-Pointer S-Pointer2 S-Pointer3
 293100                   S-Pointer4.
-293200*>
 293300 zz190-Exit.
 293400     exit.
 293500*>
@@ -3069,7 +3025,6 @@
 295300     move     HoldID to Git-Prog-Name (Git-Table-Count).
 295400     move     HoldWSorPD  to Git-HoldWSorPD (Git-Table-Count).
 295500     move     HoldWSorPD2 to Git-HoldWSorPD2 (Git-Table-Count).
-296000*>
 296100 zz200-Exit.
            exit.
       *>
@@ -3082,6 +3037,5 @@
                         exit perform
                     end-if
            end-perform.
-      *>
        zz319-Exit.
            exit.
