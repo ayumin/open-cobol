@@ -1,0 +1,17 @@
+2009-01-20  Vince Coen <vbcoen@btconnect.com>
+        v0.95.43:
+
+1. Support for qualifiers in Working Storage or paragraph/section names etc.
+
+2. Support for taking params through the standard cobol config file/s
+   or via cobc if needed.
+
+3. Code for producing 01 record layout sizing but should it be added?
+
+4. Change WS proc to cater for datanames and not whatever:
+   re: line|col|column [number|linage is]
+       fore|background||control|size|key [is]
+       thru|through
+       start|length [of]
+       footings [at]
+       top|bottom
