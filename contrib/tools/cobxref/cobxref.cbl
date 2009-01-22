@@ -413,6 +413,7 @@
 039100     03  filler pic X(28) value "1CHAR                       ".
 039200     03  filler pic X(28) value "0CHAR-NATIONAL              ".
 039300     03  filler pic X(28) value "1COMBINED-DATETIME          ".
+039300     03  filler pic X(28) value "1CONCATENATE                ".
 039400     03  filler pic X(28) value "1COS                        ".
 039500     03  filler pic X(28) value "1CURRENT-DATE               ".
 039600     03  filler pic X(28) value "1DATE-OF-INTEGER            ".
@@ -474,6 +475,7 @@
 045600     03  filler pic X(28) value "1STANDARD-DEVIATION         ".
 045700     03  filler pic X(28) value "1STORED-CHAR-LENGTH         ".
 045800     03  filler pic X(28) value "1SUBSTITUTE                 ".
+045800     03  filler pic X(28) value "1SUBSTITUTE-CASE            ".
 045900     03  filler pic X(28) value "1SUM                        ".
 046000     03  filler pic X(28) value "1TAN                        ".
 046100     03  filler pic X(28) value "1TEST-DATE-YYYYMMDD         ".
@@ -488,11 +490,11 @@
 047000     03  filler pic X(28) value "1YEAR-TO-YYYY               ".
 047100*>
 047200 01  filler redefines Function-Table.
-047300     03  All-Functions                 occurs 83
+047300     03  All-Functions                 occurs 85
 047400               ascending key P-Function indexed by All-Fun-Idx.
 047500         05  P-oc-implemented pic x.
 047600         05  P-Function       pic x(27).
-047700 01  Function-Table-Size   pic s9(5)  comp  value 83.
+047700 01  Function-Table-Size   pic s9(5)  comp  value 85.
 047800*>
 047900*> Note that system names are omitted so thatr they turn up
 048000*>  in the cross refs
