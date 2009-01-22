@@ -1,6 +1,7 @@
 2009-01-20  Vince Coen <vbcoen@btconnect.com>
         v0.95.43  * extra sub verbs in screen section added more needed
-                  *  ditto in ws sub verbs see TODO.
+                  * ditto in ws sub verbs see TODO.
+                  * Added to function table: CONCATENATE, SUBSTITUTE/-CASE
 
 2009-01-14  Vince Coen <vbcoen@btconnect.com>
         v0.95.41  * Support for free format source lines up to 255 chars
