@@ -1,3 +1,8 @@
+2009-01-31  Vince Coen <vbcoen@btconnect.com>
+        v0.95.45  * Restored -G param Group listings to make it easier to
+                    compare listings from xref with MF or IBM as they are
+                    more basic.
+
 2009-01-20  Vince Coen <vbcoen@btconnect.com>
         v0.95.43  * extra sub verbs in screen section added more needed
                   * ditto in ws sub verbs see TODO.
