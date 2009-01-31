@@ -128,7 +128,7 @@
 011900     03  SdSortKey         pic x(40).
 012000*>
 012100 working-storage section.
-012200 77  Prog-Name             pic x(13) value "Xref v0.95.43".
+012200 77  Prog-Name             pic x(13) value "Xref v0.95.44".
 012300 77  String-Pointer        Binary-Long  value 1.
 012400 77  String-Pointer2       Binary-Long  value 1.
 012500 77  S-Pointer             Binary-Long  value zero.
@@ -158,6 +158,9 @@
 015000*> System parameters control how xref works or reports
 015100*>  May be add extra func for default.conf ?
 015200*>
+016800 77  sw-1                    pic x         value "N".
+016900*  command line input -G
+017200  88 All-Reports                           value "A".
 015300 77  sw-2                  pic x           value "N".
 015400  88 List-Source                           value "Y".
 015500 77  sw-4                  pic 9           value zero.
@@ -265,6 +268,10 @@
 024600     03  filler            pic xx    value ") ".
 024700     03  filler            pic x(20) value "Dictionary File for ".
 024800     03  h1programid       pic x(60) value spaces.
+028000*>
+028100 01  HDR2.
+028200     03  filler            pic X(34) value "All Data/Proc Names".
+028300     03  filler            pic X(19) value "Defn     Reference".
 024900*>
 025000 01  hdr3.
 025100     03  filler            pic x(33) value all "-".
@@ -1444,7 +1451,7 @@
 143100              perform zz110-Get-A-Word thru zz110-Exit  *> get fn
 143200              move zero to HoldWSorPD2
 143300              move zero to sw-Git            *> reset Global flag
-143400              move wsFoundWord2 to Global-Current-Word
+143400              move wsFoundWord2 (1:32) to Global-Current-Word
 143500              move Gen-RefNo1   to Global-Current-RefNo
 143600              perform zz030-Write-Sort
 143700              perform ba040-Clear-To-Next-Period thru ba040-Exit
@@ -1495,8 +1502,8 @@
            if       wsFoundWord2 (1:10) = "DEPENDING "
                     perform ba053-After-Depending.
            if       HoldWSorPD = 7 and
-                    wsFoundWord2 (1:6) = "TO    "
-                          or "FROM  " or "USING "
+                    (wsFoundWord2 (1:6) = "TO    "
+                          or "FROM  " or "USING ")
 161300              perform zz110-Get-A-Word thru zz110-Exit
 161400              perform zz030-Write-Sort.
 152100     go       to ba040-Clear-To-Next-Period.
@@ -1558,7 +1565,7 @@
 158100*>
 158200      if      Global-Current-Level not = high-values
 158300              move Gen-RefNo1   to Global-Current-RefNo
-158400              move wsFoundWord2 to Global-Current-Word.
+158400              move wsFoundWord2 (1:32) to Global-Current-Word.
 158500*>
 158600      perform zz030-Write-Sort.
 158700      go      to ba051-After-DataName.
@@ -1602,8 +1609,8 @@
 162300              perform zz200-Load-Git thru zz200-Exit.
 162400*>
            if       HoldWSorPD = 7 and
-                    wsFoundWord2 (1:6) = "TO    "
-                          or "FROM  " or "USING "
+                    (wsFoundWord2 (1:6) = "TO    "
+                          or "FROM  " or "USING ")
 161300              perform zz110-Get-A-Word thru zz110-Exit
 161400              perform zz030-Write-Sort.
       *>
@@ -1622,7 +1629,7 @@
 163700*>
 163800     perform  zz030-Write-Sort.
 160300     if       Global-Active
-158400              move wsFoundWord2 to Global-Current-Word
+158400              move wsFoundWord2 (1:32) to Global-Current-Word
 160500              perform zz200-Load-Git thru zz200-Exit.
 163900*>
        ba053-After-Depending.
@@ -1793,7 +1800,7 @@
                     if   z < 33
                          move wsFoundWord2 (2:z) to wsFoundNewWord
                     else
-                         move wsFoundWord2 (2:33) to wsFoundNewWord
+                         move wsFoundWord2 (2:32) to wsFoundNewWord
                     end-if
                     move wsFoundNewWord to wsFoundWord2
                     perform zz130-Extra-Reserved-Word-Check
@@ -1901,6 +1908,66 @@
       *>     At bc500 = Unreferenced Procedure,
       *>     At bc620 = Unreferenced Globals (throughout source)
       *>
+179700     if       not All-Reports
+179800              go to bc090-Last-Pass2.
+179900*
+180000* produce group W-S xref & procedure used in testing
+180100*  and taken from original code circa 1983.
+180200*  ------- Leave in just in case needed for testing ----
+180300*
+       bc010-group-report.
+180400     move     spaces to saveSkaDataName.
+180500     open     input Supplemental-Part2-In.
+180600     read     Supplemental-Part2-In at end
+180700              display Msg1
+180800              go to bc000-Exit.
+180900     perform  zz150-WriteHdb thru zz150-Exit.
+181000     perform  zz150-WriteHdb8 thru zz150-Exit.
+181100     move     zero to q.
+181200     go       to bc030-IsX.
+181300*
+181400 bc020-Read-Sorter.
+181500     read     Supplemental-Part2-In at end
+181600              perform bc050-Check-Q
+181700              close Supplemental-Part2-In
+181800              go to bc090-Last-Pass2.
+181900*
+182000 bc030-IsX.
+182100     if       SkaDataName = spaces
+182200              go to bc020-Read-Sorter.
+182300     perform  bc040-PrintXRef thru bc080-Exit.
+182400     go       to bc020-Read-Sorter.
+182500*
+182600 bc040-PrintXRef.
+182700     if       SkaDataName = saveSkaDataName
+182800              go to bc070-ConnectD.
+182900     move     SkaDataName to saveSkaDataName.
+183000*
+183100 bc050-Check-Q.
+183200     if       XrDataName not = spaces
+183300         and  q = zero
+183400              move 1 to q.
+183500     if       q > zero
+183600              write PrintLine
+183700              move zero to q
+183800              move spaces to PrintLine.
+183900*
+184000 bc060-ConnectC.
+184100     move     spaces to PrintLine.
+184200     move     SkaDataName to XrDataName.
+184300     move     SkaRefNo to XrDefn.
+184400     move     LSect (SkaWSorPD) to XrType.
+184500     go       to bc080-Exit.
+184600*
+184700 bc070-ConnectD.
+184800     if       q > 7
+184900              perform bc050-Check-Q.
+185000     add      1 to q.
+185100     move     SkaRefNo to XrReference (q).
+185200*
+185300 bc080-Exit.
+           Exit.
+185500*
 186300 bc090-Last-Pass2.
 186400*>****************
 186500*> printout W-S section blocks as needed
@@ -2794,6 +2861,13 @@
 275300     write    PrintLine from hdr12-hyphens.
 275400     move     spaces to PrintLine.
 275500     write    PrintLine.
+274500     go       to zz150-Exit.
+313100 zz150-WriteHdb8.
+313200     write    PrintLine from hdr2.
+313300     write    PrintLine from hdr3.
+313400     move     spaces to PrintLine.
+313500     write    PrintLine.
+313600     go       to zz150-Exit.
 275600 zz150-Exit.
 275700     exit.
 275800*>
@@ -2888,7 +2962,8 @@
 284400              display "3: -L    reports in lowercase else upper"
 284500              display "4: -TEST produces testing info"
 284600              display "5: -DR   Display All reserved words & stop"
-284700              display "6: -H    Display this help message"
+                    display "6: -G    produce only group xref: Comp. MF"
+284700              display "7: -H    Display this help message"
 284800              display "   --H   as -H"
                     move zero to return-code
 284900              goback.
@@ -2943,7 +3018,18 @@
 289500     if       "-L" = Arg-Value (2) or Arg-Value (3)
 289600           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
 289700              move 1 to sw-6.
-289800*>
+      *>***************************************************************
+      *>  THIS BLOCK FOR TESING and Comparing listing against MF etc  *
+289800*>***************************************************************
+330200*
+330300* Check v1 if we are are only doing a group xref ie W-S and procedure
+330400*
+330500     if       "-G " = Arg-Value (2) or Arg-Value (3)
+330600           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
+330900              move "A" to sw-1.
+      *>***************************************************************
+      *>    END OF SPECIAL TEST BLOCK but with bc030 - bc080 also     *
+      *>***************************************************************
 289900     open     input SourceInput.
 290000     if       fs-reply not = "00"
 290100              display Msg9

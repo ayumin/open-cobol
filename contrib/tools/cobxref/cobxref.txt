@@ -1,16 +1,20 @@
 Cobxref - Cobol Cross Reference program / module for Open Cobol
 
-Documentation for Beta release version 0.95.40            Dated13th Jan 2009
+Documentation for Beta release version 0.95.45            Dated 31st Jan 2009
 
 Parameters for running program are in the form:
 
-cobxref 1 [2 3 4 5 6] where params 2 through 6 are all optional
+cobxref 1 [2 3 4 5 6 7] where params 2 through 7 are all optional
 
-Note: Param 1 MUST be first param, 2 through 6 can be in any order
+Note: Param 1 MUST be first param, 2 through 7 can be in any order.
+      param 5 is for testing ONLY.
+      Param 6 for testing against other ref products only
 
 1: SFN [Source File name] (Mandatory)
 
-2: -R	 Print out source code prior to cross reference listings
+2: -R	 Print out source code prior to cross reference listings. Note that this
+         will be somewhat compressed, as it is from cobc itself, created during its
+         pre-compiling stage.
 
 3: -L    reports all in lowercase (defaults to uppercase or actual case used).
 
@@ -20,7 +24,10 @@ Note: Param 1 MUST be first param, 2 through 6 can be in any order
 5: -TEST Produces testing info (and this can be a lot of output). Used for Debugging
          by or on behalf of programmer.
 
-6: -H	 Displays program parameter info (same as when run without any params}
+6: -G    Used in testing: Produces group print out in addition to normal so that
+         comparing xref's with Microfocus or IBM can be more easily done.
+
+7: -H	 Displays program parameter info (same as when run without any params}
    --H	 as -H
 
 For normal usage just call as 'cobxref sourcefilename.t'
@@ -28,7 +35,7 @@ For normal usage just call as 'cobxref sourcefilename.t'
 This will assume that source is in free format.
 
 You must supply SFN.t as created from cobc with -t set or SFN.i as created from
-cobc with -save-temps set, this is a free format source file of your program
+cobc with -save-temps or -E set, this is a free format source file of your program
 with insignificant leading spaces removed and all copy verbs pre-processed.
 When using OC this is the normal and now, the only method of usage.
 It is hoped that cobc will be changed shortly to allow it to call xref using
@@ -43,7 +50,13 @@ and mods is pointing in the correct direction ie, /usr/local/lib and
 
 For prior to inclusion into the OC source code tarbells:
 If recompiling from cobol source use cobc -x cobxref.cbl. note that for testing I
-use: cobc -Wall -Wcolumn-overflow -debug -t cobxref.t -x cobxref.cbl
+use: cobc -Wall -Wcolumn-overflow -Wtruncate -debug -t cobxref.t -x cobxref.cbl
+ Note that cobc will produce an error:
+    cobxref.cbl: In paragraph 'bb050-Check-SubScripts':
+    cobxref.cbl:1801: Warning: Sending field larger than receiving field
+    cobxref.cbl:248: Warning: 'wsFoundNewWord' defined here as PIC X(32)
+
+as OC cannot know that sending field is limited by z to less than 32 chars.
 
 Please do not make changes without recording the amendment in code with notation
 at or near actual code changes. After your tests, please advise of changes direct
