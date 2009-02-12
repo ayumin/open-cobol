@@ -1,5 +1,17 @@
+2009-02-12  Vince Coen <vbcoen@btconnect.com>
+        v0.95.67  * Added support for special-names Currency sign is
+                    as needed for test at ws on PIC.
+                    Also added extra tests here for other leading chars.
+                    Hopefully will now clear cobol85 tests in NC.
+                    Rewritten procedure processing code for more support
+                    in (hjhkjhkjh) etc including colon and lits etc.
+                    Additional coding for listings.
+                    This version clears All cobol85 tests without failure.
+                    Added 3 additional non-reserved reserved words to lists
+                    so that they are not reported on.
+
 2009-01-31  Vince Coen <vbcoen@btconnect.com>
-        v0.95.45  * Restored -G param Group listings to make it easier to
+        v0.95.44  * Restored -G param Group listings to make it easier to
                     compare listings from xref with MF or IBM as they are
                     more basic.
 
