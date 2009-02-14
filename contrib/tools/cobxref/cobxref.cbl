@@ -4,38 +4,31 @@
 *>author.               Vincent Bryan Coen, Applewood Computers,
 *>                      Applewood, Epping Road, Roydon, Essex, UK.
 *>date-written.         28 July 1983 with code going back to 1967.
-*>date-rewriten.        10 March 2007 with code going back to 1967.
+*>date-rewriten.        10 March 2007 with code going back to 1983.
 *>date-compiled.        Today & Don't forget to update prog-name for builds
 *>Security.             Copyright (C) 1967-2009, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
-*>                      v2.0. Only. See the file COPYING for details
-*>                      for use within Open Cobol only.
+*>                      v2.0. Only. See the file COPYING for details but
+*>                      for use within Open Cobol ONLY.
 *>
 *> Usage.               Cobol Cross Referencer for Open Cobol from v1.0.
 *>
 *> Changes.             See Changelog & Prog-Name.
-*>
-*> TODO: 20.01.09 change WS proc to cater for datanames and not whatever:
-*> re: line|col|column [number|linage is]
-*>     fore|background||control|size|key [is]
-*>     thru|through
-*>     start|length [of]
-*>     footings [at]
-*>     top|bottom
 *>
 *>*************************************************************************
 *>
 *> Copyright Notice.
 *>*****************
 *>
-*> This file/program is part of Cobxref & Open Cobol and is copyright
-*> (c) Vincent B Coen 1967-2009. This copy bears no resemblance to the
+*> This file/program is part of Cobxref AND Open Cobol and is copyright
+*> (c) Vincent B Coen 1967-2009. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 2 ONLY.
+*> Free Software Foundation; version 2 ONLY within Open Cobol providing
+*> the package continues to be issued or marketed as 'Open Cobol'.
 *>
 *> Cobxref is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -54,9 +47,9 @@
  object-computer.      linux.
  special-names.
 *> This lot is not needed by prog but used to see if OC accepts them
-      switch-1 is sn-Test-1 on snt1-on off snt1-off.
+      switch-1 is sn-Test-1 on snt1-on off snt1-off
 *>      uspi-0 is sn-Test-2 on snt2-on off snt2-off.
-*>      currency sign is "£".
+        currency sign is "£".
 *>      decimal-point is comma.
 *>      call-convention 1 is cc-fred.
 *>      console is crt
@@ -132,19 +125,19 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v0.95.67".
- 77  String-Pointer        Binary-short value 1.
- 77  String-Pointer2       Binary-short value 1.
- 77  S-Pointer             Binary-short value zero.
- 77  S-Pointer2            Binary-short value zero.
+ 77  Prog-Name             pic x(13) value "Xref v0.95.76".
+ 77  String-Pointer        Binary-long  value 1.
+ 77  String-Pointer2       Binary-long  value 1.
+ 77  S-Pointer             Binary-long  value zero.
+ 77  S-Pointer2            Binary-long  value zero.
  77  Line-Count            Binary-char  value 70.
- 77  Word-Length           Binary-short value zero.
- 77  Line-End              Binary-short value zero.
- 77  Source-Line-End       Binary-short value zero.
- 77  Source-Words          Binary-short value zero.
- 77  F-Pointer             Binary-short value zero.
- 77  HoldFoundWord2-Size   binary-short value zero.
- 77  HoldFoundWord2-Type   binary-char  value zero.
+ 77  Word-Length           Binary-long  value zero.
+ 77  Line-End              Binary-long  value zero.
+ 77  Source-Line-End       Binary-long  value zero.
+ 77  Source-Words          Binary-long  value zero.
+ 77  F-Pointer             Binary-long  value zero.
+ 77  HoldFoundWord2-Size   binary-long  value zero.
+ 77  HoldFoundWord2-Type   binary-long  value zero.
  77  a                     Binary-Long  value zero.
  77  a1                    Binary-Long  value zero.
  77  b                     Binary-Long  value zero.
@@ -204,6 +197,7 @@
  77  Build-Number          pic 99          value zero.
  77  GotEndProgram         pic 9           value zero.
  77  GotPicture            pic 9           value zero.
+ 77  WasPicture            pic 9           value zero.
  77  Currency-Sign         pic X           value "£".
  77  HoldWSorPD            pic 9           value 0.
  77  HoldWSorPD2           pic 9           value 0.
@@ -251,6 +245,7 @@
 *>
  01  wsFoundWord2 redefines wsFoundWord.
      03  wsf3-1            pic 9.    *> only used for Build-Number
+         88 wsf3-1-numeric           values 0 thru 9.
      03  wsf3-2            pic 9.    *>   processing
      03  filler            pic x(253).
 *>
@@ -398,6 +393,7 @@
      03  filler pic x(24) value "PROCEDURE DIVISION.     ".
  01  filler   redefines Section-Names-Table.
      03  Full-Section-Name          occurs 8.
+*>                  ascending key Section-Name indexed by Full-Section-Name-Idx.
          05  Section-Name  pic x(16).
          05  filler        pic x(08).
 *>
@@ -1119,6 +1115,7 @@
 *>
      sort     Reserved-Names ascending Resvd-Word.
      sort     All-Functions ascending P-Function.
+*>
      perform  zz180-Open-Source-File thru zz180-Exit.
 *>
 *> Dump All reserved words from tables then stop
@@ -1210,7 +1207,14 @@
 *>
 *> got program name so if 1st prog id -> hold-id
 *>               else -> holdid-module (for reports)
+*>  but 1st check if its a literal & if so remove quotes and use 1st CWS chars
 *>
+     if       wsf1-1 = quote or = "'"
+              unstring wsFoundWord2 (2:32) delimited by quote or "'"
+                        into wsFoundNewWord
+              end-unstring
+              move wsFoundNewWord (1:CWS) to  wsFoundWord2
+     end-if
      if       not Have-Nested
         if       Reports-In-Lower
                  move function lower-case (wsFoundWord2)
@@ -1227,17 +1231,23 @@
                                       to HoldID-Module.
 *>
 *> We now have the program-id name so update our info, for reports
+*> Next block of interest is special-names and then file-control
 *>
  aa040-ReadLoop2.
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
      if       SourceInWS (1:14) = "SPECIAL-NAMES."
               go to aa041-Get-SN.
-     move     zero to a.
+     if       SourceInWS (1:13) = "FILE-CONTROL."   *> selects
+              go to aa047-GetIO.
+     if       SourceInWS (1:12) = "I-O-CONTROL."    *> same area etc
+              go to aa048-GetIOC.
+     if       SourceInWS (1:12) = "DATA DIVISIO"
+              go to aa041-Get-SN.
      perform  aa045-Test-Section thru aa045-Exit.
 *>
-*> if < 9 we've got Data Div onwards
+*> if not zero we've got Data Div onwards
 *>
-     if       a < 9
+     if       a not = zero
               go to aa060-ReadLoop3a.
      go       to aa040-ReadLoop2.
 *>
@@ -1246,9 +1256,8 @@
 *> Get special names
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
-     move     zero to a.
      perform  aa045-Test-Section thru aa045-Exit.
-     if       a < 9
+     if       a not = zero
               go to aa060-ReadLoop3a.
      if       SourceInWS (1:13) = "INPUT-OUTPUT "
                              or = "DATA DIVISION"
@@ -1269,6 +1278,11 @@
               go to aa042-Getword.
 *>
      perform  zz110-Get-A-Word thru zz110-Exit.
+     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+              go to aa042-Getword.
+     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
+     if       a not = zero
+              go to aa042-Getword.
      move     wsFoundWord2 (1:CWS) to Saved-Variable.
 *>
  aa044-Getword3.
@@ -1282,6 +1296,11 @@
           and wsFoundWord2 (1:3) not = "OFF"
               go to aa044-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
+     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+              go to aa044-Getword3.
+     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
+     if       a not = zero
+              go to aa044-Getword3.
 *>
      if       Con-Tab-Size not < Con-Tab-Count
               add 10 to Con-Tab-Size.
@@ -1294,11 +1313,13 @@
      go       to aa044-Getword3.
 *>
  aa045-Test-Section.
-     add      1 to a.
+     perform  varying a from 1 by 1 until a > 8
+              if SourceInWS (1:24) = Full-Section-Name (a)
+                  exit perform
+              end-if
+     end-perform.
      if       a > 8
-              go to aa045-Exit.
-     if       SourceInWS (1:24) not = Full-Section-Name (a)
-              go to aa045-Test-Section.
+              move zero to a.
 *>
  aa045-Exit.
      exit.
@@ -1321,12 +1342,11 @@
 *>
  aa047-GetIO.
 *>
-*> now got file control
+*> now got file control so it's SELECT ..
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
-     move     zero to a.
      perform  aa045-Test-Section thru aa045-Exit.
-     if       a < 9
+     if       a not = zero
               go to aa060-ReadLoop3a.
      IF       SourceInWS (1:12) = "I-O-CONTROL."
               go to aa048-GetIOC.
@@ -1347,7 +1367,7 @@
               go to aa047-Getword.
      if       Word-Delimit = "."
               go to aa047-GetIO.
-*> Now have filename
+*> Now have filename-1
      move     1 to HoldWSorPD.
      move     0 to HoldWSorPD2.
      perform  zz030-Write-Sort.
@@ -1361,8 +1381,6 @@
               move 16 to return-code
               goback.
 *>
-*> Above condition is a Logic error: Should nolonger happen.
-*>
 *> should have assign
 *>
      if       wsFoundWord2 (1:7) not = "ASSIGN "
@@ -1372,7 +1390,7 @@
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       (wsf1-1 = quote or = "'") AND Word-Delimit = "."
               go to aa047-GetIO.
-     if       wsf1-1 = quote or = "'"
+     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
               go to aa047-Getword3.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
      if       a not = zero and Word-Delimit = "."
@@ -1394,14 +1412,18 @@
 *>
  aa048-GetIOC.
      perform  zz110-Get-A-Word thru zz110-Exit.
-     if       wsf1-1 = quote or = "'"
+     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
               go to aa048-GetIOC.
+ aa048-Get-Next.
      if       Word-Delimit = "."
               perform zz100-Get-A-Source-Record thru zz100-Exit
-              move    zero to a
               perform aa045-Test-Section thru aa045-Exit
-              if      a < 9
-                      go to aa060-ReadLoop3a.
+              if      a not = zero
+                      go to aa060-ReadLoop3a
+              else
+                      perform  zz110-Get-A-Word thru zz110-Exit
+              end-if
+     end-if
      if       wsFoundWord2 (1:5) not = "SAME "
               go to aa048-GetIOC.
 *>
@@ -1415,7 +1437,7 @@
      move     0 to HoldWSorPD2.
      perform  zz030-Write-Sort.
      if       Word-Delimit = "."
-              go to aa047-GetIO.
+              go to aa048-Get-Next.
      go       to aa049-Getword.
 *>
  aa050-ReadLoop3.
@@ -1424,7 +1446,7 @@
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
 *>
- aa060-ReadLoop3a.   *> a < 9  ??
+ aa060-ReadLoop3a.
      perform  zz170-Check-4-Section thru zz170-Exit.
      if       GotASection = "Y"
               go to aa050-ReadLoop3.
@@ -1499,7 +1521,7 @@
               move wsFoundWord2 (1:32) to Global-Current-Word
               move Gen-RefNo1   to Global-Current-RefNo
               perform zz030-Write-Sort
-              perform ba040-Clear-To-Next-Period thru ba040-Exit
+              perform ba040-Clear-To-Next-Period thru ba049-Exit
               go to ba020-GetAWord.
 *>
 *> we now have basic ws records, ie starting 01-49,66,77,78,88 etc
@@ -1542,25 +1564,52 @@
           and S-Pointer2 not < Source-Line-End
               add 1 to S-Pointer2
               move space to Word-Delimit
-              go to ba040-Exit.
+              go to ba049-Exit.
      if       Word-Delimit = "."
-              go to ba040-Exit.
+              go to ba049-Exit.
      perform  zz110-Get-A-Word thru zz110-Exit.
+     if       WasPicture = 1     *> current word is a pic sub-clause
+              move zero to WasPicture
+              go to ba040-Clear-To-Next-Period.
      if       wsFoundWord2 (1:7) = "GLOBAL "
               move 1 to sw-Git
-              perform zz200-Load-Git thru zz200-Exit.
+              perform zz200-Load-Git thru zz200-Exit
+              go to ba040-Clear-To-Next-Period.
      if       wsFoundWord2 (1:8) = "INDEXED "
-              perform ba052-After-Index.
+              perform ba052-After-Index
+              go to ba040-Clear-To-Next-Period.
      if       wsFoundWord2 (1:10) = "DEPENDING "
-              perform ba053-After-Depending.
+              perform ba053-After-Depending
+              go to ba040-Clear-To-Next-Period.
      if       HoldWSorPD = 7 and
               (wsFoundWord2 (1:6) = "TO    "
                     or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
-              perform zz030-Write-Sort.
+              perform zz030-Write-Sort
+              go to ba040-Clear-To-Next-Period.
+*>
+*> Now looking for other non res words but not literals or numerics
+*>
+     if       wsf1-1 = quote or = "'"
+              go to ba040-Clear-To-Next-Period.
+     if       wsf1-1 = "-" or = "+"
+              go to ba040-Clear-To-Next-Period.
+     if       wsFoundWord2 (1:z) numeric
+              go to ba040-Clear-To-Next-Period.
+     if       wsf3-1-numeric
+              go to ba040-Clear-To-Next-Period.
+*> dont have literals or numerics
+     perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
+     if       a > zero              *> reserved word
+              go to ba040-Clear-To-Next-Period.
+*>
+*> if here must have user defined word (unless I have forgotten anything)
+*>     no check for global
+*>
+     perform  zz030-Write-Sort.
      go       to ba040-Clear-To-Next-Period.
 *>
- ba040-Exit.
+ ba049-Exit.
      exit.
 *>
  ba050-Get-User-Word.
@@ -1620,15 +1669,6 @@
               move wsFoundWord2 (1:32) to Global-Current-Word.
 *>
       perform zz030-Write-Sort.
-      go      to ba051-After-DataName.
-*>
-*> YES, Should never happen  but it does often enough if no dataname??
-*>   this should now be fixed
-*>
-     display  "ba050: Major logic error 01".
-     close    Source-Listing SourceInput Supplemental-Part1-Out.
-     move     24 to return-code.
-     goback.                   *> its broke & I've cocked it again
 *>
  ba051-After-DataName.
      if       Word-Delimit = "."
@@ -1641,7 +1681,7 @@
      if       Global-Active
           and Build-Number = 88
               perform zz200-Load-Git thru zz200-Exit
-              perform ba040-Clear-To-Next-Period thru ba040-Exit
+              perform ba040-Clear-To-Next-Period thru ba049-Exit
               go to ba020-GetAWord.
      perform  zz110-Get-A-Word thru zz110-Exit.
 *>
@@ -1666,7 +1706,7 @@
               perform zz110-Get-A-Word thru zz110-Exit
               perform zz030-Write-Sort.
 *>
-     perform  ba040-Clear-To-Next-Period thru ba040-Exit.
+     perform  ba040-Clear-To-Next-Period thru ba049-Exit.
      go       to ba020-GetAWord.
 *>
  ba052-After-Index.
@@ -1821,6 +1861,7 @@
 *> z  = right most char pos   in wsFoundWord2
 *> z2 = current word length   in wsFoundWord2
 *> WL = orig length minus No. of ')'
+*>
  bb053-numerics.                        *> not interested in
      if       wsFoundWord2 (s:z2) numeric
               go to bb020-GetAWord.
@@ -1842,7 +1883,7 @@
 *>
      inspect  wsFoundWord2 (s:z2) tallying y for all quote.
      inspect  wsFoundWord2 (s:z2) tallying y for all "'".
-*>      add      y2 to y.
+*>
      if       y > zero                  *> quotes?
               move  zero to b      q t
               subtract 1 from s giving a
@@ -1857,7 +1898,6 @@
      inspect  wsFoundWord2 (s:z2) tallying d for all space.
      if       d = zero
               move spaces to wsFoundNewWord
-*> ????              subtract 2 from Word-Length giving z
               if   z2 < 33
                    move wsFoundWord2 (s:z2) to wsFoundNewWord
               else
@@ -1928,10 +1968,9 @@
 *>
  bb100-scan4-colon.
 *>
-*> done already =  move     zero to q t.
 *> now we can have num:num DataName:DN num:DN DN:num
 *> z2 = current WL, s = leftmost char & z= rightmost char in wsFW2
-*>            subtract 1 from Word-Length giving z.   *>  ?????
+*>
      move     spaces to wsFoundNewWord wsFoundNewWord2.
      move     1 to t.
      unstring wsFoundWord2 (s:z2) delimited by ":"
@@ -2686,8 +2725,8 @@
               move spaces to wsFoundWord2
               go to zz110-Exit.
 *>     if       S-Pointer2 < Source-Line-End
-*>              inspect SourceInWS tallying S-Pointer2
-*>                                             for leading spaces
+*>              inspect SourceInWS tallying S-Pointer2 for leading spaces.
+*>
      if       S-Pointer2 > Source-Line-End
           or  S-Pointer2 > 255
               go to zz110-Get-A-Word-OverFlow.
@@ -2730,7 +2769,6 @@
          and  SourceInWS (e:1) = "."
               move "." to Word-Delimit.
 *>
-*>
      if       GotPicture = 1
           and SourceInWS (s:3) not = "IS "
 *> this next test may not be needed ????
@@ -2742,9 +2780,6 @@
                              or = "X" or = "A" or = "S" or = "V"
                              or = "P" or = "1" or = "N" or = "E")
               move s to S-Pointer2
-              if we-are-testing
-                display "got a piccy " SourceInWS (s:10)
-              end-if
               unstring SourceInWS delimited by " "
                 into wsFoundWord2
                  delimiter in Word-Delimit
@@ -2754,6 +2789,7 @@
               if  SourceInWS (e:1) = "."
                    move "." to Word-Delimit
               end-if
+              move 1 to WasPicture
      end-if
 *>
 *> This could cause a problem ??????
@@ -2891,18 +2927,13 @@
  zz130-Extra-Reserved-Word-Check.
 *>*******************************
 *>  Check for any other reserved words not in other checks
-*>  note that max reserved word is 23 characters, so compare like 4 like
+*>  note that max reserved word is 25 characters, so compare like 4 like
 *>
      move     zero to a.
      search   all Reserved-Names
                   at end go to zz130-exit
-              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:23)
-                set a to Resvd-Idx
-                go to zz130-Exit.
-     display  "Oops: logic error at zz130-reserved-word-check".
-     display  "Problem with search verb".
-     move     16 to return-code.
-     goback.
+              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:25)
+                set a to Resvd-Idx.
  zz130-Exit.
      exit.
 *>
@@ -2922,12 +2953,7 @@
               when P-function (All-Fun-Idx) = wsFoundNewWord4
                 move 9 to SkaWSorPD
                 move 1 to SkaWSorPD2
-                set F-Pointer to All-Fun-Idx
-                go to zz140-Exit.
-     display  "Oops: logic error at zz140-function-check".
-     display  "Problem with search verb".
-     move     16 to return-code
-     goback.
+                set F-Pointer to All-Fun-Idx.
  zz140-Exit.
      exit.
 *>
@@ -3241,8 +3267,7 @@
               wsFoundNewWord2 wsFoundNewWord.
      move     high-values to Condition-Table.
      move     10 to Con-Tab-Size.
-     move     zeros to GotEndProgram sw-Source-Eof
-              Section-Used-Table
+     move     zeros to GotEndProgram sw-Source-Eof Section-Used-Table
               HoldWSorPD HoldWSorPD2 Con-Tab-Count.
      move     1 to S-Pointer F-Pointer S-Pointer2.
  zz190-Exit.
