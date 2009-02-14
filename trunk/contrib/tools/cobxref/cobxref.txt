@@ -1,6 +1,6 @@
 Cobxref - Cobol Cross Reference program / module for Open Cobol
 
-Documentation for Beta release version 0.95.45            Dated 31st Jan 2009
+Documentation for Gamma release version 0.95.75            Dated 14 Feb 2009
 
 Parameters for running program are in the form:
 
@@ -49,14 +49,18 @@ and mods is pointing in the correct direction ie, /usr/local/lib and
 /usr/local/include.
 
 For prior to inclusion into the OC source code tarbells:
-If recompiling from cobol source use cobc -x cobxref.cbl. note that for testing I
-use: cobc -Wall -Wcolumn-overflow -Wtruncate -debug -t cobxref.t -x cobxref.cbl
- Note that cobc will produce an error:
-    cobxref.cbl: In paragraph 'bb050-Check-SubScripts':
-    cobxref.cbl:1801: Warning: Sending field larger than receiving field
-    cobxref.cbl:248: Warning: 'wsFoundNewWord' defined here as PIC X(32)
-
+If recompiling from cobol source use cobc -debug -O2 -x cobxref.cbl
+note that for testing I use:
+cobc -Wtruncate -debug -t cobxref.t -x cobxref.cbl
+ Note that cobc will produce an warning:
+    cobxref.cbl: In paragraph 'bb054-Spaces':
+    cobxref.cbl:1902: Warning: Sending field larger than receiving field
+    cobxref.cbl:252: Warning: 'wsFoundNewWord' defined here as PIC X(32)
 as OC cannot know that sending field is limited by z to less than 32 chars.
+ and various warnings regarding S-Pointer2, F-Pointer
+ being shorter to b, s, z. Line-End and All-Fun-Idx: you can ignore these as
+ moving s9(8) to s9(4)
+
 
 Please do not make changes without recording the amendment in code with notation
 at or near actual code changes. After your tests, please advise of changes direct
@@ -71,3 +75,4 @@ tool to see if it is producing the same results and advise of any discrepancies.
 
 Please provide any and all reports of bugs through the open cobol forum.
 
+Last updated 14 Feb 2009 (c) Vincent B Coen.

@@ -1,3 +1,30 @@
+2009-02-14  Vince Coen <vbcoen@btconnect.com>
+        v0.95.75  * fixed bugs regarding Special-names and file-control
+                    where one or both may not be present. Extra suport
+                    for Report writer but note that user names will be shown
+                    where user has declared it ie, Select, FD, RD, WS etc
+                    This could show duplicate entries for ones in FD, RD & WS
+                    but that seems to help in analysis.
+                    Code now in free format and some if statements now have
+                    end-ifs as code changes but only ones where logic flow
+                    might be a problem to keep it easy to read. There is many
+                    programming languages that have periods '.', ':', and/or';'
+                    to terminate lines and that works fine.
+                     Cobol is no exception.
+                    Consider being back all code for COPY verbs in case
+                    xref is used stand alone for for another compiler in
+                    release v0.96.00 which may well be the next release subject
+                    to bug reports.
+
+2009-02-13  Vince Coen <vbcoen@btconnect.com>
+        v0.95.68  * Now support for user defined words in WS areas not
+                    covered ie Report Writer (ba040 - ba049) ie:
+                    line|col|column [number|linage is]
+                    fore|background||control|size|key [is]
+                    thru|through & start|length [of]
+                    footings [at]  &  top|bottom
+                    and any other
+
 2009-02-12  Vince Coen <vbcoen@btconnect.com>
         v0.95.67  * Added support for special-names Currency sign is
                     as needed for test at ws on PIC.
@@ -17,7 +44,7 @@
 
 2009-01-20  Vince Coen <vbcoen@btconnect.com>
         v0.95.43  * extra sub verbs in screen section added more needed
-                  * ditto in ws sub verbs see TODO.
+                  * ditto in ws sub verbs see DONE.
                   * Added to function table: CONCATENATE, SUBSTITUTE/-CASE
 
 2009-01-14  Vince Coen <vbcoen@btconnect.com>
@@ -56,7 +83,7 @@
                   * Removed very old unused reports & rearranged function report
                   * Found problems related to nested progs not showing global
                     conditions in nested after 1st - To DO
-                  * Unref'd fields in nested to be reported at end - TO DO
+                  * Unref'd fields in nested to be reported at end - DONE
                   * Issued version to sourceforge & add1tocobol
 
 2008-12-21  Vince Coen <vbcoen@btconnect.com>
