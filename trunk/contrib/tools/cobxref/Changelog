@@ -1,3 +1,7 @@
+2009-02-21  Vince Coen <vbcoen@btconnect.com>
+        v1.01.01  * Added support for .pre via cobc with other very minor
+                    changes and upgraded version to v1 prior to incl into cobc.
+
 2009-02-14  Vince Coen <vbcoen@btconnect.com>
         v0.95.75  * fixed bugs regarding Special-names and file-control
                     where one or both may not be present. Extra suport
