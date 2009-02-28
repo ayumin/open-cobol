@@ -46,18 +46,8 @@
  source-computer.      linux.
  object-computer.      linux.
  special-names.
-*> This lot is not needed by prog but used to see if OC accepts them
-      switch-1 is sn-Test-1 on snt1-on off snt1-off
-*>      uspi-0 is sn-Test-2 on snt2-on off snt2-off.
-        currency sign is "£".
-*>      decimal-point is comma.
-*>      call-convention 1 is cc-fred.
-*>      console is crt
-*>       cursor is fs-reply
-*>       crt status fs-reply.
-*>     command-line is prog-param-line.
-*>      argument-value is prog-param-values.
-*>      argument-number is prog-param-count.
+     switch-1 is sn-Test-1 on snt1-on off snt1-off
+     currency sign is "£".
  input-Output section.
  file-control.
 *>
@@ -86,10 +76,10 @@
  fd  Source-Listing.
  01  Source-List.
      03  sl-Gen-RefNo1     pic z(5)9bb.
-     03  SourceOutput      pic x(255).
+     03  SourceOutput      pic x(1024).
 *>
  01  PrintLine.
-     02  XrDataName        pic x(33).
+     02  XrDataName        pic x(32).
      02  XrDefn            pic 9(6).
      02  XrType            pic x.
      02  XrCond            pic x.
@@ -108,7 +98,7 @@
      03  P-Variables       pic x(32).
 *>
  fd  SourceInput.
- 01  SourceRecIn           pic x(255).
+ 01  SourceRecIn           pic x(1024).
 *>
  fd  Supplemental-Part1-Out.
  01  SortRecord.
@@ -125,7 +115,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v0.95.76".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.02".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -213,10 +203,10 @@
  77  saveSkaWSorPD         pic 9           value zero.
  77  saveSkaWSorPD2        pic 9           value zero.
  77  WS-Anal1              pic 9           value zero.
- 77  fs-reply              pic xx          value zeros.
- 77  SourceFileName        pic x(64)       value spaces.
- 77  Print-FileName        pic x(64)       value spaces.
- 77  Prog-BaseName         pic x(60)       value spaces.
+ 77  fs-reply              pic 99          value zeros.
+ 77  SourceFileName        pic x(1024)     value spaces.
+ 77  Print-FileName        pic x(1024)     value spaces.
+ 77  Prog-BaseName         pic x(1024)     value spaces.
 *>
 *> in theory Linux can go to 4096 and Windoz 32,767
 *>
@@ -233,7 +223,7 @@
 *>
  01  SourceInWS.
      03  sv1what           pic x(16).
-     03  filler            pic x(239).
+     03  filler            pic x(1008).
 *>
  01  wsFoundWord.
      03  wsf1-3.
@@ -241,22 +231,22 @@
        05  wsf1-1          pic x.
        05  filler          pic x.
       04  filler           pic x.
-     03  filler            pic x(252).
+     03  filler            pic x(1021).
 *>
  01  wsFoundWord2 redefines wsFoundWord.
      03  wsf3-1            pic 9.    *> only used for Build-Number
          88 wsf3-1-numeric           values 0 thru 9.
      03  wsf3-2            pic 9.    *>   processing
-     03  filler            pic x(253).
+     03  filler            pic x(1022).
 *>
  01  wsFoundNewWord        pic x(32).
  01  wsFoundNewWord2       pic x(32).
- 01  wsFoundNewWord3       pic x(255).  *> max size quot lit 1 lin
+ 01  wsFoundNewWord3       pic x(1024).  *> max size quot lit 1 lin
  01  wsFoundNewWord4       pic x(32).
- 01  wsFoundNewWord5       pic x(255). *> space removal source i/p
+ 01  wsFoundNewWord5       pic x(1024). *> space removal source i/p
 *>
  01  HDR1.
-     03  filler            pic X(26) value "ACS Cobol Cross Reference ".
+     03  filler            pic X(10) value "ACS Cobol ".
      03  H1Prog-Name       pic x(14) value spaces.
      03  filler            pic x     value "(".
      03  H1-dd             pic 99.
@@ -273,11 +263,11 @@
      03  h1programid       pic x(60) value spaces.
 *>
  01  HDR2.
-     03  filler            pic X(34) value "All Data/Proc Names".
+     03  filler            pic X(33) value "All Data/Proc Names".
      03  filler            pic X(19) value "Defn     Reference".
 *>
  01  hdr3.
-     03  filler            pic x(33) value all "-".
+     03  filler            pic x(32) value all "-".
      03  filler            pic x     value "+".
      03  filler            pic x(63) value all "-".
 *>
@@ -294,13 +284,13 @@
 *>
  01  hdr7-ws.
      03  filler            pic x(14) value "Data Section (".
-     03  hdr7-variable     pic x(20) value spaces.
+     03  hdr7-variable     pic x(19) value spaces.
      03  filler            pic x(8)  value "Defn".
      03  filler            pic x(9)  value "Locations".
 *>
  01  hdr8-ws.
      03  hdr8-hd           pic x(9)  value "Procedure".
-     03  filler            pic x(25) value spaces.
+     03  filler            pic x(24) value spaces.
      03  filler            pic x(8)  value "Defn".
      03  filler            pic x(9)  value "Locations".
 *>
@@ -1877,7 +1867,7 @@
      inspect  wsFoundWord2 (s:z2) tallying a for all "(".
      inspect  wsFoundWord2 (s:z2) tallying a for all ")".
      if       a > zero                  *> should not have braces now
-              display "bb053:Logic Error (=" a " B=" b " on " wsFoundWord2
+              display "bb053:Logic Error (=" a " B=" b " on " wsFoundWord2 (1:80)
               go to bb020-GetAWord
      end-if
 *>
@@ -2632,7 +2622,7 @@
 *>  can work easier Includes literals " " etc
 *> Doesn't matter if literals get screwed up in this way
 *>
-     inspect  SourceInWS replacing all x"09" by space.
+*>    inspect  SourceInWS replacing all x"09" by space.
      inspect  SourceInWS replacing all ";" by space.
 *>
 *> This could cause a problem in ws so do in proc div
@@ -2692,7 +2682,7 @@
               end-perform
      else
             if   HoldFoundWord2-Type > zero
-             and SourceInWS (1:7) = "SECTION" or = "DIVISIO"
+             and (SourceInWS (1:7) = "SECTION" or = "DIVISIO")
                  add 1 HoldFoundWord2-Size giving d
                  string SourceInWS (1:Line-End) delimited by size
                         into HoldFoundWord2  pointer d
@@ -2728,7 +2718,7 @@
 *>              inspect SourceInWS tallying S-Pointer2 for leading spaces.
 *>
      if       S-Pointer2 > Source-Line-End
-          or  S-Pointer2 > 255
+          or  S-Pointer2 > 1024
               go to zz110-Get-A-Word-OverFlow.
 *>
 *> S-Pointer2 = 1st non space
@@ -2744,7 +2734,7 @@
                delimiter in Word-Delimit
                 with pointer S-Pointer2.
 *> check 1st char
-     if       S-Pointer2 > 255
+     if       S-Pointer2 > 1024
               go to zz110-Get-A-Word-OverFlow.
      if       wsf1-1 = space
          and  SourceInWS (S-Pointer2:1) = "."
@@ -2780,8 +2770,7 @@
                              or = "X" or = "A" or = "S" or = "V"
                              or = "P" or = "1" or = "N" or = "E")
               move s to S-Pointer2
-              unstring SourceInWS delimited by " "
-                into wsFoundWord2
+              unstring SourceInWS delimited by " " into wsFoundWord2
                  delimiter in Word-Delimit
                   with pointer S-Pointer2
               end-unstring
@@ -2813,7 +2802,7 @@
               go to zz110-Get-A-Word.
 *>
      if       wsf1-1 not = quote and not = "'"
-              perform  varying z from 255 by -1
+              perform  varying z from 1024 by -1
                   until wsFoundWord2 (z:1) not = space
               end-perform
               move z to Word-Length
@@ -2823,9 +2812,9 @@
      move     wsf1-1 to Word-Delimit2.
      add      1 to s giving S-Pointer2.
  zz110-Get-A-Word-Literal2.
-     move     spaces to wsFoundWord2 (2:254).
+     move     spaces to wsFoundWord2 (2:1023).
      unstring SourceInWS delimited by Word-Delimit2
-              into wsFoundWord2 (2:254)
+              into wsFoundWord2 (2:1023)
                delimiter in Word-Delimit
                 with pointer S-Pointer2.
 *>
@@ -2833,7 +2822,7 @@
 *>     have we another Word-Delimit?
 *>
      if       Word-Delimit not = Word-Delimit2
-              perform  varying z from 255 by -1
+              perform  varying z from 1024 by -1
                   until wsFoundWord2 (z:1) not = space
               end-perform
               add 1 to z
@@ -2881,7 +2870,7 @@
 *>
 *> run profiler against these routines and tidy 'em up if needed
 *>
-     perform  varying d from 255 by -1
+     perform  varying d from 1024 by -1
                    until SourceInWS (d:1) not = space
      end-perform
      if       d < 1
@@ -3152,11 +3141,22 @@
               goback.
 *>
      move     1 to String-Pointer String-Pointer2.
-     unstring Arg-Value (1) delimited by "." into Prog-BaseName
-              with pointer String-Pointer.
+     perform  varying a from 1024 by -1 until Sourcefilename (a:1) not = space
+     end-perform
+     move     a to b.
+     perform  varying b from b by -1 until b < 2 or SourceFileName (b:1) = "."
+     end-perform
+     if       b not < 2
+              subtract 1 from b
+              move SourceFileName (1:b) to Prog-BaseName
+              add 1 to b
+     end-if
+
+*>     unstring Arg-Value (1) delimited by "." into Prog-BaseName
+*>              with pointer String-Pointer.
      if       Prog-BaseName = SourceFileName
               string  Prog-BaseName  delimited by space
-              ".i"        delimited by size into SourceFileName.
+              ".pre"        delimited by size into SourceFileName.
      string   Prog-BaseName delimited by space
               ".lst"        delimited by size into Print-FileName
               with pointer String-Pointer2.
@@ -3214,7 +3214,7 @@
 *>    END OF SPECIAL TEST BLOCK but with bc030 - bc080 also     *
 *>***************************************************************
      open     input SourceInput.
-     if       fs-reply not = "00"
+     if       fs-reply not = zero
               display Msg9
               move 16 to return-code
               goback.
@@ -3236,6 +3236,7 @@
      if       Temp-PathName (1:1) = "/"   *> Its Linux/Unix
               move "/" to OS-Delimiter.
      if       Temp-PathName (1:1) = "\"   *> Its Windoz
+              inspect Temp-PathName replacing all "/" by "\"   *> in case of /tmp
               move "\" to OS-Delimiter.
      string   Temp-PathName delimited by space
                OS-Delimiter delimited by size
@@ -3249,6 +3250,7 @@
                OS-Delimiter delimited by size
                  "Sort1tmp" delimited by size
               into Sort1tmp.
+     display  "Temp path used is " Temp-PathName.
  zz182-Exit.
      Exit.
 *>
