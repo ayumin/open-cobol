@@ -115,7 +115,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.02".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.06".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -1504,7 +1504,7 @@
 *> note that for CD & SD setting Global-current-* not needed
 *>                           is it a problem
      if       wsFoundWord2 (1:3) = "FD " or = "SD "
-                                or = "RD " or = "CD "
+                              or = "RD " or = "CD "
               perform zz110-Get-A-Word thru zz110-Exit  *> get fn
               move zero to HoldWSorPD2
               move zero to sw-Git            *> reset Global flag
@@ -1575,6 +1575,11 @@
               (wsFoundWord2 (1:6) = "TO    "
                     or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
+              inspect wsFoundWord2 tallying a for all "("
+              if a not = zero
+                 move wsFoundWord2 to wsFoundNewWord5
+                 unstring wsFoundNewWord5 delimited by "(" into wsFoundWord2
+              end-if
               perform zz030-Write-Sort
               go to ba040-Clear-To-Next-Period.
 *>
@@ -1587,6 +1592,8 @@
      if       wsFoundWord2 (1:z) numeric
               go to ba040-Clear-To-Next-Period.
      if       wsf3-1-numeric
+              go to ba040-Clear-To-Next-Period.
+     if       wsf1-1 = "("
               go to ba040-Clear-To-Next-Period.
 *> dont have literals or numerics
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
@@ -1694,7 +1701,13 @@
               (wsFoundWord2 (1:6) = "TO    "
                     or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
-              perform zz030-Write-Sort.
+              inspect wsFoundWord2 tallying a for all "("
+              if a not = zero
+                 move wsFoundWord2 to wsFoundNewWord5
+                 unstring wsFoundNewWord5 delimited by "(" into wsFoundWord2
+              end-if
+              perform zz030-Write-Sort
+     end-if
 *>
      perform  ba040-Clear-To-Next-Period thru ba049-Exit.
      go       to ba020-GetAWord.
@@ -2223,6 +2236,7 @@
               display Msg1
               go to bc000-Exit.
      perform  zz150-WriteHdb.
+     move     "Procedure" to hdr8-hd
      perform  zz150-WriteHdb3 thru zz150-Exit.
      move     zero to q.
      go       to bc220-IsX3.
@@ -2612,7 +2626,7 @@
 *>
      if       (SourceInWS (1:1) = "#" or = "$")
               go to zz100-Get-A-Source-Record.
-*> won't happen with fn.i or .t input
+*> next won't happen with fn.i or .t input
      if       (SourceInWS (1:1) = "*" or = "/")
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
@@ -2897,7 +2911,7 @@
 *>
      if       SourceInWS (a:1) = space
               go to zz120-Kill-Space.
-     subtract 1 from a giving e.
+     subtract 1 from a giving e.         *> a will always be 2 or more here
      if       SourceInWS (a:1) = "("
          and  SourceInWS (e:1) not = space
          and  HoldWSorPD > 7
@@ -3250,7 +3264,8 @@
                OS-Delimiter delimited by size
                  "Sort1tmp" delimited by size
               into Sort1tmp.
-     display  "Temp path used is " Temp-PathName.
+     if we-are-testing
+           display  "Temp path used is " Temp-PathName.
  zz182-Exit.
      Exit.
 *>
