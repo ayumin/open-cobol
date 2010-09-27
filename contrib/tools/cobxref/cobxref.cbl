@@ -6,13 +6,16 @@
 *>date-written.         28 July 1983 with code going back to 1967.
 *>date-rewriten.        10 March 2007 with code going back to 1983.
 *>date-compiled.        Today & Don't forget to update prog-name for builds
-*>Security.             Copyright (C) 1967-2009, Vincent Bryan Coen.
+*>Security.             Copyright (C) 1967-2010, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
 *>                      for use within Open Cobol ONLY.
 *>
 *> Usage.               Cobol Cross Referencer for Open Cobol from v1.0.
-*>
+*>**
+*> Calls.               get-reserved-lists.
+*>                 compile with cobc -x cobxref.cbl get-reserved-lists.cbl
+*>**
 *> Changes.             See Changelog & Prog-Name.
 *>
 *>*************************************************************************
@@ -21,14 +24,18 @@
 *>*****************
 *>
 *> This file/program is part of Cobxref AND Open Cobol and is copyright
-*> (c) Vincent B Coen 1967-2009. This version bears no resemblance to the
+*> (c) Vincent B Coen 1967-2010. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 2 ONLY within Open Cobol providing
-*> the package continues to be issued or marketed as 'Open Cobol'.
+*> Free Software Foundation; version 2 ONLY within Open Cobol, providing
+*> the package continues to be issued or marketed as 'Open Cobol' and
+*> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
+*>
+*> It cannot be included or used with any other Compiler without the
+*> written Authority by the copyright holder, Vincent B Coen.
 *>
 *> Cobxref is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -45,11 +52,13 @@
  configuration section.
  source-computer.      linux.
  object-computer.      linux.
- special-names.
+ special-names.                                   *> only here to help test cobxref
      switch-1 is sn-Test-1 on snt1-on off snt1-off
      currency sign is "£".
  input-Output section.
  file-control.
+*>
+*>  These 2 are needed as OC (& many others) does NOT support real variable length tables and they can get very large
 *>
      select   Supplemental-Part2-In assign Supp-File-2
               organization line sequential.
@@ -115,12 +124,14 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.06".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.07".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
  77  S-Pointer2            Binary-long  value zero.
  77  Line-Count            Binary-char  value 70.
+ 77  Page-No               Binary-char  value zero.
+ 77  ws-Return-Code        binary-char  value zero.
  77  Word-Length           Binary-long  value zero.
  77  Line-End              Binary-long  value zero.
  77  Source-Line-End       Binary-long  value zero.
@@ -130,6 +141,7 @@
  77  HoldFoundWord2-Type   binary-long  value zero.
  77  a                     Binary-Long  value zero.
  77  a1                    Binary-Long  value zero.
+ 77  a2                    Binary-char  value zero.
  77  b                     Binary-Long  value zero.
  77  c                     Binary-Long  value zero.
  77  d                     Binary-Long  value zero.
@@ -150,7 +162,7 @@
  77  sw-1                  pic x           value "N".
 *>  command line input -G
   88 All-Reports                           value "A".
- 77  sw-2                  pic x           value "N".
+ 77  sw-2                  pic x           value "Y".
   88 List-Source                           value "Y".
  77  sw-4                  pic 9           value zero.
   88  Dump-Reserved-Words                  value 1.
@@ -195,7 +207,7 @@
  77  Word-Delimit2         pic x           value space.
  77  OS-Delimiter          pic x           value space.
  77  GotASection           pic x           value space.
- *> section name + 8 chars
+*> section name + 8 chars
  77  HoldFoundWord         pic x(40)       value spaces.
  77  HoldFoundWord2        pic x(40)       value spaces.
  77  saveSkaDataName       pic x(32)       value spaces.
@@ -217,6 +229,7 @@
  77  Global-Current-Word   pic x(32)       value spaces.
  77  Global-Current-Refno  pic 9(6)        value zero.
  77  Global-Current-Level  pic 99          value zero.
+ 77  FoundFunction         pic 9           value zero.
 *>
  01  HoldID                pic x(32)       value spaces.
  01  HoldID-Module         pic x(32)       value spaces.
@@ -234,9 +247,9 @@
      03  filler            pic x(1021).
 *>
  01  wsFoundWord2 redefines wsFoundWord.
-     03  wsf3-1            pic 9.    *> only used for Build-Number
+     03  wsf3-1            pic 9.                      *> only used for Build-Number
          88 wsf3-1-numeric           values 0 thru 9.
-     03  wsf3-2            pic 9.    *>   processing
+     03  wsf3-2            pic 9.                      *>   processing
      03  filler            pic x(1022).
 *>
  01  wsFoundNewWord        pic x(32).
@@ -358,8 +371,7 @@
      03 Msg8      pic x(26) value "Error: Eof on source again".
      03 Msg9      pic x(34) value "Error: File not present Try Again!".
      03 Msg10     pic x(36) value "Error: Git Table size exceeds 10,000".
-     03 Msg16     pic x(66) value "Error: " &
-     "Eof on source possible logic error at aa047 ASSUMING again".
+     03 Msg16     pic x(66) value "Error: Eof on source possible logic error at aa047 ASSUMING again".
 *>
  01  SectTable.
      03  filler            pic x(9) value "FWLKCRSPI".
@@ -383,7 +395,7 @@
      03  filler pic x(24) value "PROCEDURE DIVISION.     ".
  01  filler   redefines Section-Names-Table.
      03  Full-Section-Name          occurs 8.
-*>                  ascending key Section-Name indexed by Full-Section-Name-Idx.
+*>                  ascending key Section-Name indexed by Full-Section-Name-Idx. *> can't use as its NOT sorted
          05  Section-Name  pic x(16).
          05  filler        pic x(08).
 *>
@@ -401,660 +413,712 @@
          05  Sht-Section-Name  pic x(16).
 *>
 *> Here for cb_intrinsic_table in OC see :
-*>   cobc/reserved.c in the open-cobol source directory but
-*>    Totally ingoring the system_table as not needed/used by xref
+*>   cobc/reserved.c in the open-cobol source directory but Totally ingoring the system_table as not needed/used by xref
 *>
-*> Also note that the number 0 or 1 indicates if the
-*>  function/reserved word is implemented in Open Cobol
-*>   but xref treats all as being reserved as they are so
+*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in Open Cobol
+*>   but xref treats all as being reserved as they are still so, in someone's compiler
 *>
- 01  Function-Table.
-     03  filler pic x(28) value "1ABS                        ".
-     03  filler pic X(28) value "1ACOS                       ".
-     03  filler pic X(28) value "1ANNUITY                    ".
-     03  filler pic X(28) value "1ASIN                       ".
-     03  filler pic X(28) value "1ATAN                       ".
-     03  filler pic X(28) value "0BOOLEAN-OF-INTEGER         ".
-     03  filler pic X(28) value "1BYTE-LENGTH                ".
-     03  filler pic X(28) value "1CHAR                       ".
-     03  filler pic X(28) value "0CHAR-NATIONAL              ".
-     03  filler pic X(28) value "1COMBINED-DATETIME          ".
-     03  filler pic X(28) value "1CONCATENATE                ".
-     03  filler pic X(28) value "1COS                        ".
-     03  filler pic X(28) value "1CURRENT-DATE               ".
-     03  filler pic X(28) value "1DATE-OF-INTEGER            ".
-     03  filler pic X(28) value "1DATE-TO-YYYYMMDD           ".
-     03  filler pic X(28) value "1DAY-OF-INTEGER             ".
-     03  filler pic X(28) value "1DAY-TO-YYYYDDD             ".
-     03  filler pic X(28) value "0DISPLAY-OF                 ".
+ 01  Function-Table.                                                 *> updated by Get-Reserved-Lists.cbl
+     03  filler pic x(31) value "1ABS                        ".
+     03  filler pic x(31) value "1ACOS                       ".
+     03  filler pic x(31) value "1ANNUITY                    ".
+     03  filler pic x(31) value "1ASIN                       ".
+     03  filler pic x(31) value "1ATAN                       ".
+     03  filler pic x(31) value "0BOOLEAN-OF-INTEGER         ".
+     03  filler pic x(31) value "1BYTE-LENGTH                ".
+     03  filler pic x(31) value "1CHAR                       ".
+     03  filler pic x(31) value "0CHAR-NATIONAL              ".
+     03  filler pic x(31) value "1COMBINED-DATETIME          ".
+     03  filler pic x(31) value "1CONCATENATE                ".
+     03  filler pic x(31) value "1COS                        ".
+     03  filler pic x(31) value "1CURRENT-DATE               ".
+     03  filler pic x(31) value "1DATE-OF-INTEGER            ".
+     03  filler pic x(31) value "1DATE-TO-YYYYMMDD           ".
+     03  filler pic x(31) value "1DAY-OF-INTEGER             ".
+     03  filler pic x(31) value "1DAY-TO-YYYYDDD             ".
+     03  filler pic x(31) value "0DISPLAY-OF                 ".
 *>
 *> ignore this one, gets confused with username and this
-*>     03  filler pic X(28) value "0E                          ".
+*>     03  filler pic x(31) value "0E                          ".
 *>
 *> so does OC
 *>
-     03  filler pic X(28) value "1EXCEPTION-FILE             ".
-     03  filler pic X(28) value "0EXCEPTION-FILE-N           ".
-     03  filler pic X(28) value "1EXCEPTION-LOCATION         ".
-     03  filler pic X(28) value "0EXCEPTION-LOCATION-N       ".
-     03  filler pic X(28) value "1EXCEPTION-STATEMENT        ".
-     03  filler pic X(28) value "1EXCEPTION-STATUS           ".
-     03  filler pic X(28) value "1EXP                        ".
-     03  filler pic X(28) value "1EXP10                      ".
-     03  filler pic X(28) value "1FACTORIAL                  ".
-     03  filler pic X(28) value "1FRACTION-PART              ".
-     03  filler pic X(28) value "0HIGHEST-ALGEBRAIC          ".
-     03  filler pic X(28) value "1INTEGER                    ".
-     03  filler pic X(28) value "0INTEGER-OF-BOOLEAN         ".
-     03  filler pic X(28) value "1INTEGER-OF-DATE            ".
-     03  filler pic X(28) value "1INTEGER-OF-DAY             ".
-     03  filler pic X(28) value "1INTEGER-PART               ".
-     03  filler pic X(28) value "1LENGTH                     ".
-     03  filler pic X(28) value "0LOCALE-COMPARE             ".
-     03  filler pic X(28) value "1LOCALE-DATE                ".
-     03  filler pic X(28) value "1LOCALE-TIME                ".
-     03  filler pic X(28) value "1LOCALE-TIME-FROM-SECONDS   ".
-     03  filler pic X(28) value "1LOG                        ".
-     03  filler pic X(28) value "1LOG10                      ".
-     03  filler pic X(28) value "1LOWER-CASE                 ".
-     03  filler pic X(28) value "0LOWEST-ALGEBRAIC           ".
-     03  filler pic X(28) value "1MAX                        ".
-     03  filler pic X(28) value "1MEAN                       ".
-     03  filler pic X(28) value "1MEDIAN                     ".
-     03  filler pic X(28) value "1MIDRANGE                   ".
-     03  filler pic X(28) value "1MIN                        ".
-     03  filler pic X(28) value "1MOD                        ".
-     03  filler pic X(28) value "0NATIONAL-OF                ".
-     03  filler pic X(28) value "1NUMVAL                     ".
-     03  filler pic X(28) value "1NUMVAL-C                   ".
-     03  filler pic X(28) value "0NUMVAL-F                   ".
-     03  filler pic X(28) value "1ORD                        ".
-     03  filler pic X(28) value "1ORD-MAX                    ".
-     03  filler pic X(28) value "1ORD-MIN                    ".
-     03  filler pic X(28) value "0PI                         ".
-     03  filler pic X(28) value "1PRESENT-VALUE              ".
-     03  filler pic X(28) value "1RANDOM                     ".
-     03  filler pic X(28) value "1RANGE                      ".
-     03  filler pic X(28) value "1REM                        ".
-     03  filler pic X(28) value "1REVERSE                    ".
-     03  filler pic X(28) value "1SECONDS-FROM-FORMATTED-TIME".
-     03  filler pic X(28) value "1SECONDS-PAST-MIDNIGHT      ".
-     03  filler pic X(28) value "1SIGN                       ".
-     03  filler pic X(28) value "1SIN                        ".
-     03  filler pic X(28) value "1SQRT                       ".
-     03  filler pic X(28) value "0STANDARD-COMPARE           ".
-     03  filler pic X(28) value "1STANDARD-DEVIATION         ".
-     03  filler pic X(28) value "1STORED-CHAR-LENGTH         ".
-     03  filler pic X(28) value "1SUBSTITUTE                 ".
-     03  filler pic X(28) value "1SUBSTITUTE-CASE            ".
-     03  filler pic X(28) value "1SUM                        ".
-     03  filler pic X(28) value "1TAN                        ".
-     03  filler pic X(28) value "1TEST-DATE-YYYYMMDD         ".
-     03  filler pic X(28) value "1TEST-DAY-YYYYDDD           ".
-     03  filler pic X(28) value "0TEST-NUMVAL                ".
-     03  filler pic X(28) value "0TEST-NUMVAL-C              ".
-     03  filler pic X(28) value "0TEST-NUMVAL-F              ".
-     03  filler pic X(28) value "1TRIM                       ".
-     03  filler pic X(28) value "1UPPER-CASE                 ".
-     03  filler pic X(28) value "1VARIANCE                   ".
-     03  filler pic X(28) value "1WHEN-COMPILED              ".
-     03  filler pic X(28) value "1YEAR-TO-YYYY               ".
+     03  filler pic x(31) value "1EXCEPTION-FILE             ".
+     03  filler pic x(31) value "0EXCEPTION-FILE-N           ".
+     03  filler pic x(31) value "1EXCEPTION-LOCATION         ".
+     03  filler pic x(31) value "0EXCEPTION-LOCATION-N       ".
+     03  filler pic x(31) value "1EXCEPTION-STATEMENT        ".
+     03  filler pic x(31) value "1EXCEPTION-STATUS           ".
+     03  filler pic x(31) value "1EXP                        ".
+     03  filler pic x(31) value "1EXP10                      ".
+     03  filler pic x(31) value "1FACTORIAL                  ".
+     03  filler pic x(31) value "1FRACTION-PART              ".
+     03  filler pic x(31) value "0HIGHEST-ALGEBRAIC          ".
+     03  filler pic x(31) value "1INTEGER                    ".
+     03  filler pic x(31) value "0INTEGER-OF-BOOLEAN         ".
+     03  filler pic x(31) value "1INTEGER-OF-DATE            ".
+     03  filler pic x(31) value "1INTEGER-OF-DAY             ".
+     03  filler pic x(31) value "1INTEGER-PART               ".
+     03  filler pic x(31) value "1LENGTH                     ".
+     03  filler pic x(31) value "0LOCALE-COMPARE             ".
+     03  filler pic x(31) value "1LOCALE-DATE                ".
+     03  filler pic x(31) value "1LOCALE-TIME                ".
+     03  filler pic x(31) value "1LOCALE-TIME-FROM-SECONDS   ".
+     03  filler pic x(31) value "1LOG                        ".
+     03  filler pic x(31) value "1LOG10                      ".
+     03  filler pic x(31) value "1LOWER-CASE                 ".
+     03  filler pic x(31) value "0LOWEST-ALGEBRAIC           ".
+     03  filler pic x(31) value "1MAX                        ".
+     03  filler pic x(31) value "1MEAN                       ".
+     03  filler pic x(31) value "1MEDIAN                     ".
+     03  filler pic x(31) value "1MIDRANGE                   ".
+     03  filler pic x(31) value "1MIN                        ".
+     03  filler pic x(31) value "1MOD                        ".
+     03  filler pic x(31) value "1MODULE-CALLER-ID           ".
+     03  filler pic x(31) value "1MODULE-DATE                ".
+     03  filler pic x(31) value "1MODULE-FORMATTED-DATE      ".
+     03  filler pic x(31) value "1MODULE-ID                  ".
+     03  filler pic x(31) value "1MODULE-PATH                ".
+     03  filler pic x(31) value "1MODULE-SOURCE              ".
+     03  filler pic x(31) value "1MODULE-TIME                ".
+     03  filler pic x(31) value "0NATIONAL-OF                ".
+     03  filler pic x(31) value "1NUMVAL                     ".
+     03  filler pic x(31) value "1NUMVAL-C                   ".
+     03  filler pic x(31) value "0NUMVAL-F                   ".
+     03  filler pic x(31) value "1ORD                        ".
+     03  filler pic x(31) value "1ORD-MAX                    ".
+     03  filler pic x(31) value "1ORD-MIN                    ".
+     03  filler pic x(31) value "0PI                         ".
+     03  filler pic x(31) value "1PRESENT-VALUE              ".
+     03  filler pic x(31) value "1RANDOM                     ".
+     03  filler pic x(31) value "1RANGE                      ".
+     03  filler pic x(31) value "1REM                        ".
+     03  filler pic x(31) value "1REVERSE                    ".
+     03  filler pic x(31) value "1SECONDS-FROM-FORMATTED-TIME".
+     03  filler pic x(31) value "1SECONDS-PAST-MIDNIGHT      ".
+     03  filler pic x(31) value "1SIGN                       ".
+     03  filler pic x(31) value "1SIN                        ".
+     03  filler pic x(31) value "1SQRT                       ".
+     03  filler pic x(31) value "0STANDARD-COMPARE           ".
+     03  filler pic x(31) value "1STANDARD-DEVIATION         ".
+     03  filler pic x(31) value "1STORED-CHAR-LENGTH         ".
+     03  filler pic x(31) value "1SUBSTITUTE                 ".
+     03  filler pic x(31) value "1SUBSTITUTE-CASE            ".
+     03  filler pic x(31) value "1SUM                        ".
+     03  filler pic x(31) value "1TAN                        ".
+     03  filler pic x(31) value "1TEST-DATE-YYYYMMDD         ".
+     03  filler pic x(31) value "1TEST-DAY-YYYYDDD           ".
+     03  filler pic x(31) value "0TEST-NUMVAL                ".
+     03  filler pic x(31) value "0TEST-NUMVAL-C              ".
+     03  filler pic x(31) value "0TEST-NUMVAL-F              ".
+     03  filler pic x(31) value "1TRIM                       ".
+     03  filler pic x(31) value "1UPPER-CASE                 ".
+     03  filler pic x(31) value "1VARIANCE                   ".
+     03  filler pic x(31) value "1WHEN-COMPILED              ".
+     03  filler pic x(31) value "1YEAR-TO-YYYY               ".  *>  91
+     03  filler    values high-values.
+         05  filler pic x(31) occurs 165.                        *> pad to 256 entries
 *>
- 01  filler redefines Function-Table.
-     03  All-Functions                 occurs 84
-               ascending key P-Function indexed by All-Fun-Idx.
+ 01  Function-Table-R redefines Function-Table.                             *> updated by Get-Reserved-Lists.cbl
+     03  All-Functions       occurs 256 ascending key P-Function indexed by All-Fun-Idx.
          05  P-oc-implemented pic x.
-         05  P-Function       pic x(27).
- 01  Function-Table-Size   pic s9(5)  comp  value 84.
+         05  P-Function       pic x(30).
+ 01  Function-Table-Size      pic s9(5)  comp  value 91.          *> updatable by Get-Reserved-Lists.cbl
 *>
-*> Note that system names are omitted so thatr they turn up
-*>  in the cross refs
+*> Note that system names are omitted so that they turn up in the cross refs
 *>
-*> Here for all reserved words in OC see :
-*>           struct reserved reserved_words in
-*>   cobc/reserved.c in the open-cobol source directory
+*> Here for all reserved words in OC see: struct reserved reserved_words in cobc/reserved.c in the open-cobol source directory
 *>
- 01  Additional-Reserved-Words.
-     03  filler pic x(26) value "1ACCEPT             ".
-     03  filler pic x(26) value "1ACCESS             ".
-     03  filler pic x(26) value "0ACTIVE-CLASS       ".
-     03  filler pic x(26) value "1ADD                ".
-     03  filler pic x(26) value "1ADDRESS            ".
-     03  filler pic x(26) value "1ADVANCING          ".
-     03  filler pic x(26) value "1AFTER              ".
-     03  filler pic x(26) value "0ALIGNED            ".
-     03  filler pic x(26) value "1ALL                ".
-     03  filler pic x(26) value "1ALLOCATE           ".
-     03  filler pic x(26) value "1ALPHABET           ".
-     03  filler pic x(26) value "1ALPHABETIC         ".
-     03  filler pic x(26) value "1ALPHABETIC-LOWER   ".
-     03  filler pic x(26) value "1ALPHABETIC-UPPER   ".
-     03  filler pic x(26) value "1ALPHANUMERIC       ".
-     03  filler pic x(26) value "1ALPHANUMERIC-EDITED".
-     03  filler pic x(26) value "1ALSO".
-     03  filler pic x(26) value "1ALTER".
-     03  filler pic x(26) value "1ALTERNATE".
-     03  filler pic x(26) value "1AND".
-     03  filler pic x(26) value "1ANY".
-     03  filler pic x(26) value "0ANYCASE".
-     03  filler pic x(26) value "1ARE".
-     03  filler pic x(26) value "1AREA".
-     03  filler pic x(26) value "1AREAS".
-     03  filler pic x(26) value "1ARGUMENT-NUMBER".
-     03  filler pic x(26) value "1ARGUMENT-VALUE".
-     03  filler pic x(26) value "0ARITHMETIC".
-     03  filler pic x(26) value "1AS".
-     03  filler pic x(26) value "1ASCENDING".
-     03  filler pic x(26) value "1ASSIGN".
-     03  filler pic x(26) value "1AT".
-     03  filler pic x(26) value "0ATTRIBUTE".
-     03  filler pic x(26) value "1AUTO".
-     03  filler pic x(26) value "1AUTO-SKIP".
-     03  filler pic x(26) value "1AUTOMATIC".
-     03  filler pic x(26) value "1AUTOTERMINATE".
-     03  filler pic x(26) value "0B-AND".
-     03  filler pic x(26) value "0B-NOT".
-     03  filler pic x(26) value "0B-OR".
-     03  filler pic x(26) value "0B-XOR".
-     03  filler pic x(26) value "1BACKGROUND-COLOR".
-     03  filler pic x(26) value "1BASED".
-     03  filler pic x(26) value "1BELL".
-     03  filler pic x(26) value "1BEFORE".
-     03  filler pic x(26) value "1BELL".
-     03  filler pic x(26) value "1BINARY".
-     03  filler pic x(26) value "1BINARY-CHAR".
-     03  filler pic x(26) value "1BINARY-DOUBLE".
-     03  filler pic x(26) value "1BINARY-LONG".
-     03  filler pic x(26) value "1BINARY-SHORT".
-     03  filler pic x(26) value "0BIT".
-     03  filler pic x(26) value "1BLANK".
-     03  filler pic x(26) value "1BLINK".
-     03  filler pic x(26) value "1BLOCK".
-     03  filler pic x(26) value "0BOOLEAN".
-     03  filler pic x(26) value "1BOTTOM".
-     03  filler pic x(26) value "1BY".
-     03  filler pic x(26) value "0BYTE-LENGTH".
-     03  filler pic x(26) value "1CALL".
-     03  filler pic x(26) value "1CANCEL".
-     03  filler pic x(26) value "0CD".
-     03  filler pic x(26) value "0CENTER".
-     03  filler pic x(26) value "0CF".
-     03  filler pic x(26) value "0CH".
-     03  filler pic x(26) value "0CHAIN".
-     03  filler pic x(26) value "1CHAINING".
-     03  filler pic x(26) value "1CHARACTER".
-     03  filler pic x(26) value "1CHARACTERS".
-     03  filler pic x(26) value "1CLASS".
-     03  filler pic x(26) value "0CLASS-ID".
-     03  filler pic x(26) value "0CLASSIFICATION".
-     03  filler pic x(26) value "1CLOSE".
-     03  filler pic x(26) value "0CODE".
-     03  filler pic x(26) value "1CODE-SET".
-     03  filler pic x(26) value "1COL".
-     03  filler pic x(26) value "1COLLATING".
-     03  filler pic x(26) value "1COLS".
-     03  filler pic x(26) value "1COLUMN".
-     03  filler pic x(26) value "1COLUMNS".
-     03  filler pic x(26) value "1COMMA".
-     03  filler pic x(26) value "1COMMAND-LINE".
-     03  filler pic x(26) value "1COMMIT".
-     03  filler pic x(26) value "1COMMON".
-     03  filler pic x(26) value "0COMMUNICATION".
-     03  filler pic x(26) value "1COMP".
-     03  filler pic x(26) value "1COMP-1".
-     03  filler pic x(26) value "1COMP-2".
-     03  filler pic x(26) value "1COMP-3".
-     03  filler pic x(26) value "1COMP-4".
-     03  filler pic x(26) value "1COMP-5".
-     03  filler pic x(26) value "1COMP-X".
-     03  filler pic x(26) value "1COMPUTATIONAL".
-     03  filler pic x(26) value "1COMPUTATIONAL-1".
-     03  filler pic x(26) value "1COMPUTATIONAL-2".
-     03  filler pic x(26) value "1COMPUTATIONAL-3".
-     03  filler pic x(26) value "1COMPUTATIONAL-4".
-     03  filler pic x(26) value "1COMPUTATIONAL-5".
-     03  filler pic x(26) value "1COMPUTATIONAL-X".
-     03  filler pic x(26) value "1COMPUTE".
-     03  filler pic x(26) value "0CONDITION".
-     03  filler pic x(26) value "1CONFIGURATION".
-     03  filler pic x(26) value "1CONSTANT".
-     03  filler pic x(26) value "1CONTAINS".
-     03  filler pic x(26) value "1CONTENT".
-     03  filler pic x(26) value "1CONTINUE".
-     03  filler pic x(26) value "0CONTROL".
-     03  filler pic x(26) value "0CONTROLS".
-     03  filler pic x(26) value "1CONVERTING".
-     03  filler pic x(26) value "1COPY".
-     03  filler pic x(26) value "1CORR".
-     03  filler pic x(26) value "1CORRESPONDING".
-     03  filler pic x(26) value "1COUNT".
-     03  filler pic x(26) value "1CRT".
-     03  filler pic x(26) value "1CURRENCY".
-     03  filler pic x(26) value "1CURSOR".
-     03  filler pic x(26) value "1CYCLE".
-     03  filler pic x(26) value "1DATA".
-     03  filler pic x(26) value "0DATA-POINTER".
-     03  filler pic x(26) value "1DATE".
-     03  filler pic x(26) value "1DAY".
-     03  filler pic x(26) value "1DAY-OF-WEEK".
-     03  filler pic x(26) value "0DE".
-     03  filler pic x(26) value "1DEBUGGING".
-     03  filler pic x(26) value "1DECIMAL-POINT".
-     03  filler pic x(26) value "1DECLARATIVES".
-     03  filler pic x(26) value "1DEFAULT".
-     03  filler pic x(26) value "1DELETE".
-     03  filler pic x(26) value "1DELIMITED".
-     03  filler pic x(26) value "1DELIMITER".
-     03  filler pic x(26) value "1DEPENDING".
-     03  filler pic x(26) value "1DESCENDING".
-     03  filler pic x(26) value "0DESTINATION".
-     03  filler pic x(26) value "0DETAIL".
-     03  filler pic x(26) value "0DISABLE".
-     03  filler pic x(26) value "1DISK".
-     03  filler pic x(26) value "1DISPLAY".
-     03  filler pic x(26) value "1DIVIDE".
-     03  filler pic x(26) value "1DIVISION".
-     03  filler pic x(26) value "1DOWN".
-     03  filler pic x(26) value "1DUPLICATES".
-     03  filler pic x(26) value "1DYNAMIC".
-     03  filler pic x(26) value "1EBCDIC".
-     03  filler pic x(26) value "0EC".
-     03  filler pic x(26) value "0EGI".
-     03  filler pic x(26) value "1ELSE".
-     03  filler pic x(26) value "0EMI".
-     03  filler pic x(26) value "0ENABLE".
-     03  filler pic x(26) value "1END".
-     03  filler pic x(26) value "1END-ACCEPT".
-     03  filler pic x(26) value "1END-ADD".
-     03  filler pic x(26) value "1END-CALL".
-     03  filler pic x(26) value "1END-COMPUTE".
-     03  filler pic x(26) value "1END-DELETE".
-     03  filler pic x(26) value "1END-DISPLAY".
-     03  filler pic x(26) value "1END-DIVIDE".
-     03  filler pic x(26) value "1END-EVALUATE".
-     03  filler pic x(26) value "1END-IF".
-     03  filler pic x(26) value "1END-MULTIPLY".
-     03  filler pic x(26) value "1END-OF-PAGE".
-     03  filler pic x(26) value "1END-PERFORM".
-     03  filler pic x(26) value "1END-READ".
-     03  filler pic x(26) value "0END-RECEIVE".
-     03  filler pic x(26) value "1END-RETURN".
-     03  filler pic x(26) value "1END-REWRITE".
-     03  filler pic x(26) value "1END-SEARCH".
-     03  filler pic x(26) value "1END-START".
-     03  filler pic x(26) value "1END-STRING".
-     03  filler pic x(26) value "1END-SUBTRACT".
-     03  filler pic x(26) value "1END-UNSTRING".
-     03  filler pic x(26) value "1END-WRITE".
-     03  filler pic x(26) value "1ENTRY".
-     03  filler pic x(26) value "0ENTRY-CONVENTION".
-     03  filler pic x(26) value "1ENVIRONMENT".
-     03  filler pic x(26) value "1ENVIRONMENT-NAME".
-     03  filler pic x(26) value "1ENVIRONMENT-VALUE".
-     03  filler pic x(26) value "0EO".
-     03  filler pic x(26) value "1EOL".
-     03  filler pic x(26) value "1EOP".
-     03  filler pic x(26) value "1EOS".
-     03  filler pic x(26) value "1EQUAL".
-     03  filler pic x(26) value "1EQUALS".
-     03  filler pic x(26) value "1ERASE".
-     03  filler pic x(26) value "1ERROR".
-     03  filler pic x(26) value "1ESCAPE".
-     03  filler pic x(26) value "0ESI".
-     03  filler pic x(26) value "1EVALUATE".
-     03  filler pic x(26) value "1EXCEPTION".
-     03  filler pic x(26) value "0EXCEPTION-OBJECT".
-     03  filler pic x(26) value "1EXCLUSIVE".
-     03  filler pic x(26) value "1EXIT".
-     03  filler pic x(26) value "0EXPANDS".
-     03  filler pic x(26) value "1EXTEND".
-     03  filler pic x(26) value "1EXTERNAL".
-     03  filler pic x(26) value "0FACTORY".
-     03  filler pic x(26) value "1FALSE".
-     03  filler pic x(26) value "1FD".
-     03  filler pic x(26) value "1FILE".
-     03  filler pic x(26) value "1FILE-CONTROL".
-     03  filler pic x(26) value "1FILE-ID".
-     03  filler pic x(26) value "1FILLER".
-     03  filler pic x(26) value "0FINAL".
-     03  filler pic x(26) value "1FIRST".
-     03  filler pic x(26) value "0FLOAT-BINARY-16".
-     03  filler pic x(26) value "0FLOAT-BINARY-34".
-     03  filler pic x(26) value "0FLOAT-BINARY-7".
-     03  filler pic x(26) value "0FLOAT-DECIMAL-16".
-     03  filler pic x(26) value "0FLOAT-DECIMAL-34".
-     03  filler pic x(26) value "0FLOAT-EXTENDED".
-     03  filler pic x(26) value "1FLOAT-LONG".
-     03  filler pic x(26) value "1FLOAT-SHORT".
-     03  filler pic x(26) value "1FOOTING".
-     03  filler pic x(26) value "1FOR".
-     03  filler pic x(26) value "1FOREGROUND-COLOR".
-     03  filler pic x(26) value "1FOREVER".
-     03  filler pic x(26) value "0FORMAT".
-     03  filler pic x(26) value "1FREE".
-     03  filler pic x(26) value "1FROM".
-     03  filler pic x(26) value "1FULL".
-     03  filler pic x(26) value "1FUNCTION".
-     03  filler pic x(26) value "0FUNCTION-ID".
-     03  filler pic x(26) value "0FUNCTION-POINTER".
-     03  filler pic x(26) value "0GENERATE".
-     03  filler pic x(26) value "0GET".
-     03  filler pic x(26) value "1GIVING".
-     03  filler pic x(26) value "1GLOBAL".
-     03  filler pic x(26) value "1GO".
-     03  filler pic x(26) value "1GOBACK".
-     03  filler pic x(26) value "1GREATER".
-     03  filler pic x(26) value "0GROUP".
-     03  filler pic x(26) value "0GROUP-USAGE".
-     03  filler pic x(26) value "0HEADING".
-     03  filler pic x(26) value "1HIGH-VALUE".
-     03  filler pic x(26) value "1HIGH-VALUES".
-     03  filler pic x(26) value "1HIGHLIGHT".
-     03  filler pic x(26) value "1I-O".
-     03  filler pic x(26) value "1I-O-CONTROL".
-     03  filler pic x(26) value "1ID".
-     03  filler pic x(26) value "1IDENTIFICATION".
-     03  filler pic x(26) value "1IF".
-     03  filler pic x(26) value "1IGNORE".
-     03  filler pic x(26) value "1IGNORING".
-     03  filler pic x(26) value "0IMPLEMENTS".
-     03  filler pic x(26) value "1IN".
-     03  filler pic x(26) value "1INDEX".
-     03  filler pic x(26) value "1INDEXED".
-     03  filler pic x(26) value "0INDICATE".
-     03  filler pic x(26) value "0INFINITY".
-     03  filler pic x(26) value "0INHERITS".
-     03  filler pic x(26) value "1INITIAL".
-     03  filler pic x(26) value "1INITIALIZE".
-     03  filler pic x(26) value "1INITIALIZED".
-     03  filler pic x(26) value "0INITIATE".
-     03  filler pic x(26) value "1INPUT".
-     03  filler pic x(26) value "1INPUT-OUTPUT".
-     03  filler pic x(26) value "1INSPECT".
-     03  filler pic x(26) value "0INTERFACE".
-     03  filler pic x(26) value "0INTERFACE-ID".
-     03  filler pic x(26) value "1INTO".
-     03  filler pic x(26) value "0INTRINSIC".
-     03  filler pic x(26) value "1INVALID".
-     03  filler pic x(26) value "0INVOKE".
-     03  filler pic x(26) value "1IS".
-     03  filler pic x(26) value "1JUST".
-     03  filler pic x(26) value "1JUSTIFIED".
-     03  filler pic x(26) value "1KEY".
-     03  filler pic x(26) value "1LABEL".
-     03  filler pic x(26) value "0LAST".
-     03  filler pic x(26) value "0LC_ALL".
-     03  filler pic x(26) value "0LC_COLLATE".
-     03  filler pic x(26) value "0LC_CTYPE".
-     03  filler pic x(26) value "0LC_MESSAGES".
-     03  filler pic x(26) value "0LC_MONETARY".
-     03  filler pic x(26) value "0LC_NUMERIC".
-     03  filler pic x(26) value "0LC_TIME".
-     03  filler pic x(26) value "1LEADING".
-     03  filler pic x(26) value "1LEFT".
-     03  filler pic x(26) value "1LENGTH".
-     03  filler pic x(26) value "1LESS".
-     03  filler pic x(26) value "0LIMIT".
-     03  filler pic x(26) value "0LIMITS".
-     03  filler pic x(26) value "1LINAGE".
-     03  filler pic x(26) value "1LINAGE-COUNTER".
-     03  filler pic x(26) value "1LINE".
-     03  filler pic x(26) value "0LINE-COUNTER".
-     03  filler pic x(26) value "1LINES".
-     03  filler pic x(26) value "1LINKAGE".
-     03  filler pic x(26) value "1LOCAL-STORAGE".
-     03  filler pic x(26) value "1LOCALE".
-     03  filler pic x(26) value "1LOCK".
-     03  filler pic x(26) value "1LOW-VALUE".
-     03  filler pic x(26) value "1LOW-VALUES".
-     03  filler pic x(26) value "1LOWLIGHT".
-     03  filler pic x(26) value "1MANUAL".
-     03  filler pic x(26) value "1MEMORY".
-     03  filler pic x(26) value "1MERGE".
-     03  filler pic x(26) value "0MESSAGE".
-     03  filler pic x(26) value "0METHOD".
-     03  filler pic x(26) value "0METHOD-ID".
-     03  filler pic x(26) value "1MINUS".
-     03  filler pic x(26) value "1MODE".
-     03  filler pic x(26) value "1MOVE".
-     03  filler pic x(26) value "1MULTIPLE".
-     03  filler pic x(26) value "1MULTIPLY".
-     03  filler pic x(26) value "1NATIONAL".
-     03  filler pic x(26) value "1NATIONAL-EDITED".
-     03  filler pic x(26) value "1NATIVE".
-     03  filler pic x(26) value "1NEGATIVE".
-     03  filler pic x(26) value "0NESTED".
-     03  filler pic x(26) value "1NEXT".
-     03  filler pic x(26) value "1NO".
-     03  filler pic x(26) value "0NONE".
-     03  filler pic x(26) value "0NORMAL".
-     03  filler pic x(26) value "1NOT".
-     03  filler pic x(26) value "1NULL".
-     03  filler pic x(26) value "1NULLS".
-     03  filler pic x(26) value "1NUMBER".
-     03  filler pic x(26) value "1NUMBER-OF-CALL-PARAMETERS".
-     03  filler pic x(26) value "1NUMBERS".
-     03  filler pic x(26) value "1NUMERIC".
-     03  filler pic x(26) value "1NUMERIC-EDITED".
-     03  filler pic x(26) value "0OBJECT".
-     03  filler pic x(26) value "1OBJECT-COMPUTER".
-     03  filler pic x(26) value "0OBJECT-REFERENCE".
-     03  filler pic x(26) value "1OCCURS".
-     03  filler pic x(26) value "1OF".
-     03  filler pic x(26) value "1OFF".
-     03  filler pic x(26) value "1OMITTED".
-     03  filler pic x(26) value "1ON".
-     03  filler pic x(26) value "1ONLY".
-     03  filler pic x(26) value "1OPEN".
-     03  filler pic x(26) value "1OPTIONAL".
-     03  filler pic x(26) value "0OPTIONS".
-     03  filler pic x(26) value "1OR".
-     03  filler pic x(26) value "1ORDER".
-     03  filler pic x(26) value "1ORGANIZATION".
-     03  filler pic x(26) value "1OTHER".
-     03  filler pic x(26) value "1OUTPUT".
-     03  filler pic x(26) value "1OVERFLOW".
-     03  filler pic x(26) value "1OVERLINE".
-     03  filler pic x(26) value "0OVERRIDE".
-     03  filler pic x(26) value "1PACKED-DECIMAL".
-     03  filler pic x(26) value "1PADDING".
-     03  filler pic x(26) value "1PAGE".
-     03  filler pic x(26) value "0PAGE-COUNTER".
-     03  filler pic x(26) value "1PARAGRAPH".
-     03  filler pic x(26) value "1PERFORM".
-     03  filler pic x(26) value "0PF".
-     03  filler pic x(26) value "0PH".
-     03  filler pic x(26) value "1PIC".
-     03  filler pic x(26) value "1PICTURE".
-     03  filler pic x(26) value "1PLUS".
-     03  filler pic x(26) value "1POINTER".
-     03  filler pic x(26) value "1POSITION".
-     03  filler pic x(26) value "1POSITIVE".
-     03  filler pic x(26) value "0PRESENT".
-     03  filler pic x(26) value "1PREVIOUS".
-     03  filler pic x(26) value "1PRINTER".
-     03  filler pic x(26) value "0PRINTING".
-     03  filler pic x(26) value "1PROCEDURE".
-     03  filler pic x(26) value "1PROCEDURE-POINTER".
-     03  filler pic x(26) value "1PROCEDURES".
-     03  filler pic x(26) value "1PROCEED".
-     03  filler pic x(26) value "1PROGRAM".
-     03  filler pic x(26) value "1PROGRAM-ID".
-     03  filler pic x(26) value "1PROGRAM-POINTER".
-     03  filler pic x(26) value "1PROMPT".
-     03  filler pic x(26) value "0PROPERTY".
-     03  filler pic x(26) value "0PROTOTYPE".
-     03  filler pic x(26) value "0PURGE".
-     03  filler pic x(26) value "0QUEUE".
-     03  filler pic x(26) value "1QUOTE".
-     03  filler pic x(26) value "1QUOTES".
-     03  filler pic x(26) value "0RAISE".
-     03  filler pic x(26) value "0RAISING".
-     03  filler pic x(26) value "1RANDOM".
-     03  filler pic x(26) value "0RD".
-     03  filler pic x(26) value "1READ".
-     03  filler pic x(26) value "0RECEIVE".
-     03  filler pic x(26) value "1RECORD".
-     03  filler pic x(26) value "1RECORDING".
-     03  filler pic x(26) value "1RECORDS".
-     03  filler pic x(26) value "1RECURSIVE".
-     03  filler pic x(26) value "1REDEFINES".
-     03  filler pic x(26) value "1REEL".
-     03  filler pic x(26) value "1REFERENCE".
-     03  filler pic x(26) value "0RELATION".
-     03  filler pic x(26) value "1RELATIVE".
-     03  filler pic x(26) value "1RELEASE".
-     03  filler pic x(26) value "1REMAINDER".
-     03  filler pic x(26) value "1REMOVAL".
-     03  filler pic x(26) value "1RENAMES".
-     03  filler pic x(26) value "0REPLACE".
-     03  filler pic x(26) value "1REPLACING".
-     03  filler pic x(26) value "0REPORT".
-     03  filler pic x(26) value "0REPORTING".
-     03  filler pic x(26) value "0REPORTS".
-     03  filler pic x(26) value "1REPOSITORY".
-     03  filler pic x(26) value "0REPRESENTS-NOT-A-NUMBER".
-     03  filler pic x(26) value "1REQUIRED".
-     03  filler pic x(26) value "1RESERVE".
-     03  filler pic x(26) value "0RESET".
-     03  filler pic x(26) value "0RESUME".
-     03  filler pic x(26) value "0RETRY".
-     03  filler pic x(26) value "1RETURN".
-     03  filler pic x(26) value "1RETURN-CODE".
-     03  filler pic x(26) value "1RETURNING".
-     03  filler pic x(26) value "1REVERSE-VIDEO".
-     03  filler pic x(26) value "1REWIND".
-     03  filler pic x(26) value "1REWRITE".
-     03  filler pic x(26) value "0RF".
-     03  filler pic x(26) value "0RH".
-     03  filler pic x(26) value "1RIGHT".
-     03  filler pic x(26) value "1ROLLBACK".
-     03  filler pic x(26) value "1ROUNDED".
-     03  filler pic x(26) value "1RUN".
-     03  filler pic x(26) value "1SAME".
-     03  filler pic x(26) value "1SCREEN".
-     03  filler pic x(26) value "1SD".
-     03  filler pic x(26) value "1SEARCH".
-     03  filler pic x(26) value "0SECONDS".
-     03  filler pic x(26) value "1SECTION".
-     03  filler pic x(26) value "1SECURE".
-     03  filler pic x(26) value "0SEGMENT".
-     03  filler pic x(26) value "1SEGMENT-LIMIT".
-     03  filler pic x(26) value "1SELECT".
-     03  filler pic x(26) value "0SELF".
-     03  filler pic x(26) value "0SEND".
-     03  filler pic x(26) value "1SENTENCE".
-     03  filler pic x(26) value "1SEPARATE".
-     03  filler pic x(26) value "1SEQUENCE".
-     03  filler pic x(26) value "1SEQUENTIAL".
-     03  filler pic x(26) value "1SET".
-     03  filler pic x(26) value "1SHARING".
-     03  filler pic x(26) value "1SIGN".
-     03  filler pic x(26) value "1SIGNED".
-     03  filler pic x(26) value "1SIGNED-INT".
-     03  filler pic x(26) value "1SIGNED-LONG".
-     03  filler pic x(26) value "1SIGNED-SHORT".
-     03  filler pic x(26) value "1SIZE".
-     03  filler pic x(26) value "1SORT".
-     03  filler pic x(26) value "1SORT-MERGE".
-     03  filler pic x(26) value "1SORT-RETURN".
-     03  filler pic x(26) value "1SOURCE".
-     03  filler pic x(26) value "1SOURCE-COMPUTER".
-     03  filler pic x(26) value "0SOURCES".
-     03  filler pic x(26) value "1SPACE".
-     03  filler pic x(26) value "1SPACES".
-     03  filler pic x(26) value "1SPECIAL-NAMES".
-     03  filler pic x(26) value "1STANDARD".
-     03  filler pic x(26) value "1STANDARD-1".
-     03  filler pic x(26) value "1STANDARD-2".
-     03  filler pic x(26) value "1START".
-     03  filler pic x(26) value "0STATEMENT".
-     03  filler pic x(26) value "1STATUS".
-     03  filler pic x(26) value "0STEP".
-     03  filler pic x(26) value "1STOP".
-     03  filler pic x(26) value "1STRING".
-     03  filler pic x(26) value "0STRONG".
-     03  filler pic x(26) value "0SUB-QUEUE-1".
-     03  filler pic x(26) value "0SUB-QUEUE-2".
-     03  filler pic x(26) value "0SUB-QUEUE-3".
-     03  filler pic x(26) value "1SUBTRACT".
-     03  filler pic x(26) value "0SUM".
-     03  filler pic x(26) value "0SUPER".
-     03  filler pic x(26) value "0SUPPRESS".
-     03  filler pic x(26) value "0SYMBOL".
-     03  filler pic x(26) value "1SYMBOLIC".
-     03  filler pic x(26) value "1SYNC".
-     03  filler pic x(26) value "1SYNCHRONIZED".
-     03  filler pic x(26) value "0SYSTEM-DEFAULT".
-     03  filler pic x(26) value "0TABLE".
-     03  filler pic x(26) value "1TALLYING".
-     03  filler pic x(26) value "1TAPE".
-     03  filler pic x(26) value "0TERMINAL".
-     03  filler pic x(26) value "0TERMINATE".
-     03  filler pic x(26) value "1TEST".
-     03  filler pic x(26) value "0TEXT".
-     03  filler pic x(26) value "1THAN".
-     03  filler pic x(26) value "1THEN".
-     03  filler pic x(26) value "1THROUGH".
-     03  filler pic x(26) value "1THRU".
-     03  filler pic x(26) value "1TIME".
-     03  filler pic x(26) value "1TIMES".
-     03  filler pic x(26) value "1TO".
-     03  filler pic x(26) value "1TOP".
-     03  filler pic x(26) value "1TRAILING".
-     03  filler pic x(26) value "1TRANSFORM".
-     03  filler pic x(26) value "1TRUE".
-     03  filler pic x(26) value "0TYPE".
-     03  filler pic x(26) value "0TYPEDEF".
-     03  filler pic x(26) value "0UCS-4".
-     03  filler pic x(26) value "1UNDERLINE".
-     03  filler pic x(26) value "1UNIT".
-     03  filler pic x(26) value "0UNIVERSAL".
-     03  filler pic x(26) value "1UNLOCK".
-     03  filler pic x(26) value "1UNSIGNED".
-     03  filler pic x(26) value "1UNSIGNED-INT".
-     03  filler pic x(26) value "1UNSIGNED-LONG".
-     03  filler pic x(26) value "1UNSIGNED-SHORT".
-     03  filler pic x(26) value "1UNSTRING".
-     03  filler pic x(26) value "1UNTIL".
-     03  filler pic x(26) value "1UP".
-     03  filler pic x(26) value "1UPDATE".
-     03  filler pic x(26) value "1UPON".
-     03  filler pic x(26) value "1USAGE".
-     03  filler pic x(26) value "1USE".
-     03  filler pic x(26) value "0USER-DEFAULT".
-     03  filler pic x(26) value "1USING".
-     03  filler pic x(26) value "0UTF-16".
-     03  filler pic x(26) value "0UTF-8".
-     03  filler pic x(26) value "0VAL-STATUS".
-     03  filler pic x(26) value "0VALID".
-     03  filler pic x(26) value "0VALIDATE".
-     03  filler pic x(26) value "0VALIDATE-STATUS".
-     03  filler pic x(26) value "1VALUE".
-     03  filler pic x(26) value "1VALUES".
-     03  filler pic x(26) value "1VARYING".
-     03  filler pic x(26) value "1WAIT".
-     03  filler pic x(26) value "1WHEN".
-     03  filler pic x(26) value "1WITH".
-     03  filler pic x(26) value "1WORDS".
-     03  filler pic x(26) value "1WORKING-STORAGE".
-     03  filler pic x(26) value "1WRITE".
-     03  filler pic x(26) value "1YYYYDDD".
-     03  filler pic x(26) value "1YYYYMMDD".
-     03  filler pic x(26) value "1ZERO".
-     03  filler pic x(26) value "1ZEROES".
-     03  filler pic x(26) value "1ZEROS".
+ 01  Additional-Reserved-Words.                                   *> updatable by Get-Reserved-Lists.cbl
+     03  filler pic x(31) value "1ACCEPT             ".
+     03  filler pic x(31) value "1ACCESS             ".
+     03  filler pic x(31) value "0ACTIVE-CLASS       ".
+     03  filler pic x(31) value "1ADD                ".
+     03  filler pic x(31) value "1ADDRESS            ".
+     03  filler pic x(31) value "1ADVANCING          ".
+     03  filler pic x(31) value "1AFTER              ".
+     03  filler pic x(31) value "0ALIGNED            ".
+     03  filler pic x(31) value "1ALL                ".
+     03  filler pic x(31) value "1ALLOCATE           ".
+     03  filler pic x(31) value "1ALPHABET           ".
+     03  filler pic x(31) value "1ALPHABETIC         ".
+     03  filler pic x(31) value "1ALPHABETIC-LOWER   ".
+     03  filler pic x(31) value "1ALPHABETIC-UPPER   ".
+     03  filler pic x(31) value "1ALPHANUMERIC       ".
+     03  filler pic x(31) value "1ALPHANUMERIC-EDITED".
+     03  filler pic x(31) value "1ALSO".
+     03  filler pic x(31) value "1ALTER".
+     03  filler pic x(31) value "1ALTERNATE".
+     03  filler pic x(31) value "1AND".
+     03  filler pic x(31) value "1ANY".
+     03  filler pic x(31) value "0ANYCASE".
+     03  filler pic x(31) value "1ARE".
+     03  filler pic x(31) value "1AREA".
+     03  filler pic x(31) value "1AREAS".
+     03  filler pic x(31) value "1ARGUMENT-NUMBER".
+     03  filler pic x(31) value "1ARGUMENT-VALUE".
+     03  filler pic x(31) value "0ARITHMETIC".
+     03  filler pic x(31) value "1AS".
+     03  filler pic x(31) value "1ASCENDING".
+     03  filler pic x(31) value "1ASCII".
+     03  filler pic x(31) value "1ASSIGN".
+     03  filler pic x(31) value "1AT".
+     03  filler pic x(31) value "0ATTRIBUTE".
+     03  filler pic x(31) value "1AUTO".
+     03  filler pic x(31) value "1AUTO-SKIP".
+     03  filler pic x(31) value "1AUTOMATIC".
+     03  filler pic x(31) value "1AUTOTERMINATE".
+     03  filler pic x(31) value "1AWAY-FROM-ZERO".
+     03  filler pic x(31) value "0B-AND".
+     03  filler pic x(31) value "0B-NOT".
+     03  filler pic x(31) value "0B-OR".
+     03  filler pic x(31) value "0B-XOR".
+     03  filler pic x(31) value "1BACKGROUND-COLOR".
+     03  filler pic x(31) value "1BACKGROUND-COLOUR".
+     03  filler pic x(31) value "1BASED".
+     03  filler pic x(31) value "1BEEP".
+     03  filler pic x(31) value "1BEFORE".
+     03  filler pic x(31) value "1BELL".
+     03  filler pic x(31) value "1BINARY".
+     03  filler pic x(31) value "1BINARY-C-LONG".
+     03  filler pic x(31) value "1BINARY-CHAR".
+     03  filler pic x(31) value "1BINARY-DOUBLE".
+     03  filler pic x(31) value "1BINARY-INT".
+     03  filler pic x(31) value "1BINARY-LONG".
+     03  filler pic x(31) value "1BINARY-LONG-LONG".
+     03  filler pic x(31) value "1BINARY-SHORT".
+     03  filler pic x(31) value "0BIT".
+     03  filler pic x(31) value "1BLANK".
+     03  filler pic x(31) value "1BLINK".
+     03  filler pic x(31) value "1BLOCK".
+     03  filler pic x(31) value "0BOOLEAN".
+     03  filler pic x(31) value "1BOTTOM".
+     03  filler pic x(31) value "1BY".
+     03  filler pic x(31) value "0BYTE-LENGTH".
+     03  filler pic x(31) value "1CALL".
+     03  filler pic x(31) value "1CANCEL".
+     03  filler pic x(31) value "0CAPACITY".
+     03  filler pic x(31) value "0CD".
+     03  filler pic x(31) value "0CENTER".
+     03  filler pic x(31) value "1CF".
+     03  filler pic x(31) value "1CH".
+     03  filler pic x(31) value "0CHAIN".
+     03  filler pic x(31) value "1CHAINING".
+     03  filler pic x(31) value "1CHARACTER".
+     03  filler pic x(31) value "1CHARACTERS".
+     03  filler pic x(31) value "1CLASS".
+     03  filler pic x(31) value "0CLASS-ID".
+     03  filler pic x(31) value "0CLASSIFICATION".
+     03  filler pic x(31) value "1CLOSE".
+     03  filler pic x(31) value "1COB-CRT-STATUS".
+     03  filler pic x(31) value "1CODE".
+     03  filler pic x(31) value "1CODE-SET".
+     03  filler pic x(31) value "1COL".
+     03  filler pic x(31) value "1COLLATING".
+     03  filler pic x(31) value "1COLS".
+     03  filler pic x(31) value "1COLUMN".
+     03  filler pic x(31) value "1COLUMNS".
+     03  filler pic x(31) value "1COMMA".
+     03  filler pic x(31) value "1COMMAND-LINE".
+     03  filler pic x(31) value "1COMMIT".
+     03  filler pic x(31) value "1COMMON".
+     03  filler pic x(31) value "0COMMUNICATION".
+     03  filler pic x(31) value "1COMP".
+     03  filler pic x(31) value "1COMP-1".
+     03  filler pic x(31) value "1COMP-2".
+     03  filler pic x(31) value "1COMP-3".
+     03  filler pic x(31) value "1COMP-4".
+     03  filler pic x(31) value "1COMP-5".
+     03  filler pic x(31) value "1COMP-X".
+     03  filler pic x(31) value "1COMPUTATIONAL".
+     03  filler pic x(31) value "1COMPUTATIONAL-1".
+     03  filler pic x(31) value "1COMPUTATIONAL-2".
+     03  filler pic x(31) value "1COMPUTATIONAL-3".
+     03  filler pic x(31) value "1COMPUTATIONAL-4".
+     03  filler pic x(31) value "1COMPUTATIONAL-5".
+     03  filler pic x(31) value "1COMPUTATIONAL-X".
+     03  filler pic x(31) value "1COMPUTE".
+     03  filler pic x(31) value "0CONDITION".
+     03  filler pic x(31) value "1CONFIGURATION".
+     03  filler pic x(31) value "1CONSTANT".
+     03  filler pic x(31) value "1CONTAINS".
+     03  filler pic x(31) value "1CONTENT".
+     03  filler pic x(31) value "1CONTINUE".
+     03  filler pic x(31) value "1CONTROL".
+     03  filler pic x(31) value "1CONTROLS".
+     03  filler pic x(31) value "1CONVERTING".
+     03  filler pic x(31) value "1COPY".
+     03  filler pic x(31) value "1CORR".
+     03  filler pic x(31) value "1CORRESPONDING".
+     03  filler pic x(31) value "1COUNT".
+     03  filler pic x(31) value "1CRT".
+     03  filler pic x(31) value "1CRT-UNDER".
+     03  filler pic x(31) value "1CURRENCY".
+     03  filler pic x(31) value "1CURSOR".
+     03  filler pic x(31) value "1CYCLE".
+     03  filler pic x(31) value "1DATA".
+     03  filler pic x(31) value "0DATA-POINTER".
+     03  filler pic x(31) value "1DATE".
+     03  filler pic x(31) value "1DAY".
+     03  filler pic x(31) value "1DAY-OF-WEEK".
+     03  filler pic x(31) value "1DE".
+     03  filler pic x(31) value "1DEBUGGING".
+     03  filler pic x(31) value "1DECIMAL-POINT".
+     03  filler pic x(31) value "1DECLARATIVES".
+     03  filler pic x(31) value "1DEFAULT".
+     03  filler pic x(31) value "1DELETE".
+     03  filler pic x(31) value "1DELIMITED".
+     03  filler pic x(31) value "1DELIMITER".
+     03  filler pic x(31) value "1DEPENDING".
+     03  filler pic x(31) value "1DESCENDING".
+     03  filler pic x(31) value "0DESTINATION".
+     03  filler pic x(31) value "1DETAIL".
+     03  filler pic x(31) value "0DISABLE".
+     03  filler pic x(31) value "1DISK".
+     03  filler pic x(31) value "1DISPLAY".
+     03  filler pic x(31) value "1DIVIDE".
+     03  filler pic x(31) value "1DIVISION".
+     03  filler pic x(31) value "1DOWN".
+     03  filler pic x(31) value "1DUPLICATES".
+     03  filler pic x(31) value "1DYNAMIC".
+     03  filler pic x(31) value "1EBCDIC".
+     03  filler pic x(31) value "0EC".
+     03  filler pic x(31) value "0EGI".
+     03  filler pic x(31) value "1ELSE".
+     03  filler pic x(31) value "0EMI".
+     03  filler pic x(31) value "1EMPTY-CHECK".
+     03  filler pic x(31) value "0ENABLE".
+     03  filler pic x(31) value "1END".
+     03  filler pic x(31) value "1END-ACCEPT".
+     03  filler pic x(31) value "1END-ADD".
+     03  filler pic x(31) value "1END-CALL".
+     03  filler pic x(31) value "1END-COMPUTE".
+     03  filler pic x(31) value "1END-DELETE".
+     03  filler pic x(31) value "1END-DISPLAY".
+     03  filler pic x(31) value "1END-DIVIDE".
+     03  filler pic x(31) value "1END-EVALUATE".
+     03  filler pic x(31) value "1END-IF".
+     03  filler pic x(31) value "1END-MULTIPLY".
+     03  filler pic x(31) value "1END-OF-PAGE".
+     03  filler pic x(31) value "1END-PERFORM".
+     03  filler pic x(31) value "1END-READ".
+     03  filler pic x(31) value "0END-RECEIVE".
+     03  filler pic x(31) value "1END-RETURN".
+     03  filler pic x(31) value "1END-REWRITE".
+     03  filler pic x(31) value "1END-SEARCH".
+     03  filler pic x(31) value "1END-START".
+     03  filler pic x(31) value "1END-STRING".
+     03  filler pic x(31) value "1END-SUBTRACT".
+     03  filler pic x(31) value "1END-UNSTRING".
+     03  filler pic x(31) value "1END-WRITE".
+     03  filler pic x(31) value "1ENTRY".
+     03  filler pic x(31) value "0ENTRY-CONVENTION".
+     03  filler pic x(31) value "1ENVIRONMENT".
+     03  filler pic x(31) value "1ENVIRONMENT-NAME".
+     03  filler pic x(31) value "1ENVIRONMENT-VALUE".
+     03  filler pic x(31) value "0EO".
+     03  filler pic x(31) value "1EOL".
+     03  filler pic x(31) value "1EOP".
+     03  filler pic x(31) value "1EOS".
+     03  filler pic x(31) value "1EQUAL".
+     03  filler pic x(31) value "1EQUALS".
+     03  filler pic x(31) value "1ERASE".
+     03  filler pic x(31) value "1ERROR".
+     03  filler pic x(31) value "1ESCAPE".
+     03  filler pic x(31) value "0ESI".
+     03  filler pic x(31) value "1EVALUATE".
+     03  filler pic x(31) value "1EXCEPTION".
+     03  filler pic x(31) value "0EXCEPTION-OBJECT".
+     03  filler pic x(31) value "1EXCLUSIVE".
+     03  filler pic x(31) value "1EXIT".
+     03  filler pic x(31) value "0EXPANDS".
+     03  filler pic x(31) value "1EXTEND".
+     03  filler pic x(31) value "1EXTERNAL".
+     03  filler pic x(31) value "0FACTORY".
+     03  filler pic x(31) value "1FALSE".
+     03  filler pic x(31) value "1FD".
+     03  filler pic x(31) value "1FILE".
+     03  filler pic x(31) value "1FILE-CONTROL".
+     03  filler pic x(31) value "1FILE-ID".
+     03  filler pic x(31) value "1FILLER".
+     03  filler pic x(31) value "1FINAL".
+     03  filler pic x(31) value "1FIRST".
+     03  filler pic x(31) value "0FLOAT-BINARY-16".
+     03  filler pic x(31) value "0FLOAT-BINARY-34".
+     03  filler pic x(31) value "0FLOAT-BINARY-7".
+     03  filler pic x(31) value "0FLOAT-DECIMAL-16".
+     03  filler pic x(31) value "0FLOAT-DECIMAL-34".
+     03  filler pic x(31) value "0FLOAT-EXTENDED".
+     03  filler pic x(31) value "1FLOAT-LONG".
+     03  filler pic x(31) value "1FLOAT-SHORT".
+     03  filler pic x(31) value "1FOOTING".
+     03  filler pic x(31) value "1FOR".
+     03  filler pic x(31) value "1FOREGROUND-COLOR".
+     03  filler pic x(31) value "1FOREGROUND-COLOUR".
+     03  filler pic x(31) value "1FOREVER".
+     03  filler pic x(31) value "0FORMAT".
+     03  filler pic x(31) value "1FREE".
+     03  filler pic x(31) value "1FROM".
+     03  filler pic x(31) value "1FULL".
+     03  filler pic x(31) value "1FUNCTION".
+     03  filler pic x(31) value "1FUNCTION-ID".
+     03  filler pic x(31) value "0FUNCTION-POINTER".
+     03  filler pic x(31) value "1GENERATE".
+     03  filler pic x(31) value "0GET".
+     03  filler pic x(31) value "1GIVING".
+     03  filler pic x(31) value "1GLOBAL".
+     03  filler pic x(31) value "1GO".
+     03  filler pic x(31) value "1GOBACK".
+     03  filler pic x(31) value "1GREATER".
+     03  filler pic x(31) value "1GROUP".
+     03  filler pic x(31) value "0GROUP-USAGE".
+     03  filler pic x(31) value "1HEADING".
+     03  filler pic x(31) value "1HIGH-VALUE".
+     03  filler pic x(31) value "1HIGH-VALUES".
+     03  filler pic x(31) value "1HIGHLIGHT".
+     03  filler pic x(31) value "1I-O".
+     03  filler pic x(31) value "1I-O-CONTROL".
+     03  filler pic x(31) value "1ID".
+     03  filler pic x(31) value "1IDENTIFICATION".
+     03  filler pic x(31) value "1IF".
+     03  filler pic x(31) value "1IGNORE".
+     03  filler pic x(31) value "1IGNORING".
+     03  filler pic x(31) value "0IMPLEMENTS".
+     03  filler pic x(31) value "1IN".
+     03  filler pic x(31) value "1INDEX".
+     03  filler pic x(31) value "1INDEXED".
+     03  filler pic x(31) value "1INDICATE".
+     03  filler pic x(31) value "0INDIRECT".
+     03  filler pic x(31) value "0INFINITY".
+     03  filler pic x(31) value "0INHERITS".
+     03  filler pic x(31) value "1INITIAL".
+     03  filler pic x(31) value "1INITIALISE".
+     03  filler pic x(31) value "1INITIALISED".
+     03  filler pic x(31) value "1INITIALIZE".
+     03  filler pic x(31) value "1INITIALIZED".
+     03  filler pic x(31) value "0INITIATE".
+     03  filler pic x(31) value "1INPUT".
+     03  filler pic x(31) value "1INPUT-OUTPUT".
+     03  filler pic x(31) value "1INSPECT".
+     03  filler pic x(31) value "0INTERFACE".
+     03  filler pic x(31) value "0INTERFACE-ID".
+     03  filler pic x(31) value "1INTO".
+     03  filler pic x(31) value "0INTRINSIC".
+     03  filler pic x(31) value "1INVALID".
+     03  filler pic x(31) value "0INVOKE".
+     03  filler pic x(31) value "1IS".
+     03  filler pic x(31) value "1JUST".
+     03  filler pic x(31) value "1JUSTIFIED".
+     03  filler pic x(31) value "1KEPT".
+     03  filler pic x(31) value "1KEY".
+     03  filler pic x(31) value "1KEYBOARD".
+     03  filler pic x(31) value "1LABEL".
+     03  filler pic x(31) value "1LAST".
+     03  filler pic x(31) value "0LC_ALL".
+     03  filler pic x(31) value "0LC_COLLATE".
+     03  filler pic x(31) value "0LC_CTYPE".
+     03  filler pic x(31) value "0LC_MESSAGES".
+     03  filler pic x(31) value "0LC_MONETARY".
+     03  filler pic x(31) value "0LC_NUMERIC".
+     03  filler pic x(31) value "0LC_TIME".
+     03  filler pic x(31) value "1LEADING".
+     03  filler pic x(31) value "1LEFT".
+     03  filler pic x(31) value "0LEFT-JUSTIFY".
+     03  filler pic x(31) value "1LEFTLINE".
+     03  filler pic x(31) value "1LENGTH".
+     03  filler pic x(31) value "1LENGTH-CHECK".
+     03  filler pic x(31) value "1LESS".
+     03  filler pic x(31) value "1LIMIT".
+     03  filler pic x(31) value "1LIMITS".
+     03  filler pic x(31) value "1LINAGE".
+     03  filler pic x(31) value "1LINAGE-COUNTER".
+     03  filler pic x(31) value "1LINE".
+     03  filler pic x(31) value "1LINE-COUNTER".
+     03  filler pic x(31) value "1LINES".
+     03  filler pic x(31) value "1LINKAGE".
+     03  filler pic x(31) value "1LOCAL-STORAGE".
+     03  filler pic x(31) value "1LOCALE".
+     03  filler pic x(31) value "1LOCK".
+     03  filler pic x(31) value "1LOW-VALUE".
+     03  filler pic x(31) value "1LOW-VALUES".
+     03  filler pic x(31) value "0LOWER".
+     03  filler pic x(31) value "1LOWLIGHT".
+     03  filler pic x(31) value "1MANUAL".
+     03  filler pic x(31) value "1MEMORY".
+     03  filler pic x(31) value "1MERGE".
+     03  filler pic x(31) value "0MESSAGE".
+     03  filler pic x(31) value "0METHOD".
+     03  filler pic x(31) value "0METHOD-ID".
+     03  filler pic x(31) value "1MINUS".
+     03  filler pic x(31) value "1MODE".
+     03  filler pic x(31) value "1MOVE".
+     03  filler pic x(31) value "1MULTIPLE".
+     03  filler pic x(31) value "1MULTIPLY".
+     03  filler pic x(31) value "1NATIONAL".
+     03  filler pic x(31) value "1NATIONAL-EDITED".
+     03  filler pic x(31) value "1NATIVE".
+     03  filler pic x(31) value "1NEAREST-AWAY-FROM-ZERO".
+     03  filler pic x(31) value "1NEAREST-EVEN".
+     03  filler pic x(31) value "1NEAREST-TOWARD-ZERO".
+     03  filler pic x(31) value "1NEGATIVE".
+     03  filler pic x(31) value "0NEGATIVE-INFINITY".
+     03  filler pic x(31) value "0NESTED".
+     03  filler pic x(31) value "1NEXT".
+     03  filler pic x(31) value "1NO".
+     03  filler pic x(31) value "1NO-ECHO".
+     03  filler pic x(31) value "0NONE".
+     03  filler pic x(31) value "1NORMAL".
+     03  filler pic x(31) value "1NOT".
+     03  filler pic x(31) value "0NOT-A-NUMBER".
+     03  filler pic x(31) value "1NULL".
+     03  filler pic x(31) value "1NULLS".
+     03  filler pic x(31) value "1NUMBER".
+     03  filler pic x(31) value "1NUMBER-OF-CALL-PARAMETERS".
+     03  filler pic x(31) value "1NUMBERS".
+     03  filler pic x(31) value "1NUMERIC".
+     03  filler pic x(31) value "1NUMERIC-EDITED".
+     03  filler pic x(31) value "0OBJECT".
+     03  filler pic x(31) value "1OBJECT-COMPUTER".
+     03  filler pic x(31) value "0OBJECT-REFERENCE".
+     03  filler pic x(31) value "1OCCURS".
+     03  filler pic x(31) value "1OF".
+     03  filler pic x(31) value "1OFF".
+     03  filler pic x(31) value "1OMITTED".
+     03  filler pic x(31) value "1ON".
+     03  filler pic x(31) value "1ONLY".
+     03  filler pic x(31) value "1OPEN".
+     03  filler pic x(31) value "1OPTIONAL".
+     03  filler pic x(31) value "0OPTIONS".
+     03  filler pic x(31) value "1OR".
+     03  filler pic x(31) value "1ORDER".
+     03  filler pic x(31) value "1ORGANISATION".
+     03  filler pic x(31) value "1ORGANIZATION".
+     03  filler pic x(31) value "1OTHER".
+     03  filler pic x(31) value "1OUTPUT".
+     03  filler pic x(31) value "1OVERFLOW".
+     03  filler pic x(31) value "1OVERLINE".
+     03  filler pic x(31) value "0OVERRIDE".
+     03  filler pic x(31) value "1PACKED-DECIMAL".
+     03  filler pic x(31) value "1PADDING".
+     03  filler pic x(31) value "1PAGE".
+     03  filler pic x(31) value "1PAGE-COUNTER".
+     03  filler pic x(31) value "1PARAGRAPH".
+     03  filler pic x(31) value "1PERFORM".
+     03  filler pic x(31) value "0PF".
+     03  filler pic x(31) value "0PH".
+     03  filler pic x(31) value "1PIC".
+     03  filler pic x(31) value "1PICTURE".
+     03  filler pic x(31) value "1PLUS".
+     03  filler pic x(31) value "1POINTER".
+     03  filler pic x(31) value "1POSITION".
+     03  filler pic x(31) value "1POSITIVE".
+     03  filler pic x(31) value "0POSITIVE-INFINITY".
+     03  filler pic x(31) value "0PREFIXED".
+     03  filler pic x(31) value "0PRESENT".
+     03  filler pic x(31) value "1PREVIOUS".
+     03  filler pic x(31) value "1PRINTER".
+     03  filler pic x(31) value "0PRINTING".
+     03  filler pic x(31) value "1PROCEDURE".
+     03  filler pic x(31) value "1PROCEDURE-POINTER".
+     03  filler pic x(31) value "1PROCEDURES".
+     03  filler pic x(31) value "1PROCEED".
+     03  filler pic x(31) value "1PROGRAM".
+     03  filler pic x(31) value "1PROGRAM-ID".
+     03  filler pic x(31) value "1PROGRAM-POINTER".
+     03  filler pic x(31) value "1PROHIBITED".
+     03  filler pic x(31) value "1PROMPT".
+     03  filler pic x(31) value "0PROPERTY".
+     03  filler pic x(31) value "0PROTOTYPE".
+     03  filler pic x(31) value "0PURGE".
+     03  filler pic x(31) value "0QUEUE".
+     03  filler pic x(31) value "1QUOTE".
+     03  filler pic x(31) value "1QUOTES".
+     03  filler pic x(31) value "0RAISE".
+     03  filler pic x(31) value "0RAISING".
+     03  filler pic x(31) value "1RANDOM".
+     03  filler pic x(31) value "0RD".
+     03  filler pic x(31) value "1READ".
+     03  filler pic x(31) value "0RECEIVE".
+     03  filler pic x(31) value "1RECORD".
+     03  filler pic x(31) value "1RECORDING".
+     03  filler pic x(31) value "1RECORDS".
+     03  filler pic x(31) value "1RECURSIVE".
+     03  filler pic x(31) value "1REDEFINES".
+     03  filler pic x(31) value "1REEL".
+     03  filler pic x(31) value "1REFERENCE".
+     03  filler pic x(31) value "1REFERENCES".
+     03  filler pic x(31) value "0RELATION".
+     03  filler pic x(31) value "1RELATIVE".
+     03  filler pic x(31) value "1RELEASE".
+     03  filler pic x(31) value "1REMAINDER".
+     03  filler pic x(31) value "1REMOVAL".
+     03  filler pic x(31) value "1RENAMES".
+     03  filler pic x(31) value "1REPLACE".
+     03  filler pic x(31) value "1REPLACING".
+     03  filler pic x(31) value "0REPORT".
+     03  filler pic x(31) value "0REPORTING".
+     03  filler pic x(31) value "0REPORTS".
+     03  filler pic x(31) value "1REPOSITORY".
+     03  filler pic x(31) value "0REPRESENTS-NOT-A-NUMBER".
+     03  filler pic x(31) value "1REQUIRED".
+     03  filler pic x(31) value "1RESERVE".
+     03  filler pic x(31) value "1RESET".
+     03  filler pic x(31) value "0RESUME".
+     03  filler pic x(31) value "0RETRY".
+     03  filler pic x(31) value "1RETURN".
+     03  filler pic x(31) value "1RETURN-CODE".
+     03  filler pic x(31) value "1RETURNING".
+     03  filler pic x(31) value "1REVERSE-VIDEO".
+     03  filler pic x(31) value "1REVERSED".
+     03  filler pic x(31) value "1REWIND".
+     03  filler pic x(31) value "1REWRITE".
+     03  filler pic x(31) value "0RF".
+     03  filler pic x(31) value "0RH".
+     03  filler pic x(31) value "1RIGHT".
+     03  filler pic x(31) value "0RIGHT-JUSTIFY".
+     03  filler pic x(31) value "1ROLLBACK".
+     03  filler pic x(31) value "1ROUNDED".
+     03  filler pic x(31) value "0ROUNDING".
+     03  filler pic x(31) value "1RUN".
+     03  filler pic x(31) value "1SAME".
+     03  filler pic x(31) value "1SCREEN".
+     03  filler pic x(31) value "1SD".
+     03  filler pic x(31) value "1SEARCH".
+     03  filler pic x(31) value "0SECONDS".
+     03  filler pic x(31) value "1SECTION".
+     03  filler pic x(31) value "1SECURE".
+     03  filler pic x(31) value "0SEGMENT".
+     03  filler pic x(31) value "1SEGMENT-LIMIT".
+     03  filler pic x(31) value "1SELECT".
+     03  filler pic x(31) value "0SELF".
+     03  filler pic x(31) value "0SEND".
+     03  filler pic x(31) value "1SENTENCE".
+     03  filler pic x(31) value "1SEPARATE".
+     03  filler pic x(31) value "1SEQUENCE".
+     03  filler pic x(31) value "1SEQUENTIAL".
+     03  filler pic x(31) value "1SET".
+     03  filler pic x(31) value "1SHARING".
+     03  filler pic x(31) value "1SIGN".
+     03  filler pic x(31) value "1SIGNED".
+     03  filler pic x(31) value "1SIGNED-INT".
+     03  filler pic x(31) value "1SIGNED-LONG".
+     03  filler pic x(31) value "1SIGNED-SHORT".
+     03  filler pic x(31) value "1SIZE".
+     03  filler pic x(31) value "1SORT".
+     03  filler pic x(31) value "1SORT-MERGE".
+     03  filler pic x(31) value "1SORT-RETURN".
+     03  filler pic x(31) value "1SOURCE".
+     03  filler pic x(31) value "1SOURCE-COMPUTER".
+     03  filler pic x(31) value "0SOURCES".
+     03  filler pic x(31) value "1SPACE".
+     03  filler pic x(31) value "0SPACE-FILL".
+     03  filler pic x(31) value "1SPACES".
+     03  filler pic x(31) value "1SPECIAL-NAMES".
+     03  filler pic x(31) value "1STANDARD".
+     03  filler pic x(31) value "1STANDARD-1".
+     03  filler pic x(31) value "1STANDARD-2".
+     03  filler pic x(31) value "0STANDARD-BINARY".
+     03  filler pic x(31) value "0STANDARD-DECIMAL".
+     03  filler pic x(31) value "1START".
+     03  filler pic x(31) value "0STATEMENT".
+     03  filler pic x(31) value "1STATIC".
+     03  filler pic x(31) value "1STATUS".
+     03  filler pic x(31) value "1STDCALL".
+     03  filler pic x(31) value "1STEP".
+     03  filler pic x(31) value "1STOP".
+     03  filler pic x(31) value "1STRING".
+     03  filler pic x(31) value "0STRONG".
+     03  filler pic x(31) value "0SUB-QUEUE-1".
+     03  filler pic x(31) value "0SUB-QUEUE-2".
+     03  filler pic x(31) value "0SUB-QUEUE-3".
+     03  filler pic x(31) value "1SUBTRACT".
+     03  filler pic x(31) value "1SUM".
+     03  filler pic x(31) value "0SUPER".
+     03  filler pic x(31) value "1SUPPRESS".
+     03  filler pic x(31) value "0SYMBOL".
+     03  filler pic x(31) value "1SYMBOLIC".
+     03  filler pic x(31) value "1SYNC".
+     03  filler pic x(31) value "1SYNCHRONISED".
+     03  filler pic x(31) value "1SYNCHRONIZED".
+     03  filler pic x(31) value "0SYSTEM-DEFAULT".
+     03  filler pic x(31) value "0TABLE".
+     03  filler pic x(31) value "1TALLYING".
+     03  filler pic x(31) value "1TAPE".
+     03  filler pic x(31) value "0TERMINAL".
+     03  filler pic x(31) value "1TERMINATE".
+     03  filler pic x(31) value "1TEST".
+     03  filler pic x(31) value "0TEXT".
+     03  filler pic x(31) value "1THAN".
+     03  filler pic x(31) value "1THEN".
+     03  filler pic x(31) value "1THROUGH".
+     03  filler pic x(31) value "1THRU".
+     03  filler pic x(31) value "1TIME".
+     03  filler pic x(31) value "0TIME-OUT".
+     03  filler pic x(31) value "0TIMEOUT".
+     03  filler pic x(31) value "1TIMES".
+     03  filler pic x(31) value "1TO".
+     03  filler pic x(31) value "1TOP".
+     03  filler pic x(31) value "1TOWARD-GREATER".
+     03  filler pic x(31) value "1TOWARD-LESSER".
+     03  filler pic x(31) value "1TRAILING".
+     03  filler pic x(31) value "0TRAILING-SIGN".
+     03  filler pic x(31) value "1TRANSFORM".
+     03  filler pic x(31) value "1TRUE".
+     03  filler pic x(31) value "1TRUNCATION".
+     03  filler pic x(31) value "1TYPE".
+     03  filler pic x(31) value "0TYPEDEF".
+     03  filler pic x(31) value "0UCS-4".
+     03  filler pic x(31) value "1UNDERLINE".
+     03  filler pic x(31) value "1UNIT".
+     03  filler pic x(31) value "0UNIVERSAL".
+     03  filler pic x(31) value "1UNLOCK".
+     03  filler pic x(31) value "1UNSIGNED".
+     03  filler pic x(31) value "1UNSIGNED-INT".
+     03  filler pic x(31) value "1UNSIGNED-LONG".
+     03  filler pic x(31) value "1UNSIGNED-SHORT".
+     03  filler pic x(31) value "1UNSTRING".
+     03  filler pic x(31) value "1UNTIL".
+     03  filler pic x(31) value "1UP".
+     03  filler pic x(31) value "1UPDATE".
+     03  filler pic x(31) value "1UPON".
+     03  filler pic x(31) value "0UPPER".
+     03  filler pic x(31) value "1USAGE".
+     03  filler pic x(31) value "1USE".
+     03  filler pic x(31) value "0USER-DEFAULT".
+     03  filler pic x(31) value "1USING".
+     03  filler pic x(31) value "0UTF-16".
+     03  filler pic x(31) value "0UTF-8".
+     03  filler pic x(31) value "0VAL-STATUS".
+     03  filler pic x(31) value "0VALID".
+     03  filler pic x(31) value "0VALIDATE".
+     03  filler pic x(31) value "0VALIDATE-STATUS".
+     03  filler pic x(31) value "1VALUE".
+     03  filler pic x(31) value "1VALUES".
+     03  filler pic x(31) value "1VARYING".
+     03  filler pic x(31) value "1WAIT".
+     03  filler pic x(31) value "1WHEN".
+     03  filler pic x(31) value "1WITH".
+     03  filler pic x(31) value "1WORDS".
+     03  filler pic x(31) value "1WORKING-STORAGE".
+     03  filler pic x(31) value "1WRITE".
+     03  filler pic x(31) value "1YYYYDDD".
+     03  filler pic x(31) value "1YYYYMMDD".
+     03  filler pic x(31) value "1ZERO".
+     03  filler pic x(31) value "0ZERO-FILL".
+     03  filler pic x(31) value "1ZEROES".
+     03  filler pic x(31) value "1ZEROS".     *>  577 to here
 *>
- 01  filler redefines Additional-Reserved-Words.
-     03  Reserved-Names                occurs 529
-                  ascending key Resvd-Word indexed by Resvd-Idx.
+     03  filler    value high-values.
+         05  filler  pic x(31)  occurs 447.   *> total of 1024
+*>
+ 01  Additional-Reserved-Words-R redefines Additional-Reserved-Words.                *> updated by Get-Reserved-Lists.cbl
+     03  Reserved-Names       occurs 1024 ascending key Resvd-Word indexed by Resvd-Idx.
          05  Resvd-Implemented pic x.
-         05  Resvd-Word        pic x(25).
- 01  Resvd-Table-Size        pic s9(5)   comp    value 529.
+         05  Resvd-Word        pic x(30).
+ 01  Resvd-Table-Size          pic s9(5)   comp    value 577.   *> updated by Get-Reserved-Lists.cbl
 *>
  01  Condition-Table                           value high-values.
-     03  Con-Tab-Blocks occurs 10 to 5001
-                                       depending on Con-Tab-Size.
+     03  Con-Tab-Blocks occurs 10 to 5001 depending on Con-Tab-Size.
 *> +1 used, when testing for max table size
          05  Conditions      pic x(32).
          05  Variables       pic x(32).
@@ -1064,8 +1128,7 @@
  01  Con-Tab-Count         Binary-Long value zero.
 *>
  01  Global-Item-Table                         value high-values.
-     03  Git-Elements  occurs 10 to 10001
-                                     depending on Git-Table-Size.
+     03  Git-Elements  occurs 10 to 10001 depending on Git-Table-Size.
 *> +1 used, when testing for max table size
        05  Git-Word        pic x(32).
        05  Git-Prog-Name   pic x(32).
@@ -1091,6 +1154,9 @@
 *>  THIS ALL NEEDS A GOOD LOOK AT, SO MUST DONE SOON but with fresh eyes
 *> SUGGEST COMMON CODE LEFT HERE WITH NEW SECTIONS DEALING WITH EACH
 *>  SECTION OR MAIN ENTRY
+*> Also
+*>  routines for source reads, get a word, parsers and tokeniser must be rewritten,
+*>   they are still a complete mess.
 *>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *>
 *>  Quesions, Questions, Questions,  all I have, is questions!
@@ -1100,7 +1166,17 @@
      perform  zz190-Init-Program thru zz190-Exit.
      move     high-values to Global-Item-Table.
 *>
-*> Just in case someone's added names in source code out of sort order
+     move     zero to ws-Return-Code.
+     call     "get-reserved-lists" using ws-Return-Code
+                                         Function-Table-R
+                                         Function-Table-Size
+                                         Additional-Reserved-Words-R
+                                         Resvd-Table-Size.
+*>
+     if       ws-Return-Code not = zero
+              display "Possible problem with cobc and therefore with no reserved word list updates".
+*>
+*> Just in case someone's added names in source code (or in cobc) out of sort order
 *>  We MUST have all tables in sorted order
 *>
      sort     Reserved-Names ascending Resvd-Word.
@@ -1111,13 +1187,11 @@
 *> Dump All reserved words from tables then stop
 *>
      if       Dump-Reserved-Words
-              perform varying a from 1 by 1
-                  until a > Resvd-Table-Size
+              perform varying a from 1 by 1 until a > Resvd-Table-Size
                     display Resvd-Word (a)
                     end-display
               end-perform
-              perform varying a from 1 by 1
-                  until a > Function-Table-Size
+              perform varying a from 1 by 1 until a > Function-Table-Size
                     display P-Function (a)
                     end-display
               end-perform
@@ -1127,11 +1201,9 @@
 *>
      open     output Source-Listing.
      if       Reports-In-Lower
-              move function lower-case (Prog-BaseName (1:CWS))
-                                    to HoldID
+              move function lower-case (Prog-BaseName (1:CWS)) to HoldID
      else
-              move function upper-case (Prog-BaseName (1:CWS))
-                                    to HoldID
+              move function upper-case (Prog-BaseName (1:CWS)) to HoldID
      end-if
      move     HoldID to HoldID-Module.
      move     spaces to Arg-Vals.
@@ -1146,13 +1218,11 @@
 *>
      if       Git-Table-Count not = zero
               initialize SortRecord
-              perform varying a from 1 by 1
-                       until a > Git-Table-Count
+              perform varying a from 1 by 1 until a > Git-Table-Count
                    move Git-HoldWSorPD  (a) to SkaWSorPD
                    move Git-HoldWSorPD2 (a) to SkaWSorPD2
                    if Reports-In-Lower
-                      move function lower-case (Git-Word (a))
-                                            to SkaDataName
+                      move function lower-case (Git-Word (a)) to SkaDataName
                    else
                       move Git-Word (a) to SkaDataName
                    end-if
@@ -1200,25 +1270,20 @@
 *>  but 1st check if its a literal & if so remove quotes and use 1st CWS chars
 *>
      if       wsf1-1 = quote or = "'"
-              unstring wsFoundWord2 (2:32) delimited by quote or "'"
-                        into wsFoundNewWord
+              unstring wsFoundWord2 (2:32) delimited by quote or "'"  into wsFoundNewWord
               end-unstring
               move wsFoundNewWord (1:CWS) to  wsFoundWord2
      end-if
      if       not Have-Nested
         if       Reports-In-Lower
-                 move function lower-case (wsFoundWord2)
-                                      to HoldID
+                 move function lower-case (wsFoundWord2)  to HoldID
         else
-                 move function upper-case (wsFoundWord2)
-                                      to HoldID.
+                 move function upper-case (wsFoundWord2)  to HoldID.
      if       Have-Nested  *> found more than 1 module in source
         if       Reports-In-Lower
-                 move function lower-case (wsFoundWord2)
-                                      to HoldID-Module
+                 move function lower-case (wsFoundWord2) to HoldID-Module
         else
-                 move function upper-case (wsFoundWord2)
-                                      to HoldID-Module.
+                 move function upper-case (wsFoundWord2) to HoldID-Module.
 *>
 *> We now have the program-id name so update our info, for reports
 *> Next block of interest is special-names and then file-control
@@ -1249,8 +1314,7 @@
      perform  aa045-Test-Section thru aa045-Exit.
      if       a not = zero
               go to aa060-ReadLoop3a.
-     if       SourceInWS (1:13) = "INPUT-OUTPUT "
-                             or = "DATA DIVISION"
+     if       SourceInWS (1:13) = "INPUT-OUTPUT " or = "DATA DIVISION"
               go to aa041-Get-SN.
      IF       SourceInWS (1:13) = "FILE-CONTROL."
               go to aa047-GetIO.
@@ -1295,9 +1359,15 @@
      if       Con-Tab-Size not < Con-Tab-Count
               add 10 to Con-Tab-Size.
      add      1 to Con-Tab-Count.
-     move     Saved-Variable to Variables (Con-Tab-Count).
+
+     if       Reports-In-Lower
+              move function lower-case (Saved-Variable) to  Variables (Con-Tab-Count)
+              move function lower-case (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
+     else
+              move Saved-Variable to Variables (Con-Tab-Count)
+              move wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count)
+     end-if
      move     Space  to CT-In-Use-Flag (Con-Tab-Count).
-     move     wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count).
      if       Word-Delimit = "."
               go to aa041-Get-SN.
      go       to aa044-Getword3.
@@ -1503,8 +1573,7 @@
 *>
 *> note that for CD & SD setting Global-current-* not needed
 *>                           is it a problem
-     if       wsFoundWord2 (1:3) = "FD " or = "SD "
-                              or = "RD " or = "CD "
+     if       wsFoundWord2 (1:3) = "FD " or = "SD " or = "RD " or = "CD "
               perform zz110-Get-A-Word thru zz110-Exit  *> get fn
               move zero to HoldWSorPD2
               move zero to sw-Git            *> reset Global flag
@@ -1517,8 +1586,7 @@
 *> we now have basic ws records, ie starting 01-49,66,77,78,88 etc
 *>
       if      wsFoundWord2 (1:Word-Length) not numeric
-              display "ba020:" Msg4 wsFoundWord2 (1:Word-Length)
-                      " prog = " HoldID " line = " Gen-RefNo1
+              display "ba020:" Msg4 wsFoundWord2 (1:Word-Length) " prog = " HoldID " line = " Gen-RefNo1
               close Source-Listing SourceInput
                     Supplemental-Part1-Out
               move 16 to return-code
@@ -1542,9 +1610,7 @@
 *>
 *> getting here Should never happen
 *>
-      display "ba020:" Msg5 "bld=" Build-Number
-              " word=" wsFoundWord2 (1:CWS)
-                      " prog = " HoldID " line = " Gen-RefNo1.
+      display "ba020:" Msg5 "bld=" Build-Number " word=" wsFoundWord2 (1:CWS) " prog = " HoldID " line = " Gen-RefNo1.
      close    Source-Listing SourceInput Supplemental-Part1-Out.
      move     20 to return-code.
      goback.                            *> if here, its broke
@@ -1572,8 +1638,7 @@
               perform ba053-After-Depending
               go to ba040-Clear-To-Next-Period.
      if       HoldWSorPD = 7 and
-              (wsFoundWord2 (1:6) = "TO    "
-                    or "FROM  " or "USING ")
+              (wsFoundWord2 (1:6) = "TO    " or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
               inspect wsFoundWord2 tallying a for all "("
               if a not = zero
@@ -1645,14 +1710,11 @@
           and Con-Tab-Count < Con-Tab-Size
               add 1 to Con-Tab-Count
               if  Reports-In-Lower
-                  move function lower-case (Saved-Variable) to
-                          Variables (Con-Tab-Count)
-                  move function lower-case (wsFoundWord2 (1:CWS))
-                       to Conditions (Con-Tab-Count)
+                  move function lower-case (Saved-Variable) to  Variables (Con-Tab-Count)
+                  move function lower-case (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
               else
                   move Saved-Variable to Variables (Con-Tab-Count)
-                  move wsFoundWord2 (1:CWS)
-                                     to Conditions (Con-Tab-Count)
+                  move wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count)
               end-if
      end-if
      .
@@ -1698,8 +1760,7 @@
               perform zz200-Load-Git thru zz200-Exit.
 *>
      if       HoldWSorPD = 7 and
-              (wsFoundWord2 (1:6) = "TO    "
-                    or "FROM  " or "USING ")
+              (wsFoundWord2 (1:6) = "TO    " or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
               inspect wsFoundWord2 tallying a for all "("
               if a not = zero
@@ -1745,10 +1806,8 @@
  bb000-Process-Procedure Section.
  bb010-New-Record.
 *>
-*> at this point we need to get a word but have
-*>                 PROCEDURE (as in DIVISION) as wsFoundWord2
-*> but 1st, sort Global  table prior to running search(es)
-*>  and I know it will happen for every module in src after 1st one
+*> at this point we need to get a word but have PROCEDURE (as in DIVISION) as wsFoundWord2
+*> but 1st, sort Global  table prior to running search(es) and I know it will happen for every module in src after 1st one
 *>    this needs a rewrite as well as process a word etc complete mess
      if       Git-Table-Count > 1
               sort  Git-Elements ascending Git-Word.
@@ -1765,7 +1824,7 @@
 *>
  bb030-Chk1.
      if       wsFoundWord2 (1:1) alphabetic
-           perform zz130-Extra-Reserved-Word-Check thru zz130-Exit
+              perform zz130-Extra-Reserved-Word-Check thru zz130-Exit
      else
               move zero to a.
 *>
@@ -1793,8 +1852,7 @@
 *>
 *> check for arithmetic operators
 *>
-     if       wsf1-3 = "-  " or = "+  " or = "*  " or = "/  "
-                             or = "** "
+     if       wsf1-3 = "-  " or = "+  " or = "*  " or = "/  " or = "** "
               go to bb020-GetAWord.
 *>
 *> check for relational Conditions
@@ -1814,9 +1872,7 @@
 *>
 *> Check if we have a section name if so set wdorpd2 = 1
 *>
-     string   wsFoundWord2 (1:Word-Length) delimited by size
-              " SECTION" delimited by size
-                into HoldFoundWord.
+     string   wsFoundWord2 (1:Word-Length) delimited by size " SECTION" delimited by size  into HoldFoundWord.
      add      Word-Length 8 giving a.
      if       HoldWSorPD2 not = zero
          and  SourceInWS (1:a) = HoldFoundWord (1:a)
@@ -1910,8 +1966,7 @@
                    end-if
               end-if
               move wsFoundNewWord to wsFoundWord2
-              perform zz130-Extra-Reserved-Word-Check
-                                              thru zz130-Exit
+              perform zz130-Extra-Reserved-Word-Check thru zz130-Exit
               if  a > zero              *> reserved word
                       go to bb020-GetAWord
               end-if
@@ -1976,15 +2031,9 @@
 *>
      move     spaces to wsFoundNewWord wsFoundNewWord2.
      move     1 to t.
-     unstring wsFoundWord2 (s:z2) delimited by ":"
-              into wsFoundNewWord
-              count q
-              pointer t.
+     unstring wsFoundWord2 (s:z2) delimited by ":" into wsFoundNewWord count q pointer t.
 *> t now : +1
-     unstring wsFoundWord2 (s:z2) delimited by " "
-              into wsFoundNewWord2
-              count b
-              pointer t.
+     unstring wsFoundWord2 (s:z2) delimited by " " into wsFoundNewWord2 count b pointer t.
      if     t not > z2 or not = Word-Length
             display "bb100 Error: t=" t " word-len="
             Word-Length " z2=" z2.
@@ -2097,8 +2146,7 @@
      move     70 to Line-Count.
      if       Section-Used-Table not = zeros
               move  1 to WS-Anal1
-              perform bc100-Working-Storage-Report
-                    thru bc180-Exit 7 times.
+              perform bc100-Working-Storage-Report thru bc180-Exit 7 times.
 *>
      if       Git-Table-Count > zero
               perform bc600-Print-Globals thru bc600-Exit.
@@ -2518,10 +2566,8 @@
               move Git-RefNo (a) to XrDefn
               move Git-HoldWSorPD (a) to b
               if Reports-In-Lower
-                  move function lower-case (Git-Word (a))
-                                                   to XrDataName
-                  move function lower-case (Git-Prog-Name (a))
-                                                   to PL-Prog-Name
+                  move function lower-case (Git-Word (a))      to XrDataName
+                  move function lower-case (Git-Prog-Name (a)) to PL-Prog-Name
               else
                   move Git-Word (a) to XrDataName
                   move Git-Prog-Name (a) to PL-Prog-Name
@@ -2583,8 +2629,7 @@
      move     HoldWSorPD2 to SkaWSorPD2.
      move     wsFoundWord2 (1:CWS) to wsFoundNewWord4.
      if       Reports-In-Lower
-              move function lower-case (wsFoundWord2 (1:CWS)) to
-                    wsFoundNewWord4.
+              move function lower-case (wsFoundWord2 (1:CWS)) to wsFoundNewWord4.
      if       HoldWSorPD > 7
               perform zz140-Function-Check thru zz140-Exit.
 *>
@@ -2619,8 +2664,7 @@
      read     SourceInput at end
               move 1 to sw-Source-Eof
               GO TO zz100-Exit.
-     move     function upper-case (SourceRecIn)
-                   to SourceInWS.
+     move     function upper-case (SourceRecIn) to SourceInWS.
 *>
 *> change tabs to spaces prior to printing & remove OC comment lines eg '#'
 *>
@@ -2650,9 +2694,9 @@
 *>
 *> count but do not O/P blank lines
 *>
-      if       d < 1
-               perform zz000-Inc-CobolRefNo
-               go to zz100-Get-A-Source-Record.
+      if      d < 1
+              perform zz000-Inc-CobolRefNo
+              go to zz100-Get-A-Source-Record.
 *>
      if       SourceInWS (1:12) = "END PROGRAM "
               perform zz000-Inc-CobolRefNo
@@ -2698,8 +2742,7 @@
             if   HoldFoundWord2-Type > zero
              and (SourceInWS (1:7) = "SECTION" or = "DIVISIO")
                  add 1 HoldFoundWord2-Size giving d
-                 string SourceInWS (1:Line-End) delimited by size
-                        into HoldFoundWord2  pointer d
+                 string SourceInWS (1:Line-End) delimited by size into HoldFoundWord2  pointer d
                  move HoldFoundWord2 to SourceInWS
                  move zero to HoldFoundWord2-Size
             end-if
@@ -2743,10 +2786,7 @@
 *>*****************************************************************
 *> Note that after unstring sp2 will be at 1st char AFTER delimiter
 *>*****************************************************************
-     unstring SourceInWS delimited by " " or "."
-              into wsFoundWord2
-               delimiter in Word-Delimit
-                with pointer S-Pointer2.
+     unstring SourceInWS delimited by " " or "." into wsFoundWord2 delimiter Word-Delimit pointer S-Pointer2.
 *> check 1st char
      if       S-Pointer2 > 1024
               go to zz110-Get-A-Word-OverFlow.
@@ -2758,15 +2798,14 @@
               go to zz110-Exit.
      if       wsf1-1 = space
               go to zz110-Get-A-Word-Unstring.
+     if       wsf1-2 = "*>"                       *> rest of line is comment vbc 26/09/10
+              go to zz110-Get-A-Word-OverFlow.
      if       (wsf1-1 numeric
            or wsf1-1 = "-"
            or wsf1-1 = "+")
          and  SourceInWS (S-Pointer2:1) not = space
               move s to S-Pointer2
-              unstring SourceInWS delimited by " "
-                into wsFoundWord2
-                 delimiter in Word-Delimit
-                  with pointer S-Pointer2.
+              unstring SourceInWS delimited by " " into wsFoundWord2 delimiter Word-Delimit pointer S-Pointer2.
 *>
      subtract 2 from S-Pointer2 giving e.
      if       Word-Delimit = space
@@ -2784,9 +2823,7 @@
                              or = "X" or = "A" or = "S" or = "V"
                              or = "P" or = "1" or = "N" or = "E")
               move s to S-Pointer2
-              unstring SourceInWS delimited by " " into wsFoundWord2
-                 delimiter in Word-Delimit
-                  with pointer S-Pointer2
+              unstring SourceInWS delimited by " " into wsFoundWord2 delimiter Word-Delimit pointer S-Pointer2
               end-unstring
               subtract 2 from S-Pointer2 giving e
               if  SourceInWS (e:1) = "."
@@ -2804,8 +2841,7 @@
      if       wsf1-1 = "("
          and (wsFoundWord2 (2:1) = quote or = "'")
               add 2 to s giving S-Pointer2
-              move wsFoundWord2 (2:1) to wsFoundWord2 (1:1)
-                                         Word-Delimit2
+              move wsFoundWord2 (2:1) to wsFoundWord2 (1:1) Word-Delimit2
               go to zz110-Get-A-Word-Literal2.
 *>
      if       wsf1-1 = "("
@@ -2816,8 +2852,7 @@
               go to zz110-Get-A-Word.
 *>
      if       wsf1-1 not = quote and not = "'"
-              perform  varying z from 1024 by -1
-                  until wsFoundWord2 (z:1) not = space
+              perform  varying z from 1024 by -1  until wsFoundWord2 (z:1) not = space
               end-perform
               move z to Word-Length
               go to zz110-Get-A-Word-Copy-Check.
@@ -2827,17 +2862,12 @@
      add      1 to s giving S-Pointer2.
  zz110-Get-A-Word-Literal2.
      move     spaces to wsFoundWord2 (2:1023).
-     unstring SourceInWS delimited by Word-Delimit2
-              into wsFoundWord2 (2:1023)
-               delimiter in Word-Delimit
-                with pointer S-Pointer2.
+     unstring SourceInWS delimited by Word-Delimit2 into wsFoundWord2 (2:1023) delimiter Word-Delimit pointer S-Pointer2.
 *>
-*> so S-Pointer2 = " +1 & s = starter "
-*>     have we another Word-Delimit?
+*> so S-Pointer2 = " +1 & s = starter "   have we another Word-Delimit?
 *>
      if       Word-Delimit not = Word-Delimit2
-              perform  varying z from 1024 by -1
-                  until wsFoundWord2 (z:1) not = space
+              perform  varying z from 1024 by -1 until wsFoundWord2 (z:1) not = space
               end-perform
               add 1 to z
      else
@@ -2881,11 +2911,11 @@
 *>**************************
 *> remove any multi spaces within a source line
 *>   find actual lengh of record in d
+*> This code is redundent when using source output from cobc or via filename.i
 *>
 *> run profiler against these routines and tidy 'em up if needed
 *>
-     perform  varying d from 1024 by -1
-                   until SourceInWS (d:1) not = space
+     perform  varying d from 1024 by -1 until SourceInWS (d:1) not = space
      end-perform
      if       d < 1
               go to zz120-Exit.
@@ -2933,17 +2963,20 @@
 *>  note that max reserved word is 25 characters, so compare like 4 like
 *>
      move     zero to a.
-     search   all Reserved-Names
-                  at end go to zz130-exit
-              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:25)
-                set a to Resvd-Idx.
+     search   all Reserved-Names at end go to zz130-exit
+              when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:30)
+                    set a to Resvd-Idx.
+     if       a not = zero
+        and   wsFoundWord2 (1:8) = "FUNCTION" or = "function"
+              move 1 to FoundFunction
+     else
+              move zero to FoundFunction.
  zz130-Exit.
      exit.
 *>
  zz140-Function-Check.
 *>********************
-*> CALLS:  Only after moving all values to SortRecord and before
-*>         write verb.
+*> CALLS:  Only after moving all values to SortRecord and before write verb.
 *>
 *> Do we have an intrinsic function name
 *>           if so modify sort rec for section printing
@@ -2951,12 +2984,11 @@
 *>    but treated as the same as its still a reserved word
 *>
      move     zero to F-Pointer.
-     search   all All-Functions
-                  at end go to zz140-exit
-              when P-function (All-Fun-Idx) = wsFoundNewWord4
-                move 9 to SkaWSorPD
-                move 1 to SkaWSorPD2
-                set F-Pointer to All-Fun-Idx.
+     search   all All-Functions  at end go to zz140-exit
+              when P-function (All-Fun-Idx) = function upper-case (wsFoundNewWord4)
+                  move 9 to SkaWSorPD
+                  move 1 to SkaWSorPD2
+                  set F-Pointer to All-Fun-Idx.
  zz140-Exit.
      exit.
 *>
@@ -2975,8 +3007,7 @@
               move hd-uu to hd2-uu.
      string   HoldID delimited by space
               "    " delimited by size
-              hd-date-time delimited by size
-              into h1programid.
+              hd-date-time delimited by size into h1programid.
      move     function when-compiled to WS-When-Compiled.
      move     WS-WC-DD  to H1-DD.
      move     WS-WC-MM  to H1-MM.
@@ -2984,8 +3015,12 @@
      move     WS-WC-HH  to H1-HH.
      move     WS-WC-Min to H1-Min.
      move     spaces to PrintLine.
-     write    PrintLine.
-     write    PrintLine from hdr1.
+*>     write    PrintLine.
+*>     write    PrintLine from hdr1.
+     add      1 to Page-No.
+     if       Page-No = 1
+              write PrintLine from hdr1
+     else     write PrintLine from hdr1 after page.
      move     spaces to PrintLine.
      write    PrintLine.
  zz150-WriteHdb1.
@@ -3006,7 +3041,7 @@
      write    PrintLine.
      move     spaces to hdr7-variable.
      string   Full-Section-Name (WS-Anal1) delimited space
-                ")" delimited by size into hdr7-variable.
+                                       ")" delimited by size into hdr7-variable.
      write    PrintLine from hdr7-ws.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
@@ -3063,9 +3098,7 @@
               move wsf3-1 to Build-Number
               go to zz160-Exit.
       if      Word-Length = 2
-              compute Build-Number =
-                            (wsf3-1 * 10) +
-                             wsf3-2.
+              compute Build-Number = (wsf3-1 * 10) + wsf3-2.
  zz160-Exit.
      exit.
 *>
@@ -3073,38 +3106,17 @@
      move     space to GotASection.
      if       HoldWSorPD = 8
               go to zz170-Exit.
-     if       sv1what = Section-Name (1)
-              move 1 to HoldWSorPD
-              move "Y" to GotASection
-     else
-      if      sv1what = Section-Name (2)
-              move 2 to HoldWSorPD
-              move "Y" to GotASection
-      else
-       if     sv1what = Section-Name (3)
-              move 3 to HoldWSorPD
-              move "Y" to GotASection
-       else
-        if    sv1what = Section-Name (4)
-              move 4 to HoldWSorPD
-              move "Y" to GotASection
-        else
-         if   sv1what = Section-Name (5)
-              move 5 to HoldWSorPD
-              move "Y" to GotASection
-         else
-          if  sv1what = Section-Name (6)
-              move 6 to HoldWSorPD
-              move "Y" to GotASection
-          else
-           if sv1what = Section-Name (7)
-              move 7 to HoldWSorPD
-              move "Y" to GotASection
-           else
-            if sv1what = Section-Name (8)
-              move 8 to HoldWSorPD
-              move "Y" to GotASection
-              move zero to HoldWSorPD2.
+*>
+     perform  varying a2 from 1 by 1 until a2 > 8
+              if sv1What = Section-Name (a2)
+                  move a2 to HoldWSorPD
+                  move "Y" to GotASection
+                  if a2 = 8
+                      move zero to HoldWSorPD2
+                  end-if
+                  exit perform
+              end-if
+     end-perform
 *>
 *> Changed section so we can clear Global flag
 *>
@@ -3126,9 +3138,7 @@
 *> setup source filename
 *>    dont need the pointers - kill it after next test
      move     1 to String-Pointer.
-     unstring Arg-Value (1) delimited by spaces
-              into SourceFileName
-               with pointer String-Pointer.
+     unstring Arg-Value (1) delimited by spaces into SourceFileName pointer String-Pointer.
 *>
 *> Now get temp environment variable & build temp sort file names
 *>
@@ -3138,15 +3148,17 @@
      if       SourceFileName = spaces or
               String-Pointer < 5
               display Prog-Name
-              display "Copyright (C) 1967-2009 Vincent Bryan Coen"
+              move function current-date to WS-When-Compiled
+              display "Copyright (c) 1967-" no advancing
+              display WS-WC-YY no advancing
+              display " Vincent Bryan Coen"
               display " "
               display "Parameters are"
               display " "
               display "1: Source File name (Mandatory)"
-              display "2: -R    Print out source code prior to xreference " &
-                                "listings in cobc free form"
+              display "2: -R    Do NOT print out source code prior to xref listings in cobc free form"
               display "3: -L    reports in lowercase else upper"
-              display "4: -TEST produces testing info"
+              display "4: -TEST produces testing info (for programmers use only)"
               display "5: -DR   Display All reserved words & stop"
               display "6: -G    produce only group xref: Comp. MF"
               display "7: -H    Display this help message"
@@ -3190,11 +3202,11 @@
               move zero to String-Pointer
               go to zz180-Check-For-Param-Errors.
 *>
-*> Check v2 if we are listing the source
+*> Check v2 if we are NOT listing the source
 *>
       if      "-R" = Arg-Value (2) or Arg-Value (3)
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-              move "Y" to sw-2.
+              move "N" to sw-2.
 *>
 *> Check v4 if we are dumping all reserved words
 *>
@@ -3254,16 +3266,13 @@
               move "\" to OS-Delimiter.
      string   Temp-PathName delimited by space
                OS-Delimiter delimited by size
-                "Part1.tmp" delimited by size
-              into Supp-File-1.
+                "Part1.tmp" delimited by size   into Supp-File-1.
      string   Temp-PathName delimited by space
                OS-Delimiter delimited by size
-                "Part2.tmp" delimited by size
-              into Supp-File-2.
+                "Part2.tmp" delimited by size   into Supp-File-2.
      string   Temp-PathName delimited by space
                OS-Delimiter delimited by size
-                 "Sort1tmp" delimited by size
-              into Sort1tmp.
+                 "Sort1tmp" delimited by size   into Sort1tmp.
      if we-are-testing
            display  "Temp path used is " Temp-PathName.
  zz182-Exit.
@@ -3326,14 +3335,4 @@
 *>
  zz319-Exit.
      exit.
-
- zz999-xtra-test-for-xref.
 *>
-*> this may not compile without error in OC but is 4 testing xref
-*>
-    display "zz999: THIS SHOULD NOT BE STARTED and is an ERROR".
-    go to zz999-exit.
-      MOVE s (FUNCTION ABS (t) : 3) to q.
-     move FUNCTION TRIM (FUNCTION REVERSE (FUNCTION UPPER-CASE (wsfoundnewword)))
-                              to wsfoundnewword4.
-zz999-exit.  exit.

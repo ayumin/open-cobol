@@ -1,3 +1,18 @@
+2010-09-26  Vince Coen <vbcoen@btconnect.com>
+        v1.01.07  * Changed zz170 to make it tighter with less processing steps
+                    as original was getting hit hard as seen using the profiler.
+                  * Clean up date in copyright display to include current year.
+                  * Added module get-reserved-lists called by cobxref at start
+                    that calls the currently installed cobc to get the intrinsic
+                    and reserved words and totally update the 2 tables prior to
+                    sorting them (just in case the OC programmer did not).
+                  * Code takes flow through cobc using -X parameter so if used
+                    standalone it MUST use the source code file filename.i
+                    created through cobc --save-temps which has all copy
+                    verbs preprocessed & comment lines replaced by blank lines.
+                  * Program default will now list the source code prior to the
+                    cross reference listing, -R now stops it.
+
 2009-02-21  Vince Coen <vbcoen@btconnect.com>
         v1.01.04  * Added support for .pre via cobc with other very minor
                     changes and upgraded version to v1 prior to incl into cobc.
@@ -16,8 +31,8 @@
                     programming languages that have periods '.', ':', and/or';'
                     to terminate lines and that works fine.
                      Cobol is no exception.
-                    Consider being back all code for COPY verbs in case
-                    xref is used stand alone for for another compiler in
+                    Consider bring back all code for COPY verbs in case
+                    xref is used stand alone for other compilers in
                     release v0.96.00 which may well be the next release subject
                     to bug reports.
 
