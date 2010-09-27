@@ -1,25 +1,28 @@
 			       CobXRef
 		http://sourceforge.net/projects/cobxref/
+                http://www.add1tocobol.com
+                http://www.opencobol.com
 
 
 CobXRef is a Cobol cross reference tool that reads a Cobol source file as output
-by Open Cobol's cobc with the -save-temps or -t or -E parameters supplied and
+by Open Cobol's cobc with the -X, -E or -save-temps parameters supplied and
 produces a file suitable for printing 'as is' that contains all variables,
 procedure paragraphs and section names referenced where they are defined
 as well as where they are used throughout the program or module and optionally
-preceded by a listing of the source.
+preceded by a listing of the source. Note that if run via cobc using -E source
+listing will pre-seed the cross reference listing.
 
 It will read a source file containing a standalone program or many program &
 modules providing they confirm to the Cobol standard in the same way that
 OpenCobol does.
 
 Cobxref should only be run against source code that has been processed by cobc
-without errors and optionally without warnings
+without errors and optionally without warnings when using cobc param -W.
 
 [OpenCOBOL is an open-source COBOL compiler, which translates COBOL programs to
 C code and compiles it using GCC on multiple platforms and operating systems]
 
-All code and programs are distributed under the GNU General Public License.
+All code and programs are distributed under the GNU General Public License v2.
 See COPYING for details.
 
 
@@ -33,45 +36,27 @@ Installation
 ============
 
 Linux/Unix:
-Just place cobxref in directory of source code to be cross referenced or in
-a directory that is within the PATH making sure that the execute flag is set
-(chmod +x cobxref). In the event that the binary does not work you will need to
-recompile the GCC C source code or the Cobol source code.
-The easiest way to compile the C code is to run the
-comp-cobxrefc.sh script via bash but only after you have checked and modified it
-to reflect the location where you have installed the needed libraries. As
-supplied it will point to /usr/local/include and /usr/local/lib for the cobol
-libs.
+Compile the source of cobxref.cbl and get-reserved-lists.cbl with the
+Open Cobol compiler cobc using the supplied shell script comp-cobxref.sh with
+the command ./comp-cobxref.sh at a command prompt using any terminal program.
 
-Windows/Mac:
-Compile the Cobol source see below.
+Now place cobxref in a directory that is within the PATH making sure that the
+execute flag is set (chmod +x cobxref) although this is done within the script.
 
-In the event this does not work you must have installed and tested OpenCobol.
-Note this will not work 'as is' with Tiny Cobol or any other compiler.
+Mac OSX:
+Compile the Cobol source as for Linux/Unix.
 
-To compile with OpenCobol:
-
-Place cobxref source files in own directory having moved to same directory.
-From terminal program run:
-
-cobc -debug -O2 -x cobxref.cbl
-
-This will produce a statically linked executable called cobxref
-which you can place in a common directory that is listed in your PATH,
-ie., /usr/local/bin [needs root access] or /home/username/bin.
-
+In the event this does not work, you must have installed and tested OpenCobol.
+Note this will not work 'as is' with Tiny Cobol or ANY other compiler.
 
 Supplied files with the Cobxref tarbel:
 **************************************
 
 Changelog               History of changes made to cobxref sources
-*cobxref			The precompiled binary for linux 32 bit systems
-*cobxref.c		Pre-processed C code from OpenCobol
-*cobxref.c.h		Pre-processed C Headers from OpenCobol
-*cobxref.c.l.h           Pre-Processed defaulted C headers from OpenCobol
 cobxref.txt		Usage procedure for cobxref
 cobxref.cbl		Original Cobol source of cobxref
-*comp-cobxrefc.sh 	Script to compile the C code under bash.
+get-reserved-lists.cbl  Cobol source code of module called by cobxref
+comp-cobxref.sh 	Script to compile the Cobol code under bash.
 COPYING                 Software License for copying code.
 readme                  This file
 TODO                    Lists any outstanding programming or new functionality.
@@ -79,9 +64,12 @@ TODO                    Lists any outstanding programming or new functionality.
 NOTES:
 *****
 
-File starting with '*' may not be supplied in which case compile using an
-up to date version of Open Cobol (c). These notes relate to versions of cobxref
-prior to the code being added to the Open Cobol distribution.
+You must compile using an up to date version of Open Cobol (c) but not less
+than version 1.1 dated Feb 2009.
+
+These notes relate to versions of cobxref prior to the code being added to the
+Open Cobol distribution.
+
 Please also read Cobxref.txt for instructions on using cobxref.
 
 As any bug fixes will be applied to the Cobol code please note that
@@ -92,4 +80,4 @@ Please report all bugs found to the OpenCobol forum at www.opencobol.org
 and send a copy to the author at vbcoen@btconnect.com
 
 
-last updated 14/02/2009 (c) Vincent B Coen
+last updated 26/09/2010 (c) Vincent B Coen
