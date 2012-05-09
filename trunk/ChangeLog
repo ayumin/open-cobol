@@ -1,3 +1,7 @@
+2012-09-05  human
+
+	* Change package name to OpenCOBOL CE
+
 2008-11-17  Roger While <simrw@sim-basis.de>
 
 	* configure.ac : Correct sed usage
