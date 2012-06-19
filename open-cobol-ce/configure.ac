@@ -746,7 +746,8 @@ AC_SUBST(COB_HAS_INLINE)
 AC_CONFIG_FILES([cob-config
 		Makefile lib/Makefile libcob/Makefile
 		cobc/Makefile bin/Makefile po/Makefile.in texi/Makefile config/Makefile
-		copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile])
+		copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile
+		extras/Makefile])
 AC_OUTPUT
 
 echo ""

@@ -8,7 +8,7 @@ bin_SCRIPTS=cob-config
 
 include_HEADERS = libcob.h
 
-SUBDIRS = lib libcob cobc bin config copy po texi tests
+SUBDIRS = lib libcob cobc bin config copy po texi tests extras
 
 ACLOCAL_AMFLAGS = -I m4
 BUILT_SOURCES = defaults.h

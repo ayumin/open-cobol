@@ -26804,7 +26804,7 @@ COB_BIGENDIAN="$ac_cv_c_bigendian"
 
 
 
-                                                                                                                                  ac_config_files="$ac_config_files cob-config Makefile lib/Makefile libcob/Makefile cobc/Makefile bin/Makefile po/Makefile.in texi/Makefile config/Makefile copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile"
+                                                                                                                                            ac_config_files="$ac_config_files cob-config Makefile lib/Makefile libcob/Makefile cobc/Makefile bin/Makefile po/Makefile.in texi/Makefile config/Makefile copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile extras/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -27382,6 +27382,7 @@ do
   "tests/atlocal" ) CONFIG_FILES="$CONFIG_FILES tests/atlocal" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
   "tests/cobol85/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/cobol85/Makefile" ;;
+  "extras/Makefile" ) CONFIG_FILES="$CONFIG_FILES extras/Makefile" ;;
   "tests/atconfig" ) CONFIG_COMMANDS="$CONFIG_COMMANDS tests/atconfig" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;

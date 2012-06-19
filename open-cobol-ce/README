@@ -9,12 +9,13 @@ This package contains the following subdirectories:
 
     cobc        COBOL compiler
     libcob      COBOL run-time library
-    bin		COBOL driver program
+    bin         COBOL driver program
     lib         static library and common headers
     config      configuration files
     po          international messages
     texi        Texinfo files
     tests       Test suite
+    extras      useful COBOL programs 
 
 All programs except those in lib and libcob are distributed under
 the GNU General Public License.  See COPYING for details.
