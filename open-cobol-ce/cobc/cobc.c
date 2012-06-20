@@ -261,7 +261,7 @@ static const struct option long_options[] = {
 	{"verbose", no_argument, NULL, 'v'},
 */
 	{"list-reserved", no_argument, NULL, 'R'},
-	{"list-intrinsics", no_argument, NULL, 'Q'},
+	{"list-intrinsics", no_argument, NULL, '6'},
 	{"list-mnemonics", no_argument, NULL, 'q'},
 	{"save-temps", optional_argument, NULL, '_'},
 	{"std", required_argument, NULL, '$'},
@@ -631,7 +631,7 @@ process_command_line (int argc, char *argv[])
 		case 'R':
 			cb_list_reserved ();
 			exit (0);
-		case 'Q':
+		case '6':
 			cb_list_intrinsics ();
 			exit (0);
 		case 'q':
