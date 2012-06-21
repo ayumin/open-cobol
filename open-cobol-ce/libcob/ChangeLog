@@ -10,6 +10,11 @@
                   for identical behaviour
                   (especially fix for PDCurses + numpad support)
 
+2010-05-18  Sergey Kashyrin <ska@kiska.net>
+
+   * strings.c : Human patch for cob_unstring_into bug
+                 http://www.opencobol.org/modules/newbb/viewtopic.php?topic_id=1003&forum=1
+
 2009-12-23  Sergey Kashyrin <ska@kiska.net>
 
    * strings.c : cob_unstring_delimited bug fix, cob_inspect_converting bug fix
