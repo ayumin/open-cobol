@@ -521,7 +521,7 @@ cob_unstring_into (cob_field *dst, cob_field *dlm, cob_field *cnt)
 				dlsize = (int) dlm_list[i].uns_dlm.size;
 				dp = dlm_list[i].uns_dlm.data;
 				if (p + dlsize > s) {
-					break;
+					continue;
 				}
 				if (!memcmp (p, dp, (size_t)dlsize)) {
 					match_size = (int)(p - start);
