@@ -946,6 +946,7 @@ process_env_copy_path (void)
 	return;
 }
 
+#ifdef _MSC_VER
 static void
 file_stripext (char *buff)
 {
@@ -956,6 +957,7 @@ file_stripext (char *buff)
 		--endp;
 	}
 }
+#endif
 
 static void
 file_basename (const char *filename, char *buff)
