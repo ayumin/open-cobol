@@ -15,6 +15,4 @@ AM_LDFLAGS = $(COB_FIX_LIB)
 
 EXTRA_DIST = coblocal.h
 pkgincludedir = $(includedir)/libcob
-pkginclude_HEADERS = byteswap.h common.h move.h numeric.h exception.def \
-	termio.h fileio.h screenio.h strings.h call.h intrinsic.h \
-	codegen.h system.def
+pkginclude_HEADERS = common.h exception.def codegen.h system.def

@@ -1154,8 +1154,8 @@ extern int	cb_list_length (cb_tree l);
 struct cb_program {
 	/* program variables */
 	struct cb_program	*next_program;		/* Nested */
-	const char		*program_id;
-	char			*source_name;
+	const char		*program_id;		/* Demangled PROGRAM-ID */
+	char			*source_name;		/* Source name */
 	char			*orig_source_name;
 	FILE			*local_storage_file;
 	char			*local_storage_name;
@@ -1191,13 +1191,14 @@ struct cb_program {
 	cb_tree			returning;		/* RETURNING */
 	struct cb_word		*word_table[CB_WORD_HASH_SIZE];
 	/* internal variables */
-	int			loop_counter;
-	int			decimal_index;
-	int			decimal_index_max;
+	int		loop_counter;			/* Loop counters */
+	int		decimal_index;			/* cob_decimal count */
+	int		decimal_index_max;		/* cob_decimal max */
 	unsigned char		decimal_point;		/* '.' or ',' */
 	unsigned char		currency_symbol;	/* '$' or user-specified */
 	unsigned char		numeric_separator;	/* ',' or '.' */
 	unsigned char		nested_level;		/* Nested program level */
+
 	unsigned char		flag_main;		/* Gen main function */
 	unsigned char		flag_common;		/* COMMON PROGRAM */
 	unsigned char		flag_initial;		/* INITIAL PROGRAM */
@@ -1206,6 +1207,7 @@ struct cb_program {
 	unsigned char		flag_validated;		/* End program validate */
 	unsigned char		flag_chained;		/* PROCEDURE CHAINING */
 	unsigned char		flag_global_use;	/* USE GLOBAL */
+
 	unsigned char		gen_decset;		/* Gen decimal_set_int */
 	unsigned char		gen_udecset;		/* Gen decimal_set_uint */
 	unsigned char		gen_ptrmanip;		/* Gen cob_pointer_manip */
@@ -1215,7 +1217,7 @@ struct cb_program {
 };
 
 extern struct cb_program	*cb_build_program (struct cb_program *last_program,
-						   int nest_level);
+						   const int nest_level);
 
 /* parser.y */
 extern int	non_const_word;
@@ -1230,15 +1232,8 @@ extern void	cb_init_reserved (void);
 extern void	cb_list_map (cb_tree (*func) (cb_tree x), cb_tree l);
 
 /* error.c */
-#ifdef __GNUC__
-extern void	cb_warning_x (cb_tree x, const char *fmt, ...)
-	__attribute__ ((__format__ (__printf__, 2, 3)));
-extern void	cb_error_x (cb_tree x, const char *fmt, ...)
-	__attribute__ ((__format__ (__printf__, 2, 3)));
-#else
-extern void	cb_warning_x (cb_tree x, const char *fmt, ...);
-extern void	cb_error_x (cb_tree x, const char *fmt, ...);
-#endif
+extern void	cb_warning_x (cb_tree x, const char *fmt, ...) COB_A_FORMAT23;
+extern void	cb_error_x (cb_tree x, const char *fmt, ...) COB_A_FORMAT23;
 
 extern char		*check_filler_name (char *name);
 extern void		redefinition_error (cb_tree x);
@@ -1445,7 +1440,7 @@ extern void		cobc_tree_cast_error (cb_tree x, const char *filen,
 
 
 /* codegen.c */
-extern void		codegen (struct cb_program *prog, int nested);
+extern void		codegen (struct cb_program *prog, const int nested);
 
 /* scanner.l */
 extern void		cb_set_in_procedure (void);

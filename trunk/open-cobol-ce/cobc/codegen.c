@@ -27,10 +27,16 @@
 #include <ctype.h>
 #include <time.h>
 
-#include <tarstamp.h>
+#include "tarstamp.h"
 
 #include "cobc.h"
 #include "tree.h"
+
+#ifdef	HAVE_ATTRIBUTE_ALIGNED
+#define COB_ALIGN " __attribute__((aligned))"
+#else
+#define COB_ALIGN ""
+#endif
 
 #define COB_USE_SETJMP		0
 #define COB_MAX_SUBSCRIPTS	16
@@ -1714,7 +1720,7 @@ output_initialize_external (cb_tree x, struct cb_field *f)
 		strcpy (name, f->name);
 		for (p = (unsigned char *)name; *p; p++) {
 			if (islower (*p)) {
-				*p = toupper (*p);
+				*p = (unsigned char)toupper (*p);
 			}
 		}
 		output (" = cob_external_addr (\"%s\", %d);\n", name, f->size);
@@ -2055,7 +2061,7 @@ output_search_whens (cb_tree table, cb_tree var, cb_tree stmt, cb_tree whens)
 	}
 
 	/* Start loop */
-	output_line ("while (1)");
+	output_line ("for (;;)");
 	output_indent ("  {");
 
 	/* End test */
@@ -2106,7 +2112,7 @@ output_search_all (cb_tree table, cb_tree stmt, cb_tree cond, cb_tree when)
 	output (" + 1;\n");
 
 	/* Start loop */
-	output_line ("while (1)");
+	output_line ("for (;;)");
 	output_indent ("  {");
 
 	/* End test */
@@ -2814,7 +2820,7 @@ output_perform_until (struct cb_perform *p, cb_tree l)
 	v = CB_PERFORM_VARYING (CB_VALUE (l));
 	next = CB_CHAIN (l);
 
-	output_line ("while (1)");
+	output_line ("for (;;)");
 	output_indent ("  {");
 
 	if (next && CB_PERFORM_VARYING (CB_VALUE (next))->name) {
@@ -2876,7 +2882,7 @@ output_perform (struct cb_perform *p)
 		break;
 	case CB_PERFORM_FOREVER:
 		output_prefix ();
-		output ("while (1)\n");
+		output ("for (;;)\n");
 		output_indent ("  {");
 		output_perform_once (p);
 		output_indent ("  }");
@@ -4427,8 +4433,8 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 
 	entry_name = CB_LABEL (CB_PURPOSE (entry))->name;
 	using_list = CB_VALUE (entry);
-#ifdef	_MSC_VER
-	if (!gencode) {
+#if	defined(_WIN32) || defined(__CYGWIN__)
+	if (!gencode && !prog->nested_level) {
 		output ("__declspec(dllexport) ");
 	}
 #endif
@@ -4512,12 +4518,14 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 			output (", ");
 		}
 	}
+
 	if (gencode) {
 		output (")\n");
 	} else {
 		output (");\n");
 		return;
 	}
+
 	output ("{\n");
 	for (l1 = parameter_list; l1; l1 = CB_CHAIN (l1)) {
 		for (l2 = using_list; l2; l2 = CB_CHAIN (l2)) {
@@ -4642,7 +4650,7 @@ list_cache_sort (void *inlist, int (*cmpfunc)(void *mp1, void *mp2))
 	}
 	list = (struct sort_list *)inlist;
 	insize = 1;
-	while (1) {
+	for (;;) {
 		p = list;
 		list = NULL;
 		tail = NULL;
@@ -4695,7 +4703,7 @@ list_cache_sort (void *inlist, int (*cmpfunc)(void *mp1, void *mp2))
 }
 
 void
-codegen (struct cb_program *prog, int nested)
+codegen (struct cb_program *prog, const int nested)
 {
 	int			i;
 	cb_tree			l;
@@ -4712,6 +4720,7 @@ codegen (struct cb_program *prog, int nested)
 	time_t			loctime;
 	char			locbuff[48];
 
+	/* Clear local program stuff */
 	current_prog = prog;
 	param_id = 0;
 	stack_id = 0;
@@ -4893,19 +4902,23 @@ codegen (struct cb_program *prog, int nested)
 	for (l = prog->entry_list; l; l = CB_CHAIN (l)) {
 		output_entry_function (prog, l, prog->parameter_list, 1);
 	}
+
 	output_internal_function (prog, prog->parameter_list);
 
 	if (!prog->next_program) {
 		output ("/* End functions */\n\n");
 	}
 
-	if (gen_native || gen_full_ebcdic || gen_ebcdic_ascii || prog->alphabet_name_list) {
+	if (gen_native || gen_full_ebcdic ||
+	    gen_ebcdic_ascii || prog->alphabet_name_list) {
 		(void)lookup_attr (COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL, 0);
 	}
 
 	output_target = cb_storage_file;
 
 	/* Program local stuff */
+
+	/* CALL cache */
 	if (call_cache) {
 		output_local ("\n/* Call pointers */\n");
 		for (clp = call_cache; clp; clp = clp->next) {
@@ -4914,12 +4927,14 @@ codegen (struct cb_program *prog, int nested)
 		output_local ("\n");
 	}
 
+	/* Local indexes */
 	for (i = 0; i < COB_MAX_SUBSCRIPTS; i++) {
 		if (i_counters[i]) {
 			output_local ("int\t\ti%d;\n", i);
 		}
 	}
 
+	/* Local implicit fields */
 	if (num_cob_fields) {
 		output_local ("\n/* Local cob_field items */\n");
 		for (i = 0; i < num_cob_fields; i++) {
@@ -4938,7 +4953,7 @@ codegen (struct cb_program *prog, int nested)
 	/* Finalize the storage file */
 
 	if (base_cache) {
-		output_storage ("\n/* Storage */\n");
+		output_storage ("\n/* Data storage */\n");
 		base_cache = list_cache_sort (base_cache, &base_cache_cmp);
 		prevprog = NULL;
 		for (blp = base_cache; blp; blp = blp->next) {
@@ -4946,25 +4961,23 @@ codegen (struct cb_program *prog, int nested)
 				prevprog = blp->curr_prog;
 				output_storage ("\n/* PROGRAM-ID : %s */\n", prevprog);
 			}
-#ifdef HAVE_ATTRIBUTE_ALIGNED
-			output_storage ("static unsigned char %s%d[%d] __attribute__((aligned));",
-#else
-			output_storage ("static unsigned char %s%d[%d];",
-#endif
+			output_storage ("static unsigned char %s%d[%d]%s;",
 					CB_PREFIX_BASE, blp->f->id,
-					blp->f->memory_size);
+					blp->f->memory_size, COB_ALIGN);
 			output_storage ("\t/* %s */\n", blp->f->name);
 		}
-		output_storage ("\n/* End of storage */\n\n");
+		output_storage ("\n/* End of data storage */\n\n");
 	}
 
+	/* Attributes */
 	if (attr_cache) {
 		output_storage ("\n/* Attributes */\n\n");
 		attr_cache = attr_list_reverse (attr_cache);
 		for (j = attr_cache; j; j = j->next) {
 			output_storage ("static const cob_field_attr %s%d = ",
 					CB_PREFIX_ATTR, j->id);
-			output_storage ("{%d, %d, %d, %d, ", j->type, j->digits,
+			output_storage ("{%d, %d, %d, %d, ",
+					j->type, j->digits,
 					j->scale, j->flags);
 			if (j->pic) {
 				output_storage ("\"");
@@ -4987,9 +5000,11 @@ codegen (struct cb_program *prog, int nested)
 		for (k = field_cache; k; k = k->next) {
 			if (k->curr_prog != prevprog) {
 				prevprog = k->curr_prog;
-				output_storage ("\n/* PROGRAM-ID : %s */\n", prevprog);
+				output_storage ("\n/* PROGRAM-ID : %s */\n",
+						prevprog);
 			}
-			output ("static cob_field %s%d\t= ", CB_PREFIX_FIELD, k->f->id);
+			output ("static cob_field %s%d\t= ", CB_PREFIX_FIELD,
+						k->f->id);
 			if (!k->f->flag_local && !k->f->flag_item_external) {
 				output_field (k->x);
 			} else {
@@ -5003,8 +5018,10 @@ codegen (struct cb_program *prog, int nested)
 		}
 		output_storage ("\n/* End of fields */\n\n");
 	}
+
+	/* Literals, constants */
 	if (literal_cache) {
-		output_storage ("/* Constants */\n");
+		output_storage ("\n/* Constants */\n");
 		literal_cache = literal_list_reverse (literal_cache);
 		for (m = literal_cache; m; m = m->next) {
 			output ("static cob_field %s%d\t= ", CB_PREFIX_CONST, m->id);
@@ -5014,8 +5031,9 @@ codegen (struct cb_program *prog, int nested)
 		output ("\n");
 	}
 
+	/* Collating tables */
 	if (gen_ebcdic) {
-		output_storage ("/* EBCDIC translate table */\n");
+		output_storage ("\n/* ASCII to EBCDIC translate table (restricted) */\n");
 		output ("static const unsigned char\tcob_a2e[256] = {\n");
 		if (alt_ebcdic) {
 			output ("\t0x00, 0x01, 0x02, 0x03, 0x37, 0x2D, 0x2E, 0x2F,\n");
@@ -5089,6 +5107,7 @@ codegen (struct cb_program *prog, int nested)
 		output_storage ("\n");
 	}
 	if (gen_full_ebcdic) {
+		output_storage ("\n/* ASCII to EBCDIC table */\n");
 		output ("static const unsigned char\tcob_ebcdic[256] = {\n");
 		output ("\t0x00, 0x01, 0x02, 0x03, 0x37, 0x2D, 0x2E, 0x2F,\n");
 		output ("\t0x16, 0x05, 0x25, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,\n");
@@ -5130,6 +5149,7 @@ codegen (struct cb_program *prog, int nested)
 		output_storage ("\n");
 	}
 	if (gen_ebcdic_ascii) {
+		output_storage ("\n/* EBCDIC to ASCII table */\n");
 		output ("static const unsigned char\tcob_ebcdic_ascii[256] = {\n");
 		output ("\t0x00, 0x01, 0x02, 0x03, 0xEC, 0x09, 0xCA, 0x7F,\n");
 		output ("\t0xE2, 0xD2, 0xD3, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,\n");
@@ -5171,6 +5191,7 @@ codegen (struct cb_program *prog, int nested)
 		output_storage ("\n");
 	}
 	if (gen_native) {
+		output_storage ("\n/* NATIVE table */\n");
 		output ("static const unsigned char\tcob_native[256] = {\n");
 		output ("\t0, 1, 2, 3, 4, 5, 6, 7,\n");
 		output ("\t8, 9, 10, 11, 12, 13, 14, 15,\n");

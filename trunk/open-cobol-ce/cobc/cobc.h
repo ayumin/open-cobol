@@ -138,11 +138,8 @@ extern struct cb_text_list	*cb_text_list_add (struct cb_text_list *list, const c
 extern void			*cobc_malloc (const size_t size);
 extern void			*cobc_realloc (void *prevptr, const size_t size);
 
-#ifdef	__GNUC__
-extern void	cobc_abort (const char *filename, const int linenum) __attribute__ ((noreturn));
-#else
-extern void	cobc_abort (const char *filename, const int linenum);
-#endif
+DECLNORET extern void cobc_abort (const char *filename, const int linenum) COB_A_NORETURN;
+
 
 extern size_t			cobc_check_valid_name (char *name);
 
@@ -237,15 +234,8 @@ extern size_t	sending_id;
 extern size_t	suppress_warn;
 
 /* error.c */
-#ifdef __GNUC__
-extern void	cb_warning (const char *fmt, ...)
-     __attribute__ ((__format__ (__printf__, 1, 2)));
-extern void	cb_error (const char *fmt, ...)
-     __attribute__ ((__format__ (__printf__, 1, 2)));
-#else
-extern void	cb_warning (const char *fmt, ...);
-extern void	cb_error (const char *fmt, ...);
-#endif
+extern void	cb_warning (const char *fmt, ...) COB_A_FORMAT12;
+extern void	cb_error (const char *fmt, ...) COB_A_FORMAT12;
 
 extern int	cb_verify (const enum cb_support tag, const char *feature);
 
