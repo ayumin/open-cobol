@@ -465,7 +465,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LN_S build build_cpu build_vendor build_os host host_cpu host_vendor host_os SED ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXXCPP LIBTOOL ALLOCA LIBICONV LTLIBICONV LIBOBJS MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE INTLLIBS LIBINTL LTLIBINTL POSUB COB_CC COB_CFLAGS COB_LDFLAGS COB_LIBS COB_CONFIG_DIR COB_COPY_DIR COB_LIBRARY_PATH COB_MODULE_EXT COBC_LIBS LIBCOB_CFLAGS LIBCOB_LIBS COB_EXPORT_DYN COB_PIC_FLAGS COB_SHARED_OPT COB_BIGENDIAN COB_FIX_LIB COB_HAS_INLINE LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LN_S build build_cpu build_vendor build_os host host_cpu host_vendor host_os SED ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXXCPP LIBTOOL ALLOCA LIBICONV LTLIBICONV LIBOBJS MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE INTLLIBS LIBINTL LTLIBINTL POSUB COB_MAKE_IX_TRUE COB_MAKE_IX_FALSE COB_CC COB_CFLAGS COB_LDFLAGS COB_LIBS COB_CONFIG_DIR COB_COPY_DIR COB_LIBRARY_PATH COB_MODULE_EXT COBC_LIBS LIBCOB_CFLAGS LIBCOB_LIBS COB_EXPORT_DYN COB_PIC_FLAGS COB_SHARED_OPT COB_BIGENDIAN COB_FIX_LIB COB_HAS_INLINE COB_HAS_ISAM LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -24435,6 +24435,7 @@ fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 fi
+
 # Checks for db.
 USE_DB="no"
 HAS_DB41="no"
@@ -26755,6 +26756,13 @@ _ACEOF
 
 fi
 
+if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes" -a "$with_db" != "yes"
+then
+	COB_HAS_ISAM=no
+else
+	COB_HAS_ISAM=yes
+fi
+
 # Generate the output
 
 cat >>confdefs.h <<_ACEOF
@@ -26800,6 +26808,7 @@ fi
 
 
 COB_BIGENDIAN="$ac_cv_c_bigendian"
+
 
 
 
@@ -27569,6 +27578,7 @@ s,@COB_SHARED_OPT@,$COB_SHARED_OPT,;t t
 s,@COB_BIGENDIAN@,$COB_BIGENDIAN,;t t
 s,@COB_FIX_LIB@,$COB_FIX_LIB,;t t
 s,@COB_HAS_INLINE@,$COB_HAS_INLINE,;t t
+s,@COB_HAS_ISAM@,$COB_HAS_ISAM,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
 
@@ -28458,16 +28468,19 @@ then
   echo "  Use external ISAM file handler               yes"
 elif test "$with_cisam" = "yes"
 then
-  echo "  Use CISAM for file I/O                       yes"
+  echo "  Use CISAM for ISAM I/O                       yes"
 elif test "$with_disam" = "yes"
 then
-  echo "  Use DISAM for file I/O                       yes"
+  echo "  Use DISAM for ISAM I/O                       yes"
 elif test "$with_vbisam" = "yes"
 then
-  echo "  Use VBISAM for file I/O                      yes"
-else
-  echo "  Use Berkeley DB for file I/O:                ${USE_DB}"
+  echo "  Use VBISAM for ISAM I/O                      yes"
+elif test "$with_db" = "yes"
+then
+  echo "  Use Berkeley DB for ISAM I/O:                yes"
   echo "  Use enhanced Berkeley DB (>= 4.1)            ${HAS_DB41}"
+else
+  echo "  ISAM I/O (no handler configured):            NO"
 fi
 echo "  Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
 echo "  Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"

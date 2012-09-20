@@ -1,6 +1,11 @@
-2012-09-05  human
+2012-09-05  Simon 'human' Sobisch
 
 	* Change package name to OpenCOBOL CE
+
+2011-??-??  Roger While <simrw@sim-basis.de>
+
+	* General : Affects most directories - Let make check
+	  skip ISAM tests if not configured with ISAM
 
 2008-11-17  Roger While <simrw@sim-basis.de>
 
