@@ -1,23 +1,25 @@
-#                                                       -*- Autoconf -*-
+#              
+# Configure template for OpenCOBOL                                         -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 # Copyright (C) 2001-2009 Keisuke Nishida
 # Copyright (C) 2007-2009 Roger While
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# This file is part of OpenCOBOL.
 #
-# This program is distributed in the hope that it will be useful,
+#
+# The OpenCOBOL compiler is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 2 of the
+# License, or (at your option) any later version.
+#
+# OpenCOBOL is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to
-# the Free Software Foundation, 51 Franklin Street, Fifth Floor
-# Boston, MA 02110-1301 USA
+# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.59)
 
@@ -366,6 +368,7 @@ then
   [],
   [])
 fi
+
 # Checks for db.
 USE_DB="no"
 HAS_DB41="no"
@@ -712,6 +715,13 @@ then
 	AC_DEFINE(COB_NO_SELFOPEN,1)
 fi
 
+if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes" -a "$with_db" != "yes"
+then
+	COB_HAS_ISAM=no
+else
+	COB_HAS_ISAM=yes
+fi
+
 # Generate the output
 
 AC_DEFINE_UNQUOTED(COB_EXPORT_DYN, "$COB_EXPORT_DYN")
@@ -742,6 +752,7 @@ COB_BIGENDIAN="$ac_cv_c_bigendian"
 AC_SUBST(COB_BIGENDIAN)
 AC_SUBST(COB_FIX_LIB)
 AC_SUBST(COB_HAS_INLINE)
+AC_SUBST(COB_HAS_ISAM)
 
 AC_CONFIG_FILES([cob-config
 		Makefile lib/Makefile libcob/Makefile
@@ -793,16 +804,19 @@ then
   echo "  Use external ISAM file handler               yes"
 elif test "$with_cisam" = "yes"
 then
-  echo "  Use CISAM for file I/O                       yes"
+  echo "  Use CISAM for ISAM I/O                       yes"
 elif test "$with_disam" = "yes"
 then
-  echo "  Use DISAM for file I/O                       yes"
+  echo "  Use DISAM for ISAM I/O                       yes"
 elif test "$with_vbisam" = "yes"
 then
-  echo "  Use VBISAM for file I/O                      yes"
-else
-  echo "  Use Berkeley DB for file I/O:                ${USE_DB}"
+  echo "  Use VBISAM for ISAM I/O                      yes"
+elif test "$with_db" = "yes"
+then
+  echo "  Use Berkeley DB for ISAM I/O:                yes"
   echo "  Use enhanced Berkeley DB (>= 4.1)            ${HAS_DB41}"
+else
+  echo "  ISAM I/O (no handler configured):            NO"
 fi
 echo "  Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
 echo "  Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"
