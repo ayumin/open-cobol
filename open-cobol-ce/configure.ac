@@ -154,20 +154,24 @@ then
   [ if test "$with_index_extfh" = "yes"
     then
 	AC_DEFINE(WITH_INDEX_EXTFH)
-    fi ],
-  [ AC_ARG_WITH(db1,
+    fi ], [])
+fi
+
+if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
+then
+  AC_ARG_WITH(db1,
    [  --with-db1              (OpenCOBOL) use Berkeley DB 1.85 (libdb-1.85)],
    [ LIBDB="1"
-     AC_DEFINE(WITH_DB, 1) ],
+     AC_DEFINE(WITH_DB, 1)
+     with_db=yes ],
 	[ AC_ARG_WITH(db,
 		[  --with-db               (OpenCOBOL) use Berkeley DB 3.0 or later (libdb)(default)],
-		[ if test "$with_db" = "yes"
-		  then
-		  LIBDB="3"
-		  AC_DEFINE(WITH_DB, 3)
-		  fi ],
 		[ LIBDB="3"
-		  AC_DEFINE(WITH_DB, 3) ]) ]) ])
+		  AC_DEFINE(WITH_DB, 3) 
+        ],
+		[ LIBDB="3"
+		  AC_DEFINE(WITH_DB, 3)
+        with_db=yes ]) ])
 fi
 
 #AC_ARG_WITH(lfs64,
@@ -383,18 +387,22 @@ then
 elif test "$LIBDB" = "3"
 then
 	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-		#include <stdlib.h>
 		#include <db.h>]], [[
-		printf("checking for BDB db.h version >= 4.1 ... ");
+		printf("checking for Berkeley DB db.h version >= 4.1 ... ");
+		#if (defined(DB_VERSION_MAJOR) && defined(DB_VERSION_MINOR))
 		#if (DB_VERSION_MAJOR > 4) || ((DB_VERSION_MAJOR == 4) && (DB_VERSION_MINOR > 0))
 		printf("yes (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
 		return 0;
 		#else
 		printf("no (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
 		return 1;
+		#endif
+		#else
+		printf("no (version numbers not found)\n");
+		return 1;
 		#endif]])],
 		[HAS_DB41="yes"],
-		[],
+		[AC_MSG_ERROR([Berkeley DB db.h is missing or has incompatible version])],
 		[])
 	if test "$HAS_DB41" = "yes"
 	then
@@ -754,11 +762,16 @@ AC_SUBST(COB_FIX_LIB)
 AC_SUBST(COB_HAS_INLINE)
 AC_SUBST(COB_HAS_ISAM)
 
-AC_CONFIG_FILES([cob-config
+AC_CONFIG_FILES([bin/cob-config
 		Makefile lib/Makefile libcob/Makefile
 		cobc/Makefile bin/Makefile po/Makefile.in texi/Makefile config/Makefile
 		copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile
 		extras/Makefile])
+
+AC_CONFIG_COMMANDS([chmod1], [chmod +x bin/cob-config])
+AC_CONFIG_COMMANDS([chmod2], [chmod +x tests/atconfig])
+AC_CONFIG_COMMANDS([chmod3], [chmod +x tests/atlocal])
+
 AC_OUTPUT
 
 echo ""

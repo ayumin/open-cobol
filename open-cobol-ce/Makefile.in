@@ -61,11 +61,10 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/cob-config.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure ABOUT-NLS AUTHORS COPYING COPYING.DOC \
-	COPYING.LIB ChangeLog INSTALL NEWS THANKS TODO compile \
-	config.guess config.rpath config.sub depcomp install-sh \
-	ltmain.sh missing mkinstalldirs
+	$(srcdir)/config.h.in $(top_srcdir)/configure ABOUT-NLS \
+	AUTHORS COPYING COPYING.DOC COPYING.LIB ChangeLog INSTALL NEWS \
+	THANKS TODO compile config.guess config.rpath config.sub \
+	depcomp install-sh ltmain.sh missing mkinstalldirs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
@@ -80,10 +79,10 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = cob-config
+CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(includedir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(bin_SCRIPTS)
+SCRIPTS = 
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -141,8 +140,6 @@ COB_HAS_ISAM = @COB_HAS_ISAM@
 COB_LDFLAGS = @COB_LDFLAGS@
 COB_LIBRARY_PATH = @COB_LIBRARY_PATH@
 COB_LIBS = @COB_LIBS@
-COB_MAKE_IX_FALSE = @COB_MAKE_IX_FALSE@
-COB_MAKE_IX_TRUE = @COB_MAKE_IX_TRUE@
 COB_MODULE_EXT = @COB_MODULE_EXT@
 COB_PIC_FLAGS = @COB_PIC_FLAGS@
 COB_SHARED_OPT = @COB_SHARED_OPT@
@@ -244,7 +241,6 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-bin_SCRIPTS = cob-config
 include_HEADERS = libcob.h
 SUBDIRS = lib libcob cobc bin config copy po texi tests extras
 ACLOCAL_AMFLAGS = -I m4
@@ -305,8 +301,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-cob-config: $(top_builddir)/config.status $(srcdir)/cob-config.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
@@ -489,7 +483,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/m4 $(distdir)/po $(distdir)/tests
+	$(mkdir_p) $(distdir)/bin $(distdir)/m4 $(distdir)/po $(distdir)/tests
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -743,7 +737,7 @@ dist-hook:
 	echo "static char octardate[] = \"`date +'%b %d %Y %T %Z'`\";" > $(distdir)/tarstamp.h
 	find $(distdir) -type d -print | xargs chmod 777
 	chmod 644 $(distdir)/cpucheck.c
-	chmod 644 $(distdir)/cob-config.in
+	chmod 644 $(distdir)/bin/cob-config.in
 	chmod 644 $(distdir)/ABOUT-NLS
 	chmod 644 $(distdir)/AUTHORS
 	chmod 644 $(distdir)/COPYING

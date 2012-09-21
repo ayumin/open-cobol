@@ -36,6 +36,7 @@
 # You should have received a copy of the GNU General Public License
 # along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -134,8 +135,6 @@ COB_HAS_ISAM = @COB_HAS_ISAM@
 COB_LDFLAGS = @COB_LDFLAGS@
 COB_LIBRARY_PATH = @COB_LIBRARY_PATH@
 COB_LIBS = @COB_LIBS@
-COB_MAKE_IX_FALSE = @COB_MAKE_IX_FALSE@
-COB_MAKE_IX_TRUE = @COB_MAKE_IX_TRUE@
 COB_MODULE_EXT = @COB_MODULE_EXT@
 COB_PIC_FLAGS = @COB_PIC_FLAGS@
 COB_SHARED_OPT = @COB_SHARED_OPT@
