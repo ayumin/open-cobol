@@ -3809,7 +3809,11 @@ cob_open (cob_file *f, const int mode, const int sharing, cob_field *fnstatus)
 	}
 
 	/* obtain the file name */
-	cob_field_to_string (f->assign, file_open_name);
+	if(f->assign == NULL) {
+		strncpy (file_open_name, f->select_name, COB_SMALL_MAX);
+	} else {
+		cob_field_to_string (f->assign, file_open_name);
+	}
 
 #ifdef	WITH_INDEX_EXTFH
 	if (f->organization == COB_ORG_INDEXED) {
@@ -4461,7 +4465,11 @@ cob_exit_fileio (void)
 	for (l = file_cache; l; l = l->next) {
 		if (l->file->open_mode != COB_OPEN_CLOSED &&
 		     l->file->open_mode != COB_OPEN_LOCKED) {
-			cob_field_to_string (l->file->assign, runtime_buffer);
+			if(l->file->assign == NULL) {
+				strncpy (runtime_buffer, l->file->select_name, COB_SMALL_MAX);
+			} else {
+				cob_field_to_string (l->file->assign, runtime_buffer);
+			}
 			cob_close (l->file, 0, NULL);
 			fprintf (stderr, "WARNING - Implicit CLOSE of %s (\"%s\")\n",
 				l->file->select_name, runtime_buffer);
