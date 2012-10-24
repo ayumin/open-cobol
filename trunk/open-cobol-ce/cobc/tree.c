@@ -1097,8 +1097,9 @@ cb_build_picture (const char *str)
 	size_t			buffcnt = 0;
 	size_t			at_beginning;
 	size_t			at_end;
-	size_t			p_char_seen;
-	size_t			s_char_seen;
+	int			p_char_seen = 0;
+	int			s_char_seen = 0;
+	int			cur_char_seen = 0;
 	int			category = 0;
 	int			size = 0;
 	int			allocated = 0;
@@ -1118,8 +1119,6 @@ cb_build_picture (const char *str)
 		goto error;
 	}
 	memset (buff, 0, sizeof (buff));
-	p_char_seen = 0;
-	s_char_seen = 0;
 	for (p = str; *p; p++) {
 		n = 1;
 		c = *p;
@@ -1302,6 +1301,9 @@ repeat:
 				goto error;
 			}
 			digits += n - 1;
+			if(s_count > 0) {
+				++digits;
+			}
 			s_count++;
 			/* FIXME: need more check */
 			break;
@@ -1333,7 +1335,12 @@ repeat:
 		default:
 			if (c == current_program->currency_symbol) {
 				category |= PIC_NUMERIC_EDITED;
-				digits += n - 1;
+				if(cur_char_seen == 0) {
+					digits += n - 1;
+					cur_char_seen = 1;
+				} else {
+					digits += n;
+				}
 				/* FIXME: need more check */
 				break;
 			}
