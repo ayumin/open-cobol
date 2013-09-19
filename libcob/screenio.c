@@ -1,33 +1,53 @@
 /*
- * Copyright (C) 2001-2009 Keisuke Nishida
- * Copyright (C) 2007-2009 Roger While
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2.1,
- * or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; see the file COPYING.LIB.  If
- * not, write to the Free Software Foundation, 51 Franklin Street, Fifth Floor
- * Boston, MA 02110-1301 USA
- */
+   Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
+   Copyright (C) 2007-2012 Roger While
+
+   This file is part of OpenCOBOL.
+
+   The OpenCOBOL runtime library is free software: you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   OpenCOBOL is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 #include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
+#include <ctype.h>
+#include <errno.h>
 #ifdef	HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_NCURSES_H
+#ifdef	HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
+#ifdef	_WIN32
+/* Later pdcurses versions require define before the include for DLL build */
+#define	PDC_DLL_BUILD	1
+#include <io.h>
+#endif
+
+#if defined(HAVE_NCURSESW_NCURSES_H)
+#include <ncursesw/ncurses.h>
+#define COB_GEN_SCREENIO
+#elif defined(HAVE_NCURSESW_CURSES_H)
+#include <ncursesw/curses.h>
+#define COB_GEN_SCREENIO
+#elif defined(HAVE_NCURSES_H)
 #include <ncurses.h>
 #define COB_GEN_SCREENIO
 #elif defined(HAVE_NCURSES_NCURSES_H)
@@ -41,44 +61,201 @@
 #define COB_GEN_SCREENIO
 #endif
 
-#include "move.h"
+/* Force symbol exports */
+#define	COB_LIB_EXPIMP
+
+#include "libcob.h"
 #include "coblocal.h"
-#include "screenio.h"
 
-/* Global variables */
-
-int	cob_screen_initialized = 0;
-int	cob_screen_mode = 0;
-
-#ifdef COB_GEN_SCREENIO
+#ifdef	HAVE_CURSES_FREEALL
+extern void	_nc_freeall (void);
+#endif
 
 struct cob_inp_struct {
-	cob_screen	*scr;
-	size_t		up_index;
-	size_t		down_index;
-	int		this_y;
-	int		this_x;
+	cob_screen		*scr;
+	size_t			up_index;
+	size_t			down_index;
+	int			this_y;
+	int			this_x;
 };
 
-#define	COB_INP_SIZE	1920 * sizeof(struct cob_inp_struct)
+#define	COB_INP_FLD_MAX		512U
+
+#define	COB_INP_SIZE	(COB_INP_FLD_MAX * sizeof(struct cob_inp_struct))
+
+#define	COB_CH_UL		((const chtype)'_')
+#define	COB_CH_SP		((const chtype)' ')
+#define	COB_CH_AS		((const chtype)'*')
 
 /* Local variables */
 
-static struct cob_inp_struct	*cob_base_inp = NULL;
-static size_t			curr_index = 0;
-static size_t			totl_index = 0;
-static size_t			cob_has_color = 0;
-static size_t			cob_extended_status = 0;
-static size_t			cob_use_esc = 0;
+static cob_global		*cobglobptr;
+
+
+/* Local variables when screenio activated */
+
+#ifdef	COB_GEN_SCREENIO
+static const cob_field_attr	const_alpha_attr =
+				{COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL};
+static struct cob_inp_struct	*cob_base_inp;
+static size_t			totl_index;
+static size_t			cob_has_color;
 static int			global_return;
-static int			cob_current_y = 0;
-static int			cob_current_x = 0;
-static int			cob_max_y = 0;
-static int			cob_max_x = 0;
+static int			cob_current_y;
+static int			cob_current_x;
+static cob_u32_t		cob_legacy;
 static short			fore_color;
 static short			back_color;
+#endif
 
 /* Local functions */
+
+static void
+cob_speaker_beep (void)
+{
+	int	fd;
+
+	fd = fileno (stdout);
+	if (fd >= 0) {
+		(void)write (fd, "\a", (size_t)1);
+	}
+}
+
+#ifdef	COB_GEN_SCREENIO
+
+static void
+cob_beep (void)
+{
+	switch (COB_BEEP_VALUE) {
+	case 1:
+		(void)flash ();
+		return;
+	case 2:
+		cob_speaker_beep ();
+		return;
+	case 9:
+		return;
+	default:
+		(void)beep ();
+		return;
+	}
+}
+
+static void
+cob_convert_key (int *keyp, const cob_u32_t field_accept)
+{
+	/* Map key to KEY_xxx value */
+	switch (*keyp) {
+	case '\n':
+	case '\r':
+	case '\004':
+	case '\032':
+		*keyp = KEY_ENTER;
+		break;
+	case '\t':
+		*keyp = KEY_STAB;
+		break;
+	case '\b':
+	case 0177:
+		*keyp = KEY_BACKSPACE;
+		break;
+
+#ifdef	KEY_A1
+	/* A1, A3, C1, C3 must be present */
+	case KEY_A1:
+		*keyp = KEY_HOME;
+		break;
+	case KEY_A3:
+		*keyp = KEY_PPAGE;
+		break;
+	case KEY_C1:
+		*keyp = KEY_END;
+		break;
+	case KEY_C3:
+		*keyp = KEY_NPAGE;
+		break;
+	/* Any or all of A2, B1-3, C2 MAY be present */
+	/* Note B2 ignored */
+#ifdef	KEY_A2
+	case KEY_A2:
+		*keyp = KEY_UP;
+		break;
+#endif
+#ifdef	KEY_B1
+	case KEY_B1:
+		*keyp = KEY_LEFT;
+		break;
+#endif
+#ifdef	KEY_B3
+	case KEY_B3:
+		*keyp = KEY_RIGHT;
+		break;
+#endif
+#ifdef	KEY_C2
+	case KEY_C2:
+		*keyp = KEY_DOWN;
+		break;
+#endif
+
+#if	defined(__PDCURSES__) && defined(PADSLASH)
+	case PADSLASH:
+		*keyp = '/';
+		break;
+	case PADSTAR:
+		*keyp = '*';
+		break;
+	case PADMINUS:
+		*keyp = '-';
+		break;
+	case PADPLUS:
+		*keyp = '+';
+		break;
+	case PADENTER:
+		*keyp = KEY_ENTER;
+		break;
+#ifdef	PAD0
+	case PAD0:
+		*keyp = KEY_IC;
+		break;
+	case PADSTOP:
+		*keyp = KEY_DC;
+		break;
+#endif	/* PAD0 */
+#endif	/* __PDCURSES__ */
+#endif	/* KEY_A1 */
+	default:
+		break;
+	}
+
+	/* Check if key should be ignored */
+	switch (*keyp) {
+	case KEY_STAB:
+		if (field_accept) {
+			*keyp = 0;
+		}
+		break;
+	case '\033':
+		if (!COB_EXTENDED_STATUS || !COB_USE_ESC) {
+			*keyp = 0;
+		}
+		break;
+	case KEY_PPAGE:
+	case KEY_NPAGE:
+	case KEY_PRINT:
+		if (!COB_EXTENDED_STATUS) {
+			*keyp = 0;
+		}
+		break;
+	case KEY_UP:
+	case KEY_DOWN:
+		if (field_accept && !COB_EXTENDED_STATUS) {
+			*keyp = 0;
+		}
+		break;
+	default:
+		break;
+	}
+}
 
 static void
 get_line_column (cob_field *fline, cob_field *fcol, int *line, int *col)
@@ -87,9 +264,19 @@ get_line_column (cob_field *fline, cob_field *fcol, int *line, int *col)
 	int	c;
 	int	p;
 
+	getyx (stdscr, *line, *col);
 	if (fline == NULL) {
-		*line = 0;
-		*col = 0;
+		if (fcol == NULL) {
+			*line = 0;
+			*col = 0;
+			return;
+		}
+		c = cob_get_int (fcol);
+		if (c > 0) {
+			*col = c - 1;
+		} else if (c < 0) {
+			*col = 0;
+		}
 		return;
 	}
 
@@ -108,19 +295,21 @@ get_line_column (cob_field *fline, cob_field *fcol, int *line, int *col)
 		c = cob_get_int (fcol);
 	}
 	if (l > 0) {
-		l--;
+		*line = --l;
+	} else if (l < 0) {
+		*line = 0;
 	}
 	if (c > 0) {
-		c--;
+		*col = --c;
+	} else if (c < 0) {
+		*col = 0;
 	}
-	*line = l;
-	*col = c;
 }
 
 static void
 cob_screen_attr (cob_field *fgc, cob_field *bgc, const int attr)
 {
-	size_t		i;
+	int		i;
 	int		styles = 0;
 	int		line;
 	int		column;
@@ -130,6 +319,20 @@ cob_screen_attr (cob_field *fgc, cob_field *bgc, const int attr)
 	short		bgdef;
 
 	attrset (A_NORMAL);
+	if (attr & COB_SCREEN_BLANK_SCREEN) {
+		getyx (stdscr, line, column);
+		clear ();
+		move (line, column);
+	}
+	if (attr & COB_SCREEN_BLANK_LINE) {
+		getyx (stdscr, line, column);
+		move (line, 0);
+		clrtoeol ();
+		move (line, column);
+	}
+	if (attr & COB_SCREEN_BELL) {
+		cob_beep ();
+	}
 	if (attr & COB_SCREEN_REVERSE) {
 		styles |= A_REVERSE;
 	}
@@ -208,7 +411,7 @@ cob_screen_attr (cob_field *fgc, cob_field *bgc, const int attr)
 				break;
 			}
 		}
-		for (i = 0; i < (size_t)COLOR_PAIRS; i++) {
+		for (i = 0; i < (int)COLOR_PAIRS; i++) {
 			pair_content ((short)i, &fgdef, &bgdef);
 			if (fgdef == fgcolor && bgdef == bgcolor) {
 				break;
@@ -218,27 +421,18 @@ cob_screen_attr (cob_field *fgc, cob_field *bgc, const int attr)
 				break;
 			}
 		}
-		if (i != (size_t)COLOR_PAIRS) {
+		if (i != (int)COLOR_PAIRS) {
 #ifdef	HAVE_COLOR_SET
-			color_set (COLOR_PAIR(i), (void *)0);
+			color_set ((short)COLOR_PAIR(i), NULL);
 #else
 			attrset (COLOR_PAIR(i));
 #endif
 			bkgdset (COLOR_PAIR(i));
 		} else {
-			attrset (A_NORMAL);
+			if (!styles) {
+				attrset (A_NORMAL);
+			}
 		}
-	}
-	if (attr & COB_SCREEN_BLANK_SCREEN) {
-		getyx (stdscr, line, column);
-		clear ();
-		move (line, column);
-	}
-	if (attr & COB_SCREEN_BLANK_LINE) {
-		getyx (stdscr, line, column);
-		move (line, 0);
-		clrtoeol ();
-		move (line, column);
 	}
 	if (attr & COB_SCREEN_ERASE_EOL) {
 		clrtoeol ();
@@ -246,63 +440,106 @@ cob_screen_attr (cob_field *fgc, cob_field *bgc, const int attr)
 	if (attr & COB_SCREEN_ERASE_EOS) {
 		clrtobot ();
 	}
-	if (attr & COB_SCREEN_BELL) {
-		beep ();
-	}
 }
 
-static void COB_NOINLINE
+static void
 cob_screen_init (void)
 {
 	char	*s;
 
-	if (!cob_screen_initialized) {
-		s = getenv ("COB_SCREEN_EXCEPTIONS");
-		if (s) {
-			if (*s == 'Y' || *s == 'y') {
-				cob_extended_status = 1;
-				s = getenv ("COB_SCREEN_ESC");
-				if (s) {
-					if (*s == 'Y' || *s == 'y') {
-							cob_use_esc = 1;
-					}
-				}
-			}
-		}
-		fflush (stdout);
-		fflush (stderr);
-		if (!initscr ()) {
-			cob_runtime_error ("Failed to initialize curses");
-			cob_stop_run (1);
-		}
-		cbreak ();
-		keypad (stdscr, 1);
-		nl ();
-		noecho ();
-		if (has_colors ()) {
-			start_color ();
-			pair_content ((short)0, &fore_color, &back_color);
-			if (COLOR_PAIRS) {
-				cob_has_color = 1;
-			}
-		}
-		attrset (A_NORMAL);
-		getmaxyx (stdscr, cob_max_y, cob_max_x);
-		cob_screen_initialized = 1;
+#ifdef	HAVE_LIBPDCURSES
+	size_t	i;
+#endif
+
+	if (cobglobptr->cob_screen_initialized) {
+		return;
 	}
+
+	cob_base_inp = NULL;
+	totl_index = 0;
+	cob_has_color = 0;
+	global_return = 0;
+	cob_current_y = 0;
+	cob_current_x = 0;
+	cob_legacy = 0;
+	fore_color = 0;
+	back_color = 0;
+
+	fflush (stdout);
+	fflush (stderr);
+
+	if ((s = getenv ("COB_LEGACY")) != NULL) {
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
+			cob_legacy = 1U;
+		}
+	}
+
+#if	0	/* RXWRXW sigtin */
+#ifndef _WIN32
+	/* If the process is backgrounded (running non interactively), */
+	/* SIGTTIN or SIGTOU is emitted. If not caught, turns into a SIGSTP */
+#ifdef	SIGTTIN
+	signal(SIGTTIN, SIG_IGN);
+#endif
+#ifdef	SIGTTOU
+	signal(SIGTTOU, SIG_IGN);
+#endif
+#endif
+#endif
+
+#if	0	/* RXWRXW - setlocale */
+#ifdef	HAVE_SETLOCALE
+	if (cobglobptr->cob_locale_orig) {
+		setlocale (LC_ALL, cobglobptr->cob_locale_orig);
+	}
+	if (cobglobptr->cob_locale_ctype) {
+		setlocale (LC_CTYPE, cobglobptr->cob_locale_ctype);
+	}
+#endif
+#endif
+
+	if (!initscr ()) {
+		cob_runtime_error (_("Failed to initialize curses"));
+		cob_stop_run (1);
+	}
+	cobglobptr->cob_screen_initialized = 1;
+#ifdef	HAVE_USE_LEGACY_CODING
+	use_legacy_coding (2);
+#endif
+
+#if	0	/* RXWRXW - setlocale */
+#ifdef	HAVE_SETLOCALE
+	if (cobglobptr->cob_locale) {
+		setlocale (LC_ALL, cobglobptr->cob_locale);
+		setlocale (LC_CTYPE, "C");
+	}
+#endif
+#endif
+
+	cbreak ();
+	keypad (stdscr, 1);
+	nonl ();
+	noecho ();
+	if (has_colors ()) {
+		start_color ();
+		pair_content ((short)0, &fore_color, &back_color);
+		if (COLOR_PAIRS) {
+#ifdef	HAVE_LIBPDCURSES
+			/* pdcurses sets ALL pairs to default fg/bg */
+			/* IMHO a bug. */
+			for (i = 1; i < (size_t)COLOR_PAIRS; ++i) {
+				init_pair ((short)i, 0, 0);
+			}
+#endif
+			cob_has_color = 1;
+		}
+	}
+	attrset (A_NORMAL);
+	getmaxyx (stdscr, COB_MAX_Y_COORD, COB_MAX_X_COORD);
 }
 
-void
-cob_screen_terminate (void)
-{
-	if (cob_screen_initialized) {
-		cob_screen_initialized = 0;
-		endwin ();
-	}
-}
-
-static void COB_NOINLINE
-cob_check_pos_status (int fret)
+static void
+cob_check_pos_status (const int fret)
 {
 	cob_field	*f;
 	int		sline;
@@ -312,17 +549,19 @@ cob_check_pos_status (int fret)
 	if (fret) {
 		cob_set_exception (COB_EC_IMP_ACCEPT);
 	}
-	if (cob_current_module->crt_status) {
-		if (COB_FIELD_IS_NUMERIC (cob_current_module->crt_status)) {
-			cob_set_int (cob_current_module->crt_status, fret);
+	COB_ACCEPT_STATUS = fret;
+	if (COB_MODULE_PTR->crt_status) {
+		if (COB_FIELD_IS_NUMERIC (COB_MODULE_PTR->crt_status)) {
+			cob_set_int (COB_MODULE_PTR->crt_status, fret);
 		} else {
 			sprintf(datbuf, "%4.4d", fret);
-			memcpy (cob_current_module->crt_status->data, datbuf, 4);
+			memcpy (COB_MODULE_PTR->crt_status->data, datbuf,
+				(size_t)4);
 		}
 	}
-	if (cob_current_module->cursor_pos) {
+	if (COB_MODULE_PTR->cursor_pos) {
 		getyx (stdscr, sline, scolumn);
-		f = cob_current_module->cursor_pos;
+		f = COB_MODULE_PTR->cursor_pos;
 		if (COB_FIELD_IS_NUMERIC (f) &&
 		    COB_FIELD_TYPE (f) != COB_TYPE_NUMERIC_DISPLAY) {
 			sline *= 1000;
@@ -333,19 +572,19 @@ cob_check_pos_status (int fret)
 				sline *= 100;
 				sline += scolumn;
 				sprintf(datbuf, "%4.4d", sline);
-				memcpy (f->data, datbuf, 4);
+				memcpy (f->data, datbuf, (size_t)4);
 			} else {
 				sline *= 1000;
 				sline += scolumn;
 				sprintf(datbuf, "%6.6d", sline);
-				memcpy (f->data, datbuf, 6);
+				memcpy (f->data, datbuf, (size_t)6);
 			}
 		}
 	}
 }
 
 static void
-cob_screen_puts (cob_screen *s, cob_field *f)
+cob_screen_puts (cob_screen *s, cob_field *f, const cob_u32_t is_input)
 {
 	unsigned char	*p;
 	size_t		size;
@@ -353,8 +592,14 @@ cob_screen_puts (cob_screen *s, cob_field *f)
 	int		x;
 	int		line;
 	int		column;
+	chtype		promptchar;
 
 	getyx (stdscr, y, x);
+#if	1	/* RXWRXW - Column adjust */
+	if (x > 0) {
+		x--;
+	}
+#endif
 	if (!s->line) {
 		line = y;
 	} else {
@@ -384,30 +629,43 @@ cob_screen_puts (cob_screen *s, cob_field *f)
 	move (line, column);
 	cob_current_y = line;
 	cob_current_x = column;
+#if	0	/* RXWRXW - Attr */
 	cob_screen_attr (s->foreg, s->backg, s->attr);
+#endif
 	if (s->attr & COB_SCREEN_INPUT) {
+		cob_screen_attr (s->foreg, s->backg, s->attr);
+		if (s->prompt) {
+			promptchar = s->prompt->data[0];
+		} else {
+			promptchar = COB_CH_UL;
+		}
 		p = f->data;
 		for (size = 0; size < f->size; size++, p++) {
 			if (s->attr & COB_SCREEN_SECURE) {
-				addch ('*');
+				addch (COB_CH_AS);
 			} else if (*p <= ' ') {
-				addch ('_');
+				addch (promptchar);
 			} else {
-				addch (*p);
+				addch ((const chtype)*p);
 			}
 		}
-	} else {
+	} else if (!is_input) {
+		cob_screen_attr (s->foreg, s->backg, s->attr);
 		addnstr ((char *)f->data, (int)f->size);
+	} else {
+		column += (int)f->size;
+		move (line, column);
 	}
 	refresh ();
 }
 
 static void
-cob_screen_get_all (void)
+cob_screen_get_all (const int initial_curs, const int gettimeout)
 {
 	struct cob_inp_struct	*sptr;
 	cob_screen		*s;
 	unsigned char		*p;
+	size_t			curr_index;
 	int			keyp;
 	int			sline;
 	int			scolumn;
@@ -417,63 +675,67 @@ cob_screen_get_all (void)
 	int			ateof;
 	int			gotbacksp;
 	int			ungetched;
+	chtype			promptchar;
 
-	sptr = cob_base_inp;
+	curr_index = (size_t)initial_curs;
+	sptr = cob_base_inp + curr_index;
 	s = sptr->scr;
 	sline = sptr->this_y;
 	scolumn = sptr->this_x;
 	move (sline, scolumn);
 	cob_screen_attr (s->foreg, s->backg, s->attr);
-/* RXW
-	p = s->field->data;
-	for (count = 0; count < s->field->size; count++) {
-		if (s->attr & COB_SCREEN_UPDATE) {
-			keyp = *p++;
-			addch (keyp);
-		} else if (s->attr & COB_SCREEN_PROMPT) {
-			addch ('_');
-		} else {
-			addch (' ');
-		}
-	}
-	move (sline, scolumn);
-*/
 	ateof = 0;
 	gotbacksp = 0;
 	ungetched = 0;
-	rightpos = scolumn + s->field->size - 1;
+	rightpos = scolumn + (int)s->field->size - 1;
 	p = s->field->data;
+
 	for (; ;) {
+		if (s->prompt) {
+			promptchar = s->prompt->data[0];
+		} else {
+			promptchar = COB_CH_UL;
+		}
+
 		refresh ();
+		errno = 0;
+		timeout (gettimeout);
 		keyp = getch ();
-		if (keyp == KEY_ENTER || keyp == '\n') {
-			break;
+
+		if (keyp == ERR) {
+			global_return = 8001;
+			goto screen_return;
 		}
 		if (keyp > KEY_F0 && keyp < KEY_F(65)) {
 			global_return = 1000 + keyp - KEY_F0;
-			break;
+			goto screen_return;
 		}
-		if (cob_extended_status) {
-			if (keyp == KEY_PPAGE) {
-				global_return = 2001;
-				break;
-			}
-			if (keyp == KEY_NPAGE) {
-				global_return = 2002;
-				break;
-			}
-			if (keyp == KEY_PRINT) {
-				global_return = 2006;
-				break;
-			}
-			if (cob_use_esc) {
-				if (keyp == 033) {
-					global_return = 2005;
-					break;
-				}
-			}
+
+		cob_convert_key (&keyp, 0);
+		if (keyp <= 0) {
+			(void)flushinp ();
+			cob_beep ();
+			continue;
 		}
-		if (keyp == 011) {
+
+		getyx (stdscr, cline, ccolumn);
+
+		switch (keyp) {
+		case KEY_ENTER:
+			goto screen_return;
+		case KEY_PPAGE:
+			global_return = 2001;
+			goto screen_return;
+		case KEY_NPAGE:
+			global_return = 2002;
+			goto screen_return;
+		case KEY_PRINT:
+			global_return = 2006;
+			goto screen_return;
+		case '\033':
+			global_return = 2005;
+			goto screen_return;
+		case KEY_STAB:
 			if (curr_index < totl_index - 1) {
 				curr_index++;
 			} else {
@@ -485,13 +747,12 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			p = s->field->data;
 			move (sline, scolumn);
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		if (keyp == KEY_BTAB) {
+		case KEY_BTAB:
 			if (curr_index > 0) {
 				curr_index--;
 			} else {
@@ -503,7 +764,7 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			if (ungetched) {
 				ungetched = 0;
 				p = s->field->data + rightpos;
@@ -514,8 +775,7 @@ cob_screen_get_all (void)
 			}
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		if (keyp == KEY_UP) {
+		case KEY_UP:
 			curr_index = sptr->up_index;
 			sptr = cob_base_inp + curr_index;
 			s = sptr->scr;
@@ -523,13 +783,12 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			p = s->field->data;
 			move (sline, scolumn);
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		if (keyp == KEY_DOWN) {
+		case KEY_DOWN:
 			curr_index = sptr->down_index;
 			sptr = cob_base_inp + curr_index;
 			s = sptr->scr;
@@ -537,13 +796,12 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			p = s->field->data;
 			move (sline, scolumn);
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		if (keyp == KEY_HOME) {
+		case KEY_HOME:
 			curr_index = 0;
 			sptr = cob_base_inp;
 			s = sptr->scr;
@@ -551,13 +809,12 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			p = s->field->data;
 			move (sline, scolumn);
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		if (keyp == KEY_END) {
+		case KEY_END:
 			curr_index = totl_index - 1;
 			sptr = cob_base_inp + curr_index;
 			s = sptr->scr;
@@ -565,15 +822,12 @@ cob_screen_get_all (void)
 			scolumn = sptr->this_x;
 			ateof = 0;
 			gotbacksp = 0;
-			rightpos = scolumn + s->field->size - 1;
+			rightpos = scolumn + (int)s->field->size - 1;
 			p = s->field->data;
 			move (sline, scolumn);
 			cob_screen_attr (s->foreg, s->backg, s->attr);
 			continue;
-		}
-		getyx (stdscr, cline, ccolumn);
-		if (keyp == KEY_BACKSPACE || keyp == ('H' & 037) ||
-		    keyp == 0177) {
+		case KEY_BACKSPACE:
 			if (ccolumn > scolumn) {
 				if (gotbacksp || ccolumn != rightpos) {
 					ccolumn--;
@@ -583,9 +837,9 @@ cob_screen_get_all (void)
 				gotbacksp = 1;
 				move (cline, ccolumn);
 				if (s->attr & COB_SCREEN_SECURE) {
-					addch ('*');
+					addch (COB_CH_AS);
 				} else {
-					addch ('_');
+					addch (promptchar);
 				}
 				move (cline, ccolumn);
 				p = s->field->data + ccolumn - scolumn;
@@ -597,8 +851,7 @@ cob_screen_get_all (void)
 				ungetch (KEY_BTAB);
 			}
 			continue;
-		}
-		if (keyp == KEY_LEFT) {
+		case KEY_LEFT:
 			gotbacksp = 0;
 			if (ccolumn > scolumn) {
 				ccolumn--;
@@ -609,43 +862,57 @@ cob_screen_get_all (void)
 				ungetch (KEY_BTAB);
 			}
 			continue;
-		}
-		if (keyp == KEY_RIGHT) {
+		case KEY_RIGHT:
 			gotbacksp = 0;
 			if (ccolumn < rightpos) {
 				ccolumn++;
 				move (cline, ccolumn);
 				p = s->field->data + ccolumn - scolumn;
 			} else {
-				ungetch (011);
+				ungetch ('\t');
 			}
 			continue;
+		default:
+			break;
 		}
+
 		if (keyp > 037 && keyp < (int)A_CHARTEXT) {
-			if (COB_FIELD_IS_NUMERIC (s->field)) {
+			if (COB_FIELD_IS_NUMERIC (s->field) ||
+			    COB_FIELD_TYPE (s->field) == COB_TYPE_NUMERIC_EDITED) {
 				if (keyp < '0' || keyp > '9') {
-					beep ();
+					cob_beep ();
 					continue;
 				}
 			}
 			gotbacksp = 0;
-			*p = keyp;
+			if (s->attr & COB_SCREEN_UPPER) {
+				if (islower (keyp)) {
+					keyp = toupper (keyp);
+				}
+			} else if (s->attr & COB_SCREEN_LOWER) {
+				if (isupper (keyp)) {
+					keyp = tolower (keyp);
+				}
+			}
+			*p = (unsigned char)keyp;
 			if (s->attr & COB_SCREEN_SECURE) {
-				addch ('*');
+				addch (COB_CH_AS);
+			} else if (s->attr & COB_SCREEN_NO_ECHO) {
+				addch (COB_CH_SP);
 			} else {
-				addch ((unsigned int)keyp);
+				addch ((const chtype)keyp);
 			}
 			if (ccolumn == rightpos) {
 				if (s->attr & COB_SCREEN_AUTO) {
 					if (curr_index == totl_index - 1) {
-						break;
+						goto screen_return;
 					} else {
-						ungetch (011);
+						ungetch ('\t');
 					}
 				}
 				move (cline, ccolumn);
 				if (ateof) {
-					beep ();
+					cob_beep ();
 				} else {
 					ateof = 1;
 				}
@@ -655,8 +922,10 @@ cob_screen_get_all (void)
 			continue;
 		}
 		gotbacksp = 0;
-		beep ();
+		(void)flushinp ();
+		cob_beep ();
 	}
+screen_return:
 	refresh ();
 }
 
@@ -684,6 +953,56 @@ compare_yx (const void *m1, const void *m2)
 }
 
 static void
+cob_screen_moveyx (cob_screen *s)
+{
+	int	y;
+	int	x;
+	int	line;
+	int	column;
+
+	if (s->line || s->column ||
+	    s->attr & (COB_SCREEN_LINE_PLUS | COB_SCREEN_LINE_MINUS |
+		       COB_SCREEN_COLUMN_PLUS |COB_SCREEN_COLUMN_MINUS)) {
+		getyx (stdscr, y, x);
+#if	1	/* RXWRXW - Column adjust */
+		if (x > 0) {
+			x--;
+		}
+#endif
+		if (!s->line) {
+			line = y;
+		} else {
+			line = cob_get_int (s->line);
+			if (line < 0) {
+				line = y;
+			}
+		}
+		if (!s->column) {
+			column = x;
+		} else {
+			column = cob_get_int (s->column);
+			if (column < 0) {
+				column = x;
+			}
+		}
+		if (s->attr & COB_SCREEN_LINE_PLUS) {
+			line = y + line;
+		} else if (s->attr & COB_SCREEN_LINE_MINUS) {
+			line = y - line;
+		}
+		if (s->attr & COB_SCREEN_COLUMN_PLUS) {
+			column = x + column;
+		} else if (s->attr & COB_SCREEN_COLUMN_MINUS) {
+			column = x - column;
+		}
+		move (line, column);
+		refresh ();
+		cob_current_y = line;
+		cob_current_x = column;
+	}
+}
+
+static size_t
 cob_prep_input (cob_screen *s)
 {
 	struct cob_inp_struct	*sptr;
@@ -691,13 +1010,17 @@ cob_prep_input (cob_screen *s)
 
 	switch (s->type) {
 	case COB_SCREEN_TYPE_GROUP:
+		cob_screen_moveyx (s);
 		for (s = s->child; s; s = s->next) {
 			cob_prep_input (s);
 		}
 		break;
 	case COB_SCREEN_TYPE_FIELD:
-		cob_screen_puts (s, s->field);
+		cob_screen_puts (s, s->field, cob_legacy);
 		if (s->attr & COB_SCREEN_INPUT) {
+			if (totl_index >= COB_INP_FLD_MAX) {
+				return 1;
+			}
 			sptr = cob_base_inp + totl_index;
 			sptr->scr = s;
 			sptr->this_y = cob_current_y;
@@ -706,15 +1029,51 @@ cob_prep_input (cob_screen *s)
 		}
 		break;
 	case COB_SCREEN_TYPE_VALUE:
-		cob_screen_puts (s, s->value);
+		cob_screen_puts (s, s->value, cob_legacy);
 		if (s->occurs) {
 			for (n = 1; n < s->occurs; ++n) {
-				cob_screen_puts (s, s->value);
+				cob_screen_puts (s, s->value, cob_legacy);
+			}
+		}
+		break;
+	case COB_SCREEN_TYPE_ATTRIBUTE:
+#if	0	/* RXWRXW - Attr */
+		cob_screen_attr (s->foreg, s->backg, s->attr);
+#endif
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+static void
+cob_screen_iterate (cob_screen *s)
+{
+	int	n;
+
+	switch (s->type) {
+	case COB_SCREEN_TYPE_GROUP:
+		cob_screen_moveyx (s);
+		for (s = s->child; s; s = s->next) {
+			cob_screen_iterate (s);
+		}
+		break;
+	case COB_SCREEN_TYPE_FIELD:
+		cob_screen_puts (s, s->field, 0);
+		break;
+	case COB_SCREEN_TYPE_VALUE:
+		cob_screen_puts (s, s->value, 0);
+		if (s->occurs) {
+			for (n = 1; n < s->occurs; ++n) {
+				cob_screen_puts (s, s->value, 0);
 			}
 		}
 		break;
 	case COB_SCREEN_TYPE_ATTRIBUTE:
 		cob_screen_attr (s->foreg, s->backg, s->attr);
+		break;
+	default:
 		break;
 	}
 }
@@ -724,38 +1083,26 @@ cob_prep_input (cob_screen *s)
 void
 cob_screen_display (cob_screen *s, cob_field *line, cob_field *column)
 {
-	int	n;
+	int	sline;
+	int	scolumn;
 
-	if (!cob_screen_initialized) {
+	if (!cobglobptr->cob_screen_initialized) {
 		cob_screen_init ();
 	}
 
-	switch (s->type) {
-	case COB_SCREEN_TYPE_GROUP:
-		for (s = s->child; s; s = s->next) {
-			cob_screen_display (s, line, column);
-		}
-		break;
-	case COB_SCREEN_TYPE_FIELD:
-		cob_screen_puts (s, s->field);
-		break;
-	case COB_SCREEN_TYPE_VALUE:
-		cob_screen_puts (s, s->value);
-		if (s->occurs) {
-			for (n = 1; n < s->occurs; ++n) {
-				cob_screen_puts (s, s->value);
-			}
-		}
-		break;
-	case COB_SCREEN_TYPE_ATTRIBUTE:
-		cob_screen_attr (s->foreg, s->backg, s->attr);
-		break;
+	if (line == NULL && column == NULL) {
+		getyx (stdscr, sline, scolumn);
+	} else {
+		get_line_column (line, column, &sline, &scolumn);
 	}
+	move (sline, scolumn);
+	cob_screen_iterate (s);
 	refresh ();
 }
 
 void
-cob_screen_accept (cob_screen *s, cob_field *line, cob_field *column)
+cob_screen_accept (cob_screen *s, cob_field *line,
+		   cob_field *column, cob_field *ftimeout)
 {
 	struct cob_inp_struct	*sptr;
 	struct cob_inp_struct	*sptr2;
@@ -766,8 +1113,12 @@ cob_screen_accept (cob_screen *s, cob_field *line, cob_field *column)
 	size_t			prevy;
 	size_t			firsty;
 	int			starty;
+	int			initial_curs;
+	int			sline;
+	int			scolumn;
+	int			gettimeout;
 
-	if (!cob_screen_initialized) {
+	if (!cobglobptr->cob_screen_initialized) {
 		cob_screen_init ();
 	}
 	if (!cob_base_inp) {
@@ -775,27 +1126,55 @@ cob_screen_accept (cob_screen *s, cob_field *line, cob_field *column)
 	} else {
 		memset (cob_base_inp, 0, COB_INP_SIZE);
 	}
-	cob_exception_code = 0;
+	cobglobptr->cob_exception_code = 0;
 	cob_current_y = 0;
 	cob_current_x = 0;
 	totl_index = 0;
-	move (0, 0);
-	cob_prep_input (s);
-	/* No input fields is an error */
+	if (line == NULL && column == NULL) {
+		move (0, 0);
+	} else {
+		get_line_column (line, column, &sline, &scolumn);
+		move (sline, scolumn);
+	}
+
+	/* Prepare input fields */
+	if (cob_prep_input (s)) {
+		cob_check_pos_status (9001);
+		return;
+	}
+
+	/* No input field is an error */
 	if (!totl_index) {
 		cob_check_pos_status (8000);
 		return;
 	}
-	qsort (cob_base_inp, totl_index, sizeof(struct cob_inp_struct), compare_yx);
-	sptr = cob_base_inp;
-	starty = sptr->this_y;
+
+	if (ftimeout) {
+		gettimeout = cob_get_int (ftimeout) * COB_TIMEOUT_SCALE;
+		if (gettimeout >= 0 && gettimeout < 500) {
+			gettimeout = 500;
+		}
+	} else {
+		gettimeout = -1;
+	}
+
+	/* Sort input fields on line, column */
+	qsort (cob_base_inp, totl_index,
+	       sizeof(struct cob_inp_struct), compare_yx);
+
 	posu = 0;
 	posd = 0;
 	prevy = 0;
 	firsty = 0;
+	sptr = cob_base_inp;
+	starty = sptr->this_y;
+	initial_curs = -1;
 	/* Set up array for Cursor UP/DOWN */
 	for (n = 0; n < totl_index; n++) {
 		sptr = cob_base_inp + n;
+		if ((sptr->scr->attr & COB_SCREEN_INITIAL) && initial_curs < 0) {
+			initial_curs = (int)n;
+		}
 		if (sptr->this_y > starty) {
 			if (!firsty) {
 				firsty = n;
@@ -815,27 +1194,29 @@ cob_screen_accept (cob_screen *s, cob_field *line, cob_field *column)
 	for (n = 0; n < firsty; n++, sptr++) {
 		sptr->up_index = posd;
 	}
-	curr_index = 0;
 	global_return = 0;
-	cob_screen_get_all ();
+	if (initial_curs < 0) {
+		initial_curs = 0;
+	}
+	cob_screen_get_all (initial_curs, gettimeout);
 	cob_check_pos_status (global_return);
 }
 
 void
 cob_field_display (cob_field *f, cob_field *line, cob_field *column,
-		   cob_field *fgc, cob_field *bgc, cob_field *scroll,
-		   const int attr)
+		   cob_field *fgc, cob_field *bgc, cob_field *fscroll,
+		   const int fattr)
 {
-	int sline;
-	int scolumn;
+	int	sline;
+	int	scolumn;
 
-	if (!cob_screen_initialized) {
+	if (!cobglobptr->cob_screen_initialized) {
 		cob_screen_init ();
 	}
 
-	if (scroll) {
-		sline = cob_get_int (scroll);
-		if (attr & COB_SCREEN_SCROLL_DOWN) {
+	if (fscroll) {
+		sline = cob_get_int (fscroll);
+		if (fattr & COB_SCREEN_SCROLL_DOWN) {
 			sline = -sline;
 		}
 		scrollok (stdscr, 1);
@@ -843,20 +1224,36 @@ cob_field_display (cob_field *f, cob_field *line, cob_field *column,
 		scrollok (stdscr, 0);
 		refresh ();
 	}
-	get_line_column (line, column, &sline, &scolumn);
+
+	if (line == NULL && column == NULL) {
+		getyx (stdscr, sline, scolumn);
+	} else {
+		get_line_column (line, column, &sline, &scolumn);
+	}
 	move (sline, scolumn);
-	cob_screen_attr (fgc, bgc, attr);
-	addnstr ((char *)f->data, (int)f->size);
+
+	cob_screen_attr (fgc, bgc, fattr);
+	if (!(fattr & COB_SCREEN_NO_DISP)) {
+		addnstr ((char *)f->data, (int)f->size);
+	}
+	if (fattr & COB_SCREEN_EMULATE_NL) {
+		if (++sline >= LINES) {
+			sline = 0;
+		}
+		move (sline, 0);
+	}
 	refresh ();
 }
 
 void
 cob_field_accept (cob_field *f, cob_field *line, cob_field *column,
-		  cob_field *fgc, cob_field *bgc, cob_field *scroll,
-		  const int attr)
+		  cob_field *fgc, cob_field *bgc, cob_field *fscroll,
+		  cob_field *ftimeout, cob_field *prompt, const int fattr)
 {
 	unsigned char	*p;
+	unsigned char	*s;
 	size_t		count;
+	size_t		size;
 	int		keyp;
 	int		fret;
 	int		sline;
@@ -866,14 +1263,46 @@ cob_field_accept (cob_field *f, cob_field *line, cob_field *column,
 	int		rightpos;
 	int		ateof;
 	int		gotbacksp;
+	int		gettimeout;
+	chtype		promptchar;
+	cob_field	temp;
+#if	0	/* RXWRXW - Screen update */
+	cob_field	char_temp;
+	unsigned char	space_buff[4];
+#endif
 
-	if (!cob_screen_initialized) {
+	memset (COB_TERM_BUFF, ' ', (size_t)COB_MEDIUM_MAX);
+	temp.data = COB_TERM_BUFF;
+	temp.attr = &const_alpha_attr;
+#if	0	/* RXWRXW - Screen update */
+	char_temp.data = space_buff;
+	char_temp.attr = &const_alpha_attr;
+	char_temp.size = 1;
+	space_buff[0] = ' ';
+	space_buff[1] = 0;
+#endif
+	if (prompt) {
+		promptchar = prompt->data[0];
+	} else {
+		promptchar = COB_CH_UL;
+	}
+
+	if (!cobglobptr->cob_screen_initialized) {
 		cob_screen_init ();
 	}
 
-	if (scroll) {
-		keyp = cob_get_int (scroll);
-		if (attr & COB_SCREEN_SCROLL_DOWN) {
+	if (ftimeout) {
+		gettimeout = cob_get_int (ftimeout) * COB_TIMEOUT_SCALE;
+		if (gettimeout >= 0 && gettimeout < 500) {
+			gettimeout = 500;
+		}
+	} else {
+		gettimeout = -1;
+	}
+
+	if (fscroll) {
+		keyp = cob_get_int (fscroll);
+		if (fattr & COB_SCREEN_SCROLL_DOWN) {
 			keyp = -keyp;
 		}
 		scrollok (stdscr, 1);
@@ -881,169 +1310,307 @@ cob_field_accept (cob_field *f, cob_field *line, cob_field *column,
 		scrollok (stdscr, 0);
 		refresh ();
 	}
-	cob_exception_code = 0;
-	get_line_column (line, column, &sline, &scolumn);
-	move (sline, scolumn);
-	cob_screen_attr (fgc, bgc, attr);
-	p = f->data;
-	for (count = 0; count < f->size; count++) {
-		if (attr & COB_SCREEN_SECURE) {
-			addch ('*');
-		} else if (attr & COB_SCREEN_UPDATE) {
-			fret = *p++;
-			addch ((unsigned int)fret);
-		} else if (attr & COB_SCREEN_PROMPT) {
-			addch ('_');
-		} else {
-			addch (' ');
-		}
-	}
-	move (sline, scolumn);
-	if (!(attr & COB_SCREEN_UPDATE)) {
-		if (COB_FIELD_IS_NUMERIC (f)) {
-			cob_move (&cob_zero, f);
-		} else {
-			memset (f->data, ' ', f->size);
-		}
-	}
+	cobglobptr->cob_exception_code = 0;
 
+	if (line == NULL && column == NULL) {
+		sline = 0;
+		scolumn = 0;
+#if	0	/* RXWRXW - Line / Col */
+		getyx (stdscr, sline, scolumn);
+#endif
+	} else {
+		get_line_column (line, column, &sline, &scolumn);
+	}
+	move (sline, scolumn);
+
+	cob_screen_attr (fgc, bgc, fattr);
+	if (f) {
+		p = COB_TERM_BUFF;
+		temp.size = f->size;
+		if (fattr & COB_SCREEN_UPDATE) {
+			cob_move (f, &temp);
+		}
+		for (count = 0; count < f->size; count++) {
+			if (fattr & COB_SCREEN_SECURE) {
+				addch (COB_CH_AS);
+			} else if (fattr & COB_SCREEN_NO_ECHO) {
+				addch (COB_CH_SP);
+			} else if (fattr & COB_SCREEN_UPDATE) {
+				fret = *p++;
+				addch ((const chtype)fret);
+			} else if (fattr & COB_SCREEN_PROMPT) {
+				addch (promptchar);
+			} else {
+				addch (COB_CH_SP);
+			}
+		}
+		move (sline, scolumn);
+#if	0	/* RXWRXW - Screen update */
+		if (!(fattr & COB_SCREEN_UPDATE)) {
+			if (COB_FIELD_IS_NUMERIC (f) ||
+			    COB_FIELD_TYPE (f) == COB_TYPE_NUMERIC_EDITED) {
+				cob_set_int (f, 0);
+			} else {
+				cob_move (&char_temp, f);
+			}
+		}
+#endif
+		rightpos = scolumn + (int)f->size - 1;
+		p = COB_TERM_BUFF;
+	} else {
+		rightpos = 0;
+		p = NULL;
+	}
 	fret = 0;
 	ateof = 0;
 	gotbacksp = 0;
-	rightpos = scolumn + f->size - 1;
-	p = f->data;
+	count = 0;
+
 	for (; ;) {
 		refresh ();
+		errno = 0;
+		timeout (gettimeout);
 		keyp = getch ();
-		if (keyp == KEY_ENTER || keyp == '\n') {
-			break;
+
+		if (keyp == ERR) {
+			fret = 8001;
+			goto field_return;
 		}
 		if (keyp > KEY_F0 && keyp < KEY_F(65)) {
 			fret = 1000 + keyp - KEY_F0;
+			goto field_return;
+		}
+
+		cob_convert_key (&keyp, 1U);
+		if (keyp <= 0) {
+			(void)flushinp ();
+			cob_beep ();
+			continue;
+		}
+
+		getyx (stdscr, cline, ccolumn);
+
+		switch (keyp) {
+		case KEY_ENTER:
+			goto field_return;
+		case KEY_PPAGE:
+			fret = 2001;
+			goto field_return;
+		case KEY_NPAGE:
+			fret = 2002;
+			goto field_return;
+		case KEY_UP:
+			fret = 2003;
+			goto field_return;
+		case KEY_DOWN:
+			fret = 2004;
+			goto field_return;
+		case KEY_PRINT:
+			/* pdcurses not returning this ? */
+			fret = 2006;
+			goto field_return;
+		case 033:
+			fret = 2005;
+			goto field_return;
+		default:
 			break;
 		}
-		if (cob_extended_status) {
-			if (keyp == KEY_PPAGE) {
-				fret = 2001;
-				break;
-			}
-			if (keyp == KEY_NPAGE) {
-				fret = 2002;
-				break;
-			}
-			if (keyp == KEY_UP) {
-				fret = 2003;
-				break;
-			}
-			if (keyp == KEY_DOWN) {
-				fret = 2004;
-				break;
-			}
-			if (keyp == KEY_PRINT) {
-				fret = 2006;
-				break;
-			}
-			if (cob_use_esc) {
-				if (keyp == 033) {
-					fret = 2005;
-					break;
-				}
-			}
+
+		if (!f) {
+			(void)flushinp ();
+			cob_beep ();
+			continue;
 		}
-		getyx (stdscr, cline, ccolumn);
-		if (keyp == KEY_BACKSPACE || keyp == ('H' & 037) ||
-		    keyp == 0177) {
-			if (ccolumn > scolumn) {
-				if (gotbacksp || ccolumn != rightpos) {
-					ccolumn--;
-				} else {
-					ateof = 0;
-				}
-				gotbacksp = 1;
-				move (cline, ccolumn);
-				if (attr & COB_SCREEN_SECURE) {
-					addch ('*');
-				} else {
-					addch ('_');
-				}
-				move (cline, ccolumn);
-				p = f->data + ccolumn - scolumn;
-				*p = ' ';
+
+		switch (keyp) {
+		case KEY_BACKSPACE:
+			if (ccolumn <= scolumn) {
+				gotbacksp = 0;
+				cob_beep ();
 				continue;
 			}
-		}
-		if (keyp == KEY_HOME) {
+			if (gotbacksp || ccolumn != rightpos) {
+				ccolumn--;
+			} else {
+				ateof = 0;
+			}
+			gotbacksp = 1;
+			move (cline, ccolumn);
+			if (fattr & COB_SCREEN_SECURE) {
+				addch (COB_CH_AS);
+			} else if (fattr & COB_SCREEN_NO_ECHO) {
+				addch (COB_CH_SP);
+			} else if (fattr & COB_SCREEN_PROMPT) {
+				addch (promptchar);
+			} else {
+				addch (COB_CH_SP);
+			}
+			move (cline, ccolumn);
+			p = COB_TERM_BUFF + ccolumn - scolumn;
+			*p = ' ';
+			count = 1;
+			continue;
+		case KEY_HOME:
 			move (sline, scolumn);
-			p = f->data;
+			p = COB_TERM_BUFF;
 			ateof = 0;
 			gotbacksp = 0;
 			continue;
-		}
-		if (keyp == KEY_END) {
+		case KEY_END:
 			move (sline, rightpos);
-			p = f->data + f->size - 1;
+			p = COB_TERM_BUFF + f->size - 1;
 			ateof = 0;
 			gotbacksp = 0;
 			continue;
-		}
-		if (keyp == KEY_LEFT) {
+		case KEY_LEFT:
 			if (ccolumn > scolumn) {
 				ccolumn--;
 				move (cline, ccolumn);
-				p = f->data + ccolumn - scolumn;
+				p = COB_TERM_BUFF + ccolumn - scolumn;
 				continue;
 			}
 			gotbacksp = 0;
-		}
-		if (keyp == KEY_RIGHT) {
+			cob_beep ();
+			continue;
+		case KEY_RIGHT:
 			if (ccolumn < rightpos) {
 				ccolumn++;
 				move (cline, ccolumn);
-				p = f->data + ccolumn - scolumn;
+				p = COB_TERM_BUFF + ccolumn - scolumn;
 				continue;
 			}
 			gotbacksp = 0;
+			cob_beep ();
+			continue;
+		case KEY_IC:
+			s = COB_TERM_BUFF + ccolumn - scolumn;
+			size = f->size - (ccolumn - scolumn);
+			memmove (s + 1, s, size);
+			*s = ' ';
+			if (fattr & COB_SCREEN_SECURE) {
+				addch (COB_CH_AS);
+			} else if (fattr & COB_SCREEN_NO_ECHO) {
+				addch (COB_CH_SP);
+			} else if (fattr & COB_SCREEN_PROMPT) {
+				addch (promptchar);
+				s++;
+				if (size > 0) {
+					size--;
+				}
+				for (; size > 0; size--, s++) {
+					if (*s == ' ') {
+						addch (promptchar);
+					} else {
+						addch ((const chtype)(*s));
+					}
+				}
+			} else {
+				addch (COB_CH_SP);
+				if (size > 0) {
+					addnstr ((char *)s + 1, (int)size - 1);
+				}
+			}
+			move (cline, ccolumn);
+			gotbacksp = 0;
+			continue;
+		case KEY_DC:
+			s = COB_TERM_BUFF + ccolumn - scolumn;
+			size = f->size - (ccolumn - scolumn);
+			memmove (s, s + 1, size);
+			*(s + size) = ' ';
+			if (fattr & COB_SCREEN_SECURE) {
+				/* RXWRXW */
+			} else if (fattr & COB_SCREEN_NO_ECHO) {
+				/* RXWRXW */
+			} else if (fattr & COB_SCREEN_PROMPT) {
+				for (; size > 0; size--, s++) {
+					if (*s == ' ') {
+						addch (promptchar);
+					} else {
+						addch ((const chtype)(*s));
+					}
+				}
+				addch (promptchar);
+			} else {
+				if (size > 0) {
+					addnstr ((char *)s + 1, (int)size - 1);
+				}
+			}
+			move (cline, ccolumn);
+			gotbacksp = 0;
+			continue;
+		default:
+			break;
 		}
-		if (keyp > 037 && keyp < (int)A_CHARTEXT) {
-			if (COB_FIELD_IS_NUMERIC (f)) {
+
+		if (keyp > '\037' && keyp < (int)A_CHARTEXT) {
+			gotbacksp = 0;
+			if (COB_FIELD_IS_NUMERIC (f) ||
+			    COB_FIELD_TYPE (f) == COB_TYPE_NUMERIC_EDITED) {
 				if (keyp < '0' || keyp > '9') {
-					beep ();
+					cob_beep ();
 					continue;
 				}
 			}
-			gotbacksp = 0;
-			*p = keyp;
-			if (attr & COB_SCREEN_SECURE) {
-				addch ('*');
+			if (fattr & COB_SCREEN_UPPER) {
+				if (islower (keyp)) {
+					keyp = toupper (keyp);
+				}
+			} else if (fattr & COB_SCREEN_LOWER) {
+				if (isupper (keyp)) {
+					keyp = tolower (keyp);
+				}
+			}
+			*p = (unsigned char)keyp;
+			count = 1;
+			if (fattr & COB_SCREEN_SECURE) {
+				addch (COB_CH_AS);
+			} else if (fattr & COB_SCREEN_NO_ECHO) {
+				addch (COB_CH_SP);
 			} else {
-				addch ((unsigned int)keyp);
+				addch ((const chtype)keyp);
 			}
 			if (ccolumn == rightpos) {
-				if (attr & COB_SCREEN_AUTO) {
+				if (fattr & COB_SCREEN_AUTO) {
 					break;
 				}
 				move (cline, ccolumn);
 				if (ateof) {
-					beep ();
+					cob_beep ();
 				} else {
 					ateof = 1;
 				}
 			} else {
+#if	0	/* RXWRXW - Column inc */
+				ccolumn++;
+#endif
 				p++;
 			}
 			continue;
 		}
 		gotbacksp = 0;
-		beep ();
+		(void)flushinp ();
+		cob_beep ();
 	}
-	cob_check_pos_status (fret);
+field_return:
+	if (f) {
+		move (sline, rightpos + 1);
+	}
 	refresh ();
+	cob_check_pos_status (fret);
+	if (!f) {
+		return;
+	}
+	if (!count) {
+		return;
+	}
+	cob_move (&temp, f);
 }
 
 void
 cob_screen_line_col (cob_field *f, const int l_or_c)
 {
-	if (!cob_screen_initialized) {
+	if (!cobglobptr->cob_screen_initialized) {
 		cob_screen_init ();
 	}
 	if (!l_or_c) {
@@ -1053,8 +1620,21 @@ cob_screen_line_col (cob_field *f, const int l_or_c)
 	}
 }
 
+int
+cob_sys_clear_screen (void)
+{
+	if (!cobglobptr->cob_screen_initialized) {
+		cob_screen_init ();
+	}
+	clear ();
+	refresh ();
+	cob_current_y = 0;
+	cob_current_x = 0;
+	return 0;
+}
+
 void
-cob_screen_set_mode (const size_t smode)
+cob_screen_set_mode (const cob_u32_t smode)
 {
 	if (!smode) {
 		refresh ();
@@ -1066,43 +1646,168 @@ cob_screen_set_mode (const size_t smode)
 	}
 }
 
-#else
+void
+cob_exit_screen (void)
+{
+	if (cobglobptr->cob_screen_initialized) {
+		cobglobptr->cob_screen_initialized = 0;
+		clear ();
+		move (23, 0);
+		delwin (stdscr);
+		endwin ();
+#ifdef	HAVE_CURSES_FREEALL
+		_nc_freeall ();
+#endif
+		if (cob_base_inp) {
+			free (cob_base_inp);
+			cob_base_inp = NULL;
+		}
+	}
+	COB_ACCEPT_STATUS = 0;
+}
+
+#else	/* COB_GEN_SCREENIO */
 
 void
-cob_screen_terminate (void)
+cob_exit_screen (void)
 {
 }
 
 void
 cob_field_display (cob_field *f, cob_field *line, cob_field *column,
-		   cob_field *fgc, cob_field *bgc, const int attr)
+		   cob_field *fgc, cob_field *bgc, cob_field *fscroll,
+		   const int attr)
 {
+	COB_UNUSED (f);
+	COB_UNUSED (line);
+	COB_UNUSED (column);
+	COB_UNUSED (fgc);
+	COB_UNUSED (bgc);
+	COB_UNUSED (fscroll);
+	COB_UNUSED (attr);
 }
 
 void
 cob_field_accept (cob_field *f, cob_field *line, cob_field *column,
-		  cob_field *fgc, cob_field *bgc, const int attr)
+		  cob_field *fgc, cob_field *bgc, cob_field *fscroll,
+		  cob_field *ftimeout, cob_field *prompt, const int attr)
 {
+	COB_UNUSED (f);
+	COB_UNUSED (line);
+	COB_UNUSED (column);
+	COB_UNUSED (fgc);
+	COB_UNUSED (bgc);
+	COB_UNUSED (fscroll);
+	COB_UNUSED (ftimeout);
+	COB_UNUSED (prompt);
+	COB_UNUSED (attr);
 }
 
 void
 cob_screen_display (cob_screen *s, cob_field *line, cob_field *column)
 {
+	COB_UNUSED (s);
+	COB_UNUSED (line);
+	COB_UNUSED (column);
 }
 
 void
-cob_screen_accept (cob_screen *s, cob_field *line, cob_field *column)
+cob_screen_accept (cob_screen *s, cob_field *line,
+		   cob_field *column, cob_field *ftimeout)
 {
+	COB_UNUSED (s);
+	COB_UNUSED (line);
+	COB_UNUSED (column);
+	COB_UNUSED (ftimeout);
 }
 
 void
 cob_screen_line_col (cob_field *f, const int l_or_c)
 {
+	if (!l_or_c) {
+		cob_set_int (f, 24);
+	} else {
+		cob_set_int (f, 80);
+	}
 }
 
 void
-cob_screen_set_mode (const size_t smode)
+cob_screen_set_mode (const cob_u32_t smode)
 {
+	COB_UNUSED (smode);
 }
 
+int
+cob_sys_clear_screen (void)
+{
+	return 0;
+}
+
+#endif	/* COB_GEN_SCREENIO */
+
+int
+cob_sys_sound_bell (void)
+{
+	if (COB_BEEP_VALUE == 9) {
+		return 0;
+	}
+#ifdef	COB_GEN_SCREENIO
+	if (!cobglobptr->cob_screen_initialized &&
+	    COB_BEEP_VALUE != 2) {
+		cob_screen_init ();
+	}
+	cob_beep ();
+#else
+	cob_speaker_beep ();
 #endif
+	return 0;
+}
+
+void
+cob_accept_escape_key (cob_field *f)
+{
+	cob_set_int (f, COB_ACCEPT_STATUS);
+}
+
+int
+cob_sys_get_csr_pos (unsigned char *fld)
+{
+#ifdef	COB_GEN_SCREENIO
+	int	cline;
+	int	ccol;
+#endif
+
+	COB_CHK_PARMS (CBL_GET_CSR_POS, 1);
+
+#ifdef	COB_GEN_SCREENIO
+	getyx (stdscr, cline, ccol);
+	fld[0] = (unsigned char)cline;
+	fld[1] = (unsigned char)ccol;
+	
+#else
+	fld[0] = 1U;
+	fld[1] = 1U;
+#endif
+	return 0;
+}
+
+int
+cob_sys_get_scr_size (unsigned char *line, unsigned char *col)
+{
+	COB_CHK_PARMS (CBL_GET_SCR_SIZE, 2);
+
+#ifdef	COB_GEN_SCREENIO
+	*line = (unsigned char)LINES;
+	*col = (unsigned char)COLS;
+#else
+	*line = 24U;
+	*col = 80U;
+#endif
+	return 0;
+}
+
+void
+cob_init_screenio (cob_global *lptr)
+{
+	cobglobptr = lptr;
+}

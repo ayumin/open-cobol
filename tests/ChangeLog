@@ -1,3 +1,29 @@
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-07-01  Roger While <simrw@sim-basis.de>
+
+	* Include some extra 85 compile only programs
+
+2009-06-09  Roger While <simrw@sim-basis.de>
+
+	* New OC tests for edited moves
+
+2009-05-11  Roger While <simrw@sim-basis.de>
+
+	* Allow tests to run without ISAM I/O
+
+2009-03-12  Roger While <simrw@sim-basis.de>
+
+	* Fix for newest development software
+	* Use minimum quadrigraphs in autotests for compatibility
+
+2009-03-05  Roger While <simrw@sim-basis.de>
+
+	* Clean up 85 test scripts
+
 2009-01-20  Roger While <simrw@sim-basis.de>
 
 	* OC tests for DPC and 78 levels

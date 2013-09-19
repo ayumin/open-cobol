@@ -1,3 +1,27 @@
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-04-11  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Changes for BDB support, support icc
+	* General : Affects all directories - Rebase to latest stable
+		    autoxxxx tools
+
+2009-03-12  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Fix for newest development tools
+
+2009-03-09  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Fix up m4 quoting
+
+2009-03-02  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Correctly test for gcc and icc
+	* cpucheck.c : Remove
+
 2008-11-17  Roger While <simrw@sim-basis.de>
 
 	* configure.ac : Correct sed usage

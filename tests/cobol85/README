@@ -42,13 +42,12 @@ b) Download the test archive `newcob.val.Z' from
 5. When rerunning test as a result of a change, always
    do a "make clean" before "make test"
 
-6. The default OC configuration tests are NC SM IC SQ RL IX ST SG OB IF
+6. The default OC configuration tests are NC SM IC SQ RL IX ST SG OB IF DB
 
 Make Options
 ------------
 
 - make test     run the test suite
-- make save     save test reports in *.txt
 - make diff     diff from *.txt to the last reports
 - make clean    remove built files
 
