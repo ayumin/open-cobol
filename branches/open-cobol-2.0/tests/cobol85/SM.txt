@@ -14,14 +14,13 @@ SM204A.SUB      4    4    0       0       0 OK
 SM205A.CBL      9    9    0       0       0 OK
 SM206A.CBL     16   14    0       2       0 OK
 SM207A.CBL      2    2    0       0       0 OK
-SM208A.CBL      9    8    0       1       0 OK
-SM301M.CBL    ----- test skipped -----
-SM401M.CBL    ----- test skipped -----
+SM208A.CBL      9    9    0       0       0 OK
+SM301M.CBL      1    1    0       0       0 OK
+SM401M.CBL      1    1    0       0       0 OK
 --------    ----- ---- ---- ------- -------
-Total         294  290    0       3       1
-%           100.0 98.6  0.0     1.0     0.3
+Total         296  293    0       2       1
 
-Number of programs:    15
-Successfully executed: 15 (100.00%)
-Compile error:          0 ( 0.00%)
-Execute error:          0 ( 0.00%)
+Number of programs:    17
+Successfully executed: 17
+Compile error:          0
+Execute error:          0

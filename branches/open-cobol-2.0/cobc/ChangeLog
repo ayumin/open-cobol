@@ -1,3 +1,88 @@
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-06-19  Roger While <simrw@sim-basis.de>
+
+	* parser.y : Fix invalid syntax with OPEN/CLOSE
+	* parser.y, tree.h : Preliminary RW changes
+
+2009-06-17  Roger While <simrw@sim-basis.de>
+
+	* pplex.l : Save/restore fixed/free status on COPY
+
+2009-06-09  Roger While <simrw@sim-basis.de>
+
+	* typeck.c : Fix constant calculation for redefines/renames
+
+2009-06-01  Roger While <simrw@sim-basis.de>
+
+	* codegen.c : Revise trace processing
+
+2009-05-25  Roger While <simrw@sim-basis.de>
+
+	* parser.y, typeck.c, codegen.c : CALL ... RETURNING NULL
+
+2009-05-11  Roger While <simrw@sim-basis.de>
+
+	* parser.y, typeck.c : Implement ACCEPT OMITTED
+	* parser.y : UNTIL EXIT as alternative to FOREVER
+
+2009-05-01  Roger While <simrw@sim-basis.de>
+
+	* General : Code clean/sanitize
+
+2009-04-11  Roger While <simrw@sim-basis.de>
+
+	* General : Support icc
+	* parser.y, typeck.c : Support LOCK clause on OPEN
+
+2009-03-16  Roger While <simrw@sim-basis.de>
+
+	* codegen.c : Cancel contained programs
+
+2009-03-12  Roger While <simrw@sim-basis.de>
+
+	* Makefile.am : Fix for newest development tools
+
+2009-03-09  Roger While <simrw@sim-basis.de>
+
+	* codegen.c : Fix valid multi-source nested and contained programs
+
+2009-03-06  Roger While <simrw@sim-basis.de>
+
+	* field.c : Fix up LENGTH clause with CONSTANT
+
+2009-03-03  Roger While <simrw@sim-basis.de>
+
+	* codegen.c : Fixes for icc
+
+2009-02-23  Roger While <simrw@sim-basis.de>
+
+	* parser.y : Allow figurative literal on FROM clause
+	* cobc.c : Harden against stack smash/buffer overflow attacks
+	* typeck.c : Fix up COLUMN clause
+
+2009-02-16  Roger While <simrw@sim-basis.de>
+
+	* parser.y, scanner.l : Differentiate LENGTH OF as special
+
+2009-02-14  Roger While <simrw@sim-basis.de>
+
+	* tree.[ch], typeck.c, field.c : Fix size warning for BINARY-xxx
+	* scanner.l : Fix compiling a listing output from a previous compile
+
+2009-02-12  Roger While <simrw@sim-basis.de>
+
+	* tree.[ch], typeck.c, codegen.c : Fix CANCEL for contained programs
+	* pplex.l : Ignore $SET at column 7 when fixed format
+
+2009-02-11  Roger While <simrw@sim-basis.de>
+
+	* tree.h, typeck.c, field.c : Fix up ODO checking
+	* codegen.c, parser.y, tree.[ch], cobc.c : Nested/contained visibility fixes
+
 2009-02-06  Roger While <simrw@sim-basis.de>
 
 	* pplex.l : Check all of "Area A" after AUTHOR etc.
@@ -175,7 +260,7 @@
 
 2008-11-01  Roger While <simrw@sim-basis.de>
 
-	* scanner.l : Relax comma seperator rule
+	* scanner.l : Relax comma separator rule
 
 2008-10-31  Roger While <simrw@sim-basis.de>
 
@@ -808,7 +893,7 @@
 2007-02-23  Roger While <simrw@sim-basis.de>
 
 	* parser.y : Fix multiple EXIT PERFORM
-	* cobc.[ch], tree.c, codegen.c : Use seperate id fields for attributes,
+	* cobc.[ch], tree.c, codegen.c : Use separate id fields for attributes,
 		literals and fields
 
 2007-02-13  Roger While <simrw@sim-basis.de>
@@ -1656,7 +1741,7 @@
 	* codegen.c : Rearrange generated code slightly
 	  Do not gen stack values we do not need
 	  Generate static function prototype so that we
-	  can gen code in order : main (if appropiate),
+	  can gen code in order : main (if appropriate),
 	  entry points, static function
 
 2005-02-07  Roger While <simrw@sim-basis.de>
@@ -1868,7 +1953,7 @@
 	(cb_flag_check_ref_mod): Removed.
 	* warning.def (cb_warn_obsolete): New variable.
 	* cobc.h (cb_standard, cb_binary_rep): New variables.
-	(cb_exception_table): New varialbe.
+	(cb_exception_table): New variable.
 	(CB_EXCEPTION_CODE, CB_EXCEPTION_NAME, CB_EXCEPTION_ENABLE): New macro.
 	* cobc.c (long_options): New option -std and -debug.
 	(short_options): Remove -T.

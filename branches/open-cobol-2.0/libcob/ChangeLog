@@ -1,3 +1,46 @@
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-06-09  Roger While <simrw@sim-basis.de>
+
+	* move.c : Fix editing symbol moves
+
+2009-06-01  Roger While <simrw@sim-basis.de>
+
+	* fileio.c : Revise memory algo for SORT - Introduce COB_SORT_CHUNK
+
+2009-05-25  Roger While <simrw@sim-basis.de>
+
+	* General : Remove extraneous include files -
+		    Integrate into common.h as first step
+
+2009-05-16  Roger While <simrw@sim-basis.de>
+
+	* General : Changes to remove lib local symbols
+	* common.c, fileio.c : Fix to enable running test suite under Win
+
+2009-05-11  Roger While <simrw@sim-basis.de>
+
+	* fileio.[ch] : Implement file status 24 for relative files
+	* termio.c, screenio.c : Implement ACCEPT OMITTED
+	* fileio.[ch] : Change all I/O except L/S to file descriptor basis
+
+2009-05-01  Roger While <simrw@sim-basis.de>
+
+	* General : Code clean/sanitize
+
+2009-04-10  Roger While <simrw@sim-basis.de>
+
+	* General : Support for icc
+	* fileio.c : Sanitize / remove BDB < 4.1 support
+	* fileio.[ch] : Support LOCK clause on OPEN
+
+2009-02-23  Roger While <simrw@sim-basis.de>
+
+	* screenio.c : Fix up accept without lines parameter
+
 2009-02-03  Roger While <simrw@sim-basis.de>
 
 	* intrinsic.c : Fix Cygwins busted rand function
@@ -503,7 +546,7 @@
 		SECONDS-PAST-MIDNIGHT, SECONDS-FROM-FORMATTED-TIME
 	* All : Remove COB_SET_EXCEPTION define
 	* intrinsic.c : Set COB_EC_ARGUMENT_FUNCTION exception code where
-			appropiate
+			appropriate
 
 2007-01-15  Roger While <simrw@sim-basis.de>
 
@@ -742,7 +785,7 @@
 	* All : Reduce compile warnings under Win
 	* common.c : setlocale depends on HAVE_SETLOCALE
 		     We must do a setlocale for LC_NUMERIC
-		     as languages with a comma seperator change
+		     as languages with a comma separator change
 		     the operation of string functions which bork
 		     specfically FP operations
 
@@ -791,7 +834,7 @@
 
 	* strings.c : Rip out regex use. It cannot handle
 	  a low-value (null byte) in RE.
-	  call.c : Native WIN MSC needs path seperator of ';'
+	  call.c : Native WIN MSC needs path separator of ';'
 	  common.h, common.c : Implement CBL_ERROR_PROC
 
 2006-01-25  Roger While <simrw@sim-basis.de>

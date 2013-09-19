@@ -39,14 +39,13 @@ IX215A.CBL     33   33    0       0       0 OK
 IX216A.CBL     15   14    0       1       0 OK
 IX217A.CBL      6    6    0       0       0 OK
 IX218A.CBL      6    6    0       0       0 OK
-IX301M.CBL    ----- test skipped -----
-IX302M.CBL    ----- test skipped -----
-IX401M.CBL    ----- test skipped -----
+IX301M.CBL      1    1    0       0       0 OK
+IX302M.CBL      1    1    0       0       0 OK
+IX401M.CBL      1    1    0       0       0 OK
 --------    ----- ---- ---- ------- -------
-Total         508  507    0       1       0
-%           100.0 99.8  0.0     0.2     0.0
+Total         511  510    0       1       0
 
-Number of programs:    39
-Successfully executed: 39 (100.00%)
-Compile error:          0 ( 0.00%)
-Execute error:          0 ( 0.00%)
+Number of programs:    42
+Successfully executed: 42
+Compile error:          0
+Execute error:          0
