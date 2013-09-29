@@ -3214,8 +3214,8 @@ process_compile (struct filename *fn)
 
 #ifdef	_MSC_VER
 	sprintf (cobc_buffer, gflag_set ?
-		"%s /c %s %s /Od /MDd /Zi /FR /c /Fa\"%s\" /Fo\"%s\" %s" :
-		"%s /c %s %s /MD /c /Fa\"%s\" /Fo\"%s\" %s",
+		"%s /c %s %s /Od /MDd /Zi /FR /c /Fa\"%s\" /Fo\"%s\" \"%s\"" :
+		"%s /c %s %s /MD /c /Fa\"%s\" /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include, name,
 			name, fn->translate);
 #elif defined(__WATCOMC__)
@@ -3246,7 +3246,7 @@ process_assemble (struct filename *fn)
 
 #ifdef	_MSC_VER
 	sprintf (cobc_buffer, gflag_set ?
-		"%s /c %s %s /Od /MDd /Zi /FR /Fo\"%s\" %s" :
+		"%s /c %s %s /Od /MDd /Zi /FR /Fo\"%s\" \"%s\"" :
 		"%s /c %s %s /MD /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include,
 			fn->object, fn->translate);
@@ -3338,7 +3338,7 @@ process_module_direct (struct filename *fn)
 
 #ifdef	_MSC_VER
 	sprintf (cobc_buffer, gflag_set ?
-		"%s %s %s /Od /MDd /LDd /Zi /FR /Fe\"%s\" /Fo\"%s\" %s \"%s\" %s %s %s" :
+		"%s %s %s /Od /MDd /LDd /Zi /FR /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s" :
 		"%s %s %s /MD /LD /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s",
 			cobc_cc, cobc_cflags, cobc_include, name, name,
 			fn->translate, cobc_libs,
