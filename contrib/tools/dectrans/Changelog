@@ -1,0 +1,8 @@
+2010-03-14  Vince Coen <vbcoen@btconnect.com>
+	v1.01.04  * Change paragraph name justify-left as it is
+	          *  now a reserved word.
+
+2009-01-06  Vince Coen <vbcoen@btconnect.com>
+	v1.01.01  * Create Module & basic Manual
+		  * Test System for Open Cobol.
+
