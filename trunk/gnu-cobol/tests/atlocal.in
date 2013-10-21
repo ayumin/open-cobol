@@ -1,0 +1,48 @@
+#
+# atlocal gnucobol/tests
+#
+# Copyright (C) 2003-2009 Keisuke Nishida
+# Copyright (C) 2008-2011 Roger While
+#
+# This file is part of GNU Cobol.
+#
+# The GNU Cobol compiler is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 2 of the
+# License, or (at your option) any later version.
+#
+# GNU Cobol is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+CC="@CC@"
+SHREXT="@COB_MODULE_EXT@"
+SHROPT="@COB_SHARED_OPT@ @COB_PIC_FLAGS@ @CFLAGS@ @LDFLAGS@"
+COB_BIGENDIAN="@COB_BIGENDIAN@"
+COB_HAS_ISAM="@COB_HAS_ISAM@"
+PATH="${abs_top_builddir}/cobc:${abs_top_builddir}/bin:${abs_top_builddir}/libcob/.libs:${PATH}"
+COBC="${abs_top_builddir}/cobc/cobc"
+COBCRUN="${abs_top_builddir}/bin/cobcrun"
+
+TEMPLATE="${abs_srcdir}/data-rep.src"
+
+FLAGS="-std=cobol2002 -debug -Wall ${COBOL_FLAGS}"
+COMPILE="${COBC} -x ${FLAGS}"
+COMPILE_ONLY="${COBC} -fsyntax-only ${FLAGS}"
+COMPILE_MODULE="${COBC} -m ${FLAGS}"
+
+export COB_CFLAGS="-I${abs_top_srcdir} @COB_CFLAGS@"
+export COB_LDFLAGS="-L${abs_top_builddir}/libcob/.libs @COB_LDFLAGS@"
+export COB_LIBS="-L${abs_top_builddir}/libcob/.libs -lcob @LIBCOB_LIBS@"
+export COB_CONFIG_DIR="${abs_top_srcdir}/config"
+export COB_COPY_DIR="${abs_top_srcdir}/copy"
+export LD_LIBRARY_PATH="${abs_top_builddir}/libcob/.libs:$LD_LIBRARY_PATH"
+export DYLD_LIBRARY_PATH="${abs_top_builddir}/libcob/.libs:$DYLD_LIBRARY_PATH"
+export SHLIB_PATH="${abs_top_builddir}/libcob/.libs:$SHLIB_PATH"
+export LIBPATH="${abs_top_builddir}/libcob/.libs:$LIBPATH"
+export COB_HAS_ISAM
+
