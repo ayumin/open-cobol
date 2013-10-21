@@ -352,11 +352,11 @@
 	  configure.ac, configure, Mak** : Fix missing variables.
 	  Run autoreconf
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (WORDS_BIGENDIAN): New variable.
 
-2005-04-13  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-13  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (LIBCOB_CFLAGS): Set -fPIC when necessary.
 
@@ -397,7 +397,7 @@
 	  to __db_open. This fixes configuring against
 	  the NPTL versions of DB (eg. Red Hat, Suse).
 
-2004-08-02  Keisuke Nishida  <knishida@open-cobol.org>
+2004-08-02  Keisuke Nishida  <knishida@opencobol.org>
 
 	* Version 0.30 released.
 

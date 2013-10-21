@@ -1142,11 +1142,11 @@
      numeric.c : Remove unused function.
             Change long to int (64-bitters where long = 8 bytes).
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
    * Makefile.am (libcob_la_CFLAGS): Add -fsigned-char.
 
-2005-04-13  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-13  Keisuke Nishida  <knishida@opencobol.org>
 
    * byteswap.h: #include <sys/types.h>.  Use u_int16_t, u_int32_t, and
    u_int64_t instead of unsigned short, etc.
@@ -1205,11 +1205,11 @@
 
    * move.c : Fix regression for NIST suite
 
-2004-11-04  Bernard Giroud <bgiroud@open-cobol.org>
+2004-11-04  Bernard Giroud <bgiroud@opencobol.org>
    * numeric.c (cob_decimal_get_binary) : reverted:
      NIST test suite is no mre working.
 
-2004-11-02  Bernard Giroud <bgiroud@open-cobol.org>
+2004-11-02  Bernard Giroud <bgiroud@opencobol.org>
    * numeric.c (cob_decimal_get_binary) :
      Worked around what I consider a bug in Gmp for getting
      a long signed value.
@@ -1232,12 +1232,12 @@
      Note this will not have any effect until we activate error
      handling for the OPEN. (Coming up soon)
 
-2004-09-17  Keisuke Nishida  <knishida@open-cobol.org>
+2004-09-17  Keisuke Nishida  <knishida@opencobol.org>
 
    * numeric.h (COB_STORE_TRUNC_ON_OVERFLOW): Define as 0x04, not 0x02.
    (Thanks to Roger While)
 
-2004-07-06  Keisuke Nishida  <knishida@open-cobol.org>
+2004-07-06  Keisuke Nishida  <knishida@opencobol.org>
 
    * numeric.h (COB_STORE_ROUND, COB_STORE_KEEP_ON_OVERFLOW)
    (COB_STORE_TRUNC_ON_OVERFLOW): New macros.
@@ -1249,50 +1249,50 @@
    (cob_display_add_int): Renamed from cob_add_int_to_display.
    (cob_add_round, cob_sub_round): Removed.
 
-2004-07-05  Keisuke Nishida  <knishida@open-cobol.org>
+2004-07-05  Keisuke Nishida  <knishida@opencobol.org>
 
    * fileio.c (sort_read): Set field size for varying records.
    (Thanks to Roger While!)
 
-2004-06-12  Keisuke Nishida  <knishida@open-cobol.org>
+2004-06-12  Keisuke Nishida  <knishida@opencobol.org>
 
    * termio.c (display): Display full digits of binary item
    when pretty-display is off, not when binary-truncate is off.
 
-2004-05-21  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-21  Keisuke Nishida  <knishida@opencobol.org>
 
    * move.c (cob_binary_get_int64): Reimplemented using memcpy.
    (cob_binary_get_int): Call cob_binary_get_int64.
    (cob_binary_set_int): Call cob_binary_set_int64.
 
-2004-05-16  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-16  Keisuke Nishida  <knishida@opencobol.org>
 
    * common.c (cob_cmp): Compare non-display numeric and alphanumeric
    correctly.
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * termio.c (display_numeric): Leading sign for binary.
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * byteswap.h (COB_BSWAP_32_IA32): Always use bswap.
    (We no longer support i386.)
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * fileio.c (cob_default_error_handle): Set error for status 35.
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * common.c (cob_runtime_error): Flush buffer at the end.
 
-2004-04-07  Keisuke Nishida  <knishida@open-cobol.org>
+2004-04-07  Keisuke Nishida  <knishida@opencobol.org>
 
    * common.h, common.c (cob_table_sort_init, cob_table_sort_init_key)
    (cob_table_sort): New functions.
 
-2004-04-07  Keisuke Nishida  <knishida@open-cobol.org>
+2004-04-07  Keisuke Nishida  <knishida@opencobol.org>
 
    * strings.c (cob_inspect_converting): Do not convert repeatedly.
    (Thanks to Richard Smith <rich@theforest.plus.com>)
