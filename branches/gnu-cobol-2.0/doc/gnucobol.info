@@ -1,12 +1,12 @@
-This is opencobol.info, produced by makeinfo version 4.12 from
-opencobol.texi.
+This is gnucobol.info, produced by makeinfo version 4.12 from
+gnucobol.texi.
 
 INFO-DIR-SECTION COBOL
 START-INFO-DIR-ENTRY
-* OpenCOBOL: (opencobol).      A COBOL compiler
+* GNU Cobol: (gnucobol).      A COBOL compiler
 END-INFO-DIR-ENTRY
 
-   This file documents OpenCOBOL, a COBOL compiler
+   This file documents GNU Cobol, a COBOL compiler
 
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright (C) 2007-2012 Roger While
@@ -26,11 +26,11 @@ versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
 
 
-File: opencobol.info,  Node: Top,  Next: Getting Started,  Up: (dir)
+File: gnucobol.info,  Node: Top,  Next: Getting Started,  Up: (dir)
 
 * Menu:
 
-* Getting Started::             Introduction to OpenCOBOL
+* Getting Started::             Introduction to GNU Cobol
 * Compile::                     Compiling COBOL programs
 * Customize::                   Customizing the compiler
 * Optimize::                    Optimizing your program
@@ -110,7 +110,7 @@ Appendix F
 Appendix G
 
 
-File: opencobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: Top
+File: gnucobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: Top
 
 1 Getting Started
 *****************
@@ -120,7 +120,7 @@ File: opencobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: T
 * Hello World!::                Hello World!
 
 
-File: opencobol.info,  Node: Hello World!,  Prev: Getting Started,  Up: Getting Started
+File: gnucobol.info,  Node: Hello World!,  Prev: Getting Started,  Up: Getting Started
 
 1.1 Hello World!
 ================
@@ -155,7 +155,7 @@ option `-o' as follows:
    Using more modern sources.
 
      ---- hellonew.cob ----------------
-     *> Sample OpenCOBOL program
+     *> Sample GNU Cobol program
      identification division.
      program-id. hellonew.
      procedure division.
@@ -173,12 +173,12 @@ option `-o' as follows:
 `goback' verb, and proper use of terminator with `end-display'.
 
 
-File: opencobol.info,  Node: Compile,  Next: Customize,  Prev: Getting Started,  Up: Top
+File: gnucobol.info,  Node: Compile,  Next: Customize,  Prev: Getting Started,  Up: Top
 
 2 Compile
 *********
 
-This chapter describes how to compile COBOL programs using OpenCOBOL.
+This chapter describes how to compile COBOL programs using GNU Cobol.
 
 * Menu:
 
@@ -187,7 +187,7 @@ This chapter describes how to compile COBOL programs using OpenCOBOL.
 * C Interface::                 Dealing with C files
 
 
-File: opencobol.info,  Node: Compiler Options,  Next: Multiple Sources,  Prev: Compile,  Up: Compile
+File: gnucobol.info,  Node: Compiler Options,  Next: Multiple Sources,  Prev: Compile,  Up: Compile
 
 2.1 Compiler Options
 ====================
@@ -208,7 +208,7 @@ A complete list of options can be displayed by using the help option.
 * Miscellaneous::               Miscellaneous
 
 
-File: opencobol.info,  Node: Help Options,  Next: Built Target,  Prev: Compiler Options,  Up: Compiler Options
+File: gnucobol.info,  Node: Help Options,  Next: Built Target,  Prev: Compiler Options,  Up: Compiler Options
 
 2.1.1 Help Options
 ------------------
@@ -258,7 +258,7 @@ The following switches can be used for informational displays:
    (1) Support may be partial or complete
 
 
-File: opencobol.info,  Node: Built Target,  Next: Source Format,  Prev: Help Options,  Up: Compiler Options
+File: gnucobol.info,  Node: Built Target,  Next: Source Format,  Prev: Help Options,  Up: Compiler Options
 
 2.1.2 Built Target
 ------------------
@@ -330,12 +330,12 @@ loadable module.
    (1) The extension varies depending on your host.
 
 
-File: opencobol.info,  Node: Source Format,  Next: Warning Options,  Prev: Built Target,  Up: Compiler Options
+File: gnucobol.info,  Node: Source Format,  Next: Warning Options,  Prev: Built Target,  Up: Compiler Options
 
 2.1.3 Source Format
 -------------------
 
-OpenCOBOL supports both fixed and free source format.
+GNU Cobol supports both fixed and free source format.
 
    The default format is the fixed format.  This can be explicitly
 overwritten by one of the following options:
@@ -343,7 +343,7 @@ overwritten by one of the following options:
 `-free'
      Free format.  The program-text area starts in column 1 and
      continues till the end of line.  Effectively 255 characters in
-     OpenCOBOL.
+     GNU Cobol.
 
 `-fixed'
      Fixed format.  Source code is divided into a 1-6 column sequence
@@ -354,7 +354,7 @@ overwritten by one of the following options:
      or source code directive, `>>SOURCE [FORMAT] [IS] {FIXED|FREE}'.
 
 
-File: opencobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev: Source Format,  Up: Compiler Options
+File: gnucobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev: Source Format,  Up: Compiler Options
 
 2.1.4 Warning Options
 ---------------------
@@ -406,7 +406,7 @@ File: opencobol.info,  Node: Warning Options,  Next: Configuration Options,  Pre
      Warn unreachable statements (NOT set with -Wall)
 
 
-File: opencobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev: Warning Options,  Up: Compiler Options
+File: gnucobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev: Warning Options,  Up: Compiler Options
 
 2.1.5 Configuration Options
 ---------------------------
@@ -443,7 +443,7 @@ File: opencobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev
 
 
 
-File: opencobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configuration Options,  Up: Compiler Options
+File: gnucobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configuration Options,  Up: Compiler Options
 
 2.1.6 Debug Switches
 --------------------
@@ -491,7 +491,7 @@ File: opencobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Config
 
 
 
-File: opencobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler Options
+File: gnucobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler Options
 
 2.1.7 Miscellaneous
 -------------------
@@ -525,7 +525,7 @@ File: opencobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler
 
 
 
-File: opencobol.info,  Node: Multiple Sources,  Next: C Interface,  Prev: Compiler Options,  Up: Compile
+File: gnucobol.info,  Node: Multiple Sources,  Next: C Interface,  Prev: Compiler Options,  Up: Compile
 
 2.2 Multiple Sources
 ====================
@@ -545,7 +545,7 @@ COBOL programs.
 * Using Library::               Using external libraries
 
 
-File: opencobol.info,  Node: Static Linking,  Next: Dynamic Linking,  Prev: Multiple Sources,  Up: Multiple Sources
+File: gnucobol.info,  Node: Static Linking,  Next: Dynamic Linking,  Prev: Multiple Sources,  Up: Multiple Sources
 
 2.2.1 Static Linking
 --------------------
@@ -600,7 +600,7 @@ is a literal (like `CALL "subr".').  With a data name (like `CALL
 SUBR.'), the program is still called dynamically.
 
 
-File: opencobol.info,  Node: Dynamic Linking,  Next: Building Library,  Prev: Static Linking,  Up: Multiple Sources
+File: gnucobol.info,  Node: Dynamic Linking,  Next: Building Library,  Prev: Static Linking,  Up: Multiple Sources
 
 2.2.2 Dynamic Linking
 ---------------------
@@ -648,7 +648,7 @@ directory, and run the main program:
    (2) The extension varies depending on your host.
 
 
-File: opencobol.info,  Node: Building Library,  Next: Using Library,  Prev: Dynamic Linking,  Up: Multiple Sources
+File: gnucobol.info,  Node: Building Library,  Next: Using Library,  Prev: Dynamic Linking,  Up: Multiple Sources
 
 2.2.3 Building Library
 ----------------------
@@ -662,7 +662,7 @@ even C routines:
      $ cc -shared -o libsubrs.so subr1.o subr2.o subr3.o
 
 
-File: opencobol.info,  Node: Using Library,  Prev: Building Library,  Up: Multiple Sources
+File: gnucobol.info,  Node: Using Library,  Prev: Building Library,  Up: Multiple Sources
 
 2.2.4 Using Library
 -------------------
@@ -680,7 +680,7 @@ directory:
      $ cobc -x main.cob -L/your/cobol/lib -lsubrs
 
 
-File: opencobol.info,  Node: C Interface,  Prev: Multiple Sources,  Up: Compile
+File: gnucobol.info,  Node: C Interface,  Prev: Multiple Sources,  Up: Compile
 
 2.3 C Interface
 ===============
@@ -696,7 +696,7 @@ This chapter describes how to combine C programs with COBOL programs.
 * Dynamic COBOL to C::
 
 
-File: opencobol.info,  Node: Main C Program,  Next: Static C to COBOL,  Prev: C Interface,  Up: C Interface
+File: gnucobol.info,  Node: Main C Program,  Next: Static C to COBOL,  Prev: C Interface,  Up: C Interface
 
 2.3.1 Writing Main Program in C
 -------------------------------
@@ -735,7 +735,7 @@ command line arguments to COBOL.
      cc -o main main.o `cob-config --libs`
 
 
-File: opencobol.info,  Node: Static C to COBOL,  Next: Dynamic C to COBOL,  Prev: Main C Program,  Up: C Interface
+File: gnucobol.info,  Node: Static C to COBOL,  Next: Dynamic C to COBOL,  Prev: Main C Program,  Up: C Interface
 
 2.3.2 Static linking with COBOL programs
 ----------------------------------------
@@ -793,7 +793,7 @@ following prototype:
      Hello World!
 
 
-File: opencobol.info,  Node: Dynamic C to COBOL,  Next: Static COBOL to C,  Prev: Static C to COBOL,  Up: C Interface
+File: gnucobol.info,  Node: Dynamic C to COBOL,  Next: Static COBOL to C,  Prev: Static C to COBOL,  Up: C Interface
 
 2.3.3 Dynamic linking with COBOL programs
 -----------------------------------------
@@ -847,7 +847,7 @@ function `cob_resolve_error' returns the error message.
      Hello World!
 
 
-File: opencobol.info,  Node: Static COBOL to C,  Next: Dynamic COBOL to C,  Prev: Dynamic C to COBOL,  Up: C Interface
+File: gnucobol.info,  Node: Static COBOL to C,  Next: Dynamic COBOL to C,  Prev: Dynamic C to COBOL,  Up: C Interface
 
 2.3.4 Static linking with C programs
 ------------------------------------
@@ -897,7 +897,7 @@ terminated by the null character (i.e., `\0').
      Hello World!
 
 
-File: opencobol.info,  Node: Dynamic COBOL to C,  Prev: Static COBOL to C,  Up: C Interface
+File: gnucobol.info,  Node: Dynamic COBOL to C,  Prev: Static COBOL to C,  Up: C Interface
 
 2.3.5 Dynamic linking with C programs
 -------------------------------------
@@ -912,7 +912,7 @@ option `-shared' to the C compiler:
      Hello World!
 
 
-File: opencobol.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: Top
+File: gnucobol.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: Top
 
 3 Customize
 ***********
@@ -923,7 +923,7 @@ File: opencobol.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: To
 * Customizing Library::         Customizing Library
 
 
-File: opencobol.info,  Node: Customizing Compiler,  Next: Customizing Library,  Prev: Customize,  Up: Customize
+File: gnucobol.info,  Node: Customizing Compiler,  Next: Customizing Library,  Prev: Customize,  Up: Customize
 
 3.1 Customizing Compiler
 ========================
@@ -949,7 +949,7 @@ These settings are effective at compile-time.
      Additional libraries linked with the program ("")
 
 
-File: opencobol.info,  Node: Customizing Library,  Prev: Customizing Compiler,  Up: Customize
+File: gnucobol.info,  Node: Customizing Library,  Prev: Customizing Compiler,  Up: Customize
 
 3.2 Customizing Library
 =======================
@@ -959,10 +959,10 @@ These settings are effective at run-time.
    Environment variables (default value):
 
 `COB_LIBRARY_PATH'
-     Dynamic-linking module path (".:$(PREFIX)/lib/open-cobol")
+     Dynamic-linking module path (".:$(PREFIX)/lib/gnu-cobol")
 
 
-File: opencobol.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
+File: gnucobol.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
 
 4 Optimize
 **********
@@ -974,7 +974,7 @@ File: opencobol.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
 * Optimize Binary::             Use efficient binary representation
 
 
-File: opencobol.info,  Node: Optimize Options,  Next: Optimize Call,  Prev: Optimize,  Up: Optimize
+File: gnucobol.info,  Node: Optimize Options,  Next: Optimize Call,  Prev: Optimize,  Up: Optimize
 
 4.1 Optimize Options
 ====================
@@ -990,7 +990,7 @@ at the translation level.
 and used for C level optimization.
 
 
-File: opencobol.info,  Node: Optimize Call,  Next: Optimize Binary,  Prev: Optimize Options,  Up: Optimize
+File: gnucobol.info,  Node: Optimize Call,  Next: Optimize Binary,  Prev: Optimize Options,  Up: Optimize
 
 4.2 Optimize Call
 =================
@@ -1001,7 +1001,7 @@ statically link the program at compile time and call it efficiently.
 (*note Static Linking::)
 
 
-File: opencobol.info,  Node: Optimize Binary,  Prev: Optimize Call,  Up: Optimize
+File: gnucobol.info,  Node: Optimize Binary,  Prev: Optimize Call,  Up: Optimize
 
 4.3 Optimize Binary
 ===================
@@ -1018,7 +1018,7 @@ config file (*note Customize::).
 `1-2-4-8' is more efficient than others.
 
 
-File: opencobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
+File: gnucobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
 
 5 Debug
 *******
@@ -1028,7 +1028,7 @@ File: opencobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
 * Debug Options::               Debug options
 
 
-File: opencobol.info,  Node: Debug Options,  Prev: Debug,  Up: Debug
+File: gnucobol.info,  Node: Debug Options,  Prev: Debug,  Up: Debug
 
 5.1 Debug Options
 =================
@@ -1039,7 +1039,7 @@ boundary checks and numeric data checks, and displays run-time errors
 with source locations.
 
 
-File: opencobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
+File: gnucobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
 
 Appendix A `cobc --help'
 ************************
@@ -1160,12 +1160,12 @@ Options:
 			- unless NOT OPTIONAL specified
 
 
-File: opencobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
+File: gnucobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
 
 Appendix B `cobc --info'
 ************************
 
-cobc (OpenCOBOL) 2.0.0
+cobc (GNU Cobol) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright (C) 2006-2012 Roger While
 This is free software; see the source for copying conditions.  There is NO
@@ -1183,15 +1183,15 @@ CFLAGS                   : -g -O2 -pipe -finline-functions -fsigned-char
 LD                       : /usr/x86_64-suse-linux/bin/ld -m elf_x86_64
 LDFLAGS                  : -Wl,-z,relro,-z,now
 
-OpenCOBOL information
+GNU Cobol information
 COB_CC                   : gcc -std=gnu99
 COB_CFLAGS               : -I/usr/local/include -pipe
 COB_LDFLAGS              :
 COB_LIBS                 : -L/usr/local/lib -lcob -lm -lgmp -lncursesw
                            -ldb
-COB_CONFIG_DIR           : /usr/local/share/open-cobol/config
-COB_COPY_DIR             : /usr/local/share/open-cobol/copy
-COB_LIBRARY_PATH         : /usr/local/lib/open-cobol
+COB_CONFIG_DIR           : /usr/local/share/gnu-cobol/config
+COB_COPY_DIR             : /usr/local/share/gnu-cobol/copy
+COB_LIBRARY_PATH         : /usr/local/lib/gnu-cobol
 COB_MODULE_EXT           : so
 COB_EXEEXT               :
 Dynamic loading          : System
@@ -1202,7 +1202,7 @@ Sequential handler       : Internal
 ISAM handler             : BDB
 
 
-File: opencobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
+File: gnucobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
 
 Appendix C `cobc --list-reserved'
 *********************************
@@ -1806,7 +1806,7 @@ COB-CRT-STATUS			PIC 9(4)
 'LENGTH OF' phrase		USAGE BINARY-LONG
 
 
-File: opencobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
+File: gnucobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
 
 Appendix D `cobc --list-intrinsics'
 ***********************************
@@ -1919,7 +1919,7 @@ WHEN-COMPILED			Y		0
 YEAR-TO-YYYY			Y		Variable
 
 
-File: opencobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
+File: gnucobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
 
 Appendix E `cobc --list-system'
 *******************************
@@ -1978,7 +1978,7 @@ X"F4"				2
 X"F5"				2
 
 
-File: opencobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
+File: gnucobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
 
 Appendix F `cobc --list-mnemonics'
 **********************************
@@ -2047,34 +2047,34 @@ SW14		Switch name
 SW15		Switch name
 
 
-File: opencobol.info,  Node: Appendix G,  Up: Top
+File: gnucobol.info,  Node: Appendix G,  Up: Top
 
 Appendix G config/default.conf
 ******************************
 
-# OpenCOBOL compiler configuration
+# GNU Cobol compiler configuration
 #
 # Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2007-2012 Roger While
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 
 # Value: any string
-name: "OpenCOBOL"
+name: "GNU Cobol"
 
 # Value: enum
 standard-define			0

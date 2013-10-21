@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2006-2012 Roger While
 
-   This file is part of OpenCOBOL.
+   This file is part of GNU Cobol.
 
-   The OpenCOBOL compiler is free software: you can redistribute it
+   The GNU Cobol compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   OpenCOBOL is distributed in the hope that it will be useful,
+   GNU Cobol is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "config.h"
@@ -1613,7 +1613,7 @@ cobc_print_info (void)
 	cobc_var_print ("LD",			COB_BLD_LD);
 	cobc_var_print ("LDFLAGS",		COB_BLD_LDFLAGS);
 	putchar ('\n');
-	puts (_("OpenCOBOL information"));
+	puts (_("GNU Cobol information"));
 	cobc_var_print ("COB_CC",		COB_CC);
 	cobc_var_print ("COB_CFLAGS",		COB_CFLAGS);
 	cobc_var_print ("COB_LDFLAGS",		COB_LDFLAGS);

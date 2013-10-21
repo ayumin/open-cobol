@@ -1,10 +1,10 @@
-# RPM spec file for open-cobol
+# RPM spec file for gnu-cobol
 # Adjust/activate "Packager" tag as necessary
 
-Name:		open-cobol
+Name:		gnu-cobol
 Version:	2.0
 Release:	1%{?dist}
-Summary:	OpenCOBOL - COBOL compiler
+Summary:	GNU Cobol - COBOL compiler
 
 # Packager:	Whoever
 
@@ -38,7 +38,7 @@ Requires:       ncurses >= 5.4
 Requires(post): /sbin/install-info
 
 %description
-OpenCOBOL is an open-source COBOL compiler, which translates COBOL
+GNU Cobol is an open-source COBOL compiler, which translates COBOL
 programs to C code and compiles it using GCC.
 
 %prep
@@ -66,8 +66,8 @@ make check
 %{_bindir}/cobcrun
 %{_bindir}/cob-config
 %{_includedir}/*
-%{_datadir}/open-cobol
-%{_infodir}/open-cobol.info*
+%{_datadir}/gnu-cobol
+%{_infodir}/gnu-cobol.info*
 %{_libdir}/libcob.so*
 %{_libdir}/libcob.a
 %{_libdir}/libcob.la
@@ -77,12 +77,12 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 
 %post 
-/sbin/install-info %{_infodir}/open-cobol.info %{_infodir}/dir 2>/dev/null || :
+/sbin/install-info %{_infodir}/gnu-cobol.info %{_infodir}/dir 2>/dev/null || :
 /sbin/ldconfig
 
 %postun 
 if [ $1 = 0 ]; then
-  /sbin/install-info --delete %{_infodir}/open-cobol.info %{_infodir}/dir 2>/dev/null || :
+  /sbin/install-info --delete %{_infodir}/gnu-cobol.info %{_infodir}/dir 2>/dev/null || :
 fi
 /sbin/ldconfig
 

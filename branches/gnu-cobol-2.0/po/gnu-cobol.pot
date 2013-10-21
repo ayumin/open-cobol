@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: open-cobol 2.0\n"
+"Project-Id-Version: gnu-cobol 2.0\n"
 "Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-02-11 13:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -176,7 +176,7 @@ msgid "Build environment"
 msgstr ""
 
 #: cobc/cobc.c:1616 bin/cobcrun.c:135
-msgid "OpenCOBOL information"
+msgid "GNU Cobol information"
 msgstr ""
 
 #: cobc/cobc.c:1628 cobc/cobc.c:1630 bin/cobcrun.c:147 bin/cobcrun.c:149

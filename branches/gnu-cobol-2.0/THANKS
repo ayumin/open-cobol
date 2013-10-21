@@ -1,9 +1,12 @@
 Alain Lucari <eurlix@libertysurf.fr>
+Brian Tiffin <btiffin@users.sourceforge.net>
 David Korn <dgk@research.att.com>
 Keiichi Takahashi <bitwalk@jcom.home.ne.jp>
+Keisuke Nishida <knishida@netlab.jp>
 Peg <peg@coboler.com>
 Richard Smith <rich@theforest.plus.com>
 Roger While <RogerWhile@sim-basis.de>
+Simon Sobisch <sf-mensch@users.sourceforge.net>
 Thomas Biehler <tobiglob@users.sourceforge.net>
 William M. Klein <wmklein@ix.netcom.com>
 Yoshiki Kusumoto <webmaster@coboler.com>
@@ -28,7 +31,7 @@ Hans-Martin Rasch - Work on compiler syntax
 Michel Gouget - Work on syntax - IS
 Bill Klein - The mainstay for Cobol questions
 Frank Swarbrick - Work on compiler syntax
-Warren Gay - For testing systems that we did
+Warren Gay - For testing systems that we didn't
 	known that we even support!
 	(eg. Old DEC Alpha sytems)
 Ron Norman - Work on C/D/VB-ISAM handler

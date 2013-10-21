@@ -1,7 +1,7 @@
 \input texinfo
-@setfilename opencobol.info
+@setfilename gnucobol.info
 @setcontentsaftertitlepage
-@settitle OpenCOBOL Manual
+@settitle GNU Cobol Manual
 @setchapternewpage on
 @footnotestyle end
 
@@ -12,10 +12,10 @@
 @ifinfo
 @dircategory COBOL
 @direntry
-* OpenCOBOL: (opencobol).      A COBOL compiler
+* GNU Cobol: (gnucobol).      A COBOL compiler
 @end direntry
 
-This file documents OpenCOBOL, a COBOL compiler
+This file documents GNU Cobol, a COBOL compiler
 
 Copyright @copyright{} 2002,2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright @copyright{} 2007-2012 Roger While
@@ -43,19 +43,19 @@ approved by the Free Software Foundation.
 @end ifinfo
 
 @titlepage
-@title OpenCOBOL Manual
-@subtitle for OpenCOBOL @value{VERSION}
+@title GNU Cobol Manual
+@subtitle for GNU Cobol @value{VERSION}
 @author Keisuke Nishida / Roger While
 
 Edition @value{EDITION} @*
-Updated for OpenCOBOL @value{VERSION} @*
+Updated for GNU Cobol @value{VERSION} @*
 @value{UPDATED} @*
 
-OpenCOBOL is an open-source COBOL compiler, which translates COBOL
+GNU Cobol is an open-source COBOL compiler, which translates COBOL
 programs to C code and compiles it using GCC or other C compiler
 system.
 
-This manual corresponds to OpenCOBOL @value{VERSION}.
+This manual corresponds to GNU Cobol @value{VERSION}.
 
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2002,2003,2004,2005,2006 Keisuke Nishida@*
@@ -79,7 +79,7 @@ approved by the Free Software Foundation.
 @node Top
 
 @menu
-* Getting Started::             Introduction to OpenCOBOL
+* Getting Started::             Introduction to GNU Cobol
 * Compile::                     Compiling COBOL programs
 * Customize::                   Customizing the compiler
 * Optimize::                    Optimizing your program
@@ -209,7 +209,7 @@ Using more modern sources.
 
 @example
 ---- hellonew.cob ----------------
-*> Sample OpenCOBOL program
+*> Sample GNU Cobol program
 identification division.
 program-id. hellonew.
 procedure division.
@@ -233,7 +233,7 @@ Showing the use of free format, to end of line comments, the
 @node Compile, Customize, Getting Started, Top
 @chapter Compile
 
-This chapter describes how to compile COBOL programs using OpenCOBOL.
+This chapter describes how to compile COBOL programs using GNU Cobol.
 
 @menu
 * Compiler Options::            Compiler options
@@ -376,7 +376,7 @@ dynamically loadable module.
 @node Source Format, Warning Options, Built Target, Compiler Options
 @subsection Source Format
 
-OpenCOBOL supports both fixed and free source format.
+GNU Cobol supports both fixed and free source format.
 
 The default format is the fixed format.  This can be explicitly
 overwritten by one of the following options:
@@ -385,7 +385,7 @@ overwritten by one of the following options:
 @item -free
 Free format.  The program-text area starts in column 1 and
 continues till the end of line.  Effectively 255 characters
-in OpenCOBOL.
+in GNU Cobol.
 
 @item -fixed
 Fixed format.  Source code is divided into a 1-6 column sequence
@@ -1014,7 +1014,7 @@ Environment variables (default value):
 
 @table @code
 @item COB_LIBRARY_PATH
-Dynamic-linking module path (".:$(PREFIX)/lib/open-cobol")
+Dynamic-linking module path (".:$(PREFIX)/lib/gnu-cobol")
 @end table
 
 @node Optimize, Debug, Customize, Top

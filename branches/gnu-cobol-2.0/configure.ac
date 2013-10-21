@@ -1,30 +1,30 @@
 #
-# Configure template for OpenCOBOL
+# Configure template for GNU Cobol
 #
 # Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2007-2012 Roger While
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.64])
 
-AC_INIT([OpenCOBOL],
+AC_INIT([GNU Cobol],
 	[2.0],
 	[open-cobol-list@lists.sourceforge.net],
-	[open-cobol],
+	[gnu-cobol],
 	[http://www.opencobol.org])
 AC_CONFIG_SRCDIR([libcob.h])
 AC_CONFIG_HEADERS([config.h])
@@ -220,7 +220,7 @@ fi
 # Configure options.
 
 AC_ARG_WITH([seqra-extfh],
-  [  --with-seqra-extfh      (OpenCOBOL) Use external SEQ/RAN file handler],
+  [  --with-seqra-extfh      (GNU Cobol) Use external SEQ/RAN file handler],
   [ if test "$with_seqra_extfh" = "yes"
     then
 	AC_DEFINE([WITH_SEQRA_EXTFH], [1])
@@ -228,7 +228,7 @@ AC_ARG_WITH([seqra-extfh],
   [])
 
 AC_ARG_WITH([cisam],
-  [  --with-cisam            (OpenCOBOL) Use CISAM for ISAM I/O (Experimental)],
+  [  --with-cisam            (GNU Cobol) Use CISAM for ISAM I/O (Experimental)],
   [ if test "$with_cisam" = "yes"
     then
 	AC_CHECK_HEADERS([isam.h], [],
@@ -243,7 +243,7 @@ AC_ARG_WITH([cisam],
 if test "$with_cisam" != "yes"
 then
   AC_ARG_WITH([disam],
-  [  --with-disam            (OpenCOBOL) Use DISAM for ISAM I/O (Experimental)],
+  [  --with-disam            (GNU Cobol) Use DISAM for ISAM I/O (Experimental)],
   [ if test "$with_disam" = "yes"
     then
 	AC_CHECK_HEADERS([disam.h], [],
@@ -259,7 +259,7 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes"
 then
   AC_ARG_WITH([vbisam],
-  [  --with-vbisam           (OpenCOBOL) Use VBISAM for ISAM I/O (Experimental)],
+  [  --with-vbisam           (GNU Cobol) Use VBISAM for ISAM I/O (Experimental)],
   [ if test "$with_vbisam" = "yes"
     then
 	AC_CHECK_HEADERS([vbisam.h], [],
@@ -275,7 +275,7 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes"
 then
   AC_ARG_WITH([index-extfh],
-  [  --with-index-extfh      (OpenCOBOL) Use external ISAM file handler],
+  [  --with-index-extfh      (GNU Cobol) Use external ISAM file handler],
   [ if test "$with_index_extfh" = "yes"
     then
 	AC_DEFINE([WITH_INDEX_EXTFH], [1])
@@ -286,13 +286,13 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
 then
   AC_ARG_WITH([db],
-  [  --with-db               (OpenCOBOL) Use Berkeley DB >= 4.1 for ISAM I/O (default)],
+  [  --with-db               (GNU Cobol) Use Berkeley DB >= 4.1 for ISAM I/O (default)],
   [],
   [with_db=yes])
 fi
 
 AC_ARG_WITH([dl],
-  [  --with-dl               (OpenCOBOL) Use system dynamic loader (default)],
+  [  --with-dl               (GNU Cobol) Use system dynamic loader (default)],
   [case $with_dl in  
     yes)
 		;;
@@ -304,12 +304,12 @@ AC_ARG_WITH([dl],
   [with_dl=yes])
 
 AC_ARG_ENABLE([debug],
-  [  --enable-debug          (OpenCOBOL) Enable -g C compiler debug option],
+  [  --enable-debug          (GNU Cobol) Enable -g C compiler debug option],
   [],
   [enable_debug=no])
 
 AC_ARG_ENABLE([experimental],
-  [  --enable-experimental   (OpenCOBOL) Enable experimental code (Developers only!)],
+  [  --enable-experimental   (GNU Cobol) Enable experimental code (Developers only!)],
   [if test "$enable_experimental" = "yes"
    then
 	AC_DEFINE([COB_EXPERIMENTAL], [1])
@@ -317,7 +317,7 @@ AC_ARG_ENABLE([experimental],
   [])
 
 AC_ARG_ENABLE([param-check],
-  [  --enable-param-check    (OpenCOBOL) Enable CALL parameter checking],
+  [  --enable-param-check    (GNU Cobol) Enable CALL parameter checking],
   [if test "$enable_param_check" = "yes"
    then
 	AC_DEFINE([COB_PARAM_CHECK], [1])
@@ -325,7 +325,7 @@ AC_ARG_ENABLE([param-check],
   [])
 
 AC_ARG_WITH([patch-level],
-  [  --with-patch-level      (OpenCOBOL) Define a patch level (default 0)],
+  [  --with-patch-level      (GNU Cobol) Define a patch level (default 0)],
   [case $with_patch_level in  
     yes)	AC_MSG_ERROR([[You must give --with-patch-level an argument.]])
 		;;
@@ -341,7 +341,7 @@ AC_ARG_WITH([patch-level],
 AC_DEFINE_UNQUOTED([PATCH_LEVEL], [$with_patch_level])
 
 AC_ARG_WITH([varseq],
-  [  --with-varseq           (OpenCOBOL) Define variable sequential format (default 0)],
+  [  --with-varseq           (GNU Cobol) Define variable sequential format (default 0)],
   [case $with_varseq in  
     yes)	AC_MSG_ERROR([[You must give --with-varseq an argument.]])
 		;;
@@ -759,7 +759,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 	[AC_DEFINE([HAVE_ATTRIBUTE_ALIGNED], [1]) AC_MSG_RESULT([yes])],
 	[AC_MSG_RESULT([no])])
 
-# OpenCOBOL Configuration
+# GNU Cobol Configuration
 
 if test "x$prefix" = "xNONE"
 then
@@ -1003,7 +1003,7 @@ AC_CONFIG_COMMANDS([chmod3], [chmod +x tests/atlocal])
 
 AC_OUTPUT
 
-echo "OpenCOBOL Configuration:"
+echo "GNU Cobol Configuration:"
 echo " CC                ${CC}"
 echo " CFLAGS            ${CFLAGS}"
 echo " COB_CFLAGS        ${COB_CFLAGS}"

@@ -5,20 +5,20 @@
 # Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2007-2012 Roger While
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
 # Copyright (C) 2009, 2010 Free Software Foundation, Inc.
@@ -1348,7 +1348,7 @@ _ATEOF
 cat <<_ATEOF || at_write_fail=1
 
 Report bugs to <open-cobol-list@lists.sourceforge.net>.
-OpenCOBOL home page: <http://www.opencobol.org>.
+GNU Cobol home page: <http://www.opencobol.org>.
 _ATEOF
   exit $at_write_fail
 fi
@@ -1356,7 +1356,7 @@ fi
 # List of tests.
 if $at_list_p; then
   cat <<_ATEOF || at_write_fail=1
-OpenCOBOL 2.0 test suite: OpenCOBOL Tests test groups:
+GNU Cobol 2.0 test suite: GNU Cobol Tests test groups:
 
  NUM: FILE-NAME:LINE     TEST-GROUP-NAME
       KEYWORDS
@@ -1397,27 +1397,27 @@ _ATEOF
   exit $at_write_fail
 fi
 if $at_version_p; then
-  $as_echo "$as_me (OpenCOBOL 2.0)" &&
+  $as_echo "$as_me (GNU Cobol 2.0)" &&
   cat <<\_ATEOF || at_write_fail=1
 
 
 Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright (C) 2007-2012 Roger While
 
-This file is part of OpenCOBOL.
+This file is part of GNU Cobol.
 
-The OpenCOBOL compiler is free software: you can redistribute it
+The GNU Cobol compiler is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
 
-OpenCOBOL is distributed in the hope that it will be useful,
+GNU Cobol is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 
 Copyright (C) 2010 Free Software Foundation, Inc.
@@ -1594,11 +1594,11 @@ exec 5>>"$at_suite_log"
 
 # Banners and logs.
 $as_echo "## ------------------------------------------ ##
-## OpenCOBOL 2.0 test suite: OpenCOBOL Tests. ##
+## GNU Cobol 2.0 test suite: GNU Cobol Tests. ##
 ## ------------------------------------------ ##"
 {
   $as_echo "## ------------------------------------------ ##
-## OpenCOBOL 2.0 test suite: OpenCOBOL Tests. ##
+## GNU Cobol 2.0 test suite: GNU Cobol Tests. ##
 ## ------------------------------------------ ##"
   echo
 
@@ -2442,7 +2442,7 @@ _ASBOX
   $as_echo "Please send $at_msg and all information you think might help:
 
    To: <open-cobol-list@lists.sourceforge.net>
-   Subject: [OpenCOBOL 2.0] $as_me: $at_fail_list${at_fail_list:+ failed${at_xpass_list:+, }}$at_xpass_list${at_xpass_list:+ passed unexpectedly}
+   Subject: [GNU Cobol 2.0] $as_me: $at_fail_list${at_fail_list:+ failed${at_xpass_list:+, }}$at_xpass_list${at_xpass_list:+ passed unexpectedly}
 
 You may investigate any problem if you feel able to do so, in which
 case the test suite provides a good starting point.  Its output may
