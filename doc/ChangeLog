@@ -2,29 +2,29 @@
 
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
-	* open-cobol.texi : Update for 2.0
+	* gnu-cobol.texi : Update for 2.0
 
 2009-02-01  Brian Tiffin <btiffin@canada.com>
 
-	* open-cobol.texi : Update for 1.1
+	* gnu-cobol.texi : Update for 1.1
 
 2005-05-21  Roger While <simrw@sim-basis.de>
 
-	* open-cobol.texi : Revise
+	* gnu-cobol.texi : Revise
 
 2005-05-13  Roger While <simrw@sim-basis.de>
 
-	* open-cobol.texi : Revise
+	* gnu-cobol.texi : Revise
 
 2005-03-03  Roger While <simrw@sim-basis.de>
 
-	* open-cobol.texi : update for -Os
+	* gnu-cobol.texi : update for -Os
 
 2002-06-11  Keisuke Nishida  <knishida@netlab.jp>
 
-	* open-cobol.texi: Revise for 0.9.6.
+	* gnu-cobol.texi: Revise for 0.9.6.
 
 2002-06-03  Keisuke Nishida  <knishida@netlab.jp>
 
-	* open-cobol.texi (Customize): Add COB_LDADD, COB_CONFIG_FILE.
+	* gnu-cobol.texi (Customize): Add COB_LDADD, COB_CONFIG_FILE.
 

@@ -288,19 +288,19 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Name of package */
-#define PACKAGE "open-cobol"
+#define PACKAGE "gnu-cobol"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "open-cobol-list@lists.sourceforge.net"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "OpenCOBOL"
+#define PACKAGE_NAME "GNU Cobol"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "OpenCOBOL 2.0"
+#define PACKAGE_STRING "GNU Cobol 2.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "open-cobol"
+#define PACKAGE_TARNAME "gnu-cobol"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL "http://www.opencobol.org"

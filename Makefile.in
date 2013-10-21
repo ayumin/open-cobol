@@ -16,25 +16,25 @@
 @SET_MAKE@
 
 #
-# Makefile opencobol
+# Makefile gnucobol
 #
 # Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2008-2012 Roger While
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
@@ -314,7 +314,7 @@ ACLOCAL_AMFLAGS = -I m4 --install
 BUILT_SOURCES = defaults.h
 DISTCLEANFILES = $(BUILT_SOURCES)
 # CLEANFILES = $(bin_SCRIPTS)
-EXTRA_DIST = open-cobol.spec config.h.bdb.win config.h.vb.win \
+EXTRA_DIST = gnu-cobol.spec config.h.bdb.win config.h.vb.win \
 	lib/Makefile.am lib/ChangeLog lib/dummymac.c lib/gettext.h \
 	po/en.translate
 
@@ -861,7 +861,7 @@ dist-hook:
 	chmod 644 $(distdir)/README
 	chmod 644 $(distdir)/THANKS
 	chmod 644 $(distdir)/TODO
-	chmod 644 $(distdir)/open-cobol.spec
+	chmod 644 $(distdir)/gnu-cobol.spec
 	chmod 644 $(distdir)/config.h.bdb.win
 	chmod 644 $(distdir)/config.h.vb.win
 	chmod 755 $(distdir)/ltmain.sh
@@ -878,8 +878,8 @@ dist-hook:
 	touch $(distdir)/cobc/pplex.c
 	touch $(distdir)/cobc/scanner.c
 	touch $(distdir)/tests/testsuite
-	touch $(distdir)/doc/opencobol.info
-	touch $(distdir)/doc/opencobol.pdf
+	touch $(distdir)/doc/gnucobol.info
+	touch $(distdir)/doc/gnucobol.pdf
 
 defaults.h: Makefile.am $(top_builddir)/config.status
 	@echo "Creating defaults.h..."

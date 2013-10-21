@@ -19,7 +19,7 @@
 
 /*
    Copyright (C) 2010,2012 Roger While
-   Modified for use in OpenCOBOL
+   Modified for use in GNU Cobol
 */
 
 #ifndef COB_GETOPT_H
