@@ -330,7 +330,7 @@ cob_inspect_converting (const cob_field *f1, const cob_field *f2)
 	for (j = 0; j < f1->size; j++) {
 		for (i = 0; i < len; i++) {
 			if (inspect_mark[i] == -1 && inspect_start[i] == f1->data[j]) {
-				int ix = j;
+				size_t ix = j;
 				if(ix >= f2->size) ix = f2->size - 1;
 				inspect_start[i] = f2->data[ix];
 				inspect_mark[i] = 1;
