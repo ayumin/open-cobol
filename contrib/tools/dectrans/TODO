@@ -1,7 +1,0 @@
-2009-01-06 Vince Coen <vbcoen@btconnect.com>
-        v1.01.01:
-
-1. 	Consider support for Cobol input sources in free format.
-2. 	Consider support for Cobol output sources in free format (Not including 
-	tables) after 1. Both of these subject to demand.
-
