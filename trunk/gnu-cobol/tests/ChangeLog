@@ -284,14 +284,14 @@
 			       redefines.
 			       Adjust for endianness.
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
 	* atlocal.in (BIGENDIAN): New variable.
 	* data-rep.src/binary.at: Don't test native binary on big-endian
 	machines.
 	(COMP-5): Moved from run.src/extensions.at.
 
-2005-04-13  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-13  Keisuke Nishida  <knishida@opencobol.org>
 
 	* atlocal.in (CC): Set -fPIC when necessary.
 

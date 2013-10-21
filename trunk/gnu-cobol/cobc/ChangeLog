@@ -1652,7 +1652,7 @@
              Fix dangling file with multiple compile.
      cobc.h :     Extern definitions.
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
    * Makefile.am (cobc_CFLAGS): Add -fsigned-char.
 
@@ -1773,7 +1773,7 @@
 
    * cobc.c, codegen.c : Activate exceptions for I/O
 
-2004-10-31  Keisuke Nishida  <knishida@open-cobol.org>
+2004-10-31  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (evaluate_object): Print error in the case when the
    compiler cannot handle the expression correctly.  Need fix.
@@ -1787,21 +1787,21 @@
      For 64-bit non-Intel platforms we may need 8 here to cater
      for eventual direct casts for pointers and COMP-1/2 fields.
 
-2004-10-29  Keisuke Nishida  <knishida@open-cobol.org>
+2004-10-29  Keisuke Nishida  <knishida@opencobol.org>
 
    * typeck.c (cb_build_length_1): New function.
    (cb_build_length): Create an anonymous index and use it for length.
 
-2004-09-28  Keisuke Nishida  <knishida@open-cobol.org>
+2004-09-28  Keisuke Nishida  <knishida@opencobol.org>
 
    * typeck.c (cb_build_move_field): Compare flag_binary_swap for
    numeric moves.  (Thanks to Roger While)
 
-2004-09-07  Keisuke Nishida  <knishida@open-cobol.org>
+2004-09-07  Keisuke Nishida  <knishida@opencobol.org>
 
    * tree.c (finalize_file): Use cb_build_implicit_field to create record.
 
-2004-07-06  Keisuke Nishida  <knishida@open-cobol.org>
+2004-07-06  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (add_statement, add_body, compute_statement, compute_body)
    (divide_statement, divide_body, multiply_statement, multiply_body)
@@ -1812,12 +1812,12 @@
    (cb_build_sub, cb_emit_divide): Updated for the new store scheme
    in libcob.
 
-2004-05-15  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-15  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (stop_statement): Accept RETURNING/GIVING phrase.
    * typeck.c, tree.h (cb_emit_stop_run): Take an argument.
 
-2004-05-06  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-06  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (procedure_division, entry_statement): Use using_clause.
    * codegen.c (codegen, output_entry_function): Handle using_list
@@ -1825,12 +1825,12 @@
    * typeck.c, tree.h (cb_build_using_list): Removed.
    * cobc.c (process_translate): Do not call codegen when no entry.
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (x): Accept literal with LENGTH OF operator.
    * typeck.c (cb_build_length): Handle non-references.
 
-2004-05-04  Keisuke Nishida  <knishida@open-cobol.org>
+2004-05-04  Keisuke Nishida  <knishida@opencobol.org>
 
    * typeck.c (cb_build_move_field): Optimize when the usage of src
    and dst are the same, not only when they are DISPLAY.
@@ -1838,28 +1838,28 @@
    values to numeric fields.
    (cb_build_move): Do not convert 0 literal to ZERO.
 
-2004-04-19  Keisuke Nishida  <knishida@open-cobol.org>
+2004-04-19  Keisuke Nishida  <knishida@opencobol.org>
 
    * tree.h (cb_perform): New members 'exit_label' and 'cycle_label'.
    * reserved.c (CYCLE): New reserved word.
    * parser.y (exit_statement): EXIT PERFORM [CYCLE] statement.
    * codegen.c (output_perform_once, output_perform): Output labels.
 
-2004-04-07  Keisuke Nishida  <knishida@open-cobol.org>
+2004-04-07  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (basic_literal, alnum_literal): Literal concatenation.
    * tree.c, tree.h (cb_concat_literals): New function.
 
-2004-04-07  Keisuke Nishida  <knishida@open-cobol.org>
+2004-04-07  Keisuke Nishida  <knishida@opencobol.org>
 
    * parser.y (sort_statement): Table sort.
    * typeck.c (cb_emit_sort_init): Updated for table sort.
 
-2004-03-30  Keisuke Nishida  <knishida@open-cobol.org>
+2004-03-30  Keisuke Nishida  <knishida@opencobol.org>
 
    * tree.c (cb_ref): Resolve by file name.
 
-2004-03-29  Keisuke Nishida  <knishida@open-cobol.org>
+2004-03-29  Keisuke Nishida  <knishida@opencobol.org>
 
    * cobc.c (process_link) [__CYGWIN__, __MINGW32__]: Set
    -Wl,--export-all-symbols instead of -Wl,--export-dynamic.
