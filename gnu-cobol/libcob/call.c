@@ -363,7 +363,7 @@ cob_resolve (const char *name)
 
 	/* search the main program */
 	if (mainhandle != NULL) {
-		if (func = lt_dlsym (mainhandle, call_entry_buff)) != NULL) {
+		if ((func = lt_dlsym (mainhandle, call_entry_buff)) != NULL) {
 			insert (name, func, NULL);
 			resolve_error = NULL;
 			return func;
