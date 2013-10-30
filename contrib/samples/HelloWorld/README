@@ -1,0 +1,32 @@
+Welcome to GNU Cobol
+====================
+
+Hello from GNU Cobol.
+
+These simple programs are meant as early introductions to GNU Cobol and COBOL
+programming.
+
+Compiling
+=========
+
+To try out the samples, either type **make** or::
+
+    cobc -x hello.cob
+    cobc -x bigworld.cob
+
+followed by::
+
+    ./hello
+    ./bigworld
+
+to run the programs.
+
+To learn more during the compile stages try::
+
+    cobc -x -v hello.cob
+    cobc -x -v bigworld.cob
+
+which shows the various commands used to build GNU Cobol executable programs
+from the COBOL source code.
+
+Cheers from the GNU Cobol contributors.
