@@ -3,16 +3,16 @@
 		http://sourceforge.net/projects/open-cobol/
 
 GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC.
+programs to C code and compiles it using a native C compiler.
 
 This package contains the following subdirectories:
 
     cobc        COBOL compiler
     libcob      COBOL run-time library
     bin         COBOL driver program
-    lib         static library and common headers
-    config      configuration files
-    po          international messages
+    lib         Helper routines for missing OS functionality
+    config      Configuration files
+    po          International messages
     texi        Texinfo files
     tests       Test suite
     extras      useful COBOL programs 
@@ -157,7 +157,8 @@ To generate/install GNU Cobol :
    On some Red Hat (Fedora) installations and
    possibly other Linux distros, /usr/local/lib
    is NOT automatically searched at runtime. 
-   Edit /etc/ld.so.conf and add /usr/local/lib to the file.
+   Edit /etc/ld.so.conf (or the equivalent file) and add
+   /usr/local/lib to the file.
    Rerun "ldconfig".
 
 You may optionally perform a series of COBOL85 tests.
@@ -203,7 +204,7 @@ There are the following configure options:
   --with-db			Use Berkeley DB 3.0 or later (libdb)
 				This is the default
 
-  --without-db			Do not use Berkeley DB
+  --without-db			Do not use Berkeley DB / any other ISAM handler
 				You will not be able to use SORT/indexed I/O
 
   --with-dl			Use the system dynamic linker instead of ltdl
@@ -215,8 +216,10 @@ There are the following configure options:
   --with-patch-level=<n>	Set internal patch level to n (default 0)
 
   --with-varseq=<n>		Define the format for variable length sequential
-				files. For values of 0, 1 and 2, four bytes are
-				written preceeding each record. The format of
+				files.
+
+                For values of 0, 1 and 2, four bytes are
+				written preceding each record. The format of
 				these four bytes for values of 0, 1, 2 is
 				as follows :
 				n = 0 (default)
@@ -233,7 +236,7 @@ There are the following configure options:
 					(This was previously the default)
 
 				For the value of 3, two bytes are written
-				preceeding each record :
+				preceding each record :
 				n = 3
 					The first 2 bytes are the record length
 					in big-endian order. The record follows

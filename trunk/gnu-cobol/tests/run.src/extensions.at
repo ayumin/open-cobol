@@ -1,27 +1,31 @@
 ### GNU Cobol Test Suite				-*- m4 -*-
 
-## Copyright (C) 2003-2009 Keisuke Nishida
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 ## Copyright (C) 2007-2009 Roger While
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-## 
-## This program is distributed in the hope that it will be useful,
+## This file is part of GNU Cobol.
+##
+## The GNU Cobol compiler is free software; you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2 of the
+## License, or (at your option) any later version.
+##
+## GNU Cobol is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, write to
-## the Free Software Foundation, 51 Franklin Street, Fifth Floor
+## along with GNU Cobol; see the file COPYING. If not, write to
+## the Free Software Foundation, 51 Franklin Street, Fifth Floor,
 ## Boston, MA 02110-1301 USA
 
 ### Non-standard extensions
 
 
 AT_SETUP([COMP-5])
+AT_KEYWORDS([extensions])
+
 
 AT_DATA([dump.c], [
 #include <stdio.h>
@@ -69,6 +73,7 @@ AT_CLEANUP
 ## H literal
 
 AT_SETUP([Hexadecimal numeric literal])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -97,6 +102,7 @@ AT_CLEANUP
 ## Expression
 
 AT_SETUP([Semi-parenthesized condition])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -118,6 +124,7 @@ AT_CLEANUP
 ## ADDRESS OF
 
 AT_SETUP([ADDRESS OF])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -181,6 +188,7 @@ AT_CLEANUP
 ## LENGTH OF
 
 AT_SETUP([LENGTH OF])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -215,6 +223,7 @@ AT_CLEANUP
 ## WHEN-COMPILED
 
 AT_SETUP([WHEN-COMPILED])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -238,6 +247,7 @@ AT_CLEANUP
 ## OCCURS
 
 AT_SETUP([Complex OCCURS DEPENDING ON])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -266,6 +276,8 @@ AT_CLEANUP
 
 
 AT_SETUP([MOVE NON-INTEGER TO ALPHA-NUMERIC])
+AT_KEYWORDS([extensions])
+
 #  see MF - COBOL  Error Messages  1029-E ...
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -357,6 +369,7 @@ AT_CLEANUP
 ## CALL
 
 AT_SETUP([CALL USING file-name])
+AT_KEYWORDS([extensions])
 
 AT_DATA([setfilename.c], [
 #include <stdio.h>
@@ -399,6 +412,7 @@ AT_CHECK([test -e TESTFILE], [0])
 AT_CLEANUP
 
 AT_SETUP([CALL unusual PROGRAM-ID.])
+AT_KEYWORDS([extensions])
 
 AT_DATA([A@B.cob], [
        IDENTIFICATION   DIVISION.
@@ -462,6 +476,7 @@ AT_CHECK([./caller], [0], [P1P2P3P4])
 AT_CLEANUP
 
 AT_SETUP([Case independent PROGRAM-ID])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -485,6 +500,7 @@ AT_CHECK([./prog], [0], [OK])
 AT_CLEANUP
 
 AT_SETUP([PROGRAM-ID AS clause])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -508,6 +524,7 @@ AT_CHECK([./prog], [0], [OK])
 AT_CLEANUP
 
 AT_SETUP([Quoted PROGRAM-ID])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -532,7 +549,8 @@ AT_CLEANUP
 
 ## ASSIGN
 
-AT_SETUP([ASSIGN MF])
+AT_SETUP([ASSIGN clause])
+AT_KEYWORDS([extensions])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -564,7 +582,8 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([ASSIGN IBM])
+AT_SETUP([ASSIGN clause IBM])
+AT_KEYWORDS([extensions])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -595,6 +614,7 @@ AT_CHECK([test -f FILENAME], [0])
 AT_CLEANUP
 
 AT_SETUP([ASSIGN mapping])
+AT_KEYWORDS([extensions])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -631,6 +651,7 @@ AT_CHECK([test -f "FILENAME"], [0])
 AT_CLEANUP
 
 AT_SETUP([ASSIGN expansion])
+AT_KEYWORDS([extensions])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -661,6 +682,7 @@ AT_CHECK([test -f "./FILENAME" && rm -f "./FILENAME"], [0])
 AT_CLEANUP
 
 AT_SETUP([ASSIGN with COB_FILE_PATH])
+AT_KEYWORDS([extensions])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -694,6 +716,7 @@ AT_CLEANUP
 # Number of call parameters
 
 AT_SETUP([NUMBER-OF-CALL-PARAMETERS])
+AT_KEYWORDS([extensions])
 
 AT_DATA([callee.cob], [
        IDENTIFICATION   DIVISION.
@@ -750,6 +773,7 @@ AT_CLEANUP
 # Program parameters
 
 AT_SETUP([PROCEDURE DIVISION USING BY ...])
+AT_KEYWORDS([extensions])
 
 AT_DATA([callee.cob], [
        IDENTIFICATION   DIVISION.
@@ -799,6 +823,7 @@ X = X Y = 56 Z = 34
 AT_CLEANUP
 
 AT_SETUP([PROCEDURE DIVISION CHAINING ...])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -827,6 +852,7 @@ AT_CLEANUP
 
 
 AT_SETUP([STOP RUN RETURNING])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -844,6 +870,7 @@ AT_CLEANUP
 # ENTRY
 
 AT_SETUP([ENTRY])
+AT_KEYWORDS([extensions])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
@@ -890,6 +917,7 @@ AT_CLEANUP
 ## LINE SEQUENTIAL
 
 AT_SETUP([LINE SEQUENTIAL write])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -931,6 +959,7 @@ abcd
 AT_CLEANUP
 
 AT_SETUP([LINE SEQUENTIAL read])
+AT_KEYWORDS([extensions])
 
 AT_DATA([TEST-FILE],
 [a
@@ -991,6 +1020,7 @@ AT_CLEANUP
 
 
 AT_SETUP([ASSIGN to KEYBOARD/DISPLAY])
+AT_KEYWORDS([extensions])
 
 AT_DATA([TEST-FILE],
 [a
@@ -1047,6 +1077,7 @@ abcdef
 AT_CLEANUP
 
 AT_SETUP([Environment/Argument variable])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1092,6 +1123,7 @@ AT_CHECK([./prog CHECKPAR], [0],
 AT_CLEANUP
 
 AT_SETUP([DECIMAL-POINT is COMMA (1)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1118,6 +1150,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DECIMAL-POINT is COMMA (2)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1144,6 +1177,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DECIMAL-POINT is COMMA (3)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1170,6 +1204,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DECIMAL-POINT is COMMA (4)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1196,6 +1231,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DECIMAL-POINT is COMMA (5)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1228,6 +1264,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([78 Level (1)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1249,6 +1286,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([78 Level (2)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1273,6 +1311,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([78 Level (3)])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1295,6 +1334,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([Unreachable statement])
+AT_KEYWORDS([extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.

@@ -101,16 +101,16 @@
 
    * screenio.c : Fix PDCurses bug with COLOR_PAIRS
 
-2009-04-10  Roger While <simrw@sim-basis.de>
-
-	* General : Support for icc
-
 2009-05-25  Roger While <simrw@sim-basis.de>
 
 	* General : Remove the following extraneous include files:
-       byteswap.h, call.h, fileio.h, intrinsic.h, move.h, numeric.h,
-       screenio.h, strings.h, termio.h by integration into common.h
-       as first step
+		    byteswap.h, call.h, fileio.h, intrinsic.h, move.h, numeric.h,
+		    screenio.h, strings.h, termio.h by integration into common.h
+		    as first step
+
+2009-04-10  Roger While <simrw@sim-basis.de>
+
+	* General : Support for icc
 
 2009-02-03  Roger While <simrw@sim-basis.de>
 

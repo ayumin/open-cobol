@@ -34,19 +34,19 @@
        default-organization: record-sequential (default=old behaviour),
        line-sequential
 
-200?-??-??  Simon 'human' Sobisch
+20??-??-??  Simon 'human' Sobisch
 
    * codegen.c : Simplify by handling stuff for different compilers
        by general define (COB_ALIGN)
 
-200?-??-??  Roger While <simrw@sim-basis.de>
+20??-??-??  Roger While <simrw@sim-basis.de>
 
    * cobc.c, cobc.h, tree.h : Simplify by handling stuff for 
        different compilers by general defines (CB_COPT_x, COB_A_...),
        added parsing step and source name to verbose messages,
        added some comments
 
-200?-??-??  Simon 'human' Sobisch
+20??-??-??  Simon 'human' Sobisch
 
    * cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
        fix some compiler warnings, support possible spaces in different
@@ -242,7 +242,7 @@
 
 2008-11-01  Roger While <simrw@sim-basis.de>
 
-   * scanner.l : Relax comma seperator rule
+	* scanner.l : Relax comma separator rule
 
 2008-10-31  Roger While <simrw@sim-basis.de>
 
@@ -875,7 +875,7 @@
 2007-02-23  Roger While <simrw@sim-basis.de>
 
    * parser.y : Fix multiple EXIT PERFORM
-   * cobc.[ch], tree.c, codegen.c : Use seperate id fields for attributes,
+	* cobc.[ch], tree.c, codegen.c : Use separate id fields for attributes,
       literals and fields
 
 2007-02-13  Roger While <simrw@sim-basis.de>
@@ -1723,7 +1723,7 @@
    * codegen.c : Rearrange generated code slightly
      Do not gen stack values we do not need
      Generate static function prototype so that we
-     can gen code in order : main (if appropiate),
+	  can gen code in order : main (if appropriate),
      entry points, static function
 
 2005-02-07  Roger While <simrw@sim-basis.de>
@@ -1935,7 +1935,7 @@
    (cb_flag_check_ref_mod): Removed.
    * warning.def (cb_warn_obsolete): New variable.
    * cobc.h (cb_standard, cb_binary_rep): New variables.
-   (cb_exception_table): New varialbe.
+	(cb_exception_table): New variable.
    (CB_EXCEPTION_CODE, CB_EXCEPTION_NAME, CB_EXCEPTION_ENABLE): New macro.
    * cobc.c (long_options): New option -std and -debug.
    (short_options): Remove -T.
