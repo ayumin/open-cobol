@@ -1,26 +1,29 @@
 ### GNU Cobol Test Suite				-*- m4 -*-
 
-## Copyright (C) 2003-2009 Keisuke Nishida
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 ## Copyright (C) 2007-2009 Roger While
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-## 
-## This program is distributed in the hope that it will be useful,
+## This file is part of GNU Cobol.
+##
+## The GNU Cobol compiler is free software; you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2 of the
+## License, or (at your option) any later version.
+##
+## GNU Cobol is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, write to
-## the Free Software Foundation, 51 Franklin Street, Fifth Floor
+## along with GNU Cobol; see the file COPYING. If not, write to
+## the Free Software Foundation, 51 Franklin Street, Fifth Floor,
 ## Boston, MA 02110-1301 USA
 
 ### Fundamental Tests
 
 AT_SETUP([DISPLAY literals])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -58,6 +61,7 @@ AT_CLEANUP
 
 
 AT_SETUP([DISPLAY literals, DECIMAL-POINT is COMMA])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -86,6 +90,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([Hexadecimal literal])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([dump.c], [
 #include <stdio.h>
@@ -122,6 +127,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DISPLAY data items with VALUE clause])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -167,6 +173,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([DISPLAY data items with MOVE statement])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -213,6 +220,7 @@ AT_CLEANUP
 
 
 AT_SETUP([GLOBAL at same level])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -261,6 +269,7 @@ AT_CLEANUP
 
 
 AT_SETUP([GLOBAL at lower level])
+AT_KEYWORDS([fundamental])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.

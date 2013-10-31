@@ -1,25 +1,29 @@
 ### GNU Cobol Test Suite				-*- m4 -*-
 
-## Copyright (C) 2005-2009 Roger While
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2009 Roger While
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-## 
-## This program is distributed in the hope that it will be useful,
+## This file is part of GNU Cobol.
+##
+## The GNU Cobol compiler is free software; you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2 of the
+## License, or (at your option) any later version.
+##
+## GNU Cobol is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, write to
-## the Free Software Foundation, 51 Franklin Street, Fifth Floor
+## along with GNU Cobol; see the file COPYING. If not, write to
+## the Free Software Foundation, 51 Franklin Street, Fifth Floor,
 ## Boston, MA 02110-1301 USA
 
 ### ISO+IEC+1989-2002 15 Intrinsic Functions
 
 AT_SETUP([FUNCTION ABS])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -41,6 +45,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ACOS])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -70,6 +75,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ANNUITY])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -100,6 +106,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ASIN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -129,6 +136,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ATAN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -158,6 +166,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION CHAR])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -179,6 +188,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION COMBINED-DATETIME])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -199,6 +209,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION CONCATENATE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -221,6 +232,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION CONCATENATE with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -244,6 +256,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION COS])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -273,6 +286,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION DATE-OF-INTEGER])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -293,6 +307,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION DATE-TO-YYYYMMDD])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -313,6 +328,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION DAY-OF-INTEGER])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -333,6 +349,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION DAY-TO-YYYYDDD])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -353,6 +370,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION E])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -373,6 +391,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION EXCEPTION-FILE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -403,6 +422,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION EXCEPTION-LOCATION])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -437,6 +457,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION EXCEPTION-STATEMENT])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -467,6 +488,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION EXCEPTION-STATUS])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -497,6 +519,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION EXP])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -525,6 +548,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION FACTORIAL])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -545,6 +569,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION FRACTION-PART])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -568,6 +593,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION INTEGER])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -589,6 +615,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION INTEGER-OF-DATE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -609,6 +636,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION INTEGER-OF-DAY])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -629,6 +657,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION INTEGER-PART])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -650,6 +679,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LENGTH])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -671,6 +701,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOCALE-DATE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -695,6 +726,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOCALE-TIME])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -719,6 +751,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOCALE-TIME-FROM-SECONDS])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -743,6 +776,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOG])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -772,6 +806,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOG10])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -801,6 +836,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOWER-CASE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -822,6 +858,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION LOWER-CASE with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -843,6 +880,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MAX])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -863,6 +901,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MEAN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -883,6 +922,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MEDIAN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -903,6 +943,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MIDRANGE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -923,6 +964,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MIN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -943,6 +985,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION MOD])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -963,6 +1006,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION NUMVAL])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -984,6 +1028,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION NUMVAL-C])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1005,6 +1050,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ORD])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1025,6 +1071,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ORD-MAX])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1045,6 +1092,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION ORD-MIN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1065,6 +1113,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION PI])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1085,6 +1134,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION PRESENT-VALUE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1105,6 +1155,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION RANGE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1125,6 +1176,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION REM])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1145,6 +1197,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION REVERSE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1166,6 +1219,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION REVERSE with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1187,6 +1241,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SECONDS-FROM-FORMATTED-TIME])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1216,6 +1271,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SECONDS-PAST-MIDNIGHT])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1243,6 +1299,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SIGN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1272,6 +1329,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SIN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1301,6 +1359,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SQRT])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1330,6 +1389,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION STANDARD-DEVIATION])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1358,6 +1418,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION STORED-CHAR-LENGTH])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1380,6 +1441,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SUBSTITUTE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1402,6 +1464,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SUBSTITUTE with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1425,6 +1488,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SUBSTITUTE-CASE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1447,6 +1511,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION SUBSTITUTE-CASE with reference mod])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1470,6 +1535,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION TAN])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1499,6 +1565,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION TRIM])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1523,6 +1590,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION TRIM with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1547,6 +1615,7 @@ a#b
 AT_CLEANUP
 
 AT_SETUP([FUNCTION UPPER-CASE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1568,6 +1637,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION UPPER-CASE with reference modding])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1589,6 +1659,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION VARIANCE])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1609,6 +1680,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([FUNCTION WHEN-COMPILED])
+AT_KEYWORDS([functions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.

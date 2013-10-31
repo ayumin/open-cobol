@@ -1,3 +1,24 @@
+      *>  Copyright (C) 2008-2009 Roger While
+      *>
+      *>  This file is part of GNU Cobol.
+      *>
+      *>  The GNU Cobol compiler is free software; you can redistribute
+      *>  it and/or modify it under the terms of the GNU General Public
+      *>  License as published by the Free Software Foundation; either
+      *>  version 2 of the License, or (at your option) any later
+      *>  version.
+      *>
+      *>  GNU Cobol is distributed in the hope that it will be useful,
+      *>  but WITHOUT ANY WARRANTY; without even the implied warranty of
+      *>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      *>  GNU General Public License for more details.
+      *>
+      *>  You should have received a copy of the GNU General Public
+      *>  License along with GNU Cobol; see the file COPYING.  If not,
+      *>  write to the Free Software Foundation, 51 Franklin Street,
+      *>  Fifth Floor, Boston, MA 02110-1301 USA
+
+
       *> Colors
        78  COB-COLOR-BLACK     VALUE 0.
        78  COB-COLOR-BLUE      VALUE 1.
@@ -7,10 +28,12 @@
        78  COB-COLOR-MAGENTA   VALUE 5.
        78  COB-COLOR-YELLOW    VALUE 6.
        78  COB-COLOR-WHITE     VALUE 7.
+
       *>
       *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
       *> Normal return - Value 0000
        78  COB-SCR-OK          VALUE 0.
+
       *>  Function keys - Values 1xxx
        78  COB-SCR-F1          VALUE 1001.
        78  COB-SCR-F2          VALUE 1002.
