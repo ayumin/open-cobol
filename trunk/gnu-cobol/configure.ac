@@ -155,24 +155,20 @@ then
   [ if test "$with_index_extfh" = "yes"
     then
 	AC_DEFINE(WITH_INDEX_EXTFH)
-    fi ], [])
-fi
-
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
-then
-  AC_ARG_WITH(db1,
+    fi ],
+  [ AC_ARG_WITH(db1,
    [  --with-db1              (GNU Cobol) use Berkeley DB 1.85 (libdb-1.85)],
    [ LIBDB="1"
-     AC_DEFINE(WITH_DB, 1)
-     with_db=yes ],
+     AC_DEFINE(WITH_DB, 1) ],
 	[ AC_ARG_WITH(db,
 		[  --with-db               (GNU Cobol) use Berkeley DB 3.0 or later (libdb)(default)],
-		[ LIBDB="3"
-		  AC_DEFINE(WITH_DB, 3) 
-        ],
-		[ LIBDB="3"
+		[ if test "$with_db" = "yes"
+		  then
+		  LIBDB="3"
 		  AC_DEFINE(WITH_DB, 3)
-        with_db=yes ]) ])
+		  fi ],
+		[ LIBDB="3"
+		  AC_DEFINE(WITH_DB, 3) ]) ]) ])
 fi
 
 #AC_ARG_WITH(lfs64,
@@ -303,9 +299,34 @@ AC_CHECK_FUNC([getopt_long_only],
    AC_LIBSOURCE(getopt.h)])
 
 # Checks for gmp.
-AC_CHECK_HEADERS([gmp.h], , AC_MSG_ERROR(gmp.h is required))
+AC_CHECK_HEADERS([gmp.h], , AC_MSG_ERROR(gmp.h (GMP) is required))
+
 AC_CHECK_LIB([gmp], [__gmp_randinit], , AC_MSG_ERROR(GMP 3 or later is required))
+
 LIBCOB_LIBS="$LIBCOB_LIBS -lgmp"
+
+# Check just major/minor levels between header and library
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+	#include <string.h>
+	#include <gmp.h>]], [[
+	char	dbver[16];
+	printf("checking matching GMP version ... ");
+	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
+			__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
+	if (!memcmp (dbver, gmp_version, strlen (dbver))) {
+		printf("yes\n");
+		return 0;
+	}
+	printf("no\n");
+	printf("\tHeader  has version %d.%d.%d\n",
+		__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR,
+		__GNU_MP_VERSION_PATCHLEVEL);
+	printf("\tLibrary has version %s\n", gmp_version);
+	return 1;
+	]])],
+	[],
+	[AC_MSG_ERROR([Unable to use GMP - Please check config.log])],
+	[])
 
 # Solaris has nanosleep in other libraries
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
