@@ -11,6 +11,10 @@
 	* General : Affects most directories - Let make check
 	  skip ISAM tests if not configured with ISAM
 
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Added check for using GMP library
+
 2008-11-17  Roger While <simrw@sim-basis.de>
 
 	* configure.ac : Correct sed usage
