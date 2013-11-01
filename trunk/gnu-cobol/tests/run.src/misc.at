@@ -1656,7 +1656,7 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 AT_SETUP([INITIALIZE with reference modification])
-AT_KEYWORDS([runmisc, initialize])
+AT_KEYWORDS([runmisc initialize])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
