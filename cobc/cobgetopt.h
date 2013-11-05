@@ -19,7 +19,7 @@
 
 /*
    Copyright (C) 2010,2012 Roger While
-   Modified for use in OpenCOBOL
+   Modified for use in GNU Cobol C++
 */
 
 #ifndef COB_GETOPT_H
@@ -31,7 +31,7 @@
    Also, when `ordering' is RETURN_IN_ORDER,
    each non-option ARGV-element is returned here.  */
 
-extern char *cob_optarg;
+extern char * cob_optarg;
 
 /* Index in ARGV of the next element to be scanned.
    This is used for communication to and from the caller
@@ -77,13 +77,12 @@ extern int cob_optopt;
    one).  For long options that have a zero `flag' field, `getopt'
    returns the contents of the `val' field.  */
 
-struct option
-{
-	const char	*name;
+struct option {
+	const char * name;
 	/* has_arg can't be an enum because some compilers complain about
 	type mismatches in all the code that assumes it is an int.  */
 	int		has_arg;
-	int		*flag;
+	int *	flag;
 	int		val;
 };
 
@@ -117,6 +116,6 @@ struct option
    arguments to the option '\0'.  This behavior is specific to the GNU
    `getopt'.  */
 
-extern int cob_getopt_long_long (const int, char *const *, const char *,
-				 const struct option *, int *, const int);
+extern int cob_getopt_long_long(const int, char * const *, const char *,
+								const option *, int *, const int);
 #endif

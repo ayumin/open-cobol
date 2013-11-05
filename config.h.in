@@ -82,9 +82,6 @@
    */
 #undef HAVE_DCGETTEXT
 
-/* Has designated initializers */
-#undef HAVE_DESIGNATED_INITS
-
 /* Define to 1 if you have the <disam.h> header file. */
 #undef HAVE_DISAM_H
 
@@ -169,6 +166,9 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
+/* Define to 1 if you have the <mpir.h> header file. */
+#undef HAVE_MPIR_H
+
 /* Has nanosleep function */
 #undef HAVE_NANO_SLEEP
 
@@ -186,9 +186,6 @@
 
 /* Define to 1 if you have the <pdcurses.h> header file. */
 #undef HAVE_PDCURSES_H
-
-/* Has -Wno-pointer-sign */
-#undef HAVE_PSIGN_OPT
 
 /* Has raise function */
 #undef HAVE_RAISE
@@ -364,6 +361,9 @@
 
 /* Compile with an external ISAM handler */
 #undef WITH_INDEX_EXTFH
+
+/* Use MPIR instead of GMP */
+#undef WITH_MPIR
 
 /* Compile with an external SEQ/RAN handler */
 #undef WITH_SEQRA_EXTFH

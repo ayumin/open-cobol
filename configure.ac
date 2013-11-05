@@ -1,47 +1,49 @@
 #
-# Configure template for OpenCOBOL
+# Configure template for GNU Cobol C++
 #
 # Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2007-2012 Roger While
+# Copyright (C) 2013 Sergey Kashyrin
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol C++.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol C++ compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol C++ is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.64])
 
-AC_INIT([OpenCOBOL],
+AC_INIT([GNU Cobol C++],
 	[2.0],
 	[open-cobol-list@lists.sourceforge.net],
-	[open-cobol],
-	[http://www.opencobol.org])
-AC_CONFIG_SRCDIR([libcob.h])
+	[gnu-cobol-cpp],
+	[http://sourceforge.net/projects/open-cobol])
+AC_CONFIG_SRCDIR([libcob.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_MACRO_DIR([m4])
+AC_LANG([C++])
 
 # Note for SUN Solaris (gcc)
-# export/setenv CFLAGS "-m64 -mptr64"
+# export/setenv CXXFLAGS "-m64 -mptr64"
 # export/setenv LDFLAGS "-m64 -mptr64 -L/usr/local/lib/sparcv9"
 # ./configure --libdir=/usr/local/lib/sparcv9
 #
 # Hack for AIX 64 bit (gcc)
 # Required -
-# export/setenv CFLAGS=-maix64
+# export/setenv CXXFLAGS=-maix64
 # export/setenv LDFLAGS=-maix64
 
-if echo $CFLAGS | grep 'aix64' 1>/dev/null 2>&1
+if echo $CXXFLAGS | grep 'aix64' 1>/dev/null 2>&1
 then
 	if test -f /usr/ccs/bin/ar
 	then
@@ -62,6 +64,7 @@ AH_TEMPLATE([WITH_SEQRA_EXTFH], [Compile with an external SEQ/RAN handler])
 AH_TEMPLATE([WITH_CISAM], [Use CISAM as ISAM handler])
 AH_TEMPLATE([WITH_DISAM], [Use DISAM as ISAM handler])
 AH_TEMPLATE([WITH_VBISAM], [Use VBISAM as ISAM handler])
+AH_TEMPLATE([WITH_MPIR], [Use MPIR instead of GMP])
 AH_TEMPLATE([COB_EXPERIMENTAL], [Enable experimemental code (Developers only!)])
 AH_TEMPLATE([COB_PARAM_CHECK], [Enable CALL parameter checking])
 AH_TEMPLATE([COB_EXPORT_DYN], [Compile/link option for exporting symbols])
@@ -72,7 +75,6 @@ AH_TEMPLATE([USE_LIBDL], [Use system dynamic loader])
 AH_TEMPLATE([HAVE_DLADDR], [Has dladdr function])
 AH_TEMPLATE([PATCH_LEVEL], [Define a patch level])
 AH_TEMPLATE([WITH_VARSEQ], [Define variable sequential file format])
-AH_TEMPLATE([HAVE_PSIGN_OPT], [Has -Wno-pointer-sign])
 AH_TEMPLATE([HAVE_ATTRIBUTE_ALIGNED], [Has __attribute__((aligned))])
 AH_TEMPLATE([HAVE_TIMEZONE], [Has timezone variable])
 AH_TEMPLATE([COB_EXEEXT], [Executable extension])
@@ -83,7 +85,6 @@ AH_TEMPLATE([COB_LI_IS_LL], [long int is long long])
 AH_TEMPLATE([HAVE_COLOR_SET], [curses has color_set function])
 AH_TEMPLATE([HAVE_CURSES_FREEALL], [ncurses has _nc_freeall function])
 AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
-AH_TEMPLATE([HAVE_DESIGNATED_INITS], [Has designated initializers])
 AH_TEMPLATE([HAVE_NANO_SLEEP], [Has nanosleep function])
 AH_TEMPLATE([HAVE_RAISE], [Has raise function])
 
@@ -91,9 +92,9 @@ save_libs="$LIBS"
 
 # Basic capability tests
 
-AC_PROG_CC([gcc xlc cc])
+AC_PROG_CXX([xlc++_r xlc++ CC aCC c++ g++])
+AC_PROG_CC([xlc gcc cc])
 AC_PROG_CC_STDC
-
 AC_PROG_CPP
 
 AC_USE_SYSTEM_EXTENSIONS
@@ -102,9 +103,8 @@ LT_INIT([dlopen win32-dll])
 
 AC_PROG_EGREP
 AM_PROG_CC_C_O
-# Stop tests for C++ and Fortran
+# Stop tests for Fortran
 AC_DEFUN([AC_PROG_F77], [])
-AC_DEFUN([AC_PROG_CXX], [])
 AC_PROG_LN_S
 AC_PROG_INSTALL
 
@@ -127,27 +127,7 @@ AC_TYPE_SIZE_T
 AC_STRUCT_TM
 AC_CHECK_TYPES([sig_atomic_t], [], [], [[#include <signal.h>]])
 
-# Don't use AC_C_INLINE here. We need the value
-
-AC_MSG_CHECKING([for inline keyword])
-for cob_keyw in __inline __inline__ inline
-do
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-		#ifndef __cplusplus
-		typedef int foo_t;
-		static $cob_keyw foo_t foo () { return 0; }
-		#endif]], [[
-		#ifndef __cplusplus
-		return foo ();
-		#else
-		choke me
-		#endif]])],
-		[AC_DEFINE_UNQUOTED([COB_KEYWORD_INLINE], [$cob_keyw]) break],
-		[],
-		[])
-done
-AC_MSG_RESULT([$cob_keyw])
-unset cob_keyw
+AC_DEFINE([COB_KEYWORD_INLINE], [inline])
 
 # Checks for library functions.
 AC_FUNC_ALLOCA
@@ -164,23 +144,13 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
 	[AC_DEFINE([HAVE_TIMEZONE], [1]) AC_MSG_RESULT([yes])],
 	[AC_MSG_RESULT([no])])
 
-# Check for designated initializers
-AC_MSG_CHECKING([for designated initializers])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>]],
-	[[static const unsigned char valid_char[256] = {
-		@<:@'0'@:>@ = 1,
-		@<:@'1'@:>@ = 1 };
-	]])],
-	[AC_DEFINE([HAVE_DESIGNATED_INITS], [1]) AC_MSG_RESULT([yes])],
-	[AC_MSG_RESULT([no])])
-
 # Check gcc/icc
 COB_USES_GCC_ICC=no
 COB_USES_GCC_ONLY=no
 COB_USES_ICC_ONLY=no
 
 AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
-	#ifdef __GNUC__
+	#if	defined(__GNUC__) && !defined(__HP_aCC)
 	return 0;
 	#else
 	return 1;
@@ -190,7 +160,7 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
 	[])
 
 AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
-	#if	defined(__GNUC__) && !defined(__INTEL_COMPILER)
+	#if	defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(__HP_aCC)
 	return 0;
 	#else
 	return 1;
@@ -209,7 +179,7 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
 	[],
 	[])
 
-COB_CC="$CC"
+COB_CC="$CXX"
 if test "$COB_USES_ICC_ONLY" = "yes"
 then
 	LIBCOB_LIBS="-limf -lm"
@@ -220,7 +190,7 @@ fi
 # Configure options.
 
 AC_ARG_WITH([seqra-extfh],
-  [  --with-seqra-extfh      (OpenCOBOL) Use external SEQ/RAN file handler],
+  [  --with-seqra-extfh      (GNU Cobol C++) Use external SEQ/RAN file handler],
   [ if test "$with_seqra_extfh" = "yes"
     then
 	AC_DEFINE([WITH_SEQRA_EXTFH], [1])
@@ -228,7 +198,7 @@ AC_ARG_WITH([seqra-extfh],
   [])
 
 AC_ARG_WITH([cisam],
-  [  --with-cisam            (OpenCOBOL) Use CISAM for ISAM I/O (Experimental)],
+  [  --with-cisam            (GNU Cobol C++) Use CISAM for ISAM I/O (Experimental)],
   [ if test "$with_cisam" = "yes"
     then
 	AC_CHECK_HEADERS([isam.h], [],
@@ -243,7 +213,7 @@ AC_ARG_WITH([cisam],
 if test "$with_cisam" != "yes"
 then
   AC_ARG_WITH([disam],
-  [  --with-disam            (OpenCOBOL) Use DISAM for ISAM I/O (Experimental)],
+  [  --with-disam            (GNU Cobol C++) Use DISAM for ISAM I/O (Experimental)],
   [ if test "$with_disam" = "yes"
     then
 	AC_CHECK_HEADERS([disam.h], [],
@@ -259,7 +229,7 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes"
 then
   AC_ARG_WITH([vbisam],
-  [  --with-vbisam           (OpenCOBOL) Use VBISAM for ISAM I/O (Experimental)],
+  [  --with-vbisam           (GNU Cobol C++) Use VBISAM for ISAM I/O (Experimental)],
   [ if test "$with_vbisam" = "yes"
     then
 	AC_CHECK_HEADERS([vbisam.h], [],
@@ -275,7 +245,7 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes"
 then
   AC_ARG_WITH([index-extfh],
-  [  --with-index-extfh      (OpenCOBOL) Use external ISAM file handler],
+  [  --with-index-extfh      (GNU Cobol C++) Use external ISAM file handler],
   [ if test "$with_index_extfh" = "yes"
     then
 	AC_DEFINE([WITH_INDEX_EXTFH], [1])
@@ -286,13 +256,13 @@ fi
 if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
 then
   AC_ARG_WITH([db],
-  [  --with-db               (OpenCOBOL) Use Berkeley DB >= 4.1 for ISAM I/O (default)],
+  [  --with-db               (GNU Cobol C++) Use Berkeley DB >= 4.1 for ISAM I/O (default)],
   [],
   [with_db=yes])
 fi
 
 AC_ARG_WITH([dl],
-  [  --with-dl               (OpenCOBOL) Use system dynamic loader (default)],
+  [  --with-dl               (GNU Cobol C++) Use system dynamic loader (default)],
   [case $with_dl in  
     yes)
 		;;
@@ -304,12 +274,12 @@ AC_ARG_WITH([dl],
   [with_dl=yes])
 
 AC_ARG_ENABLE([debug],
-  [  --enable-debug          (OpenCOBOL) Enable -g C compiler debug option],
+  [  --enable-debug          (GNU Cobol C++) Enable -g C compiler debug option],
   [],
   [enable_debug=no])
 
 AC_ARG_ENABLE([experimental],
-  [  --enable-experimental   (OpenCOBOL) Enable experimental code (Developers only!)],
+  [  --enable-experimental   (GNU Cobol C++) Enable experimental code (Developers only!)],
   [if test "$enable_experimental" = "yes"
    then
 	AC_DEFINE([COB_EXPERIMENTAL], [1])
@@ -317,7 +287,7 @@ AC_ARG_ENABLE([experimental],
   [])
 
 AC_ARG_ENABLE([param-check],
-  [  --enable-param-check    (OpenCOBOL) Enable CALL parameter checking],
+  [  --enable-param-check    (GNU Cobol C++) Enable CALL parameter checking],
   [if test "$enable_param_check" = "yes"
    then
 	AC_DEFINE([COB_PARAM_CHECK], [1])
@@ -325,7 +295,7 @@ AC_ARG_ENABLE([param-check],
   [])
 
 AC_ARG_WITH([patch-level],
-  [  --with-patch-level      (OpenCOBOL) Define a patch level (default 0)],
+  [  --with-patch-level      (GNU Cobol C++) Define a patch level (default 0)],
   [case $with_patch_level in  
     yes)	AC_MSG_ERROR([[You must give --with-patch-level an argument.]])
 		;;
@@ -341,7 +311,7 @@ AC_ARG_WITH([patch-level],
 AC_DEFINE_UNQUOTED([PATCH_LEVEL], [$with_patch_level])
 
 AC_ARG_WITH([varseq],
-  [  --with-varseq           (OpenCOBOL) Define variable sequential format (default 0)],
+  [  --with-varseq           (GNU Cobol C++) Define variable sequential format (default 0)],
   [case $with_varseq in  
     yes)	AC_MSG_ERROR([[You must give --with-varseq an argument.]])
 		;;
@@ -355,6 +325,49 @@ AC_ARG_WITH([varseq],
   [with_varseq=0])
 
 AC_DEFINE_UNQUOTED([WITH_VARSEQ], [$with_varseq])
+
+AC_ARG_WITH([mpir],
+  [  --with-mpir             (GNU Cobol C++) Use MPIR instead of GMP],
+  [ if test "$with_mpir" = "yes"
+    then
+	AC_CHECK_HEADERS([mpir.h], [],
+		AC_MSG_ERROR([mpir.h is required for MPIR]))
+	AC_CHECK_LIB([mpir], [__gmpz_init],
+		[AC_DEFINE([WITH_MPIR], [1])
+		LIBCOB_LIBS="$LIBCOB_LIBS -lmpir"],
+		AC_MSG_ERROR([libmpir is required for MPIR]), [-lmpir])
+    fi ],
+  [])
+
+if test "$with_mpir" = "yes"
+then
+# Check just major/minor levels between header and library
+MYOLDLIBS=$LIBS
+LIBS="$MYOLDLIBS -lmpir"
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+	#include <string.h>
+	#include <mpir.h>]], [[
+	char	dbver[16];
+	printf("checking matching MPIR version ... ");
+	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
+			__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
+	if (!memcmp (dbver, gmp_version, strlen (dbver))) {
+		printf("yes\n");
+		return 0;
+	}
+	printf("no\n");
+	printf("\tHeader  has version %d.%d.%d\n",
+		__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR,
+		__GNU_MP_VERSION_PATCHLEVEL);
+	printf("\tLibrary has version %s\n", gmp_version);
+	return 1;
+	]])],
+	[],
+	[AC_MSG_ERROR([Unable to use MPIR - Please check config.log])],
+	[])
+LIBS=$MYOLDLIBS
+
+else
 
 # Checks for gmp.
 AC_CHECK_HEADERS([gmp.h], [], AC_MSG_ERROR([gmp.h (GMP) is required]), [])
@@ -388,7 +401,7 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 	[AC_MSG_ERROR([Unable to use GMP - Please check config.log])],
 	[])
 LIBS=$MYOLDLIBS
-
+fi
 
 AC_MSG_CHECKING([for raise])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
@@ -714,18 +727,6 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
 	[AC_MSG_RESULT([no])],
 	[])
 
-# Check gcc 4 pointer sign option
-if test "$COB_USES_GCC_ONLY" = "yes"
-then
-	MYOLDCFLAGS="$CFLAGS"
-	CFLAGS="$CFLAGS -Wno-pointer-sign"
-	AC_MSG_CHECKING([for gcc pointer sign option])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int testint;]])],
-		[AC_DEFINE([HAVE_PSIGN_OPT], [1]) AC_MSG_RESULT([yes])],
-		[AC_MSG_RESULT([no])])
-	CFLAGS="$MYOLDCFLAGS"
-fi
-
 #if test "$enable_debug" != "yes" -a "$COB_USES_GCC_ONLY" = "yes"
 #then
 #	MYOLDCFLAGS="$CFLAGS"
@@ -759,7 +760,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 	[AC_DEFINE([HAVE_ATTRIBUTE_ALIGNED], [1]) AC_MSG_RESULT([yes])],
 	[AC_MSG_RESULT([no])])
 
-# OpenCOBOL Configuration
+# GNU Cobol C++ Configuration
 
 if test "x$prefix" = "xNONE"
 then
@@ -806,17 +807,17 @@ COB_PIC_FLAGS=`echo "$lt_prog_compiler_pic" | sed -e 's/^ //'`
 COB_SHARED_OPT="-shared"
 COB_EXEEXT="$EXEEXT"
 
-if test "$enable_debug" != "yes" -a "x$CFLAGS" != "x"
+if test "$enable_debug" != "yes" -a "x$CXXFLAGS" != "x"
 then
-	CFLAGS=`echo "$CFLAGS" | sed -e 's/-g//' -e 's/^ //' -e 's/ $//'`
+	CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-g//' -e 's/^ //' -e 's/ $//'`
 fi
 
-# Include CFLAGS in COB_CFLAGS without optimization/debug options
+# Include CXXFLAGS in COB_CFLAGS without optimization/debug options
 
 cob_temp_flags=""
-if test "x$CFLAGS" != "x"
+if test "x$CXXFLAGS" != "x"
 then
-	cob_temp_flags=`echo "$CFLAGS" | sed -e 's/-g//' -e 's/ $//' -e 's/^ //'`
+	cob_temp_flags=`echo "$CXXFLAGS" | sed -e 's/-g//' -e 's/ $//' -e 's/^ //'`
 	cob_temp_flags=`echo "$cob_temp_flags" | sed -e 's/@<:@+-@:>@O@<:@0-9s@:>@//' -e 's/ $//' -e 's/^ //'`
 	cob_temp_flags=`echo "$cob_temp_flags" | sed -e 's/-O//' -e 's/ $//' -e 's/^ //'`
 	cob_temp_flags=`echo "$cob_temp_flags" | sed -e 's/-fmessage-length=0//'`
@@ -835,11 +836,11 @@ unset cob_temp_flags
 
 if test "$COB_USES_GCC_ICC" = "yes"
 then
-	if test "x$CFLAGS" != "x"
+	if test "x$CXXFLAGS" != "x"
 	then
-		CFLAGS="$CFLAGS -pipe"
+		CXXFLAGS="$CXXFLAGS -pipe"
 	else
-		CFLAGS="-pipe"
+		CXXFLAGS="-pipe"
 	fi
 	if test "x$COB_CFLAGS" != "x"
 	then
@@ -879,19 +880,22 @@ case $host_os in
 	COB_SHARED_OPT="-bundle -flat_namespace -undefined suppress"
 	;;
   hpux*)
+	LIBCOB_LIBS="$LIBCOB_LIBS -lunalign"
 	if test "$COB_USES_GCC_ICC" != "yes"
 	then
+		CXXFLAGS="$CXXFLAGS -Aa -Ag++ -D_HPUX_SOURCE"
+		COB_CFLAGS="$COB_CFLAGS -Aa -Ag++ -D_HPUX_SOURCE"
 		COB_SHARED_OPT="-b"
 		AC_DEFINE([_XOPEN_SOURCE_EXTENDED], [1])
 		rm -f hptest*
-		echo 'int main() { return 0; }' > hptest.c
-		${CC} ${CFLAGS} +Olit=all -o hptest hptest.c > hptest.out 2>&1
+		echo 'int main(int ac, char **av) { return 0; }' > hptest.cpp
+		${CXX} ${CXXFLAGS} +Olit=all -o hptest hptest.cpp > hptest.out 2>&1
 		if test $? -ne 0 -o -s hptest.out
 		then
-			CFLAGS="$CFLAGS +ESlit +O2"
+			CXXFLAGS="$CXXFLAGS +ESlit +O2"
 			COB_CFLAGS="$COB_CFLAGS +ESlit -w"
 		else
-			CFLAGS="$CFLAGS +Olit=all +O2"
+			CXXFLAGS="$CXXFLAGS +Olit=all +O2"
 			COB_CFLAGS="$COB_CFLAGS +Olit=all -w"
 		fi
 		rm -f hptest*
@@ -901,7 +905,7 @@ case $host_os in
 	COB_EXPORT_DYN="-Wl,-bexpfull -Wl,-brtl"
 	if test "$COB_USES_GCC_ICC" != "yes"
 	then
-		CFLAGS="$CFLAGS -O2 -Q -qro -qroconst"
+		CXXFLAGS="$CXXFLAGS -O2 -Q -qro -qroconst"
 		COB_SHARED_OPT="-G"
 		COB_FIX_LIB=""
 		# COB_FIX_LIB="-Wc,-G $COB_EXPORT_DYN"
@@ -913,8 +917,13 @@ case $host_os in
   solaris*)
 	if test "$COB_USES_GCC_ICC" != "yes"
 	then
-		CFLAGS="$CFLAGS -xO2 -xstrconst"
-		COB_CFLAGS="$COB_CFLAGS -xstrconst"
+		CXXFLAGS="$CXXFLAGS -xO2"
+		# Need to workaround possible names collision
+		# Without __XOPEN_OR_POSIX there are too many stupid defines, like SEC, MILLISEC
+		COB_CFLAGS="$COB_CFLAGS -D__XOPEN_OR_POSIX -erroff=wunreachable"
+		COB_LDFLAGS="$COB_LDFLAGS -xmemalign=8i"
+		COB_LIBS="-xstrconst -xmemalign=8i $COB_LIBS"
+		LDFLAGS="$LDFLAGS -xmemalign=8i"
 		COB_SHARED_OPT="-G"
 	fi
 	;;
@@ -930,14 +939,14 @@ then
 		[LDFLAGS=$MYOLDLDFLAGS
 		 AC_MSG_RESULT([no])])
 	unset MYOLDLDFLAGS
-	CFLAGS="$CFLAGS -finline-functions -fsigned-char -Wall -Wwrite-strings -Wmissing-prototypes -Wno-format-y2k"
+	CXXFLAGS="$CXXFLAGS -finline-functions -fsigned-char -Wall -Wwrite-strings -Wno-format-y2k"
 	if test "$enable_debug" != "yes"
 	then
-		CFLAGS="$CFLAGS -U_FORTIFY_SOURCE"
+		CXXFLAGS="$CXXFLAGS -U_FORTIFY_SOURCE"
 	fi
 elif test "$COB_USES_ICC_ONLY" = "yes"
 then
-	CFLAGS="$CFLAGS -finline-functions -Wall -wd1419 -vec-report0 -opt-report 0"
+	CXXFLAGS="$CXXFLAGS -finline-functions -Wall -wd1419 -vec-report0 -opt-report 0"
 fi
 
 if test "x$lt_cv_dlopen_self" != "xyes"
@@ -1003,9 +1012,17 @@ AC_CONFIG_COMMANDS([chmod3], [chmod +x tests/atlocal])
 
 AC_OUTPUT
 
-echo "OpenCOBOL Configuration:"
-echo " CC                ${CC}"
-echo " CFLAGS            ${CFLAGS}"
+echo "Creating libcob.h..."
+if test "$with_mpir" = "yes"
+then
+  sed -e "s/gmp/mpir/" libcob.h.in > libcob.h
+else
+  cp -p libcob.h.in libcob.h
+fi
+
+echo "GNU Cobol C++ Configuration:"
+echo " CXX               ${CXX}"
+echo " CXXFLAGS          ${CXXFLAGS}"
 echo " COB_CFLAGS        ${COB_CFLAGS}"
 echo " LDFLAGS           ${LDFLAGS}"
 echo " COB_LDFLAGS       ${COB_LDFLAGS}"
@@ -1038,6 +1055,12 @@ then
   echo " Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"
 else
   echo " screen I/O (no curses found):                NO"
+fi
+if test "$with_mpir" = "yes"
+then
+  echo " Use MPIR Library                             yes"
+else
+  echo " Use GMP  Library                             yes"
 fi
 if test "$with_seqra_extfh" = "yes"
 then

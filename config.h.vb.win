@@ -1,4 +1,22 @@
-/* config.h	Win32 VS2005-2010  */
+/*
+
+   This file is part of GNU Cobol C++.
+
+   The GNU Cobol C++ compiler is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   GNU Cobol C++ is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// config.h - Win32 VS2005-2010
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -13,7 +31,7 @@
 #define COB_EXPORT_DYN ""
 
 /* Keyword for inline */
-#define COB_KEYWORD_INLINE __inline
+#define COB_KEYWORD_INLINE inline
 
 /* long int is long long */
 /* #undef COB_LI_IS_LL */
@@ -81,9 +99,6 @@
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 /* #undef HAVE_DCGETTEXT */
-
-/* Has designated initializers */
-/* #undef HAVE_DESIGNATED_INITS */
 
 /* Define to 1 if you have the <disam.h> header file. */
 /* #undef HAVE_DISAM_H */
@@ -157,9 +172,6 @@
 /* Define to 1 if you have the <ltdl.h> header file. */
 /* #undef HAVE_LTDL_H */
 
-/* Define to 1 if you have the <malloc.h> header file. */
-#define HAVE_MALLOC_H 1
-
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
 
@@ -168,6 +180,9 @@
 
 /* Define to 1 if you have the `memset' function. */
 #define HAVE_MEMSET 1
+
+/* Use MPIR instead of GMP */
+#define WITH_MPIR 1
 
 /* Has nanosleep */
 /* #undef HAVE_NANO_SLEEP */
@@ -186,9 +201,6 @@
 
 /* Define to 1 if you have the <pdcurses.h> header file. */
 /* #undef HAVE_PDCURSES_H */
-
-/* Has -Wno-pointer-sign */
-/* #undef HAVE_PSIGN_OPT */
 
 /* Has raise function */
 #define HAVE_RAISE 1
@@ -288,28 +300,28 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Name of package */
-#define PACKAGE "open-cobol"
+#define PACKAGE "gnu-cobol-cpp"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "open-cobol-list@lists.sourceforge.net"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "OpenCOBOL"
+#define PACKAGE_NAME "GNU Cobol C++"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "OpenCOBOL 2.0"
+#define PACKAGE_STRING "GNU Cobol C++ 2.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "open-cobol"
+#define PACKAGE_TARNAME "gnu-cobol-cpp"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "http://www.opencobol.org"
+#define PACKAGE_URL "http://sourceforge.net/projects/open-cobol"
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "2.0"
 
 /* Define a patch level */
-#define PATCH_LEVEL 0
+#define PATCH_LEVEL 20131031
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -369,7 +381,7 @@
 /* #undef WITH_SEQRA_EXTFH */
 
 /* Define variable sequential file format */
-#define WITH_VARSEQ 0
+#define WITH_VARSEQ 1
 
 /* Use VBISAM as ISAM handler */
 #define WITH_VBISAM 1

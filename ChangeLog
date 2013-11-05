@@ -1,3 +1,71 @@
+
+2013-10-23  Sergey Kashyrin <ska@kiska.net>
+
+	* Finally, unused duplicate names are resolved. Reverting back SQ212A test patch.
+
+2013-10-22  Sergey Kashyrin <ska@kiska.net>
+
+	* Workaround for "memory exhausted" Bison error. Unfortunately dumb bison is allocating memory on a stack and trying to increase/reallocate if necessary.
+		That does not work in C++. I had to use yyoverflow to overcome this issue. This issue came out when trying to compile large program with
+		too many IF-THEN-ELSE-IF.
+
+2013-10-21  Sergey Kashyrin <ska@kiska.net>
+
+	* Workaround for Microsoft MSVC (Visual Studio 2005-2010) bug "fatal error C1061: compiler limit : blocks nested too deeply"
+
+2013-09-21  Sergey Kashyrin <ska@kiska.net>
+
+	* #pragma pack fixed for Solaris
+
+2013-07-16  Sergey Kashyrin <ska@kiska.net>
+	* Fixes for PROCEDURE DIVISION RETURNING.
+
+2013-06-21  Sergey Kashyrin <ska@kiska.net>
+	* Oracle Sun C++ 5.12 SunOS_sparc passed. One bug in compiler workarounded and filed (report has been assigned an internal review ID of 2533270)
+		There were bunch of tweaks in both code and autoconf.
+
+2013-06-20  Sergey Kashyrin <ska@kiska.net>
+	* HPUX aCC passed. Fixed several issues related to misaligned data in codegen.cpp. Also fixed introduced bug with names conflict for names like "i0".
+		For sure "configure.ac" need more tweaks and need to be reviewed. Will do that after Solaris checkup.
+
+2013-06-15  Sergey Kashyrin <ska@kiska.net>
+
+	* Fixed the possible names conflict for names like "i0", "d0", "n0".
+
+2013-06-14  Sergey Kashyrin <ska@kiska.net>
+	* I was fighting with AIX 7.1 whole day.
+		It looks we have a problem to run with a standard AIX Curses. There are issues with headers, and even after tweaking, tests were hitting SIGSEGV in wclear().
+		So, I've installed pre-built ncurses from http://www.bullfreeware.com (Large Open Source Software Archive for AIX) and it seems much better.
+		Fixed small issue with XLC++ strict behaviour regarding goto skipping initialization, so all tests are passing.
+		Had to update autoconf/automake/libtool files with a newer one, as the previous knew nothing about AIX 7.1
+		Next week if I have a time, I'll check latest Solaris/SPARC and possibly z/OS and HPUX/Itanium. Will see.
+
+2013-06-13  Sergey Kashyrin <ska@kiska.net>
+	* Moving toward C++ little by little. After heavy code reorganization I've decided to run all the tests again on Win and Linux and finally made a tarball.
+		Patched SQ212A in order not to hit the issue, but hopefully temporarily. Adjusted autoconf files, etc.
+
+2013-05-21  Sergey Kashyrin <ska@kiska.net>
+
+	* Naming for LOCAL is done (where possible of course)
+
+2013-05-19  Sergey Kashyrin <ska@kiska.net>
+
+	* BY VALUE seems fixed. The story is that SIZE is AUTO was not implemented correctly and as a fact was not a default.
+		Also passing COMP-3 and DISPLAY NUMERIC was incorrect - now implemented the way as in Merant/Microfocus - not converting to integer.
+		Need more tests thou...
+
+2013-05-14  Sergey Kashyrin <ska@kiska.net>
+
+	* Names are enabled for WORKING STORAGE and LINKAGE SECTION. LOCAL storage <strike>so far postponed</strike> done later.
+		--------------------- One test is failing due to unused duplicate names ----------------------
+		SQ212A.CBL    ===== compile error =====
+
+2013-05-14  Sergey Kashyrin <ska@kiska.net>
+
+	* Switch to C++
+
+--------------------------------------------------------------------------------------
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
@@ -363,11 +431,11 @@
 	  configure.ac, configure, Mak** : Fix missing variables.
 	  Run autoreconf
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (WORDS_BIGENDIAN): New variable.
 
-2005-04-13  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-13  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (LIBCOB_CFLAGS): Set -fPIC when necessary.
 
@@ -408,7 +476,7 @@
 	  to __db_open. This fixes configuring against
 	  the NPTL versions of DB (eg. Red Hat, Suse).
 
-2004-08-02  Keisuke Nishida  <knishida@open-cobol.org>
+2004-08-02  Keisuke Nishida  <knishida@opencobol.org>
 
 	* Version 0.30 released.
 
@@ -468,7 +536,7 @@
 2002-10-14  Keisuke Nishida  <knishida@netlab.jp>
 
 	* Makefile.am: Install libcob.conf in $(sysconfdir), not in
-	$(sysconfdir)/open-cobol.
+	$(sysconfdir)/gnu-cobol-cpp.
 	* configure.ac (COB_CONFIG_FILE): Updated.
 
 2002-09-30  Keisuke Nishida  <knishida@netlab.jp>
