@@ -11,8 +11,8 @@ DATA   data division.
        01 hello                pic $$$$,$$$,$$$,$$$,$$$,$$$.99.
        01 world                pic s9(18)v99 value zero.
 
-       01 people               pic Z,ZZZ,ZZZ,ZZ9.
-       01 persons              pic 9(10) value 7182044470.
+       01 people               pic ZZZ,ZZZ,ZZZ,ZZ9.
+       01 persons              pic 9(18) value 7182044470.
 
        01 each                 pic 9(5)v99 value 26202.42.
 
@@ -30,10 +30,14 @@ CODE   procedure division.
        display "Hello, world" end-display
        display " " end-display
        display
-           "On September 27th, 2013, according to UN estimates:" 
+           "On " function locale-date(20130927)
+           " at " function locale-time(120000)
+           ", according to UN estimates:" 
        end-display
-       display "You were home to some " people  " people," end-display
-       display " with an estimated worth of " hello end-display
+       display
+           "You were home to some " people  " people,"
+           " with an estimated worth of " hello
+       end-display
 
        goback.
        end program bigworld.
