@@ -1,21 +1,22 @@
 /*
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
+   Copyright (C) 2013 Sergey Kashyrin
 
-   This file is part of OpenCOBOL.
+   This file is part of GNU Cobol C++.
 
-   The OpenCOBOL compiler is free software: you can redistribute it
+   The GNU Cobol C++ compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   OpenCOBOL is distributed in the hope that it will be useful,
+   GNU Cobol C++ is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+   along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -79,13 +80,13 @@
 #define CB_ASSIGN_COBOL2002		2U	/* COBOL 2002 standard */
 
 /* COMP/BINARY byte order */
-#define CB_BYTEORDER_BIG_ENDIAN		0
+#define CB_BYTEORDER_BIG_ENDIAN	0
 #define CB_BYTEORDER_NATIVE		1U
 
 /* Binary field sizes */
-#define CB_BINARY_SIZE_1_2_4_8		0	/* 1,2,4,8 bytes */
+#define CB_BINARY_SIZE_1_2_4_8	0	/* 1,2,4,8 bytes */
 #define CB_BINARY_SIZE_1__8		1U	/* 1,2,3,4,5,6,7,8 bytes */
-#define CB_BINARY_SIZE_2_4_8		2U	/* 2,4,8 bytes */
+#define CB_BINARY_SIZE_2_4_8	2U	/* 2,4,8 bytes */
 
 /* Flex directive actions */
 #define PLEX_ACT_IF			0
@@ -99,20 +100,20 @@
 #define PLEX_DEF_NUM			2U
 #define PLEX_DEF_DEL			3U
 
-/* Context sensitive keyword defines (trigger words) */
-#define	CB_CS_ACCEPT			(1U << 0)
-#define	CB_CS_ALPHABET			(1U << 1)
-#define	CB_CS_ASSIGN			(1U << 2)
+/* Context sensitive keyword defines(trigger words) */
+#define	CB_CS_ACCEPT		(1U << 0)
+#define	CB_CS_ALPHABET		(1U << 1)
+#define	CB_CS_ASSIGN		(1U << 2)
 #define	CB_CS_CALL			(1U << 3)
-#define	CB_CS_CONSTANT			(1U << 4)
+#define	CB_CS_CONSTANT		(1U << 4)
 #define	CB_CS_DATE			(1U << 5)
 #define	CB_CS_DAY			(1U << 6)
-#define	CB_CS_DISPLAY			(1U << 7)
+#define	CB_CS_DISPLAY		(1U << 7)
 #define	CB_CS_ERASE			(1U << 8)
 #define	CB_CS_EXIT			(1U << 9)
 #define	CB_CS_FROM			(1U << 10)
-#define	CB_CS_PROGRAM_ID		(1U << 11)
-#define	CB_CS_ROUNDED			(1U << 12)
+#define	CB_CS_PROGRAM_ID	(1U << 11)
+#define	CB_CS_ROUNDED		(1U << 12)
 #define	CB_CS_SET			(1U << 13)
 #define	CB_CS_STOP			(1U << 14)
 #define	CB_CS_WITH			(1U << 15)
@@ -149,83 +150,83 @@ enum cb_std_def {
 
 /* Generic text list structure */
 struct cb_text_list {
-	struct cb_text_list	*next;			/* next pointer */
-	struct cb_text_list	*last;
-	const char		*text;
+	cb_text_list *	next;			/* next pointer */
+	cb_text_list *	last;
+	const char *	text;
 };
 
 /* Generic replace list structure */
 struct cb_replace_list {
-	struct cb_replace_list		*next;			/* next pointer */
-	struct cb_replace_list		*last;
-	struct cb_replace_list		*prev;
-	const struct cb_text_list	*old_text;
-	const struct cb_text_list	*new_text;
-	unsigned int			lead_trail;
+	cb_replace_list *	next;			/* next pointer */
+	cb_replace_list *	last;
+	cb_replace_list *	prev;
+	const cb_text_list * old_text;
+	const cb_text_list * new_text;
+	unsigned int		lead_trail;
 };
 
 /* Generic define list structure */
 struct cb_define_struct {
-	struct cb_define_struct	*next;			/* next pointer */
-	struct cb_define_struct	*last;
-	char			*name;
-	char			*value;
+	cb_define_struct *	next;			/* next pointer */
+	cb_define_struct *	last;
+	char *				name;
+	char *				value;
 	unsigned int		deftype;
-	int			sign;
-	int			int_part;
-	int			dec_part;
+	int					sign;
+	int					int_part;
+	int					dec_part;
 };
 
 /* Structure for extended filenames */
 struct local_filename {
-	struct local_filename	*next;			/* next pointer */
-	char			*local_name;
-	FILE			*local_fp;
+	local_filename *	next;			/* next pointer */
+	char *				local_name;
+	FILE *				local_fp;
 };
 
 /* Structure for filename */
 struct filename {
-	struct filename		*next;
-	const char		*source;		/* foo.cob */
-	const char		*preprocess;		/* foo.i */
-	const char		*translate;		/* foo.c */
-	const char		*trstorage;		/* foo.c.h */
-	const char		*object;		/* foo.o */
-	const char		*demangle_source;	/* foo */
-	const char		*listing_file;		/* foo.lst */
-	struct local_filename	*localfile;		/* foo.c.l[n].h */
+	filename *		next;
+	const char *	source;				/* foo.cob */
+	const char *	preprocess;			/* foo.i */
+	const char *	translate;			/* foo.c */
+	const char *	trstorage;			/* foo.c.h */
+	const char *	object;				/* foo.o */
+	const char *	demangle_source;	/* foo */
+	const char *	listing_file;		/* foo.lst */
+	local_filename * localfile;			/* foo.c.l[n].h */
 	size_t			translate_len;		/* strlen translate */
-	size_t			object_len;		/* strlen object */
-	unsigned int		need_preprocess;	/* Needs preprocess */
-	unsigned int		need_translate;		/* Needs parse */
-	unsigned int		need_assemble;		/* Needs C compile */
-	int			has_error;		/* Error detected */
+	size_t			object_len;			/* strlen object */
+	unsigned int	need_preprocess;	/* Needs preprocess */
+	unsigned int	need_translate;		/* Needs parse */
+	unsigned int	need_assemble;		/* Needs C compile */
+	int				has_error;			/* Error detected */
 };
 
 /* Exception structure */
 struct cb_exception {
-	const char	*name;			/* Exception name */
-	const int	code;			/* Exception code */
-	int		enable;			/* If turned on */
+	const char *	name;			/* Exception name */
+	int				code;			/* Exception code */
+	int				enable;			/* If turned on */
 };
 
 /* Structure for reserved words that have been reverted */
 struct noreserve {
-	struct	noreserve	*next;			/* next pointer */
-	char			*noresword;
+	noreserve *	next;			/* next pointer */
+	char *		noresword;
 };
 
 /* Basic memory structure */
 struct cobc_mem_struct {
-	struct	cobc_mem_struct	*next;			/* next pointer */
-	void			*memptr;
-	size_t			memlen;
+	cobc_mem_struct *	next;			/* next pointer */
+	void *				memptr;
+	size_t				memlen;
 };
 
 
 extern int			cb_source_format;
 
-extern struct cb_exception	cb_exception_table[];
+extern cb_exception	cb_exception_table[];
 
 #define CB_EXCEPTION_NAME(id)	cb_exception_table[id].name
 #define CB_EXCEPTION_CODE(id)	cb_exception_table[id].code
@@ -274,67 +275,62 @@ extern int			warningopt;
 extern int			no_physical_cancel;
 extern cob_u32_t		optimize_defs[];
 
-extern char			*cb_oc_build_stamp;
-extern const char		*cb_source_file;
+extern char *		cb_oc_build_stamp;
+extern const char *	cb_source_file;
 extern int			cb_source_line;
 
-extern const char		*cob_config_dir;
+extern const char *	cob_config_dir;
 
-extern unsigned int		cobc_gen_listing;
+extern unsigned int	cobc_gen_listing;
 
-extern const char		*demangle_name;
-extern FILE			*cb_storage_file;
-extern const char		*cb_storage_file_name;
+extern const char *	demangle_name;
+extern FILE *		cb_storage_file;
+extern const char *	cb_storage_file_name;
 
-extern char			**cb_saveargv;
+extern char **		cb_saveargv;
 extern int			cb_saveargc;
 
-extern FILE			*cb_listing_file;
-extern struct cb_text_list	*cb_include_list;
-extern struct cb_text_list	*cb_intrinsic_list;
-extern struct cb_text_list	*cb_extension_list;
-extern struct cb_text_list	*cb_static_call_list;
-extern struct cb_text_list	*cb_early_exit_list;
+extern FILE *		cb_listing_file;
+extern cb_text_list * cb_include_list;
+extern cb_text_list * cb_intrinsic_list;
+extern cb_text_list * cb_extension_list;
+extern cb_text_list * cb_static_call_list;
+extern cb_text_list * cb_early_exit_list;
 
-extern struct cb_program	*current_program;
-extern struct cb_statement	*current_statement;
-extern struct cb_label		*current_section;
-extern struct cb_label		*current_paragraph;
+extern struct cb_program * current_program;
+extern struct cb_statement * current_statement;
+extern struct cb_label *	current_section;
+extern struct cb_label *	current_paragraph;
 extern int			functions_are_all;
 
 /* Functions */
 
-/* cobc.c */
+// cobc.cpp
 
-extern struct noreserve		*cobc_nores_base;
+extern noreserve *	cobc_nores_base;
 
-extern void			*cobc_malloc (const size_t);
-extern void			*cobc_strdup (const char *);
-extern void			*cobc_realloc (void *, const size_t);
+char *			cobc_strdup(const char *);
 
-extern void			*cobc_main_malloc (const size_t);
-extern void			*cobc_main_strdup (const char *);
-extern void			*cobc_main_realloc (void *, const size_t);
-extern void			cobc_main_free (void *);
+void *			cobc_main_malloc(const size_t);
+char *			cobc_main_strdup(const char *);
+void *			cobc_main_realloc(void *, const size_t);
+void			cobc_main_free(void *);
 
-extern void			*cobc_parse_malloc (const size_t);
-extern void			*cobc_parse_strdup (const char *);
-extern void			*cobc_parse_realloc (void *, const size_t);
-extern void			cobc_parse_free (void *);
+void *			cobc_parse_malloc(const size_t);
+char *			cobc_parse_strdup(const char *);
+void			cobc_parse_free(void *);
 
-extern void			*cobc_plex_malloc (const size_t);
-extern void			*cobc_plex_strdup (const char *);
+void *			cobc_plex_malloc(const size_t);
+char *			cobc_plex_strdup(const char *);
 
-extern void			*cobc_check_string (const char *);
-extern void			cobc_abort_pr (const char *, ...) COB_A_FORMAT12;
+void *			cobc_check_string(const char *);
+void			cobc_abort_pr(const char *, ...) COB_A_FORMAT12;
 
-DECLNORET extern void		cobc_abort (const char *,
-					    const int) COB_A_NORETURN;
-DECLNORET extern void		cobc_too_many_errors (void) COB_A_NORETURN;
-extern void			cobc_dumb_abort (const char *, const int);
+DECLNORET void	cobc_abort(const char *, const int) COB_A_NORETURN;
+DECLNORET void	cobc_too_many_errors(void) COB_A_NORETURN;
+void			cobc_dumb_abort(const char *, const int);
 
-extern size_t			cobc_check_valid_name (const char *,
-						       const unsigned int);
+size_t	cobc_check_valid_name(const char *, const unsigned int);
 
 /* config.c */
 
@@ -358,71 +354,65 @@ extern size_t			cobc_check_valid_name (const char *,
 #undef	CB_CONFIG_BOOLEAN
 #undef	CB_CONFIG_SUPPORT
 
-extern int		cb_load_std (const char *);
-extern int		cb_load_conf (const char *, const int, const int);
+int				cb_load_std(const char *);
+int				cb_load_conf(const char *, const int, const int);
 
-#ifndef	HAVE_DESIGNATED_INITS
 /* Initialization routines in scanner.l, typeck.c, reserved.c */
-extern void		cobc_init_scanner (void);
-extern void		cobc_init_typeck (void);
-extern void		cobc_init_reserved (void);
+void			cobc_init_scanner(void);
+void			cobc_init_typeck(void);
+void			cobc_init_reserved(void);
+
+/* preprocessor(in pplex.l, ppparse.y) */
+#if	!defined(COB_IN_SCANNER ) && !defined(COB_IN_PPLEX)
+extern FILE *	ppin;
+extern FILE *	ppout;
+int				pplex(void);
 #endif
 
-/* preprocessor (in pplex.l, ppparse.y) */
-#if	!defined (COB_IN_SCANNER ) && !defined (COB_IN_PPLEX)
-extern FILE		*ppin;
-extern FILE		*ppout;
-extern int		pplex (void);
+int				ppparse(void);
+int				ppopen(const char *, cb_replace_list *);
+int				ppcopy(const char *, const char *, cb_replace_list *);
+void			pp_set_replace_list(cb_replace_list *, const cob_u32_t);
+void			ppparse_error(const char *);
+void			ppparse_clear_vars(const cb_define_struct *);
+void			plex_clear_vars(void);
+void			plex_clear_all(void);
+void			plex_call_destroy(void);
+void			plex_action_directive(const unsigned int, const unsigned int);
+
+// parser(in scanner.l, parser.y)
+extern char *	cobc_glob_line;
+
+#if	!defined(COB_IN_SCANNER ) && !defined(COB_IN_PPLEX) && !defined(COB_IN_PPPARSE)
+extern FILE *	yyin;
+extern FILE *	yyout;
 #endif
 
-#ifndef	COB_IN_PPPARSE
-extern int		ppparse (void);
-#endif
+int				yylex(void);
+int				yyparse(void);
+extern void		ylex_clear_all(void);
+extern void		ylex_call_destroy(void);
 
-extern int		ppopen (const char *, struct cb_replace_list *);
-extern int		ppcopy (const char *, const char *,
-				struct cb_replace_list *);
-extern void		pp_set_replace_list (struct cb_replace_list *,
-					     const cob_u32_t);
-extern void		ppparse_error (const char *);
-extern void		ppparse_clear_vars (const struct cb_define_struct *);
-extern void		plex_clear_vars (void);
-extern void		plex_clear_all (void);
-extern void		plex_call_destroy (void);
-extern void		plex_action_directive (const unsigned int,
-					       const unsigned int);
+// typeck.cpp
+extern size_t	suppress_warn;
 
-/* parser (in scanner.l, parser.y) */
-extern char		*cobc_glob_line;
+// codeoptim.cpp
+void			cob_gen_optim(const enum cb_optim);
 
-#if	!defined (COB_IN_SCANNER ) && !defined (COB_IN_PPLEX) && \
-	!defined (COB_IN_PPPARSE)
-extern FILE		*yyin;
-extern FILE		*yyout;
-extern int		yylex (void);
-#endif
+// codegen.cpp
+unsigned int	chk_field_variable_address(struct cb_field *);
 
-#if	!defined (COB_IN_PPPARSE) && !defined (COB_IN_PARSER)
-extern int		yyparse (void);
-#endif
+// naming.cpp
+void			externalize_tree(struct cb_field **);
 
-extern void		ylex_clear_all (void);
-extern void		ylex_call_destroy (void);
+// error.cpp
+void			cb_warning(const char *, ...) COB_A_FORMAT12;
+void			cb_error(const char *, ...) COB_A_FORMAT12;
+void			cb_plex_warning(const size_t, const char *, ...) COB_A_FORMAT23;
+void			cb_plex_error(const size_t, const char *, ...) COB_A_FORMAT23;
+unsigned int	cb_verify(const enum cb_support, const char *);
 
-/* typeck.c */
-extern size_t		suppress_warn;
-
-/* codeoptim.c */
-extern void		cob_gen_optim (const enum cb_optim);
-
-/* error.c */
-extern void		cb_warning (const char *, ...) COB_A_FORMAT12;
-extern void		cb_error (const char *, ...) COB_A_FORMAT12;
-extern void		cb_plex_warning (const size_t,
-					 const char *, ...) COB_A_FORMAT23;
-extern void		cb_plex_error (const size_t,
-				       const char *, ...) COB_A_FORMAT23;
-
-extern unsigned int	cb_verify (const enum cb_support, const char *);
-
+/////////////////////////// SKA DEBUG //////////////////////
+void skadbg(const char * fmt, ...);
+/////////////////////////// SKA DEBUG //////////////////////
 #endif /* CB_COBC_H */

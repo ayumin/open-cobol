@@ -1,30 +1,31 @@
 # List of source files containing translatable strings.
 
 # cobc
-cobc/cobc.c
-cobc/cobgetopt.c
-cobc/codegen.c
-cobc/codeoptim.c
-cobc/config.c
-cobc/error.c
-cobc/field.c
+cobc/cobc.cpp
+cobc/cobgetopt.cpp
+cobc/codegen.cpp
+cobc/codeoptim.cpp
+cobc/config.cpp
+cobc/error.cpp
+cobc/field.cpp
 cobc/flag.def
 cobc/parser.y
 cobc/pplex.l
 cobc/ppparse.y
-cobc/reserved.c
+cobc/reserved.cpp
 cobc/scanner.l
-cobc/tree.c
-cobc/typeck.c
+cobc/tree.cpp
+cobc/typeck.cpp
 cobc/warning.def
+cobc/naming.cpp
 
 # libcob
-libcob/call.c
-libcob/common.c
-libcob/fileio.c
-libcob/move.c
-libcob/screenio.c
-libcob/termio.c
+libcob/call.cpp
+libcob/common.cpp
+libcob/fileio.cpp
+libcob/move.cpp
+libcob/screenio.cpp
+libcob/termio.cpp
 
 # bin
-bin/cobcrun.c
+bin/cobcrun.cpp

@@ -1,11 +1,11 @@
-# English translations for OpenCOBOL package.
+# English translations for GNU Cobol package.
 # Copyright (C) 2010 Keisuke Nishida / Roger While
-# This file is distributed under the same license as the OpenCOBOL package.
+# This file is distributed under the same license as the GNU Cobol package.
 # Automatically generated, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: open-cobol 2.0\n"
+"Project-Id-Version: gnu-cobol 2.0\n"
 "Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-10-15 15:56+0200\n"
 "PO-Revision-Date: 2010-10-15 15:56+0200\n"
@@ -125,8 +125,8 @@ msgid "Build environment"
 msgstr "Build environment"
 
 #: cobc/cobc.c:1152 bin/cobcrun.c:134
-msgid "OpenCOBOL information"
-msgstr "OpenCOBOL information"
+msgid "GNU Cobol information"
+msgstr "GNU Cobol information"
 
 #: cobc/cobc.c:1164 cobc/cobc.c:1166 bin/cobcrun.c:146 bin/cobcrun.c:148
 msgid "Dynamic loading"

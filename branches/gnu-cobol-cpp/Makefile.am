@@ -1,35 +1,36 @@
 #
-# Makefile opencobol
+# Makefile gnu-cobol-cpp
 #
 # Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2008-2012 Roger While
+# Copyright (C) 2013 Sergey Kashyrin
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol C++.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol C++ compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol C++ is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
-include_HEADERS = libcob.h
+include_HEADERS = 
 
 SUBDIRS = libcob cobc bin config copy po doc tests extras
 
 ACLOCAL_AMFLAGS = -I m4 --install
-BUILT_SOURCES = defaults.h
+BUILT_SOURCES = defaults.h libcob.h
 DISTCLEANFILES = $(BUILT_SOURCES)
 # CLEANFILES = $(bin_SCRIPTS)
 
-EXTRA_DIST = open-cobol.spec config.h.bdb.win config.h.vb.win \
-	lib/Makefile.am lib/ChangeLog lib/dummymac.c lib/gettext.h \
+EXTRA_DIST = gnu-cobol-cpp.spec libcob.h.in config.h.bdb.win config.h.vb.win \
+	lib/Makefile.am lib/ChangeLog lib/dummymac.cpp lib/gettext.h \
 	po/en.translate
 
 dist-hook:
@@ -48,7 +49,7 @@ dist-hook:
 	chmod 644 $(distdir)/README
 	chmod 644 $(distdir)/THANKS
 	chmod 644 $(distdir)/TODO
-	chmod 644 $(distdir)/open-cobol.spec
+	chmod 644 $(distdir)/gnu-cobol-cpp.spec
 	chmod 644 $(distdir)/config.h.bdb.win
 	chmod 644 $(distdir)/config.h.vb.win
 	chmod 755 $(distdir)/ltmain.sh
@@ -60,13 +61,13 @@ dist-hook:
 	chmod 755 $(distdir)/depcomp
 	chmod 755 $(distdir)/mkinstalldirs
 	chmod 755 $(distdir)/doc/cobcinfo.sh
-	touch $(distdir)/cobc/ppparse.c
-	touch $(distdir)/cobc/parser.c
-	touch $(distdir)/cobc/pplex.c
-	touch $(distdir)/cobc/scanner.c
+	touch $(distdir)/cobc/ppparse.cpp
+	touch $(distdir)/cobc/parser.cpp
+	touch $(distdir)/cobc/pplex.cpp
+	touch $(distdir)/cobc/scanner.cpp
 	touch $(distdir)/tests/testsuite
-	touch $(distdir)/doc/opencobol.info
-	touch $(distdir)/doc/opencobol.pdf
+	touch $(distdir)/doc/gnucobol-cpp.info
+	touch $(distdir)/doc/gnucobol-cpp.pdf
 
 defaults.h: Makefile.am $(top_builddir)/config.status
 	@echo "Creating defaults.h..."
@@ -80,9 +81,8 @@ defaults.h: Makefile.am $(top_builddir)/config.status
 	  echo "#define COB_COPY_DIR     \"$(COB_COPY_DIR)\"";		\
 	  echo "#define COB_LIBRARY_PATH \"$(COB_LIBRARY_PATH)\"";	\
 	  echo "#define COB_MODULE_EXT   \"$(COB_MODULE_EXT)\"";	\
-	  echo "#define COB_BLD_CC       \"$(CC)\"";			\
-	  echo "#define COB_BLD_CPPFLAGS \"$(CPPFLAGS)\"";		\
-	  echo "#define COB_BLD_CFLAGS   \"$(CFLAGS)\"";		\
+	  echo "#define COB_BLD_CC       \"$(CXX)\"";			\
+	  echo "#define COB_BLD_CFLAGS   \"$(CXXFLAGS)\"";		\
 	  echo "#define COB_BLD_LD       \"$(LD)\"";			\
 	  echo "#define COB_BLD_LDFLAGS  \"$(LDFLAGS)\"";		\
 	  echo "#define COB_BLD_BUILD    \"$(build)\"";			\

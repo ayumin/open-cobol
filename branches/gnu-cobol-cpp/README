@@ -1,8 +1,7 @@
-			       OpenCOBOL
-		       http://www.opencobol.org/
+			       GNU Cobol C++
 		http://sourceforge.net/projects/open-cobol/
 
-OpenCOBOL is an open-source COBOL compiler, which translates COBOL
+GNU Cobol C++ is an open-source COBOL compiler, which translates COBOL
 programs to C code and compiles it using a native C compiler.
 
 This package contains the following subdirectories:
@@ -15,6 +14,7 @@ This package contains the following subdirectories:
     po          International messages
     doc         'info' and 'pdf' files
     tests       Test suite
+    extras      useful COBOL programs 
 
 All programs except those in lib and libcob are distributed under
 the GNU General Public License.  See COPYING for details.
@@ -42,9 +42,9 @@ Requirements
 	ALWAYS install the distribution packages when available !!
   ***
 
-OpenCOBOL REQUIRES the following external library to be installed:
+GNU Cobol C++ REQUIRES the following external library to be installed:
 
-  o GNU MP (libgmp) 4.1.2 or later
+  o GNU MP (libgmp) 4.1.2 or later, or MPIR
     http://gmplib.org
 
     BOTH runtime AND development components required.
@@ -58,7 +58,7 @@ OpenCOBOL REQUIRES the following external library to be installed:
 	See NOTE above.
        
 
-OpenCOBOL MAY require the following external library to be installed:
+GNU Cobol C++ MAY require the following external library to be installed:
 
     ***
 	NOTE - libltdl is NOT needed when installing on Linux,
@@ -118,19 +118,19 @@ Installation
 
 ** NOTE **
 	Due to deficiencies in the tools used to prepare
-	OpenCOBOL (autoconf/automake/libtool), it is
+	GNU Cobol C++ (autoconf/automake/libtool), it is
 	NOT generally possible to use path names with
 	spaces embedded within them (Mainly Cygwin/MingW/Windows ports).
  
 ** NOTE **
-	The default installation path for OpenCOBOL is /usr/local.
+	The default installation path for GNU Cobol C++ is /usr/local.
 	The installation path may be changed by specifying --prefix=<dir>
 	as a parameter to the configure.
 	Further parameters may be specified to affect
 	include/library search paths.
 	Execute ./configure --help for further details.
 
-To generate/install OpenCOBOL :
+To generate/install GNU Cobol C++ :
 
 **************************************
 
@@ -139,7 +139,7 @@ To generate/install OpenCOBOL :
 
  Here you may run
     make check
- to run a series of OpenCOBOL test programs (must do!)
+ to run a series of GNU Cobol C++ test programs (must do!)
  This MUST succeed - If not, please report.
 
     make install
@@ -239,10 +239,10 @@ There are the following configure options:
 Development
 ============
 
-If you wish to hack the OpenCOBOL source code, proceed
+If you wish to hack the GNU Cobol C++ source code, proceed
 as follows.
 
-Before changing/building OpenCOBOL, you need to install the
+Before changing/building GNU Cobol C++, you need to install the
 following extra packages with versions equal or greater :
 
 For compiling (when changing flex/bison sources) :

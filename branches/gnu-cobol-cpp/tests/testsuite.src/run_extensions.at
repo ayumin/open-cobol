@@ -1,22 +1,22 @@
 ## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 ## Copyright (C) 2007-2012 Roger While
 ## 
-## This file is part of OpenCOBOL.
+## This file is part of GNU Cobol C++.
 ## 
-## The OpenCOBOL compiler is free software: you can redistribute it
+## The GNU Cobol C++ compiler is free software: you can redistribute it
 ## and/or modify it under the terms of the GNU General Public License
 ## as published by the Free Software Foundation, either version 3 of the
 ## License, or (at your option) any later version.
 ## 
-## OpenCOBOL is distributed in the hope that it will be useful,
+## GNU Cobol C++ is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ## 
 ## You should have received a copy of the GNU General Public License
-## along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+## along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
-### OpenCOBOL Test Suite
+### GNU Cobol C++ Test Suite
 
 ### Non-standard extensions
 
@@ -24,12 +24,12 @@
 AT_SETUP([CALL BY CONTENT binary and literal])
 AT_KEYWORDS([extensions])
 
-AT_DATA([dump.c], [
+AT_DATA([dump.cpp], [
 #include <stdio.h>
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-int dump (unsigned char *, int *);
+extern "C" int dump (unsigned char *, int *);
 int dump (unsigned char *data, int *p)
 {
   int i;
@@ -59,7 +59,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_MODULE dump.c])
+AT_CHECK([$COMPILE_MODULE dump.cpp])
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0],
 [00001234
@@ -610,10 +610,11 @@ AT_CLEANUP
 AT_SETUP([CALL USING file-name])
 AT_KEYWORDS([extensions])
 
-AT_DATA([setfilename.c], [
+AT_DATA([setfilename.cpp], [
 #include <stdio.h>
 #include <string.h>
 #include <libcob.h>
+extern "C" int setfilename(cob_file *, unsigned char *);
 int setfilename (cob_file *f, unsigned char *name)
 {
   memcpy (f->assign->data, name, strlen ((char *)name));
@@ -643,7 +644,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_MODULE setfilename.c])
+AT_CHECK([$COMPILE_MODULE setfilename.cpp])
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0])
 AT_CHECK([test -e TESTFILE], [0])

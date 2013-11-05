@@ -1,21 +1,22 @@
 /*
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
+   Copyright (C) 2013 Sergey Kashyrin
 
-   This file is part of OpenCOBOL.
+   This file is part of GNU Cobol C++.
 
-   The OpenCOBOL compiler is free software: you can redistribute it
+   The GNU Cobol C++ compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   OpenCOBOL is distributed in the hope that it will be useful,
+   GNU Cobol C++ is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+   along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -24,7 +25,7 @@
 %defines
 %error-verbose
 %verbose
-%name-prefix="pp"
+%name-prefix "pp"
 
 %{
 #include "config.h"
@@ -42,6 +43,8 @@
 #define	_STDLIB_H 1
 #endif
 
+#define YYINCLUDED_STDLIB_H 1
+
 #define pperror cb_error
 
 #define COND_EQ		0
@@ -53,11 +56,11 @@
 
 /* Local variables */
 
-static struct cb_define_struct	*ppp_setvar_list;
+static cb_define_struct * ppp_setvar_list;
 static unsigned int		current_cmd;
 
 #if	0	/* RXWRXW OPT */
-static const char	* const compopts[] = {
+static const char * const compopts[] = {
 	"ibm",
 	"ibmcomp",
 	"iso2002",
@@ -73,7 +76,7 @@ static const char	* const compopts[] = {
 	"notrunc"
 };
 
-static const char	* const varopts[] = {
+static const char * const varopts[] = {
 	"fold-copy-name",
 	"foldcopyname",
 	"sourceformat",
@@ -84,55 +87,49 @@ static const char	* const varopts[] = {
 /* Local functions */
 
 static char *
-fix_filename (char *name)
+fix_filename(char * name)
 {
 	/* remove quotation from alphanumeric literals */
-	if (name[0] == '\'' || name[0] == '\"') {
+	if(name[0] == '\'' || name[0] == '\"') {
 		name++;
-		name[strlen (name) - 1] = 0;
+		name[strlen(name) - 1] = 0;
 	}
 	return name;
 }
 
 static char *
-fold_lower (char *name)
+fold_lower(char * name)
 {
-	unsigned char	*p;
-
-	for (p = (unsigned char *)name; *p; p++) {
-		if (isupper (*p)) {
-			*p = (cob_u8_t)tolower (*p);
+	for(unsigned char * p = (unsigned char *)name; *p; p++) {
+		if(isupper(*p)) {
+			*p = (cob_u8_t)tolower(*p);
 		}
 	}
 	return name;
 }
 
 static char *
-fold_upper (char *name)
+fold_upper(char * name)
 {
-	unsigned char	*p;
-
-	for (p = (unsigned char *)name; *p; p++) {
-		if (islower (*p)) {
-			*p = (cob_u8_t)toupper (*p);
+	for(unsigned char * p = (unsigned char *)name; *p; p++) {
+		if(islower(*p)) {
+			*p = (cob_u8_t)toupper(*p);
 		}
 	}
 	return name;
 }
 
-static struct cb_replace_list *
-ppp_replace_list_add (struct cb_replace_list *list,
-		     const struct cb_text_list *old_text,
-		     const struct cb_text_list *new_text,
-		     const unsigned int lead_or_trail)
+static cb_replace_list *
+ppp_replace_list_add(cb_replace_list * list,
+				     const cb_text_list * old_text,
+				     const cb_text_list * new_text,
+				     const unsigned int lead_or_trail)
 {
-	struct cb_replace_list *p;
-
-	p = cobc_plex_malloc (sizeof (struct cb_replace_list));
+	cb_replace_list * p = (cb_replace_list *) cobc_plex_malloc(sizeof(cb_replace_list));
 	p->old_text = old_text;
 	p->new_text = new_text;
 	p->lead_trail = lead_or_trail;
-	if (!list) {
+	if(!list) {
 		p->last = p;
 		return p;
 	}
@@ -142,16 +139,9 @@ ppp_replace_list_add (struct cb_replace_list *list,
 }
 
 static unsigned int
-ppp_set_value (struct cb_define_struct *p, const char *value)
+ppp_set_value(cb_define_struct * p, const char * value)
 {
-	const char	*s;
-	size_t		size;
-	unsigned int	dotseen;
-	int		sign;
-	int		int_part;
-	int		dec_part;
-
-	if (!value) {
+	if(!value) {
 		p->deftype = PLEX_DEF_NONE;
 		p->value = NULL;
 		p->sign = 0;
@@ -160,11 +150,11 @@ ppp_set_value (struct cb_define_struct *p, const char *value)
 		return 0;
 	}
 
-	if (*value == '"' || *value == '\'') {
-		sign = *value;
-		p->value = cobc_plex_strdup (value + 1);
-		size = strlen (p->value) - 1;
-		if (sign != p->value[size]) {
+	if(*value == '"' || *value == '\'') {
+		int sign = *value;
+		p->value = cobc_plex_strdup(value + 1);
+		size_t size = strlen(p->value) - 1;
+		if(sign != p->value[size]) {
 			p->value = NULL;
 			p->deftype = PLEX_DEF_NONE;
 			return 1;
@@ -177,45 +167,45 @@ ppp_set_value (struct cb_define_struct *p, const char *value)
 		return 0;
 	}
 
-	p->value = cobc_plex_strdup (value);
+	p->value = cobc_plex_strdup(value);
 	p->deftype = PLEX_DEF_NUM;
 	p->sign = 0;
 	p->int_part = 0;
 	p->dec_part = 0;
 
-	sign = 0;
-	if (*value == '+') {
+	int sign = 0;
+	if(*value == '+') {
 		value++;
-	} else if (*value == '-') {
+	} else if(*value == '-') {
 		value++;
 		sign = 1;
 	}
-	int_part = 0;
-	dec_part = 0;
-	size = 0;
-	dotseen = 0;
-	s = value;
-	for ( ; *s; ++s, ++size) {
-		if (*s == '.') {
-			if (dotseen) {
+	int int_part = 0;
+	int dec_part = 0;
+	size_t size = 0;
+	bool dotseen = false;
+	const char * s = value;
+	for( ; *s; ++s, ++size) {
+		if(*s == '.') {
+			if(dotseen) {
 				p->deftype = PLEX_DEF_NONE;
 				return 1;
 			}
-			dotseen = 1;
+			dotseen = true;
 			continue;
 		}
-		if (*s > '9' || *s < '0') {
+		if(*s > '9' || *s < '0') {
 			p->deftype = PLEX_DEF_NONE;
 			return 1;
 		}
-		if (!dotseen) {
-			int_part = (int_part * 10) + (*s - '0');
+		if(!dotseen) {
+			int_part = (int_part * 10) +(*s - '0');
 		} else {
-			dec_part = (dec_part * 10) + (*s - '0');
+			dec_part = (dec_part * 10) +(*s - '0');
 		}
 	}
 
-	if (!int_part && !dec_part) {
+	if(!int_part && !dec_part) {
 		sign = 0;
 	}
 	p->sign = sign;
@@ -225,52 +215,52 @@ ppp_set_value (struct cb_define_struct *p, const char *value)
 }
 
 static unsigned int
-ppp_compare_vals (const struct cb_define_struct *p1,
-		 const struct cb_define_struct *p2,
-		 const unsigned int cond)
+ppp_compare_vals(const cb_define_struct * p1,
+				 const cb_define_struct * p2,
+				 const unsigned int cond)
 {
 	int	result;
 
-	if (!p1 || !p2) {
+	if(!p1 || !p2) {
 		return 0;
 	}
-	if (p1->deftype != PLEX_DEF_LIT && p1->deftype != PLEX_DEF_NUM) {
+	if(p1->deftype != PLEX_DEF_LIT && p1->deftype != PLEX_DEF_NUM) {
 		return 0;
 	}
-	if (p2->deftype != PLEX_DEF_LIT && p2->deftype != PLEX_DEF_NUM) {
+	if(p2->deftype != PLEX_DEF_LIT && p2->deftype != PLEX_DEF_NUM) {
 		return 0;
 	}
-	if (p1->deftype != p2->deftype) {
-		cb_warning (_("Directive comparison on different types"));
+	if(p1->deftype != p2->deftype) {
+		cb_warning(_("Directive comparison on different types"));
 		return 0;
 	}
-	if (p1->deftype == PLEX_DEF_LIT) {
-		result = strcmp (p1->value, p2->value);
+	if(p1->deftype == PLEX_DEF_LIT) {
+		result = strcmp(p1->value, p2->value);
 	} else {
-		if (p1->sign && !p2->sign) {
+		if(p1->sign && !p2->sign) {
 			result = -1;
-		} else if (!p1->sign && p2->sign) {
+		} else if(!p1->sign && p2->sign) {
 			result = 1;
-		} else if (p1->int_part < p2->int_part) {
-			if (p1->sign) {
+		} else if(p1->int_part < p2->int_part) {
+			if(p1->sign) {
 				result = 1;
 			} else {
 				result = -1;
 			}
-		} else if (p1->int_part > p2->int_part) {
-			if (p1->sign) {
+		} else if(p1->int_part > p2->int_part) {
+			if(p1->sign) {
 				result = -1;
 			} else {
 				result = 1;
 			}
-		} else if (p1->dec_part < p2->dec_part) {
-			if (p1->sign) {
+		} else if(p1->dec_part < p2->dec_part) {
+			if(p1->sign) {
 				result = 1;
 			} else {
 				result = -1;
 			}
-		} else if (p1->dec_part > p2->dec_part) {
-			if (p1->sign) {
+		} else if(p1->dec_part > p2->dec_part) {
+			if(p1->sign) {
 				result = -1;
 			} else {
 				result = 1;
@@ -279,58 +269,55 @@ ppp_compare_vals (const struct cb_define_struct *p1,
 			result = 0;
 		}
 	}
-	switch (cond) {
+	switch(cond) {
 	case COND_EQ:
-		return (result == 0);
+		return(result == 0);
 	case COND_LT:
-		return (result < 0);
+		return(result < 0);
 	case COND_GT:
-		return (result > 0);
+		return(result > 0);
 	case COND_LE:
-		return (result <= 0);
+		return(result <= 0);
 	case COND_GE:
-		return (result >= 0);
+		return(result >= 0);
 	case COND_NE:
-		return (result != 0);
+		return(result != 0);
 	default:
 		break;
 	}
 	return 0;
 }
 
-static struct cb_define_struct *
-ppp_define_add (struct cb_define_struct *list, const char *name,
-	       const char *text, const unsigned int override)
+static cb_define_struct *
+ppp_define_add(cb_define_struct * list, const char * name,
+		       const char * text, const unsigned int override)
 {
-	struct cb_define_struct	*p;
-	struct cb_define_struct	*l;
-
 	/* Check duplicate */
-	for (l = list; l; l = l->next) {
-		if (!strcasecmp (name, l->name)) {
-			if (!override && l->deftype != PLEX_DEF_DEL) {
-				cb_error (_("Duplicate define"));
+	for(cb_define_struct * l = list; l; l = l->next) {
+		if(!strcasecmp(name, l->name)) {
+			if(!override && l->deftype != PLEX_DEF_DEL) {
+				cb_error(_("Duplicate define"));
 				return NULL;
 			}
-			if (l->value) {
+			if(l->value) {
 				l->value = NULL;
 			}
-			if (ppp_set_value (l, text)) {
-				cb_error (_("Invalid constant"));
+			if(ppp_set_value(l, text)) {
+				cb_error(_("Invalid constant"));
 				return NULL;
 			}
 			return list;
 		}
 	}
 
-	p = cobc_plex_malloc (sizeof (struct cb_define_struct));
-	p->name = cobc_plex_strdup (name);
-	if (ppp_set_value (p, text)) {
-		cb_error (_("Invalid constant"));
+	cb_define_struct * p = (cb_define_struct *) cobc_plex_malloc(sizeof(cb_define_struct));
+	p->name = cobc_plex_strdup(name);
+	if(ppp_set_value(p, text)) {
+		cb_error(_("Invalid constant"));
 		return NULL;
 	}
 
-	if (!list) {
+	if(!list) {
 		p->last = p;
 		return p;
 	}
@@ -340,14 +327,12 @@ ppp_define_add (struct cb_define_struct *list, const char *name,
 }
 
 static void
-ppp_define_del (const char *name)
+ppp_define_del(const char * name)
 {
-	struct cb_define_struct	*l;
-
-	for (l = ppp_setvar_list; l; l = l->next) {
-		if (!strcmp (name, l->name)) {
+	for(cb_define_struct * l = ppp_setvar_list; l; l = l->next) {
+		if(!strcmp(name, l->name)) {
 			l->deftype = PLEX_DEF_DEL;
-			if (l->value) {
+			if(l->value) {
 				l->value = NULL;
 			}
 			l->sign = 0;
@@ -358,14 +343,12 @@ ppp_define_del (const char *name)
 	}
 }
 
-static struct cb_define_struct *
-ppp_search_lists (const char *name)
+static cb_define_struct *
+ppp_search_lists(const char * name)
 {
-	struct cb_define_struct	*p;
-
-	for (p = ppp_setvar_list; p; p = p->next) {
-		if (!strcasecmp (name, p->name)) {
-			if (p->deftype != PLEX_DEF_DEL) {
+	for(cb_define_struct * p = ppp_setvar_list; p; p = p->next) {
+		if(!strcasecmp(name, p->name)) {
+			if(p->deftype != PLEX_DEF_DEL) {
 				return p;
 			}
 			break;
@@ -374,14 +357,12 @@ ppp_search_lists (const char *name)
 	return NULL;
 }
 
-static struct cb_text_list *
-ppp_list_add (struct cb_text_list *list, const char *text)
+static cb_text_list *
+ppp_list_add(cb_text_list * list, const char * text)
 {
-	struct cb_text_list	*p;
-
-	p = cobc_plex_malloc (sizeof (struct cb_text_list));
-	p->text = cobc_plex_strdup (text);
-	if (!list) {
+	cb_text_list * p = (cb_text_list *) cobc_plex_malloc(sizeof(cb_text_list));
+	p->text = cobc_plex_strdup(text);
+	if(!list) {
 		p->last = p;
 		return p;
 	}
@@ -391,49 +372,44 @@ ppp_list_add (struct cb_text_list *list, const char *text)
 }
 
 static unsigned int
-ppp_search_comp_vars (const char *name)
+ppp_search_comp_vars(const char * name)
 {
 #undef	CB_PARSE_DEF
-#define	CB_PARSE_DEF(x,z)	if (!strcasecmp (name, x)) return (z);
+#define	CB_PARSE_DEF(x,z)	if(!strcasecmp(name, x)) return(z);
 #include "ppparse.def"
 #undef	CB_PARSE_DEF
 	return 0;
 }
 
 static unsigned int
-ppp_check_needs_quote (const char *envval)
+ppp_check_needs_quote(const char * envval)
 {
-	const char	*s;
-	size_t		size;
-	unsigned int	dot_seen;
-	unsigned int	sign_seen;
-
 	/* Non-quoted value - Check if possible numeric */
-	dot_seen = 0;
-	sign_seen = 0;
-	size = 0;
-	s = envval;
-	if (*s == '+' || *s == '-') {
+	unsigned int dot_seen = 0;
+	unsigned int sign_seen = 0;
+	size_t size = 0;
+	const char * s = envval;
+	if(*s == '+' || *s == '-') {
 		sign_seen = 1;
 		size++;
 		s++;
 	}
-	for (; *s; ++s) {
-		if (*s == '.') {
-			if (dot_seen) {
+	for(; *s; ++s) {
+		if(*s == '.') {
+			if(dot_seen) {
 				break;
 			}
 			dot_seen = 1;
 			size++;
 			continue;
 		}
-		if (*s > '9' || *s < '0') {
+		if(*s > '9' || *s < '0') {
 			break;
 		}
 		size++;
 	}
 
-	if (*s || size <= (dot_seen + sign_seen)) {
+	if(*s || size <= (dot_seen + sign_seen)) {
 		return 1;
 	}
 	return 0;
@@ -442,69 +418,65 @@ ppp_check_needs_quote (const char *envval)
 /* Global functions */
 
 void
-ppparse_clear_vars (const struct cb_define_struct *p)
+ppparse_clear_vars(const cb_define_struct * p)
 {
-	const struct cb_define_struct	*q;
-
 	ppp_setvar_list = NULL;
 	/* Set standard DEFINE's */
-	if (cb_perform_osvs) {
-		ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-						  "PERFORM-TYPE",
-						  "'OSVS'", 0);
+	if(cb_perform_osvs) {
+		ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+										  "PERFORM-TYPE",
+										  "'OSVS'", 0);
 	} else {
-		ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-						  "PERFORM-TYPE",
-						  "'MF'", 0);
+		ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+										  "PERFORM-TYPE",
+										  "'MF'", 0);
 	}
-	if (cb_ebcdic_sign) {
-		ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-						  "SIGN",
-						  "'EBCDIC'", 0);
+	if(cb_ebcdic_sign) {
+		ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+										  "SIGN",
+										  "'EBCDIC'", 0);
 	} else {
-		ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-						  "SIGN",
-						  "'ASCII'", 0);
+		ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+										  "SIGN",
+										  "'ASCII'", 0);
 	}
 #ifdef	WORDS_BIGENDIAN
-	ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-					  "ENDIAN",
-					  "'BIG'", 0);
+	ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+									  "ENDIAN",
+									  "'BIG'", 0);
 #else
-	ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-					  "ENDIAN",
-					  "'LITTLE'", 0);
+	ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+									  "ENDIAN",
+									  "'LITTLE'", 0);
 #endif
 #if	' ' == 0x20
-	ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-					  "CHARSET",
-					  "'ASCII'", 0);
+	ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+									  "CHARSET",
+									  "'ASCII'", 0);
 #elif	' ' == 0x40
-	ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-					  "CHARSET",
-					  "'EBCDIC'", 0);
+	ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+									  "CHARSET",
+									  "'EBCDIC'", 0);
 #else
-	ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-					  "CHARSET",
-					  "'UNKNOWN'", 0);
+	ppp_setvar_list = ppp_define_add(ppp_setvar_list,
+									  "CHARSET",
+									  "'UNKNOWN'", 0);
 #endif
 	/* Set DEFINE's from '-D' option(s) */
-	for (q = p; q; q = q->next) {
-		ppp_setvar_list = ppp_define_add (ppp_setvar_list,
-						  q->name,
-						  q->value, 0);
+	for(const cb_define_struct * q = p; q; q = q->next) {
+		ppp_setvar_list = ppp_define_add(ppp_setvar_list, q->name, q->value, 0);
 	}
 }
 
 %}
 
 %union {
-	char			*s;
-	struct cb_text_list	*l;
-	struct cb_replace_list	*r;
-	struct cb_define_struct	*ds;
-	unsigned int		ui;
-	int			si;
+	char * s;
+	cb_text_list * l;
+	cb_replace_list * r;
+	cb_define_struct * ds;
+	unsigned int ui;
+	int si;
 };
 
 %token TOKEN_EOF 0	"end of file"
@@ -628,11 +600,11 @@ directive:
   if_directive
 | ELSE_DIRECTIVE
   {
-	plex_action_directive (PLEX_ACT_ELSE, 0);
+	plex_action_directive(PLEX_ACT_ELSE, 0);
   }
 | ENDIF_DIRECTIVE
   {
-	plex_action_directive (PLEX_ACT_END, 0);
+	plex_action_directive(PLEX_ACT_END, 0);
   }
 ;
 
@@ -644,37 +616,31 @@ set_directive:
 set_choice:
   CONSTANT VARIABLE _as LITERAL
   {
-	struct cb_define_struct	*p;
-
-	p = ppp_define_add (ppp_setvar_list, $2, $4, 1);
-	if (p) {
+	cb_define_struct * p = ppp_define_add(ppp_setvar_list, $2, $4, 1);
+	if(p) {
 		ppp_setvar_list = p;
-		fprintf (ppout, "#DEFLIT %s %s\n", $2, $4);
+		fprintf(ppout, "#DEFLIT %s %s\n", $2, $4);
 	}
   }
 | VARIABLE set_options
 | SOURCEFORMAT _as LITERAL
   {
-	char	*p;
-	size_t	size;
-	int	quote;
-
-	p = $3;
-	if (*p == '\"' || *p == '\'') {
-		quote = *p;
+	char * p = $3;
+	if(*p == '\"' || *p == '\'') {
+		int quote = *p;
 		p++;
-		size = strlen (p) - 1;
-		if (p[size] != quote) {
-			cb_error (_("Invalid SOURCEFORMAT directive"));
+		size_t size = strlen(p) - 1;
+		if(p[size] != quote) {
+			cb_error(_("Invalid SOURCEFORMAT directive"));
 		}
 		p[size] = 0;
 	}
-	if (!strcasecmp (p, "FIXED")) {
+	if(!strcasecmp(p, "FIXED")) {
 		cb_source_format = CB_FORMAT_FIXED;
-	} else if (!strcasecmp (p, "FREE")) {
+	} else if(!strcasecmp(p, "FREE")) {
 		cb_source_format = CB_FORMAT_FREE;
 	} else {
-		cb_error (_("Invalid SOURCEFORMAT directive"));
+		cb_error(_("Invalid SOURCEFORMAT directive"));
 	}
   }
 | NOFOLDCOPYNAME
@@ -683,26 +649,22 @@ set_choice:
   }
 | FOLDCOPYNAME _as LITERAL
   {
-	char	*p;
-	size_t	size;
-	int	quote;
-
-	p = $3;
-	if (*p == '\"' || *p == '\'') {
-		quote = *p;
+	char * p = $3;
+	if(*p == '\"' || *p == '\'') {
+		int quote = *p;
 		p++;
-		size = strlen (p) - 1;
-		if (p[size] != quote) {
-			cb_error (_("Invalid FOLD-COPY-NAME directive"));
+		size_t size = strlen(p) - 1;
+		if(p[size] != quote) {
+			cb_error(_("Invalid FOLD-COPY-NAME directive"));
 		}
 		p[size] = 0;
 	}
-	if (!strcasecmp (p, "UPPER")) {
+	if(!strcasecmp(p, "UPPER")) {
 		cb_fold_copy = COB_FOLD_UPPER;
-	} else if (!strcasecmp (p, "LOWER")) {
+	} else if(!strcasecmp(p, "LOWER")) {
 		cb_fold_copy = COB_FOLD_LOWER;
 	} else {
-		cb_error (_("Invalid FOLD-COPY-NAME directive"));
+		cb_error(_("Invalid FOLD-COPY-NAME directive"));
 	}
   }
 ;
@@ -710,11 +672,11 @@ set_choice:
 set_options:
   /* empty */
   {
-	fprintf (ppout, "#OPTION %s\n", $<s>0);
+	fprintf(ppout, "#OPTION %s\n", $<s>0);
   }
 | _as LITERAL
   {
-	fprintf (ppout, "#OPTION %s %s\n", $<s>0, $2);
+	fprintf(ppout, "#OPTION %s %s\n", $<s>0, $2);
   }
 ;
 
@@ -733,7 +695,7 @@ format_type:
   }
 | GARBAGE
   {
-	cb_error (_("Invalid SOURCE directive"));
+	cb_error(_("Invalid SOURCE directive"));
 	YYERROR;
   }
 ;
@@ -741,64 +703,55 @@ format_type:
 define_directive:
   VARIABLE _as OFF
   {
-	ppp_define_del ($1);
+	ppp_define_del($1);
   }
 | VARIABLE _as PARAMETER _override
   {
-	char			*s;
-	char			*q;
-	struct cb_define_struct	*p;
-	size_t			size;
-
-	s = getenv ($1);
-	q = NULL;
-	if (s && *s && *s != ' ') {
-		if (*s == '"' || *s == '\'') {
-			size = strlen (s) - 1U;
+	char * s = getenv($1);
+	char * q = NULL;
+	if(s && *s && *s != ' ') {
+		if(*s == '"' || *s == '\'') {
+			size_t size = strlen(s) - 1U;
 			/* Ignore if improperly quoted */
-			if (s[0] == s[size]) {
+			if(s[0] == s[size]) {
 				q = s;
 			}
 		} else {
-			if (ppp_check_needs_quote (s)) {
+			if(ppp_check_needs_quote(s)) {
 				/* Alphanumeric literal */
-				q = cobc_plex_malloc (strlen (s) + 4U);
-				sprintf (q, "'%s'", s);
+				q = (char *) cobc_plex_malloc(strlen(s) + 4U);
+				sprintf(q, "'%s'", s);
 			} else {
 				/* Numeric literal */
 				q = s;
 			}
 		}
 	}
-	if (q) {
-		p = ppp_define_add (ppp_setvar_list, $1, q, $4);
-		if (p) {
+	if(q) {
+		cb_define_struct * p = ppp_define_add(ppp_setvar_list, $1, q, $4);
+		if(p) {
 			ppp_setvar_list = p;
 		}
 	}
   }
 | VARIABLE _as LITERAL _override
   {
-	struct cb_define_struct	*p;
-
-	p = ppp_define_add (ppp_setvar_list, $1, $3, $4);
-	if (p) {
+	cb_define_struct * p = ppp_define_add(ppp_setvar_list, $1, $3, $4);
+	if(p) {
 		ppp_setvar_list = p;
 	}
   }
 | CONSTANT VARIABLE _as LITERAL _override
   {
-	struct cb_define_struct	*p;
-
-	p = ppp_define_add (ppp_setvar_list, $2, $4, $5);
-	if (p) {
+	cb_define_struct * p = ppp_define_add(ppp_setvar_list, $2, $4, $5);
+	if(p) {
 		ppp_setvar_list = p;
-		fprintf (ppout, "#DEFLIT %s %s\n", $2, $4);
+		fprintf(ppout, "#DEFLIT %s %s\n", $2, $4);
 	}
   }
 | variable_or_literal
   {
-	cb_error (_("Invalid DEFINE/SET directive"));
+	cb_error(_("Invalid DEFINE/SET directive"));
   }
 ;
 
@@ -806,7 +759,7 @@ define_directive:
 turn_directive:
   ec_list CHECKING on_or_off
   {
-	cb_warning (_("TURN directive not yet implemented"));
+	cb_warning(_("TURN directive not yet implemented"));
   }
 ;
 
@@ -830,46 +783,36 @@ with_loc:
 if_directive:
   VARIABLE _is _not DEFINED
   {
-	unsigned int		found;
-
-	found = (ppp_search_lists ($1) != NULL);
-	plex_action_directive (current_cmd, found ^ $3);
+	unsigned int found = (ppp_search_lists($1) != NULL);
+	plex_action_directive(current_cmd, found ^ $3);
   }
 | VARIABLE _is _not SET
   {
-	unsigned int		found;
-
-	found = ppp_search_comp_vars ($1);
-	plex_action_directive (current_cmd, found ^ $3);
+	unsigned int found = ppp_search_comp_vars($1);
+	plex_action_directive(current_cmd, found ^ $3);
   }
 | VARIABLE _is _not condition_clause object_id
   {
-	struct cb_define_struct	*p;
-	unsigned int		found;
-
-	found = 0;
-	p = ppp_search_lists ($1);
-	found = ppp_compare_vals (p, $5, $4);
-	plex_action_directive (current_cmd, found ^ $3);
+	unsigned int found = 0;
+	cb_define_struct * p = ppp_search_lists($1);
+	found = ppp_compare_vals(p, $5, $4);
+	plex_action_directive(current_cmd, found ^ $3);
   }
 | LITERAL _is _not condition_clause object_id
   {
-	struct cb_define_struct	*p;
-	unsigned int		found;
-
-	found = 0;
-	p = cobc_plex_malloc (sizeof (struct cb_define_struct));
+	unsigned int found = 0;
+	cb_define_struct * p = (cb_define_struct *) cobc_plex_malloc(sizeof(cb_define_struct));
 	p->next = NULL;
-	if (ppp_set_value (p, $1)) {
-		cb_error (_("Invalid constant"));
+	if(ppp_set_value(p, $1)) {
+		cb_error(_("Invalid constant"));
 	} else {
-		found = ppp_compare_vals (p, $5, $4);
+		found = ppp_compare_vals(p, $5, $4);
 	}
-	plex_action_directive (current_cmd, found ^ $3);
+	plex_action_directive(current_cmd, found ^ $3);
   }
 | variable_or_literal
   {
-	cb_error (_("Invalid IF/ELIF directive"));
+	cb_error(_("Invalid IF/ELIF directive"));
   }
 ;
 
@@ -881,12 +824,10 @@ variable_or_literal:
 object_id:
   LITERAL
   {
-	struct cb_define_struct	*p;
-
-	p = cobc_plex_malloc (sizeof (struct cb_define_struct));
+	cb_define_struct * p = (cb_define_struct *) cobc_plex_malloc(sizeof(cb_define_struct));
 	p->next = NULL;
-	if (ppp_set_value (p, $1)) {
-		cb_error (_("Invalid constant"));
+	if(ppp_set_value(p, $1)) {
+		cb_error(_("Invalid constant"));
 		$$ = NULL;
 	} else {
 		$$ = p;
@@ -894,10 +835,8 @@ object_id:
   }
 | VARIABLE
   {
-	struct cb_define_struct	*p;
-
-	p = ppp_search_lists ($1);
-	if (p != NULL && p->deftype != PLEX_DEF_NONE) {
+	cb_define_struct * p = ppp_search_lists($1);
+	if(p != NULL && p->deftype != PLEX_DEF_NONE) {
 		$$ = p;
 	} else {
 		$$ = NULL;
@@ -955,22 +894,22 @@ condition_clause:
 copy_statement:
   COPY TOKEN copy_in copy_suppress copy_replacing
   {
-	fputc ('\n', ppout);
-	$2 = fix_filename ($2);
-	if (cb_fold_copy == COB_FOLD_LOWER) {
-		$2 = fold_lower ($2);
-	} else if (cb_fold_copy == COB_FOLD_UPPER) {
-		$2 = fold_upper ($2);
+	fputc('\n', ppout);
+	$2 = fix_filename($2);
+	if(cb_fold_copy == COB_FOLD_LOWER) {
+		$2 = fold_lower($2);
+	} else if(cb_fold_copy == COB_FOLD_UPPER) {
+		$2 = fold_upper($2);
 	}
-	if ($3) {
-		$3 = fix_filename ($3);
-		if (cb_fold_copy == COB_FOLD_LOWER) {
-			$3 = fold_lower ($3);
-		} else if (cb_fold_copy == COB_FOLD_UPPER) {
-			$3 = fold_upper ($3);
+	if($3) {
+		$3 = fix_filename($3);
+		if(cb_fold_copy == COB_FOLD_LOWER) {
+			$3 = fold_lower($3);
+		} else if(cb_fold_copy == COB_FOLD_UPPER) {
+			$3 = fold_upper($3);
 		}
 	}
-	ppcopy ($2, $3, $5);
+	ppcopy($2, $3, $5);
   }
 ;
 
@@ -1008,30 +947,30 @@ copy_replacing:
 replace_statement:
   REPLACE _also replacing_list
   {
-	pp_set_replace_list ($3, $2);
+	pp_set_replace_list($3, $2);
   }
 | REPLACE _last OFF
   {
-	pp_set_replace_list (NULL, $2);
+	pp_set_replace_list(NULL, $2);
   }
 ;
 
 replacing_list:
   text_src BY text_dst
   {
-	$$ = ppp_replace_list_add (NULL, $1, $3, 0);
+	$$ = ppp_replace_list_add(NULL, $1, $3, 0);
   }
 | lead_trail text_partial_src BY text_partial_dst
   {
-	$$ = ppp_replace_list_add (NULL, $2, $4, $1);
+	$$ = ppp_replace_list_add(NULL, $2, $4, $1);
   }
 | replacing_list text_src BY text_dst
   {
-	$$ = ppp_replace_list_add ($1, $2, $4, 0);
+	$$ = ppp_replace_list_add($1, $2, $4, 0);
   }
 | replacing_list lead_trail text_partial_src BY text_partial_dst
   {
-	$$ = ppp_replace_list_add ($1, $3, $5, $2);
+	$$ = ppp_replace_list_add($1, $3, $5, $2);
   }
 ;
 
@@ -1064,7 +1003,7 @@ text_dst:
 text_partial_src:
   EQEQ TOKEN EQEQ
   {
-	$$ = ppp_list_add (NULL, $2);
+	$$ = ppp_list_add(NULL, $2);
   }
 ;
 
@@ -1075,48 +1014,48 @@ text_partial_dst:
   }
 | EQEQ TOKEN EQEQ
   {
-	$$ = ppp_list_add (NULL, $2);
+	$$ = ppp_list_add(NULL, $2);
   }
 ;
 
 token_list:
   TOKEN
   {
-	$$ = ppp_list_add (NULL, $1);
+	$$ = ppp_list_add(NULL, $1);
   }
 | token_list TOKEN
   {
-	$$ = ppp_list_add ($1, $2);
+	$$ = ppp_list_add($1, $2);
   }
 ;
 
 identifier:
   TOKEN
   {
-	$$ = ppp_list_add (NULL, $1);
+	$$ = ppp_list_add(NULL, $1);
   }
 | identifier IN TOKEN
   {
-	$$ = ppp_list_add ($1, " ");
-	$$ = ppp_list_add ($$, "IN");
-	$$ = ppp_list_add ($$, " ");
-	$$ = ppp_list_add ($$, $3);
+	$$ = ppp_list_add($1, " ");
+	$$ = ppp_list_add($$, "IN");
+	$$ = ppp_list_add($$, " ");
+	$$ = ppp_list_add($$, $3);
   }
 | identifier OF TOKEN
   {
-	$$ = ppp_list_add ($1, " ");
-	$$ = ppp_list_add ($$, "OF");
-	$$ = ppp_list_add ($$, " ");
-	$$ = ppp_list_add ($$, $3);
+	$$ = ppp_list_add($1, " ");
+	$$ = ppp_list_add($$, "OF");
+	$$ = ppp_list_add($$, " ");
+	$$ = ppp_list_add($$, $3);
   }
 | identifier '(' subscripts ')'
   {
-	struct cb_text_list *l;
+	cb_text_list *l;
 
-	$$ = ppp_list_add ($1, " ");
-	$$ = ppp_list_add ($$, "(");
-	$3 = ppp_list_add ($3, ")");
-	for (l = $$; l->next; l = l->next) {
+	$$ = ppp_list_add($1, " ");
+	$$ = ppp_list_add($$, "(");
+	$3 = ppp_list_add($3, ")");
+	for(l = $$; l->next; l = l->next) {
 		;
 	}
 	l->next = $3;
@@ -1126,12 +1065,12 @@ identifier:
 subscripts:
   TOKEN
   {
-	$$ = ppp_list_add (NULL, $1);
+	$$ = ppp_list_add(NULL, $1);
   }
 | subscripts TOKEN
   {
-	$$ = ppp_list_add ($1, " ");
-	$$ = ppp_list_add ($$, $2);
+	$$ = ppp_list_add($1, " ");
+	$$ = ppp_list_add($$, $2);
   }
 ;
 

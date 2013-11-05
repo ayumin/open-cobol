@@ -1,27 +1,28 @@
 #
-# Makefile opencobol/libcob
+# Makefile gnu-cobol-cpp/libcob
 #
 # Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2008-2012 Roger While
+# Copyright (C) 2013 Sergey Kashyrin
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol C++.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol C++ compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol C++ is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
+# along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
 lib_LTLIBRARIES = libcob.la
-libcob_la_SOURCES = common.c move.c numeric.c strings.c \
-	fileio.c call.c intrinsic.c termio.c screenio.c
+libcob_la_SOURCES = common.cpp move.cpp numeric.cpp strings.cpp \
+	fileio.cpp call.cpp intrinsic.cpp termio.cpp screenio.cpp btmsadd.cpp
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
 libcob_la_LIBADD = $(LIBCOB_LIBS)
