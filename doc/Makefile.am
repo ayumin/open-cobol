@@ -1,5 +1,5 @@
 #
-# Makefile gnucobol/doc
+# Makefile gnu-cobol/doc
 #
 # Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2008-2012 Roger While
