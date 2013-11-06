@@ -11,7 +11,7 @@ Summary:	GNU Cobol - COBOL compiler
 Group:		Development/Languages/Other
 License:	GPL/LGPL
 
-URL:		http://www.opencobol.org
+URL:		http://sourceforge.net/projects/open-cobol
 # Source:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source:		http://www.sim-basis.de/%{name}-%{version}.tar.gz
 

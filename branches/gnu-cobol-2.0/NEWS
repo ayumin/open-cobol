@@ -75,7 +75,7 @@ NEWS - user visible changes				-*- outline -*-
    This allows all application programs to be compiled as
    modules and driven by "cobcrun" similar to MF's "cobrun".
    Syntax - cobcrun <MAINPROG> [Arguments to program "MAINPROG"]
-   As "cobcrun" is linked with the static version of Open Cobol
+   As "cobcrun" is linked with the static version of OpenCOBOL
    libraries, it is easier to maintain concurrent versions on the
    same system.
 

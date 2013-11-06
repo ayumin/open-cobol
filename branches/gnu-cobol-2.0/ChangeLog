@@ -1,7 +1,8 @@
+
 2013-09-29  Brian Tiffin & Simon  Sobisch
 
 	* Change package name, and project to GNU Cobol
-    * GNU-ification of source code commencing
+	* GNU-ification of source code commencing
 
 2010-06-28  Roger While <simrw@sim-basis.de>
 
@@ -473,7 +474,7 @@
 2002-10-14  Keisuke Nishida  <knishida@netlab.jp>
 
 	* Makefile.am: Install libcob.conf in $(sysconfdir), not in
-	$(sysconfdir)/gnu-cobol.
+	$(sysconfdir)/open-cobol.
 	* configure.ac (COB_CONFIG_FILE): Updated.
 
 2002-09-30  Keisuke Nishida  <knishida@netlab.jp>
