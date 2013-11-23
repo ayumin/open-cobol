@@ -1,0 +1,67 @@
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2012 Roger While
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite
+
+### ISO+IEC+1989-2002 14.8.1 ACCEPT statement
+
+AT_SETUP([ACCEPT FROM DATE/DAY])
+AT_KEYWORDS([accept])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(8).
+       PROCEDURE        DIVISION.
+           ACCEPT X FROM DATE
+           END-ACCEPT.
+           INSPECT X CONVERTING "012345678" TO "999999999".
+           IF X NOT = "999999  "
+              DISPLAY "DATE " X
+              END-DISPLAY
+           END-IF.
+           ACCEPT X FROM DATE YYYYMMDD
+           END-ACCEPT.
+           INSPECT X CONVERTING "012345678" TO "999999999".
+           IF X NOT = "99999999"
+              DISPLAY "YYYYMMDD " X
+              END-DISPLAY
+           END-IF.
+           ACCEPT X FROM DAY
+           END-ACCEPT.
+           INSPECT X CONVERTING "012345678" TO "999999999".
+           IF X NOT = "99999   "
+              DISPLAY "DAY " X
+              END-DISPLAY
+           END-IF.
+           ACCEPT X FROM DAY YYYYDDD
+           END-ACCEPT.
+           INSPECT X CONVERTING "012345678" TO "999999999".
+           IF X NOT = "9999999 "
+              DISPLAY "YYYYDDD " X
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP

@@ -1,0 +1,10 @@
+00123Dorken, Keith       CS 08
+00124Allinson, Sandy     MA 08
+00125Allinson, Nina      MA 08
+00126Allinson, Natalia   MA 08
+00127Allinson, Kristina  MBA08
+00131Norman, Nancy       SC 06
+00132Norman, Becky       SC 06
+00133Norman, Michelle    SC 06
+00134Norman, James       AM 06
+12345Norman, Ron         CS 08

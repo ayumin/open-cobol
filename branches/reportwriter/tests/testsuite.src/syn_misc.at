@@ -1,0 +1,158 @@
+## Copyright (C) 2007-2012 Roger While
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite
+
+AT_SETUP([Missing headers])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       SOURCE-COMPUTER. LINUX.
+       SPECIAL-NAMES.
+            SYMBOLIC NL IS 101
+                     NL2   102
+            NUMERIC SIGN TRAILING SEPARATE
+            DECIMAL-POINT IS COMMA
+            .
+
+            SELECT PRINT-FILE ASSIGN "EXTRXW"
+            ORGANIZATION LINE SEQUENTIAL
+            .
+       DATA DIVISION.
+       FD  PRINT-FILE EXTERNAL.
+       01  PRINT-REC          PIC X(64).
+
+           DISPLAY "X"
+           END-DISPLAY
+           ACCEPT OMITTED
+           END-ACCEPT
+           GOBACK
+           .
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 2: Error: PROGRAM-ID header missing
+prog.cob: 2: Error: ENVIRONMENT DIVISION header missing
+prog.cob: 2: Error: CONFIGURATION SECTION header missing
+prog.cob: 10: Error: INPUT-OUTPUT SECTION header missing
+prog.cob: 10: Error: FILE-CONTROL header missing
+prog.cob: 14: Error: FILE SECTION header missing
+prog.cob: 17: Error: PROCEDURE DIVISION header missing
+])
+
+AT_CLEANUP
+
+AT_SETUP([CLASS duplicate values])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       CONFIGURATION    SECTION.
+       SPECIAL-NAMES.
+            SYMBOLIC NL IS 101
+                     NL2   102
+            CLASS    CHECK-VALID    'a' THRU 'z'
+                                    'A' THRU 'Z'
+                                    'cdef'
+            NUMERIC SIGN TRAILING SEPARATE
+            DECIMAL-POINT IS COMMA
+            .
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(8).
+       PROCEDURE        DIVISION.
+           IF X         IS CHECK-VALID
+              DISPLAY "OK"
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 9: Error: Duplicate values in class 'CHECK-VALID'
+])
+
+AT_CLEANUP
+
+AT_SETUP([INSPECT invalid size])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(8).
+       PROCEDURE        DIVISION.
+           INSPECT X REPLACING ALL SPACE BY "AA".
+           INSPECT X REPLACING ALL "ABC" BY "AA".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 8: Error: REPLACING operands differ in size
+prog.cob: 9: Error: REPLACING operands differ in size
+])
+
+AT_CLEANUP
+
+AT_SETUP([INSPECT missing keyword])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(8).
+       PROCEDURE        DIVISION.
+           INSPECT X REPLACING "AB" BY "CD".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 8: Error: INSPECT missing a keyword
+])
+
+AT_CLEANUP
+
+AT_SETUP([REPOSITORY])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+       REPOSITORY.
+           FUNCTION rxwfun
+           FUNCTION pi e intrinsic
+           .
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY PI.
+           DISPLAY E.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [0])
+
+AT_CLEANUP

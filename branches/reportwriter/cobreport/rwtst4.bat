@@ -1,0 +1,85 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. RWTST4.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT INV-FILE ASSIGN TO EXTERNAL INVFILE
+                          ORGANIZATION IS LINE SEQUENTIAL. 
+           SELECT REPORT-FILE ASSIGN TO EXTERNAL
+		                  LINE ADVANCING REPORT4.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD    INV-FILE.
+       01    INV-REC.
+           05     DEPT-IN        PIC 99.
+           05     DEPT-NAM-IN    PIC X(18).
+           05     MONTH-IN       PIC 99.
+           05     ITEM-NO-IN     PIC 9(5).
+           05     INV-TOT-IN     PIC 9(6)V99.
+
+       FD    REPORT-FILE
+           REPORT IS INV-REPORT.
+
+       WORKING-STORAGE SECTION.
+       01  INDICATORS.
+           05  ARE-THERE-MORE-RECORDS    PIC XXX VALUE 'YES'.
+
+       REPORT SECTION.
+       RD  INV-REPORT
+           CONTROLS ARE FINAL DEPT-IN MONTH-IN
+           PAGE LIMIT 25 LINES
+           HEADING 2
+           FIRST DETAIL 5
+           LAST DETAIL 18
+           FOOTING 20.
+       01  TYPE IS REPORT HEADING.
+           05  LINE 2 COLUMN 50  PIC X(16) VALUE 'INVENTORY REPORT'.
+
+       01  TYPE IS CONTROL HEADING DEPT-IN
+           LINE NUMBER IS PLUS 2
+           NEXT GROUP IS PLUS 2.
+           05 COLUMN 2        PIC X(13) VALUE 'DEPARTMENT #:'.
+           05 COLUMN 27       PIC 99    SOURCE DEPT-IN.
+           05 COLUMN 31       PIC X(16) VALUE 'DEPARTMENT NAME:'.
+           05 COLUMN 50       PIC X(18) SOURCE DEPT-NAM-IN.
+
+       01  INV-DETAIL TYPE IS DETAIL
+           LINE PLUS 2.
+           05 COLUMN 10       PIC 99  SOURCE MONTH-IN GROUP INDICATE.
+           05 COLUMN 25       PIC 9(5) SOURCE ITEM-NO-IN.
+           05 COLUMN 40       PIC ZZZ,ZZZ.99 SOURCE IS INV-TOT-IN.
+
+       01  TYPE IS CONTROL FOOTING MONTH-IN
+           LINE PLUS 2.
+           05 MONTH-TOTAL COLUMN 55 PIC Z,ZZZ,ZZZ.99 SUM INV-TOT-IN.
+
+       01  TYPE IS CONTROL FOOTING DEPT-IN
+           LINE PLUS 2.
+           05 DEPT-TOTAL COLUMN 75 PIC ZZ,ZZZ,ZZZ.99 SUM MONTH-TOTAL.
+
+       01  TYPE IS CONTROL FOOTING FINAL
+           LINE PLUS 2.
+           05 FINAL-TOTAL COLUMN 95 PIC ZZZ,ZZZ,ZZZ.99 SUM DEPT-TOTAL.
+
+       PROCEDURE DIVISION.
+       A000-MAINLINE.
+           OPEN INPUT INV-FILE
+                OUTPUT REPORT-FILE.
+           INITIATE INV-REPORT.
+           READ INV-FILE
+                AT END
+                    MOVE 'NO ' TO ARE-THERE-MORE-RECORDS.
+           PERFORM A001-LOOP
+                UNTIL ARE-THERE-MORE-RECORDS = 'NO '.
+           TERMINATE INV-REPORT.
+           CLOSE INV-FILE
+                REPORT-FILE.
+           STOP RUN.
+       A001-LOOP.
+           GENERATE INV-DETAIL.
+           READ INV-FILE
+                AT END
+                    MOVE 'NO ' TO ARE-THERE-MORE-RECORDS.
+       
