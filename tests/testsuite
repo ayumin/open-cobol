@@ -1344,7 +1344,7 @@ Execution tuning:
 _ATEOF
 cat <<_ATEOF || at_write_fail=1
 
-Report bugs to <gnu-cobol-list@lists.sourceforge.net>.
+Report bugs to <open-cobol-list@lists.sourceforge.net>.
 GNU Cobol home page: <http://www.gnu.org/software/gnucobol>.
 General help using GNU software: <http://www.gnu.org/gethelp/>.
 _ATEOF
@@ -1354,7 +1354,7 @@ fi
 # List of tests.
 if $at_list_p; then
   cat <<_ATEOF || at_write_fail=1
-GNU Cobol 2.0 test suite: GNU Cobol Tests test groups:
+GNU Cobol 2.1 test suite: GNU Cobol Tests test groups:
 
  NUM: FILE-NAME:LINE     TEST-GROUP-NAME
       KEYWORDS
@@ -1395,7 +1395,7 @@ _ATEOF
   exit $at_write_fail
 fi
 if $at_version_p; then
-  $as_echo "$as_me (GNU Cobol 2.0)" &&
+  $as_echo "$as_me (GNU Cobol 2.1)" &&
   cat <<\_ATEOF || at_write_fail=1
 
 
@@ -1592,11 +1592,11 @@ exec 5>>"$at_suite_log"
 
 # Banners and logs.
 $as_echo "## ------------------------------------------ ##
-## GNU Cobol 2.0 test suite: GNU Cobol Tests. ##
+## GNU Cobol 2.1 test suite: GNU Cobol Tests. ##
 ## ------------------------------------------ ##"
 {
   $as_echo "## ------------------------------------------ ##
-## GNU Cobol 2.0 test suite: GNU Cobol Tests. ##
+## GNU Cobol 2.1 test suite: GNU Cobol Tests. ##
 ## ------------------------------------------ ##"
   echo
 
@@ -2021,7 +2021,7 @@ at_fn_group_postprocess ()
     sed "s/^ */$as_me: WARNING: /" <<_ATEOF
       A failure happened in a test group before any test could be
       run. This means that test suite is improperly designed.  Please
-      report this failure to <gnu-cobol-list@lists.sourceforge.net>.
+      report this failure to <open-cobol-list@lists.sourceforge.net>.
 _ATEOF
     $as_echo "$at_setup_line" >"$at_check_line_file"
     at_status=99
@@ -2439,8 +2439,8 @@ _ASBOX
   fi
   $as_echo "Please send $at_msg and all information you think might help:
 
-   To: <gnu-cobol-list@lists.sourceforge.net>
-   Subject: [GNU Cobol 2.0] $as_me: $at_fail_list${at_fail_list:+ failed${at_xpass_list:+, }}$at_xpass_list${at_xpass_list:+ passed unexpectedly}
+   To: <open-cobol-list@lists.sourceforge.net>
+   Subject: [GNU Cobol 2.1] $as_me: $at_fail_list${at_fail_list:+ failed${at_xpass_list:+, }}$at_xpass_list${at_xpass_list:+ passed unexpectedly}
 
 You may investigate any problem if you feel able to do so, in which
 case the test suite provides a good starting point.  Its output may
