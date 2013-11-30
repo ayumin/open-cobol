@@ -2,20 +2,20 @@
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol runtime library is free software: you can redistribute it
+   The OpenCOBOL runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*************************************************************************
@@ -601,11 +601,17 @@ do_page_heading(cob_report *r)
 		return;
 	opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 	rec = (char *)f->record->data;
+	memset(rec,' ',f->record_max);
 	r->in_page_heading = TRUE;
 	if(!r->first_generate) {
 		r->curr_page++;
 	}
 	r->first_detail = FALSE;
+	while(r->curr_line < r->def_heading) {		/* Skip to Heading position on page */
+		cob_write(f, f->record, opt, NULL, 0);
+		r->curr_line++;
+		saveLineCounter(r);
+	}
 	report_line_type(r,r->first_line,COB_REPORT_PAGE_HEADING);
 	memset(rec,' ',f->record_max);
 	while(r->curr_line < r->def_first_detail) {
@@ -683,9 +689,12 @@ report_line(cob_report *r, cob_report_line *l)
 		} else
 		if((l->flags & COB_REPORT_LINE_PLUS)
 		&& l->line > 1) {
-			opt = COB_WRITE_BEFORE | COB_WRITE_LINES | (l->line - 1);
-			cob_write(f, f->record, opt, NULL, 0);
-			r->curr_line += l->line - 1;
+			if(r->curr_line != r->def_first_detail
+			|| r->def_first_detail == 0) {
+				opt = COB_WRITE_BEFORE | COB_WRITE_LINES | (l->line - 1);
+				cob_write(f, f->record, opt, NULL, 0);
+				r->curr_line += l->line - 1;
+			}
 		}
 		saveLineCounter(r);
 		if(l->fields == NULL) {
@@ -1107,7 +1116,7 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 	cob_report_control	*rc, *rp;
 	cob_report_control_ref	*rr;
 	cob_report_line		*pl;
-	int			maxctl;
+	int			maxctl,ln,num;
 	char			wrk[128];
 
 	reportInitialize();
@@ -1304,10 +1313,35 @@ PrintHeading:
 	} else if(l->suppress) {
 		l->suppress = FALSE;
 	} else {
-		l = get_print_line(l);		/* Find line with data fields */
-		if(!l->suppress) 
-			report_line(r,l);	/* Generate this DETAIL line */
-		l->suppress = FALSE;
+		if(l->sister == NULL
+		&& l->fields == NULL
+		&& l->child != NULL
+		&& l->child->sister != NULL)
+			l = l->child;		/* Multiple Detail Lines in group */
+
+		num = ln = 0;
+		for(pl = l; pl; pl = pl->sister) {
+			if((pl->flags & COB_REPORT_LINE_PLUS)
+			&& pl->line > 1) {
+				ln += pl->line;
+			}
+			num++;
+		}
+		if(num > 1
+		&& (r->curr_line + ln) > r->def_last_detail) {	/* Page overflow */
+			do_page_footing(r);
+			r->curr_line = 1;
+			do_page_heading(r);
+			r->first_detail = FALSE;
+			saveLineCounter(r);
+		}
+
+		for(pl = l; pl; pl = pl->sister) {
+			l = get_print_line(pl);		/* Find line with data fields */
+			if(!l->suppress) 
+				report_line(r,l);	/* Generate this DETAIL line */
+			l->suppress = FALSE;
+		}
 	}
 
 	/*
