@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol compiler is free software: you can redistribute it
+   The OpenCOBOL compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -2315,6 +2315,12 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 	}
 
 	/* Check the record size if it is limited */
+	for (p = records; p; p = p->sister) {
+		if (f->record_max > 0
+		&&  p->size > f->record_max) {
+			f->record_max = p->size;
+		}
+	}
 	for (p = records; p; p = p->sister) {
 		if (f->record_min > 0) {
 			if (p->size < f->record_min) {
