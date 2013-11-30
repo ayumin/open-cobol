@@ -1,8 +1,9 @@
 /*
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
+   Copyright (C) 2013      Ron Norman
 
-   This file is part of OpenCOBOL.
+   This file is part of OpenCOBOL / GNU COBOL.
 
    The OpenCOBOL runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
@@ -1321,6 +1322,8 @@ PrintHeading:
 
 		num = ln = 0;
 		for(pl = l; pl; pl = pl->sister) {
+			if( !(pl->flags & COB_REPORT_DETAIL) )
+				break;
 			if((pl->flags & COB_REPORT_LINE_PLUS)
 			&& pl->line > 1) {
 				ln += pl->line;
@@ -1337,6 +1340,8 @@ PrintHeading:
 		}
 
 		for(pl = l; pl; pl = pl->sister) {
+			if( !(pl->flags & COB_REPORT_DETAIL) )
+				break;
 			l = get_print_line(pl);		/* Find line with data fields */
 			if(!l->suppress) 
 				report_line(r,l);	/* Generate this DETAIL line */
