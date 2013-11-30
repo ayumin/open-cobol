@@ -134,6 +134,11 @@ reportLog(const char *fmt, ...)
 	fflush(fdbg);
 }
 
+#define ND1 COB_REPORT_HEADING|COB_REPORT_FOOTING|COB_REPORT_PAGE_HEADING|COB_REPORT_PAGE_FOOTING
+#define ND2 COB_REPORT_CONTROL_HEADING|COB_REPORT_CONTROL_HEADING_FINAL
+#define ND3 COB_REPORT_CONTROL_FOOTING|COB_REPORT_CONTROL_FOOTING_FINAL
+#define NOTDETAIL(f) ( f & (ND1|ND2|ND3))
+
 static int report_line_type(cob_report *r, cob_report_line *l, int type);
 
 static const cob_field_attr	const_alpha_attr =
@@ -1322,7 +1327,7 @@ PrintHeading:
 
 		num = ln = 0;
 		for(pl = l; pl; pl = pl->sister) {
-			if( !(pl->flags & COB_REPORT_DETAIL) )
+			if( NOTDETAIL(pl->flags) )
 				break;
 			if((pl->flags & COB_REPORT_LINE_PLUS)
 			&& pl->line > 1) {
@@ -1340,7 +1345,7 @@ PrintHeading:
 		}
 
 		for(pl = l; pl; pl = pl->sister) {
-			if( !(pl->flags & COB_REPORT_DETAIL) )
+			if( NOTDETAIL(pl->flags) )
 				break;
 			l = get_print_line(pl);		/* Find line with data fields */
 			if(!l->suppress) 
