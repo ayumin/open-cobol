@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol compiler is free software: you can redistribute it
+   The OpenCOBOL compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -8516,17 +8516,46 @@ cb_build_write_advancing_page (cb_tree pos)
  * Emit any MOVEs from non-simple field to temp field
  * for GENERATE to execute
  */
-void
-cb_emit_report_moves(struct cb_report *r, struct cb_field *f)
+static int report_in_footing = 0;
+static void
+cb_emit_report_moves(struct cb_report *r, struct cb_field *f, int forterminate)
 {
 	struct cb_field         *p;
 	for (p = f; p; p = p->sister) {
+		if(p->report_flag & (COB_REPORT_FOOTING|COB_REPORT_CONTROL_FOOTING|COB_REPORT_CONTROL_FOOTING_FINAL)) {
+			report_in_footing = 1;
+		}
 		if(p->report_from) {
-			cb_emit_move( p->report_from, p->report_source);
+			if(forterminate
+			&& report_in_footing) {
+				cb_emit_move( p->report_from, p->report_source);
+			} else
+			if(!forterminate
+			&& !report_in_footing) {
+				cb_emit_move( p->report_from, p->report_source);
+			}
 		}
 		if(p->children) {
-			cb_emit_report_moves(r, p->children);
+			cb_emit_report_moves(r, p->children, forterminate);
+			if(p->report_flag & (COB_REPORT_FOOTING|COB_REPORT_CONTROL_FOOTING|COB_REPORT_CONTROL_FOOTING_FINAL)) {
+				report_in_footing = 0;
+			}
 		}
+	}
+}
+
+static void
+cb_emit_report_move_id(cb_tree rep)
+{
+	struct cb_report *r = CB_REPORT (cb_ref(rep));
+	if(r
+	&& r->id == 0) {
+		r->id = report_id++;
+		cb_emit (CB_BUILD_FUNCALL_1 ("$M", rep));
+		cb_emit_report_moves(r, r->records, 0);
+		cb_emit (CB_BUILD_FUNCALL_1 ("$t", rep));
+		cb_emit_report_moves(r, r->records, 1);
+		cb_emit (CB_BUILD_FUNCALL_1 ("$m", rep));
 	}
 }
 
@@ -8535,18 +8564,11 @@ cb_emit_report_moves(struct cb_report *r, struct cb_field *f)
 void
 cb_emit_initiate (cb_tree rep)
 {
-	struct cb_report *r;
 	if (rep == cb_error_node) {
 		return;
 	}
 	rep->tag = CB_TAG_REPORT;
-	r = CB_REPORT (cb_ref(rep));
-	if(r->id == 0) {
-		r->id = report_id++;
-		cb_emit (CB_BUILD_FUNCALL_1 ("$M", rep));
-		cb_emit_report_moves(r, r->records);
-		cb_emit (CB_BUILD_FUNCALL_1 ("$m", rep));
-	}
+	cb_emit_report_move_id(rep);
 	cb_emit (CB_BUILD_FUNCALL_1 ("cob_report_initiate", rep));
 
 }
@@ -8556,18 +8578,11 @@ cb_emit_initiate (cb_tree rep)
 void
 cb_emit_terminate (cb_tree rep)
 {
-	struct cb_report *r;
 	if (rep == cb_error_node) {
 		return;
 	}
 	rep->tag = CB_TAG_REPORT;
-	r = CB_REPORT (cb_ref(rep));
-	if(r->id == 0) {
-		r->id = report_id++;
-		cb_emit (CB_BUILD_FUNCALL_1 ("$M", rep));
-		cb_emit_report_moves(r, r->records);
-		cb_emit (CB_BUILD_FUNCALL_1 ("$m", rep));
-	}
+	cb_emit_report_move_id(rep);
 	cb_emit (CB_BUILD_FUNCALL_1 ("$T", rep));
 
 }
@@ -8597,12 +8612,7 @@ cb_emit_generate (cb_tree x)
 		z->tag = CB_TAG_REPORT;
 		CB_REFERENCE (z)->word = word;
 		CB_REFERENCE (z)->value = CB_TREE (y);
-		if(r->id == 0) {
-			r->id = report_id++;
-			cb_emit (CB_BUILD_FUNCALL_1 ("$M", z));
-			cb_emit_report_moves(r, r->records);
-			cb_emit (CB_BUILD_FUNCALL_1 ("$m", z));
-		}
+		cb_emit_report_move_id(z);
 		cb_emit (CB_BUILD_FUNCALL_2 ("$R", z, NULL));
 		return;
 	}
@@ -8619,12 +8629,7 @@ cb_emit_generate (cb_tree x)
 		CB_REFERENCE (z)->word = word;
 		CB_REFERENCE (z)->value = CB_TREE (f->report);
 		x->tag = CB_TAG_REPORT_LINE;
-		if(r->id == 0) {
-			r->id = report_id++;
-			cb_emit (CB_BUILD_FUNCALL_1 ("$M", z));
-			cb_emit_report_moves(r, r->records);
-			cb_emit (CB_BUILD_FUNCALL_1 ("$m", z));
-		}
+		cb_emit_report_move_id(z);
 		cb_emit (CB_BUILD_FUNCALL_2 ("$R", z, x));
 	}
 }

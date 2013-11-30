@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol compiler is free software: you can redistribute it
+   The OpenCOBOL compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -1267,7 +1267,7 @@ check_headers_present (const unsigned int lev1, const unsigned int lev2,
 %nonassoc MERGE
 %nonassoc MOVE
 %nonassoc MULTIPLY
-%nonassoc NEXT
+%nonassoc NEXT 
 %nonassoc OPEN
 %nonassoc PERFORM
 %nonassoc READ
@@ -4737,17 +4737,17 @@ next_group_plus:
       current_field->report_flag |= COB_REPORT_NEXT_GROUP_PLUS;
       current_field->next_group_line = cb_get_int($2);
   }
-| next_page _page
+| next_page
   {
       current_field->report_flag |= COB_REPORT_NEXT_GROUP_PAGE;
   }
 ;
 
 next_page:
-  NEXT 
-  {
-      current_field->report_flag |= COB_REPORT_NEXT_PAGE;
-  }
+  NEXT PAGE 
+| NEXT_PAGE
+| PAGE
+| NEXT
 ;
 
 sum_clause_list:
@@ -4761,6 +4761,10 @@ sum_clause_list:
 
 reset_clause:
 | RESET _on data_or_final
+| UPON identifier
+  {
+      current_field->report_sum_upon = $2;
+  }
 ;
 
 data_or_final:
@@ -4818,7 +4822,11 @@ line_clause_integer:
 ;
 
 line_clause_next_page:
-| ON NEXT PAGE
+| ON NEXT_PAGE
+  {
+      current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
+  }
+| NEXT_PAGE
   {
       current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
   }
@@ -9543,6 +9551,10 @@ line_linage_page_counter:
   }
 | LINE_COUNTER
   {
+	  if (report_count > 1
+	  && current_report != NULL) {
+		$$ = current_report->line_counter;
+	  } else
 	if (report_count > 1) {
 		cb_error (_("LINE-COUNTER must be qualified here"));
 		$$ = cb_error_node;
@@ -9564,6 +9576,10 @@ line_linage_page_counter:
   }
 | PAGE_COUNTER
   {
+	  if (report_count > 1
+	  && current_report != NULL) {
+		$$ = current_report->page_counter;
+	  } else
 	if (report_count > 1) {
 		cb_error (_("PAGE-COUNTER must be qualified here"));
 		$$ = cb_error_node;
@@ -10065,6 +10081,10 @@ identifier_1:
 
 target_identifier:
   target_identifier_1
+  {
+	$$ = cb_build_identifier ($1, 0);
+  }
+| line_linage_page_counter
   {
 	$$ = cb_build_identifier ($1, 0);
   }
@@ -10672,7 +10692,6 @@ _of:		| OF ;
 _on:		| ON ;
 _onoff_status:	| STATUS IS | STATUS | IS ;
 _other:		| OTHER ;
-_page:		| PAGE ;
 _procedure:	| PROCEDURE ;
 _program:	| PROGRAM ;
 _record:	| RECORD ;
