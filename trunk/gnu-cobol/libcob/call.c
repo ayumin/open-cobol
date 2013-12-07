@@ -667,10 +667,7 @@ cobsavenv (struct cobjmp_buf *jbuf)
 void *
 cobsavenv2 (struct cobjmp_buf *jbuf, const int jsize)
 {
-	int	jtemp;
-
-	/* Shut up compiler */
-	jtemp = jsize;
+	COB_UNUSED(jsize);
 	return cobsavenv (jbuf);
 }
 
