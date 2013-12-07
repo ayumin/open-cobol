@@ -1732,9 +1732,10 @@ cobinit (void)
 void *
 cobcommandline (int flags, int *pargc, char ***pargv, char ***penvp, char **pname)
 {
-	char		**spenvp;
-	char		*spname;
-	int		sflags;
+
+        COB_UNUSED(flags);
+        COB_UNUSED(penvp);
+        COB_UNUSED(pname);
 
 	if (!cob_initialized) {
 		cob_runtime_error ("'cobcommandline' - Runtime has not been initialized");
@@ -1743,14 +1744,6 @@ cobcommandline (int flags, int *pargc, char ***pargv, char ***penvp, char **pnam
 	if (pargc && pargv) {
 		cob_argc = *pargc;
 		cob_argv = *pargv;
-	}
-	/* Shut up the compiler */
-	sflags = flags;
-	if (penvp) {
-		spenvp = *penvp;
-	}
-	if (pname) {
-		spname = *pname;
 	}
 	/* What are we supposed to return here? */
 	return NULL;
