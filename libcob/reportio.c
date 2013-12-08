@@ -569,11 +569,9 @@ do_page_footing(cob_report *r)
 {
 	cob_file	*f = r->report_file;
 	char		*rec;
-	int		opt;
 
 	if(r->in_page_footing)
 		return;
-	opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 	rec = (char *)f->record->data;
 	r->in_page_footing = TRUE;
 	report_line_type(r,r->first_line,COB_REPORT_PAGE_FOOTING);
