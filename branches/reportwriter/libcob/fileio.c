@@ -2,20 +2,20 @@
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol runtime library is free software: you can redistribute it
+   The OpenCOBOL runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -3036,17 +3036,19 @@ dobuild:
 	cob_u32_t		flags = 0;
 	int			ret = 0;
 	int			nonexistent;
+#if 0 /* RXW */
 	int			checkvalue;
-
-	COB_UNUSED (sharing);
-
-	cob_chk_file_mapping ();
-
 	if (mode == COB_OPEN_INPUT) {
 		checkvalue = R_OK;
 	} else {
 		checkvalue = R_OK | W_OK;
 	}
+#endif
+
+	COB_UNUSED (sharing);
+
+	cob_chk_file_mapping ();
+
 
 	nonexistent = 0;
 	if (bdb_nofile (filename)) {
@@ -3835,7 +3837,7 @@ indexed_read_next (cob_file *f, const int read_opts)
 	cob_u32_t		nextprev;
 	int			file_changed;
 	int			bdb_opts;
-	unsigned int		dupno;
+	unsigned int		dupno = 0;
 
 	p = f->file;
 	nextprev = DB_NEXT;
