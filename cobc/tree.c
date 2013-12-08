@@ -2460,7 +2460,7 @@ finalize_report (struct cb_report *r, struct cb_field *records)
 			if(CB_TREE_TAG (p->report_source) == CB_TAG_REFERENCE) {
 				struct cb_reference     *ref;
 				ref = CB_REFERENCE (p->report_source); 
-				if(ref->offset || ref->subs) {
+				if(ref->offset || ref->subs || f->flag_local) {
 					p->report_from = p->report_source;
 					p->report_source = cb_field_dup(f);
 				}

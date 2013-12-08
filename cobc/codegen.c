@@ -8568,24 +8568,28 @@ codegen (struct cb_program *prog, const int nested)
 	}
 
 	if (local_base_cache) {
-		output_local ("\n/* Data storage */\n");
+		output_local ("\n/* Local Data storage */\n");
 		local_base_cache = list_cache_sort (local_base_cache,
 						    &base_cache_cmp);
 		for (blp = local_base_cache; blp; blp = blp->next) {
 			if (blp->f->special_index > 1) {
 				output_local ("int              %s%d;",
 						CB_PREFIX_BASE, blp->f->id);
+				output_local ("\t/* %s */\n", blp->f->name);
 			} else if (blp->f->special_index) {
 				output_local ("static int       %s%d;",
 						CB_PREFIX_BASE, blp->f->id);
+				output_local ("\t/* %s */\n", blp->f->name);
 			} else {
-				output_local ("static cob_u8_t  %s%d[%d]%s;",
-						CB_PREFIX_BASE, blp->f->id,
-						blp->f->memory_size, COB_ALIGN);
+				if( !(blp->f->report_flag & COB_REPORT_REF_EMITED)) {
+					output_local ("static cob_u8_t  %s%d[%d]%s;",
+							CB_PREFIX_BASE, blp->f->id,
+							blp->f->memory_size, COB_ALIGN);
+					output_local ("\t/* %s */\n", blp->f->name);
+				}
 			}
-			output_local ("\t/* %s */\n", blp->f->name);
 		}
-		output_local ("\n/* End of data storage */\n\n");
+		output_local ("\n/* End of local data storage */\n\n");
 	}
 
 	if (local_field_cache) {
