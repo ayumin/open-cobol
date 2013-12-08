@@ -4406,6 +4406,7 @@ linkage_section:
 report_section:
 | REPORT SECTION TOK_DOT
   {
+	header_check |= COBC_HD_REPORT_SECTION;
 	current_storage = CB_STORAGE_REPORT;
 	description_field = NULL;
 	current_program->flag_report = 1;
@@ -4426,6 +4427,9 @@ report_description:
 	if (CB_INVALID_TREE ($2)) {
 		YYERROR;
 	} else {
+		current_field = NULL;
+		control_field = NULL;
+		description_field = NULL;
 		current_report = CB_REPORT (cb_ref ($2));
 	}
 	check_duplicate = 0;
