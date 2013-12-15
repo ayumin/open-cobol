@@ -8535,6 +8535,19 @@ cb_emit_report_moves(struct cb_report *r, struct cb_field *f, int forterminate)
 				cb_emit_move( p->report_from, p->report_source);
 			}
 		}
+		if(p->report_when) {
+			int  ifwhen = 2;
+			if(p->children)
+				ifwhen = 3;
+			if(forterminate
+			&& report_in_footing) {
+				cb_emit (cb_build_if (p->report_when, NULL, (cb_tree)p, ifwhen));
+			} else
+			if(!forterminate
+			&& !report_in_footing) {
+				cb_emit (cb_build_if (p->report_when, NULL, (cb_tree)p, ifwhen));
+			}
+		}
 		if(p->children) {
 			cb_emit_report_moves(r, p->children, forterminate);
 			if(p->report_flag & (COB_REPORT_FOOTING|COB_REPORT_CONTROL_FOOTING|COB_REPORT_CONTROL_FOOTING_FINAL)) {
@@ -8569,7 +8582,7 @@ cb_emit_initiate (cb_tree rep)
 	}
 	rep->tag = CB_TAG_REPORT;
 	cb_emit_report_move_id(rep);
-	cb_emit (CB_BUILD_FUNCALL_1 ("cob_report_initiate", rep));
+	cb_emit (CB_BUILD_FUNCALL_1 ("$I", rep));
 
 }
 

@@ -2186,6 +2186,54 @@ output_funcall (cb_tree x)
 			output("\tgoto *frame_ptr->return_address_ptr;\n");
 			output("rwexit_%d: ",r->id);
 			break;
+		case 'I':	/* Initiate REPORT */
+			r = CB_REPORT(CB_VALUE(p->argv[0]));
+			if(r->t_lines) {
+				output (" /* Page Limit is %s */\n",cb_name (r->t_lines));
+				output ("%s%s.def_lines = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_lines);
+				output (";\n");
+			}
+			if(r->t_columns) {
+				output (" /* Page Limit is %s */\n",cb_name (r->t_columns));
+				output ("%s%s.def_cols = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_columns);
+				output (";\n");
+			}
+			if(r->t_heading) {
+				output (" /* Heading is %s */\n",cb_name (r->t_heading));
+				output ("%s%s.def_heading = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_heading);
+				output (";\n");
+			}
+			if(r->t_footing) {
+				output (" /* Footing is %s */\n",cb_name (r->t_footing));
+				output ("%s%s.def_footing = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_footing);
+				output (";\n");
+			}
+			if(r->t_first_detail) {
+				output (" /* First Detail is %s */\n",cb_name (r->t_first_detail));
+				output ("%s%s.def_first_detail = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_first_detail);
+				output (";\n");
+			}
+			if(r->t_last_detail) {
+				output (" /* Last Detail is %s */\n",cb_name (r->t_last_detail));
+				output ("%s%s.def_last_detail = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_last_detail);
+				output (";\n");
+			}
+			if(r->t_last_control) {
+				output (" /* Last Control is %s */\n",cb_name (r->t_last_control));
+				output ("%s%s.def_last_control = ", CB_PREFIX_REPORT, r->cname);
+				output_integer(r->t_last_control);
+				output (";\n");
+			}
+			output ("cob_report_initiate (");
+			output_param (p->argv[0], 0);
+			output (")");
+			break;
 		case 'S':	/* Suppress flag on */
 			output ("%s",CB_PREFIX_REPORT_LINE);
 			output_param (p->argv[1], 0);
@@ -5078,6 +5126,40 @@ output_stmt (cb_tree x)
 		gen_if_level++;
 		code = 0;
 		output_prefix ();
+		if(ip->is_if == 2
+		&& ip->stmt1 == NULL
+		&& ip->stmt2 != NULL) {	/* Really PRESENT WHEN for Report field */
+			struct cb_field *p = (struct cb_field *)ip->stmt2;
+			output_line ("/* PRESENT WHEN */");
+			output_prefix ();
+			output ("if (");
+			output_cond (ip->test, 0);
+			output (")\n");
+			output_line ("{");
+			output("\t%s%d.suppress = 0;\n",CB_PREFIX_REPORT_FIELD,p->id);
+			output_line ("} else {");
+			output("\t%s%d.suppress = 1;\n",CB_PREFIX_REPORT_FIELD,p->id);
+			output_line ("}");
+			gen_if_level--;
+			break;
+		}
+		if(ip->is_if == 3
+		&& ip->stmt1 == NULL
+		&& ip->stmt2 != NULL) {	/* Really PRESENT WHEN for Report line */
+			struct cb_field *p = (struct cb_field *)ip->stmt2;
+			output_line ("/* PRESENT WHEN */");
+			output_prefix ();
+			output ("if (");
+			output_cond (ip->test, 0);
+			output (")\n");
+			output_line ("{");
+			output("\t%s%d.suppress = 0;\n",CB_PREFIX_REPORT_LINE,p->id);
+			output_line ("} else {");
+			output("\t%s%d.suppress = 1;\n",CB_PREFIX_REPORT_LINE,p->id);
+			output_line ("}");
+			gen_if_level--;
+			break;
+		}
 		output ("if (");
 		output_cond (ip->test, 0);
 		output (")\n");
@@ -5811,7 +5893,16 @@ output_report_def_fields (int bgn, int id, struct cb_field *f, struct cb_report 
 
 		if (CB_TREE_TAG (value) == CB_TAG_LITERAL) {
 			l = CB_LITERAL (value);
-			output_local("\"%.*s\",%d,",(int) l->size, l->data, (int)l->size);
+			if (l->all) {
+				char *val = (char *)calloc(1, f->size + 2);
+				memset(val,l->data[0],f->size);
+				output_local("\"%.*s\",%d,",
+						(int) f->size, val, (int)f->size);
+				free((void*) val);
+			} else {
+				output_local("\"%.*s\",%d,",
+						(int) l->size, l->data, (int)l->size);
+			}
 		} else {
 			output_local("NULL,0,");	
 		}
