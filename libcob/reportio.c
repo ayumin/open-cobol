@@ -240,14 +240,32 @@ cob_field_free (cob_field *f)
 }
 
 /*
+ * Clear the 'group_indicate' flag for all fields
+ */
+static void
+clear_group_indicate(cob_report_line *l)
+{
+	cob_report_field *f;
+	for(f=l->fields; f; f=f->next) {
+		f->group_indicate = FALSE;
+	}
+	if(l->child)
+		clear_group_indicate(l->child);
+	if(l->sister)
+		clear_group_indicate(l->sister);
+}
+
+/*
  * Clear the 'suppress' flag for all fields
  */
 static void
 clear_suppress(cob_report_line *l)
 {
 	cob_report_field *f;
-	for(f=l->fields; f; f=f->next)
+	l->suppress = FALSE;
+	for(f=l->fields; f; f=f->next) {
 		f->suppress = FALSE;
+	}
 	if(l->child)
 		clear_suppress(l->child);
 	if(l->sister)
@@ -411,6 +429,7 @@ reportDumpOneLine(const cob_report *r, cob_report_line *fl, int indent, int dump
 	}
 	dumpFlags(fl->report_flags,fl->line,wrk);
 	if(fl->step_count)	LOG("Step %d ",fl->step_count);
+	if(fl->suppress)	LOG("Suppress Line ");
 	if(fl->next_group_line)	{
 		LOG("Next ",fl->next_group_line);
 		if(fl->report_flags & COB_REPORT_NEXT_GROUP_LINE)	LOG("GROUP LINE ");
@@ -455,6 +474,7 @@ reportDumpOneLine(const cob_report *r, cob_report_line *fl, int indent, int dump
 			} 
 			dumpFlags(rf->flags,rf->line,NULL);
 		}
+		if(rf->suppress)	LOG("Suppress ");
 		LOG("\n");
 	}
 }
@@ -623,7 +643,7 @@ do_page_heading(cob_report *r)
 		r->curr_line++;
 		saveLineCounter(r);
 	}
-	clear_suppress(r->first_line);
+	clear_group_indicate(r->first_line);
 	r->in_page_heading = FALSE;
 }
 
@@ -705,13 +725,25 @@ report_line(cob_report *r, cob_report_line *l)
 			set_next_info(r,l);
 			return;
 		}
+		if(l->suppress) {
+			if(fdbg) {
+				reportDumpOneLine(r,l,0,1);
+				LOG("   ^^^ Suppressed ^^^\n\n");
+			}
+			set_next_info(r,l);
+			return;
+		}
 
 		/*
 		 * Copy fields to print line area
 		 */
 		for(rf = l->fields; rf; rf = rf->next) {
-			if(rf->suppress)
+			if(rf->suppress || rf->group_indicate) {
+				if(rf->source) {		/* Copy source field in */
+					cob_move(rf->source,rf->f);
+				}
 				continue;
+			}
 			if(rf->source) {		/* Copy source field in */
 				cob_move(rf->source,rf->f);
 				cob_field_to_string(rf->f, wrk, sizeof(wrk)-1);
@@ -725,8 +757,8 @@ report_line(cob_report *r, cob_report_line *l)
 				cob_field_to_string(rf->f, wrk, sizeof(wrk)-1);
 				memcpy(&rec[rf->column-1], wrk, strlen(wrk));
 			}
-			if(rf->flags && COB_REPORT_GROUP_INDICATE) {	/* Suppress subsequent printings */
-				rf->suppress = TRUE;
+			if((rf->flags && COB_REPORT_GROUP_INDICATE)) {	/* Suppress subsequent printings */
+				rf->group_indicate = TRUE;
 			}
 		}
 	}
@@ -1129,6 +1161,7 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 		return 0;
 	}
 
+	LOG("   Enter GENERATE with ctl == %d\n",ctl);
 	if(ctl > 0) {	 /* Continue Processing Footings from last point */
 		for(rc = r->controls; rc; rc = rc->next) {
 			for(rr = rc->control_ref; rr; rr = rr->next) {
@@ -1273,7 +1306,7 @@ PrintFooting:
 						rc->suppress = FALSE;
 						rr->ref_line->suppress = FALSE;
 						zero_all_counters(r, COB_REPORT_CONTROL_FOOTING,pl);
-						clear_suppress(r->first_line);
+						clear_group_indicate(r->first_line);
 						r->next_just_set = FALSE;
 					}
 				}
@@ -1356,6 +1389,7 @@ PrintHeading:
 	 * Zero out SUM counters
 	 */
 	zero_all_counters(r, COB_REPORT_DETAIL, NULL);
+	clear_suppress(r->first_line);
 	r->first_generate = FALSE;
 	r->next_just_set = FALSE;
 	r->curr_line--;
