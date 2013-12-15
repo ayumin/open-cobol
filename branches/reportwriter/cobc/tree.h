@@ -660,6 +660,7 @@ struct cb_field {
 	cb_tree			report_sum_upon;/* SUM ... UPON detailname */
 	cb_tree			report_reset;	/* RESET ON field */
 	cb_tree			report_control;	/* CONTROL identifier */
+	cb_tree			report_when;	/* PRESENT WHEN condition */
 
 	int			id;		/* Field id */
 	int			size;		/* Field size */
@@ -1208,6 +1209,13 @@ struct cb_report {
 	cb_tree			page_counter;	/* PAGE-COUNTER */
 	cb_tree			code_clause;	/* CODE */
 	cb_tree			controls;	/* CONTROLS */
+	cb_tree			t_lines;	/* PAGE LIMIT LINES */
+	cb_tree			t_columns;	/* PAGE LIMIT COLUMNS */
+	cb_tree			t_heading;	/* HEADING */
+	cb_tree			t_first_detail;	/* FIRST DE */
+	cb_tree			t_last_control;	/* LAST CH */
+	cb_tree			t_last_detail;	/* LAST DE */
+	cb_tree			t_footing;	/* FOOTING */
 	int			lines;		/* PAGE LIMIT LINES */
 	int			columns;	/* PAGE LIMIT COLUMNS */
 	int			heading;	/* HEADING */

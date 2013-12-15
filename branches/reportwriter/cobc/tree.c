@@ -2500,6 +2500,10 @@ finalize_report (struct cb_report *r, struct cb_field *records)
 			}
 		}
 	}
+	if(r->file->record_max < r->rcsz)
+		r->file->record_max = r->rcsz;
+	if(r->rcsz < r->file->record_max)
+		r->rcsz = r->file->record_max;
 }
 
 

@@ -4530,6 +4530,14 @@ page_limit_clause:
 		} else {
 			current_report->last_control = current_report->lines;
 		}
+		if (current_report->t_last_detail) {
+			current_report->t_last_control = current_report->t_last_detail;
+		} else if (current_report->t_footing) {
+			current_report->t_last_control = current_report->t_footing;
+		} else if(current_report->t_lines) {
+			current_report->t_last_control = current_report->t_lines;
+		}
+
 	}
 	if (!current_report->last_detail && !current_report->footing) {
 		current_report->last_detail = current_report->lines;
@@ -4549,19 +4557,40 @@ page_limit_clause:
 ;
 
 page_line_column:
+  report_int_ident
+  {
+	if (CB_LITERAL_P ($1)) {
+		current_report->lines = cb_get_int ($1);
+	} else {
+		current_report->t_lines = $1;
+	}
+  }
+| report_int_ident line_or_lines
+  {
+	if (CB_LITERAL_P ($1)) {
+		current_report->lines = cb_get_int ($1);
+	} else {
+		current_report->t_lines = $1;
+	}
+  }
+| report_int_ident line_or_lines report_int_ident columns_or_cols
+  {
+	if (CB_LITERAL_P ($1)) {
+		current_report->lines = cb_get_int ($1);
+	} else {
+		current_report->t_lines = $1;
+	}
+	if (CB_LITERAL_P ($3)) {
+		current_report->columns = cb_get_int ($3);
+	} else {
+		current_report->t_columns = $3;
+	}
+  }
+;
+
+report_int_ident:
   report_integer
-  {
-	current_report->lines = cb_get_int ($1);
-  }
-| report_integer line_or_lines report_integer columns_or_cols
-  {
-	current_report->lines = cb_get_int ($1);
-	current_report->columns = cb_get_int ($3);
-  }
-| report_integer line_or_lines
-  {
-	current_report->lines = cb_get_int ($1);
-  }
+| identifier
 ;
 
 page_heading_list:
@@ -4578,37 +4607,57 @@ page_detail:
 ;
 
 heading_clause:
-  HEADING _is report_integer
+  HEADING _is report_int_ident
   {
-	current_report->heading = cb_get_int ($3);
+	if (CB_LITERAL_P ($3)) {
+		current_report->heading = cb_get_int ($3);
+	} else {
+		current_report->t_heading = $3;
+	}
   }
 ;
 
 first_detail:
-  FIRST detail_keyword _is report_integer
+  FIRST detail_keyword _is report_int_ident
   {
-	current_report->first_detail = cb_get_int ($4);
+	if (CB_LITERAL_P ($4)) {
+		current_report->first_detail = cb_get_int ($4);
+	} else {
+		current_report->t_first_detail = $4;
+	}
   }
 ;
 
 last_heading:
-  LAST ch_keyword _is report_integer
+  LAST ch_keyword _is report_int_ident
   {
-	current_report->last_control = cb_get_int ($4);
+	if (CB_LITERAL_P ($4)) {
+		current_report->last_control = cb_get_int ($4);
+	} else {
+		current_report->t_last_control = $4;
+	}
   }
 ;
 
 last_detail:
-  LAST detail_keyword _is report_integer
+  LAST detail_keyword _is report_int_ident
   {
-	current_report->last_detail = cb_get_int ($4);
+	if (CB_LITERAL_P ($4)) {
+		current_report->last_detail = cb_get_int ($4);
+	} else {
+		current_report->t_last_detail = $4;
+	}
   }
 ;
 
 footing_clause:
-  FOOTING _is report_integer
+  FOOTING _is report_int_ident
   {
-	current_report->footing = cb_get_int ($3);
+	if (CB_LITERAL_P ($3)) {
+		current_report->footing = cb_get_int ($3);
+	} else {
+		current_report->t_footing = $3;
+	}
   }
 ;
 
@@ -4733,10 +4782,19 @@ next_group_clause:
 next_group_plus:
   integer
   {
-      current_field->report_flag |= COB_REPORT_NEXT_GROUP_LINE;
-      current_field->next_group_line = cb_get_int($1);
+	if (CB_LITERAL ($1)->sign > 0) {
+		current_field->report_flag |= COB_REPORT_NEXT_GROUP_PLUS;
+	} else {
+		current_field->report_flag |= COB_REPORT_NEXT_GROUP_LINE;
+	}
+	current_field->next_group_line = cb_get_int($1);
   }
 | PLUS integer
+  {
+      current_field->report_flag |= COB_REPORT_NEXT_GROUP_PLUS;
+      current_field->next_group_line = cb_get_int($2);
+  }
+| TOK_PLUS integer
   {
       current_field->report_flag |= COB_REPORT_NEXT_GROUP_PLUS;
       current_field->next_group_line = cb_get_int($2);
@@ -4786,6 +4844,7 @@ present_when_condition:
   PRESENT WHEN condition
   {
 	check_pic_repeated ("PRESENT", SYN_CLAUSE_20);
+	current_field->report_when = $3;
   }
 ;
 
@@ -4811,6 +4870,10 @@ line_clause_options:
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
   }
+| TOK_PLUS line_clause_integer
+  {
+	current_field->report_flag |= COB_REPORT_LINE_PLUS;
+  }
 ;
 
 number_is:
@@ -4821,7 +4884,10 @@ number_is:
 line_clause_integer:
   report_integer
   {
-      current_field->report_line = cb_get_int($1);
+	current_field->report_line = cb_get_int($1);
+	if (CB_LITERAL ($1)->sign > 0) {
+		current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	}
   }
 ;
 
@@ -4857,11 +4923,14 @@ col_or_plus:
 | report_integer
   {
 	current_field->report_column = cb_get_int ($1);
+	if (CB_LITERAL ($1)->sign > 0) {
+		current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
+	}
   }
 ;
 
 source_clause:
-  SOURCE _is arith_x flag_rounded
+  SOURCE _is arith_x flag_rounded 
   {
 	check_pic_repeated ("SOURCE", SYN_CLAUSE_22);
 	current_field->report_source = $3;
@@ -9075,6 +9144,7 @@ use_reporting:
 
 	x = cb_ref ($4);
 	if (!CB_FIELD_P (x)) {
+		cb_error_x ($4, _("'%s' is not a report group"), CB_NAME ($4));
 		$$ = cb_error_node;
 	} else {
 		control_field = f = CB_FIELD (x);
@@ -10217,7 +10287,7 @@ report_integer:
 	if (cb_tree_category ($1) != CB_CATEGORY_NUMERIC) {
 		cb_error (_("Integer value expected"));
 		$$ = cb_int1;
-	} else if (CB_LITERAL ($1)->sign || CB_LITERAL ($1)->scale) {
+	} else if (CB_LITERAL ($1)->sign < 0 || CB_LITERAL ($1)->scale) {
 		cb_error (_("Integer value expected"));
 		$$ = cb_int1;
 	} else {
