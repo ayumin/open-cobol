@@ -4547,11 +4547,17 @@ page_limit_clause:
 	} else if (!current_report->footing) {
 		current_report->footing = current_report->last_detail;
 	}
-	if (current_report->heading > current_report->first_detail ||
-	    current_report->first_detail > current_report->last_control ||
-	    current_report->last_control > current_report->last_detail ||
-	    current_report->last_detail > current_report->footing) {
-		cb_error (_("Invalid PAGE clause"));
+	if(current_report->heading > 0
+	&& current_report->first_detail > 0
+	&& current_report->last_control > 0
+	&& current_report->last_detail > 0
+	&& current_report->footing > 0) {
+		if (current_report->heading > current_report->first_detail ||
+		    current_report->first_detail > current_report->last_control ||
+		    current_report->last_control > current_report->last_detail ||
+		    current_report->last_detail > current_report->footing) {
+			cb_error (_("Invalid PAGE clause"));
+		}
 	}
   }
 ;
@@ -4853,7 +4859,7 @@ varying_clause:
 ;
 
 line_clause:
-  line_keyword_clause line_clause_options
+  line_keyword_clause line_clause_options 
   {
 	check_pic_repeated ("LINE", SYN_CLAUSE_21);
 	current_field->report_flag |= COB_REPORT_LINE;
@@ -4865,7 +4871,7 @@ line_keyword_clause:
 ;
 
 line_clause_options:
-  line_clause_integer line_clause_next_page
+  line_clause_integer | line_clause_next_page
 | PLUS line_clause_integer
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
@@ -4892,10 +4898,6 @@ line_clause_integer:
 ;
 
 line_clause_next_page:
-| ON NEXT_PAGE
-  {
-      current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
-  }
 | NEXT_PAGE
   {
       current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
