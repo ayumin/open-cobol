@@ -13,6 +13,11 @@
 
 	* Workaround for Microsoft MSVC (Visual Studio 2005-2010) bug "fatal error C1061: compiler limit : blocks nested too deeply"
 
+2013-09-29  Brian Tiffin & Simon  Sobisch
+
+	* Change package name, and project to GNU Cobol
+	* GNU-ification of source code commencing
+
 2013-09-21  Sergey Kashyrin <ska@kiska.net>
 
 	* #pragma pack fixed for Solaris
@@ -536,7 +541,7 @@
 2002-10-14  Keisuke Nishida  <knishida@netlab.jp>
 
 	* Makefile.am: Install libcob.conf in $(sysconfdir), not in
-	$(sysconfdir)/gnu-cobol-cpp.
+	$(sysconfdir)/open-cobol.
 	* configure.ac (COB_CONFIG_FILE): Updated.
 
 2002-09-30  Keisuke Nishida  <knishida@netlab.jp>
