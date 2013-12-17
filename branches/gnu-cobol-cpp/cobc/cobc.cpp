@@ -1375,10 +1375,11 @@ cobc_sig_handler(int sig)
 static void
 cobc_print_version(void)
 {
-	printf("cobc(%s) %s.%d\n",
+	printf("cobc (%s) %s.%d\n",
 		   PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
 	puts("Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida");
 	puts("Copyright (C) 2006-2012 Roger While");
+	puts("Copyright (C) 2013 Sergey Kashyrin");
 	puts(_("This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	printf(_("Built     %s"), cb_oc_build_stamp);

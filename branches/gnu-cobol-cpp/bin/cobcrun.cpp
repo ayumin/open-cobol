@@ -59,6 +59,7 @@ print_version(void)
 	printf("cobcrun (%s) %s.%d\n",
 		PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
 	puts("Copyright (C) 2004-2012 Roger While");
+	puts("Copyright (C) 2013 Sergey Kashyrin");
 	puts(_("This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	printf(_("Built     %s"), buff);

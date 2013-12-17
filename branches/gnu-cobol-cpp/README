@@ -8,7 +8,7 @@ This package contains the following subdirectories:
 
     cobc        COBOL compiler
     libcob      COBOL run-time library
-    bin		COBOL driver program
+    bin         COBOL driver program
     lib         Helper routines for missing OS functionality
     config      Configuration files
     po          International messages
