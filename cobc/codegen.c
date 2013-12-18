@@ -5981,6 +5981,16 @@ output_report_define_lines (int top, struct cb_field *f, struct cb_report *r)
 		sprintf(fname,"%s of ",f->name);
 	}
 	output_local("\n/* %s%s ",fname,r->name);
+	if((f->report_flag & COB_REPORT_LINE)
+	&& f->children
+	&& (f->children->report_flag & COB_REPORT_LINE)) {
+		printf("Warning: Ignoring nested LINE %s %d\n",
+			(f->report_flag & COB_REPORT_LINE_PLUS)?"PLUS":"",
+			f->report_line);
+		f->report_line = 0;
+		f->report_flag &= ~COB_REPORT_LINE_PLUS;
+		f->report_flag &= ~COB_REPORT_LINE;
+	}
 	if(f->report_flag & COB_REPORT_LINE)
 		output_local("LINE %s %d ",
 			(f->report_flag & COB_REPORT_LINE_PLUS)?"PLUS":"",
@@ -7533,7 +7543,13 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 	if (prog->report_storage) {
 		output_line ("/* Initialize REPORT data items */");
 		/* Initialize items with VALUE */
-		output_initial_values (prog->report_storage);
+		for (l = prog->report_list; l; l = CB_CHAIN (l)) {
+			struct cb_report *rep;
+			rep = CB_REPORT(CB_VALUE(l));
+			if(rep) {
+				output_initial_values (rep->records);
+			}
+		}
 		output_newline ();
 	}
 	/* Reports */
@@ -8565,7 +8581,13 @@ codegen (struct cb_program *prog, const int nested)
 
 	/* Report data fields */
 	if (prog->report_storage) {
-		compute_report_rcsz (prog->report_storage);
+		for (l = prog->report_list; l; l = CB_CHAIN (l)) {
+			struct cb_report *rep;
+			rep = CB_REPORT(CB_VALUE(l));
+			if(rep) {
+				compute_report_rcsz (rep->records);
+			}
+		}
 	}
 	/* Local indexes */
 	found = 0;
@@ -8655,7 +8677,13 @@ codegen (struct cb_program *prog, const int nested)
 
 	if(prog->report_storage) {
 		output_target = current_prog->local_include->local_fp;
-		output_report_sum_control_field (prog->report_storage);
+		for (l = prog->report_list; l; l = CB_CHAIN (l)) {
+			struct cb_report *rep;
+			rep = CB_REPORT(CB_VALUE(l));
+			if(rep) {
+				output_report_sum_control_field (rep->records);
+			}
+		}
 	}
 
 	if (local_base_cache) {
@@ -8711,17 +8739,26 @@ codegen (struct cb_program *prog, const int nested)
 		/* Report special fields */
 		if (prog->report_storage) {
 			struct cb_field		*f;
-			for(f=prog->report_storage; f; f=f->sister) {
-				if (f->storage == CB_STORAGE_WORKING
-				&& !(f->report_flag & COB_REPORT_REF_EMITED)) {
-					output ("static cob_field %s%d\t= ", 
-							CB_PREFIX_FIELD, f->id);
-					output_field (cb_build_field_reference (f, NULL));
-					output (";\t/* %s */\n", f->name);
-					f->report_flag |= COB_REPORT_REF_EMITED;
+			struct cb_report *rep;
+			for (l = prog->report_list; l; l = CB_CHAIN (l)) {
+				rep = CB_REPORT(CB_VALUE(l));
+				for(f=rep->records; f; f=f->sister) {
+					if (f->storage == CB_STORAGE_WORKING
+					&& !(f->report_flag & COB_REPORT_REF_EMITED)) {
+						output ("static cob_field %s%d\t= ", 
+								CB_PREFIX_FIELD, f->id);
+						output_field (cb_build_field_reference (f, NULL));
+						output (";\t/* %s */\n", f->name);
+						f->report_flag |= COB_REPORT_REF_EMITED;
+					}
 				}
 			}
-			output_report_sumed_field (prog->report_storage);
+			for (l = prog->report_list; l; l = CB_CHAIN (l)) {
+				rep = CB_REPORT(CB_VALUE(l));
+				if(rep) {
+					output_report_sumed_field (rep->records);
+				}
+			}
 		}
 		output_local ("\n/* End of fields */\n\n");
 		/* Switch to main storage file */
@@ -8737,9 +8774,10 @@ codegen (struct cb_program *prog, const int nested)
 			if(rep) {
 				output_emit_field(rep->line_counter,NULL);
 				output_emit_field(rep->page_counter,NULL);
+				output_report_data(rep->records);
+				output_local ("\n");
 			}
 		}
-		output_report_data (prog->report_storage);
 		output_local ("\n");
 		output_target = cb_storage_file;
 	}

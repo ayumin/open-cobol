@@ -4700,7 +4700,8 @@ report_group_options:
 report_group_option:
   type_clause
 | next_group_clause
-| line_clause
+| line_clause 
+| line_clause_next_page
 | picture_clause
 | report_usage_clause
 | sign_clause
@@ -4859,7 +4860,7 @@ varying_clause:
 ;
 
 line_clause:
-  line_keyword_clause line_clause_options 
+  line_keyword_clause line_clause_options
   {
 	check_pic_repeated ("LINE", SYN_CLAUSE_21);
 	current_field->report_flag |= COB_REPORT_LINE;
@@ -4871,7 +4872,7 @@ line_keyword_clause:
 ;
 
 line_clause_options:
-  line_clause_integer | line_clause_next_page
+  line_clause_integer 
 | PLUS line_clause_integer
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
@@ -4898,7 +4899,11 @@ line_clause_integer:
 ;
 
 line_clause_next_page:
-| NEXT_PAGE
+  NEXT PAGE
+  {
+      current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
+  }
+| ON NEXT PAGE
   {
       current_field->report_flag |= COB_REPORT_LINE_NEXT_PAGE;
   }
@@ -10290,7 +10295,7 @@ report_integer:
 		cb_error (_("Integer value expected"));
 		$$ = cb_int1;
 	} else if (CB_LITERAL ($1)->sign < 0 || CB_LITERAL ($1)->scale) {
-		cb_error (_("Integer value expected"));
+		cb_error (_("Positive Integer value expected"));
 		$$ = cb_int1;
 	} else {
 		n = cb_get_int ($1);
