@@ -157,18 +157,20 @@ then
 	AC_DEFINE(WITH_INDEX_EXTFH)
     fi ],
   [ AC_ARG_WITH(db1,
-   [  --with-db1              (GNU Cobol) use Berkeley DB 1.85 (libdb-1.85)],
-   [ LIBDB="1"
-     AC_DEFINE(WITH_DB, 1) ],
-	[ AC_ARG_WITH(db,
-		[  --with-db               (GNU Cobol) use Berkeley DB 3.0 or later (libdb)(default)],
-		[ if test "$with_db" = "yes"
-		  then
-		  LIBDB="3"
-		  AC_DEFINE(WITH_DB, 3)
-		  fi ],
-		[ LIBDB="3"
-		  AC_DEFINE(WITH_DB, 3) ]) ]) ])
+    [  --with-db1              (GNU Cobol) use Berkeley DB 1.85 (libdb-1.85)],
+    [ LIBDB="1"
+      AC_DEFINE(WITH_DB, 1) ],
+    [ AC_ARG_WITH(db,
+	[  --with-db               (GNU Cobol) use Berkeley DB 3.0 or later (libdb)(default)],
+	[ if test "$with_db" = "yes"
+	  then
+		LIBDB="3"
+		AC_DEFINE(WITH_DB, 3)
+	  fi ],
+	[ LIBDB="3"
+	  AC_DEFINE(WITH_DB, 3) ])
+    ])
+  ])
 fi
 
 #AC_ARG_WITH(lfs64,
@@ -515,6 +517,10 @@ then
 			[AC_MSG_ERROR(libdb is required)])])
 		fi
 	fi
+fi
+if test "$USE_DB" = "yes"
+then
+	with_db=yes
 fi
 
 # Checks for dl/ltdl.
