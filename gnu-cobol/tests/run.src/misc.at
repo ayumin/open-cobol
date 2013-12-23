@@ -1201,8 +1201,10 @@ AT_DATA([prog.cob], [
        01  WK-SIGNS     PIC XX   VALUE "AB".
        01  WKS REDEFINES WK-SIGNS.
            03 WK-SIGN   PIC X OCCURS 2.
-       01  WK-DELIM     PIC X OCCURS 2.
-       01  WK-DATA      PIC X(2) OCCURS 3.
+       01  FILLER.
+           03 WK-DELIM  PIC X OCCURS 2.
+       01  FILLER.
+           03 WK-DATA   PIC X(2) OCCURS 3.
        PROCEDURE        DIVISION.
            UNSTRING WK-CMD DELIMITED BY WK-SIGN(1) OR WK-SIGN(2)
            INTO WK-DATA(1) DELIMITER IN WK-DELIM(1)
