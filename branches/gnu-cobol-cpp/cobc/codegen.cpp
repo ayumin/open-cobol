@@ -6620,25 +6620,6 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 		str += output_newline();
 	}
 
-	/* Implicit CANCEL for INITIAL program */
-	if(prog->flag_initial) {
-		str += output_line("/* CANCEL for INITIAL program */");
-		str += output_prefix();
-		if(!prog->nested_level) {
-			str += output("%s_(-1", prog->program_id);
-		} else {
-			str += output("%s_%d_(-1", prog->program_id,
-						  prog->toplev_count);
-		}
-		if(!prog->flag_chained) {
-			for(cb_tree l = parameter_list; l; l = CB_CHAIN(l)) {
-				str += output(", NULL");
-			}
-		}
-		str += output(");\n");
-		str += output_newline();
-	}
-
 	if(gen_dynamic) {
 		str += output_line("/* Deallocate dynamic FUNCTION-ID fields */");
 		for(cob_u32_t inc = 0; inc < gen_dynamic; inc++) {
@@ -6714,6 +6695,25 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 #else
 		str += output_line("cob_free(module);");
 #endif
+		str += output_newline();
+	}
+
+	/* Implicit CANCEL for INITIAL program */
+	if(prog->flag_initial) {
+		str += output_line("/* CANCEL for INITIAL program */");
+		str += output_prefix();
+		if(!prog->nested_level) {
+			str += output("%s_(-1", prog->program_id);
+		} else {
+			str += output("%s_%d_(-1", prog->program_id,
+						  prog->toplev_count);
+		}
+		if(!prog->flag_chained) {
+			for(cb_tree l = parameter_list; l; l = CB_CHAIN(l)) {
+				str += output(", NULL");
+			}
+		}
+		str += output(");\n");
 		str += output_newline();
 	}
 
@@ -7007,7 +7007,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 	}
 
 	/* Clear RETURN-CODE */
-	if(!prog->nested_level) {
+	if(!prog->nested_level && !prog->flag_initial) {
 		str += output_prefix();
 		str += output_integer(current_prog->cb_return_code);
 		str += output(" = 0;\n");
@@ -8452,7 +8452,7 @@ codegen(cb_program * prog, const int nested)
 	}
 
 	/* Optimizer output */
-	for(cb_optim optidx = COB_OPTIM_MIN; optidx < COB_OPTIM_MAX; optidx = (cb_optim)(optidx + 1)) {
+	for(cb_optim optidx = COB_OPTIM_MIN; optidx < COB_OPTIM_MAX; optidx = (cb_optim)((int)optidx + 1)) {
 		if(optimize_defs[optidx]) {
 			cob_gen_optim(optidx);
 			output_storage("\n");
