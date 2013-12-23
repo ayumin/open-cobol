@@ -515,14 +515,14 @@ cob_unstring_into(cob_field * dst, cob_field * dlm, cob_field * cnt)
 				if(p + dlsize > s) {
 					continue;
 				}
-				if(!memcmp(p, dp,(size_t)dlsize)) {
-					match_size = (int)(p - start);
-					cob_str_memcpy(dst, start, match_size);
-					unstring_offset += match_size + dlsize;
+				if(!memcmp(p, dp,(size_t)dlsize)) {			// delimiter equal
+					match_size = (int)(p - start);			// count in
+					cob_str_memcpy(dst, start, match_size);	// into
+					unstring_offset += match_size + dlsize;	// with pointer
 					dlm_data = dp;
 					dlm_size = dlsize;
 					if(dlm_list[i].uns_all) {
-						for(p++ ; p < s; ++p) {
+						for(p += dlsize; p < s; p += dlsize) {
 							if(p + dlsize > s) {
 								break;
 							}
