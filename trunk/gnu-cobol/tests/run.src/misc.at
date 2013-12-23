@@ -1134,6 +1134,101 @@ DEF
 
 AT_CLEANUP
 
+AT_SETUP([UNSTRING DELIMITED POINTER])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT     DIVISION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01  WS-LAY-RECORD            PIC X(66).
+       01  WS-DUMMY                 PIC X(50).
+       01  WS-KEYWORD               PIC X(32).
+       01  WS-POINTER               PIC 99.
+       PROCEDURE        DIVISION.
+           MOVE
+       '        10  AF-RECORD-TYPE-SEQUENCE-04     PIC   9(05) COMP-3.'
+                  TO WS-LAY-RECORD.
+           MOVE 1 TO WS-POINTER.
+           PERFORM 0001-SUB.
+           IF WS-POINTER NOT = 48
+              DISPLAY "Expected 48 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF.
+           ADD 7  TO WS-POINTER
+           END-ADD.
+           PERFORM 0001-SUB.
+           IF WS-POINTER NOT = 62
+              DISPLAY "Expected 62 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF.
+           PERFORM 0001-SUB.
+           IF WS-POINTER NOT = 63
+              DISPLAY "Expected 63 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+       0001-SUB.
+           UNSTRING WS-LAY-RECORD
+                    DELIMITED
+                    BY ' PIC '
+                    OR ' COMP-3'
+                    OR '.'
+              INTO WS-DUMMY
+              DELIMITER WS-KEYWORD
+              POINTER WS-POINTER
+           END-UNSTRING.
+           .
+])
+
+AT_CHECK([${COMPILE} -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+AT_SETUP([UNSTRING DELIMITER IN])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01  WK-CMD       PIC X(8) VALUE "WWADDBCC".
+       01  WK-SIGNS     PIC XX   VALUE "AB".
+       01  WKS REDEFINES WK-SIGNS.
+           03 WK-SIGN   PIC X OCCURS 2.
+       01  WK-DELIM     PIC X OCCURS 2.
+       01  WK-DATA      PIC X(2) OCCURS 3.
+       PROCEDURE        DIVISION.
+           UNSTRING WK-CMD DELIMITED BY WK-SIGN(1) OR WK-SIGN(2)
+           INTO WK-DATA(1) DELIMITER IN WK-DELIM(1)
+                WK-DATA(2) DELIMITER IN WK-DELIM(2)
+                WK-DATA(3)
+           END-UNSTRING
+           IF  WK-DATA(1)   NOT = "WW"
+            OR WK-DATA(2)   NOT = "DD"
+            OR WK-DATA(3)   NOT = "CC"
+            OR WK-DELIM(1)  NOT = "A"
+            OR WK-DELIM(2)  NOT = "B"
+               DISPLAY WK-DATA(1)
+                       WK-DATA(2)
+                       WK-DATA(3)
+                       WK-DELIM(1)
+                       WK-DELIM(2)
+               END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([${COMPILE} -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
 
 AT_SETUP([READ INTO AT-END sequence])
 AT_KEYWORDS([runmisc])
