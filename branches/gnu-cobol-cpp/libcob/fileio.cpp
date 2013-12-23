@@ -4951,8 +4951,8 @@ cob_sys_copy_file(unsigned char * fname1, unsigned char * fname2)
 	delete [] fn2;
 	int ret = 0;
 	int	i;
-	while((i = read(fd1, fn1, sizeof(fn1))) > 0) {
-		if(write(fd2, fn1, (size_t)i) < 0) {
+	while ((i = read (fd1, file_open_buff, COB_FILE_BUFF)) > 0) {
+		if (write (fd2, file_open_buff, (size_t)i) < 0) {
 			ret = -1;
 			break;
 		}
