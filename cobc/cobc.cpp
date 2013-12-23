@@ -1856,7 +1856,7 @@ process_command_line(const int argc, char ** argv)
 		case 'd':
 			/* -debug : Turn on OC debugging */
 			/* Turn on all exception conditions */
-			for(cob_exception_id i = (cob_exception_id)1; i < COB_EC_MAX; i = (cob_exception_id)(i + 1)) {
+			for(cob_exception_id i = (cob_exception_id)1; i < COB_EC_MAX; i = (cob_exception_id)((int)i + 1)) {
 				CB_EXCEPTION_ENABLE(i) = 1;
 			}
 			cb_flag_source_location = 1;
