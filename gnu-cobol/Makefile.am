@@ -35,7 +35,9 @@ DISTCLEANFILES = $(BUILT_SOURCES) cpucheck
 EXTRA_DIST = cpucheck.c COPYING.DOC
 
 dist-hook:
-	echo "static char octardate[] = \"`date +'%b %d %Y %T %Z'`\";" > $(distdir)/tarstamp.h
+	echo "#define COB_TAR_DATE \"`date -u +'%b %d %Y %T'` UTC\"" > $(distdir)/tarstamp.h
+	echo "#define COB_NUM_TAR_DATE `date -u +'%Y%m%d'`" >> $(distdir)/tarstamp.h
+	echo "#define COB_NUM_TAR_TIME `date -u +'%H%M%S'`" >> $(distdir)/tarstamp.h
 	find $(distdir) -type d -print | xargs chmod 777
 	chmod 644 $(distdir)/cpucheck.c
 	chmod 644 $(distdir)/bin/cob-config.in
@@ -73,5 +75,11 @@ defaults.h: Makefile.am $(top_builddir)/config.status
 	  echo "#define COB_COPY_DIR     \"$(COB_COPY_DIR)\"";		\
 	  echo "#define COB_LIBRARY_PATH \"$(COB_LIBRARY_PATH)\"";	\
 	  echo "#define COB_MODULE_EXT   \"$(COB_MODULE_EXT)\"";	\
+	  echo "#define COB_BLD_CC       \"$(CC)\"";			\
+	  echo "#define COB_BLD_CPPFLAGS \"$(CPPFLAGS)\"";		\
+	  echo "#define COB_BLD_CFLAGS   \"$(CFLAGS)\"";		\
+	  echo "#define COB_BLD_LD       \"$(LD)\"";			\
+	  echo "#define COB_BLD_LDFLAGS  \"$(LDFLAGS)\"";		\
+	  echo "#define COB_BLD_BUILD    \"$(build)\"";			\
 	  echo "#define LOCALEDIR        \"$(datadir)/locale\"";	\
 	} > defaults.h

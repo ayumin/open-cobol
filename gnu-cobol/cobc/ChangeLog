@@ -34,6 +34,12 @@
        default-organization: record-sequential (default=old behaviour),
        line-sequential
 
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+   * cobc.*, codegen.c, tree.h, typeck.c : Adding new commands to cobc
+       --info with most important configuration/environment details
+       --list-system for displaying all registered system routines
+
 20??-??-??  Simon 'human' Sobisch
 
    * codegen.c : Simplify by handling stuff for different compilers
