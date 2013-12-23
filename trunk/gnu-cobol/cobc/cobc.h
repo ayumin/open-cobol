@@ -39,6 +39,11 @@
 
 #define ABORT()		cobc_abort(__FILE__,__LINE__)
 
+/* Stringify macros */
+#define CB_STRINGIFY(s)			#s
+#define CB_XSTRINGIFY(s)		CB_STRINGIFY(s)
+
+/* Source format defines */
 #define CB_FORMAT_FIXED	0
 #define CB_FORMAT_FREE	1
 
@@ -143,8 +148,8 @@ extern void			*cobc_realloc (void *prevptr, const size_t size);
 
 DECLNORET extern void cobc_abort (const char *filename, const int linenum) COB_A_NORETURN;
 
+extern size_t			cobc_check_valid_name (const char *);
 
-extern size_t			cobc_check_valid_name (char *name);
 
 /* config.c */
 

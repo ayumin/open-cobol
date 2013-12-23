@@ -1227,12 +1227,13 @@ extern int	non_const_word;
 
 /* reserved.c */
 extern cb_tree	lookup_system_name (const char *name);
-extern int	lookup_reserved_word (const char *name);
-extern void	cb_list_reserved (void);
-extern void	cb_list_intrinsics (void);
-extern void	cb_list_mnemonics (void);
-extern void	cb_init_reserved (void);
-extern void	cb_list_map (cb_tree (*func) (cb_tree x), cb_tree l);
+extern int			lookup_reserved_word (const char *name);
+extern void			cb_list_reserved (void);
+extern void			cb_list_intrinsics (void);
+extern void			cb_list_mnemonics (void);
+extern void			cb_list_system (void);
+extern void			cb_init_reserved (void);
+extern void			cb_list_map (cb_tree (*func) (cb_tree x), cb_tree l);
 
 /* error.c */
 extern void	cb_warning_x (cb_tree x, const char *fmt, ...) COB_A_FORMAT23;

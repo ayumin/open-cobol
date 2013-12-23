@@ -1,3 +1,4 @@
+
 2013-09-29  Brian Tiffin & Simon  Sobisch
 
 	* Change package name, and project to GNU Cobol
@@ -5,6 +6,11 @@
 2012-09-05  Simon 'sf-mensch/human' Sobisch
 
 	* Change package name to OpenCOBOL CE
+
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* Makefile.*, tarstamp.h : Adding numeric defined
+	  package date/time
 
 2011-??-??  Roger While <simrw@sim-basis.de>
 

@@ -493,6 +493,61 @@ invliteral:
 	return cb_error_node;
 }
 
+/* List system routines */
+
+void
+cb_list_system (void)
+{
+	const struct system_table	*psyst;
+	const char			*s;
+	size_t				n;
+
+	putchar ('\n');
+	printf (_("System routine\t\t\tParameters"));
+	puts ("\n");
+	for (psyst = system_tab; psyst->syst_name; psyst++) {
+		switch (*(unsigned char *)(psyst->syst_name)) {
+		case 'C':
+		case 'S':
+			printf ("%s", psyst->syst_name);
+			break;
+		case 0xF4:
+			printf ("X\"F4\"");
+			break;
+		case 0xF5:
+			printf ("X\"F5\"");
+			break;
+		case 0x91:
+			printf ("X\"91\"");
+			break;
+		case 0xE4:
+			printf ("X\"E4\"");
+			break;
+		case 0xE5:
+			printf ("X\"E5\"");
+			break;
+		default:
+			break;
+		}
+		n = strlen (psyst->syst_name);
+		switch (n / 8) {
+		case 0:
+			s = "\t\t\t\t";
+			break;
+		case 1:
+			s = "\t\t\t";
+			break;
+		case 2:
+			s = "\t\t";
+			break;
+		default:
+			s = "\t";
+			break;
+		}
+		printf ("%s%d\n", s, psyst->syst_params);
+	}
+}
+
 void
 cb_build_registers (void)
 {
