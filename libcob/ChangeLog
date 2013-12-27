@@ -1,3 +1,7 @@
+2013-12-26  Luke Bryan <cobcoder@users.sourceforge.net>
+
+        * strings.c : Fix Unstring delimited by all delimiter size > 1 issue, see bug #54.
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
