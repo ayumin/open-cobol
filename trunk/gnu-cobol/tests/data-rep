@@ -877,8 +877,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:161: ./prog"
-echo binary.at:161 >$at_check_line_file
+echo "binary.at:52: ./prog"
+echo binary.at:52 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -998,7 +998,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:161: exit code was $at_status, expected 0"
+   *) echo "binary.at:52: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1038,8 +1038,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:203: ./prog"
-echo binary.at:203 >$at_check_line_file
+echo "binary.at:166: ./prog"
+echo binary.at:166 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -1087,7 +1087,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:203: exit code was $at_status, expected 0"
+   *) echo "binary.at:166: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1221,8 +1221,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:350: ./prog"
-echo binary.at:350 >$at_check_line_file
+echo "binary.at:241: ./prog"
+echo binary.at:241 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -1342,7 +1342,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:350: exit code was $at_status, expected 0"
+   *) echo "binary.at:241: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1382,8 +1382,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:392: ./prog"
-echo binary.at:392 >$at_check_line_file
+echo "binary.at:355: ./prog"
+echo binary.at:355 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -1431,7 +1431,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:392: exit code was $at_status, expected 0"
+   *) echo "binary.at:355: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1538,8 +1538,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:536: ./prog"
-echo binary.at:536 >$at_check_line_file
+echo "binary.at:427: ./prog"
+echo binary.at:427 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -1659,7 +1659,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:536: exit code was $at_status, expected 0"
+   *) echo "binary.at:427: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1699,8 +1699,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:578: ./prog"
-echo binary.at:578 >$at_check_line_file
+echo "binary.at:541: ./prog"
+echo binary.at:541 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -1748,7 +1748,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:578: exit code was $at_status, expected 0"
+   *) echo "binary.at:541: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -1882,8 +1882,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:725: ./prog"
-echo binary.at:725 >$at_check_line_file
+echo "binary.at:616: ./prog"
+echo binary.at:616 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2003,7 +2003,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:725: exit code was $at_status, expected 0"
+   *) echo "binary.at:616: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2043,8 +2043,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:767: ./prog"
-echo binary.at:767 >$at_check_line_file
+echo "binary.at:730: ./prog"
+echo binary.at:730 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2092,7 +2092,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:767: exit code was $at_status, expected 0"
+   *) echo "binary.at:730: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2200,8 +2200,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:912: ./prog"
-echo binary.at:912 >$at_check_line_file
+echo "binary.at:803: ./prog"
+echo binary.at:803 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2321,7 +2321,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:912: exit code was $at_status, expected 0"
+   *) echo "binary.at:803: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2361,8 +2361,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:954: ./prog"
-echo binary.at:954 >$at_check_line_file
+echo "binary.at:917: ./prog"
+echo binary.at:917 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2410,7 +2410,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:954: exit code was $at_status, expected 0"
+   *) echo "binary.at:917: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2544,8 +2544,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:1101: ./prog"
-echo binary.at:1101 >$at_check_line_file
+echo "binary.at:992: ./prog"
+echo binary.at:992 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2665,7 +2665,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:1101: exit code was $at_status, expected 0"
+   *) echo "binary.at:992: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2705,8 +2705,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:1143: ./prog"
-echo binary.at:1143 >$at_check_line_file
+echo "binary.at:1106: ./prog"
+echo binary.at:1106 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2754,7 +2754,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:1143: exit code was $at_status, expected 0"
+   *) echo "binary.at:1106: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2821,8 +2821,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "binary.at:1201: ./prog"
-echo binary.at:1201 >$at_check_line_file
+echo "binary.at:1164: ./prog"
+echo binary.at:1164 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2870,7 +2870,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "binary.at:1201: exit code was $at_status, expected 0"
+   *) echo "binary.at:1164: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -2966,8 +2966,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "display.at:79: ./prog"
-echo display.at:79 >$at_check_line_file
+echo "display.at:67: ./prog"
+echo display.at:67 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -2990,7 +2990,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "display.at:79: exit code was $at_status, expected 0"
+   *) echo "display.at:67: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -3302,8 +3302,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:157: ./prog"
-echo packed.at:157 >$at_check_line_file
+echo "packed.at:48: ./prog"
+echo packed.at:48 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -3423,7 +3423,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:157: exit code was $at_status, expected 0"
+   *) echo "packed.at:48: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -3509,8 +3509,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:205: ./prog"
-echo packed.at:205 >$at_check_line_file
+echo "packed.at:196: ./prog"
+echo packed.at:196 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -3530,7 +3530,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:205: exit code was $at_status, expected 0"
+   *) echo "packed.at:196: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -3618,8 +3618,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:255: ./prog"
-echo packed.at:255 >$at_check_line_file
+echo "packed.at:246: ./prog"
+echo packed.at:246 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -3639,7 +3639,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:255: exit code was $at_status, expected 0"
+   *) echo "packed.at:246: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -3717,8 +3717,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:291: ./prog"
-echo packed.at:291 >$at_check_line_file
+echo "packed.at:286: ./prog"
+echo packed.at:286 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -3734,7 +3734,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:291: exit code was $at_status, expected 0"
+   *) echo "packed.at:286: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -3811,8 +3811,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:325: ./prog"
-echo packed.at:325 >$at_check_line_file
+echo "packed.at:321: ./prog"
+echo packed.at:321 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -3827,7 +3827,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:325: exit code was $at_status, expected 0"
+   *) echo "packed.at:321: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then
@@ -4002,8 +4002,8 @@ fi
 $at_traceon
 
 $at_traceoff
-echo "packed.at:468: ./prog"
-echo packed.at:468 >$at_check_line_file
+echo "packed.at:453: ./prog"
+echo packed.at:453 >$at_check_line_file
 ( $at_traceon; ./prog ) >$at_stdout 2>$at_stder1
 at_status=$?
 grep '^ *+' $at_stder1 >&2
@@ -4029,7 +4029,7 @@ case $at_status in
    77) echo 77 > $at_status_file
             exit 77;;
    0) ;;
-   *) echo "packed.at:468: exit code was $at_status, expected 0"
+   *) echo "packed.at:453: exit code was $at_status, expected 0"
       at_failed=:;;
 esac
 if $at_failed; then

@@ -1,3 +1,8 @@
+2013-12-26  Luke Bryan <cobcoder@users.sourceforge.net>
+
+   * strings.c : Fix Unstring delimited by all delimiter
+                 size > 1 issue, see bug #54.
+
 2013-12-07  Brian Tiffin <btiffin@gnu.org>
 
    * call.c, common.c : Unused, set-notused parameter warning removal
