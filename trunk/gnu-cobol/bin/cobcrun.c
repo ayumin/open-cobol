@@ -71,7 +71,7 @@ cobcrun_print_version (void)
 	printf ("cobcrun (%s) %s.%d\n",
 		PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
 	puts ("Copyright (C) 2004-2009 Roger While");
-	printf ("Built    %s\nPackaged %s\n", buff, octardate);
+	printf ("Built    %s\nPackaged %s\n", buff, COB_TAR_DATE);
 }
 
 static void
