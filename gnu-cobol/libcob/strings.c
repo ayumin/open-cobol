@@ -520,21 +520,21 @@ cob_unstring_into (cob_field *dst, cob_field *dlm, cob_field *cnt)
 
 		srsize = (int) unstring_src->size;
 		s = unstring_src->data + srsize;
-		for (p = start; p < s; p++) {
-			for (i = 0; i < unstring_ndlms; i++) {
+		for (p = start; p < s; ++p) {
+			for (i = 0; i < unstring_ndlms; ++i) {
 				dlsize = (int) dlm_list[i].uns_dlm.size;
 				dp = dlm_list[i].uns_dlm.data;
 				if (p + dlsize > s) {
 					continue;
 				}
-				if (!memcmp (p, dp, (size_t)dlsize)) {
-					match_size = (int)(p - start);
-					cob_memcpy (dst, start, match_size);
-					unstring_offset += match_size + dlsize;
+				if (!memcmp (p, dp, (size_t)dlsize)) {           /* delimiter equal */
+					match_size = (int)(p - start);               /* count in */
+					cob_memcpy (dst, start, match_size);         /* into */
+					unstring_offset += match_size + dlsize;      /* with pointer */
 					dlm_data = dp;
 					dlm_size = dlsize;
-					if (dlm_list[i].uns_all) {
-						for (p++ ; p < s; p++) {
+					if (dlm_list[i].uns_all) {                   /* delimited by all */
+						for (p += dlsize ; p < s; p += dlsize) {
 							if (p + dlsize > s) {
 								break;
 							}
