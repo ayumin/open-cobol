@@ -1,5 +1,10 @@
 2010-06-28  Roger While <simrw@sim-basis.de>
 
+	* codegen.c : Fixing Bug #55
+		UDF with no parameters do not compile
+
+2010-06-28  Roger While <simrw@sim-basis.de>
+
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
