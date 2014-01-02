@@ -6851,9 +6851,10 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 		}
 		output ("{\n");
 		output ("  struct cob_func_loc\t*floc;\n\n");
-#if	0	/* RXWRXW - UFUNC */
-		output ("  floc = cob_save_func (cob_fret, cob_pam, %u);\n",
+		output ("  /* Save environment */\n");
+		output ("  floc = cob_save_func (cob_fret, cob_pam, %u",
 			parmnum);
+#if	0	/* RXWRXW - UFUNC */
 		if (!using_list) {
 			output ("  floc->ret_fld = %s_ (0);\n", prog->program_id);
 			output ("  **cob_fret = *floc->ret_fld;\n");
@@ -6882,22 +6883,21 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 				output ("    break;\n");
 			}
 		}
-		output ("  }\n");
 #else
-		output ("  /* Save environment */\n");
-		output ("  floc = cob_save_func (cob_fret, cob_pam, %u",
-			parmnum);
 		for (n = 0; n < parmnum; ++n) {
 			output (", f%u", n);
 		}
-		output (");\n");
 #endif
+		output (");\n");
 
-		output ("  floc->ret_fld = %s_ (0, ", prog->program_id);
-		for (n = 0; n < parmnum; ++n) {
-			output ("floc->data[%u]", n);
-			if (n != parmnum - 1) {
-				output (", ");
+		output ("  floc->ret_fld = %s_ (0", prog->program_id);
+		if (parmnum != 0) {
+			output (", ");
+			for (n = 0; n < parmnum; ++n) {
+				output ("floc->data[%u]", n);
+				if (n != parmnum - 1) {
+					output (", ");
+				}
 			}
 		}
 		output (");\n");
