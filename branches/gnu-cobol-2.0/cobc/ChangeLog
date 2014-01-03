@@ -1,4 +1,4 @@
-2010-06-28  Roger While <simrw@sim-basis.de>
+2013-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* codegen.c : Fixing Bug #55
 		UDF with no parameters do not compile
