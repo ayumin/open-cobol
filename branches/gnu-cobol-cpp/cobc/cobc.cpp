@@ -1375,11 +1375,11 @@ cobc_sig_handler(int sig)
 static void
 cobc_print_version(void)
 {
-	printf("cobc (%s) %s.%d\n",
+	printf("cobc(%s) %s.%d\n",
 		   PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
 	puts("Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida");
 	puts("Copyright (C) 2006-2012 Roger While");
-	puts("Copyright (C) 2013 Sergey Kashyrin");
+	puts("Copyright (C) 2013 Sergey Kashyrin"); 
 	puts(_("This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	printf(_("Built     %s"), cb_oc_build_stamp);
@@ -3033,8 +3033,8 @@ process_compile(filename * fn)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s /c %s %s /Od /MDd /Zi /FR /c /Fa\"%s\" /Fo\"%s\" \"%s\"" :
-			"%s /c %s %s /MD /c /Fa\"%s\" /Fo\"%s\" \"%s\"",
+			"%s /c %s %s /Od /MDd /EHsc /Zi /FR /c /Fa\"%s\" /Fo\"%s\" \"%s\"" :
+			"%s /c %s %s /MD /EHsc /c /Fa\"%s\" /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include, name,
 			name, fn->translate);
 #elif defined(__WATCOMC__)
@@ -3060,8 +3060,8 @@ process_assemble(filename * fn)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s /c %s %s /Od /MDd /Zi /FR /Fo\"%s\" \"%s\"" :
-			"%s /c %s %s /MD /Fo\"%s\" \"%s\"",
+			"%s /c %s %s /Od /MDd /EHsc /Zi /FR /Fo\"%s\" \"%s\"" :
+			"%s /c %s %s /MD /EHsc /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include,
 			fn->object, fn->translate);
 #elif defined(__OS400__)
@@ -3151,8 +3151,8 @@ process_module_direct(filename * fn)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s %s %s /Od /MDd /LDd /Zi /FR /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s" :
-			"%s %s %s /MD /LD /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s",
+			"%s %s %s /Od /MDd /LDd /EHsc /Zi /FR /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s" :
+			"%s %s %s /MD /LD /EHsc /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s",
 			cobc_cc, cobc_cflags, cobc_include, name, name,
 			fn->translate, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
@@ -3246,8 +3246,8 @@ process_module(filename * fn)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s /Od /MDd /LDd /Zi /FR /Fe\"%s\" \"%s\" %s %s %s %s" :
-			"%s /MD /LD /Fe\"%s\" \"%s\" %s %s %s %s",
+			"%s /Od /MDd /LDd /EHsc /Zi /FR /Fe\"%s\" \"%s\" %s %s %s %s" :
+			"%s /MD /LD /EHsc /Fe\"%s\" \"%s\" %s %s %s %s",
 			cobc_cc, name, fn->object, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
 	int ret = process(cobc_buffer);
@@ -3331,8 +3331,8 @@ process_library(filename * l)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s /Od /MDd /LDd /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
-			"%s /MD /LD /Fe\"%s\" %s %s %s %s %s",
+			"%s /Od /MDd /LDd /EHsc /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
+			"%s /MD /LD /EHsc /Fe\"%s\" %s %s %s %s %s",
 			cobc_cc, name, cobc_objects_buffer, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
 	int ret = process(cobc_buffer);
@@ -3416,8 +3416,8 @@ process_link(filename * l)
 
 #ifdef	_MSC_VER
 	sprintf(cobc_buffer, gflag_set ?
-			"%s /Od /MDd /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
-			"%s /MD /Fe\"%s\" %s %s %s %s %s",
+			"%s /Od /MDd /EHsc /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
+			"%s /MD /EHsc /Fe\"%s\" %s %s %s %s %s",
 			cobc_cc, name, cobc_objects_buffer, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
 	int ret = process(cobc_buffer);
