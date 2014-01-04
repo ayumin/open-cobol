@@ -1,21 +1,24 @@
-/* A Bison parser, made by GNU Bison 2.6.4.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
+/* Skeleton interface for Bison's Yacc-like parsers in C
+
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
+
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -26,19 +29,9 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
-
-#ifndef YY_YY_PARSER_H_INCLUDED
-# define YY_YY_PARSER_H_INCLUDED
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -558,29 +551,527 @@ extern int yydebug;
      SHIFT_PREFER = 766
    };
 #endif
+/* Tokens.  */
+#define TOKEN_EOF 0
+#define ACCEPT 258
+#define ACCESS 259
+#define ADD 260
+#define ADDRESS 261
+#define ADVANCING 262
+#define AFTER 263
+#define ALL 264
+#define ALLOCATE 265
+#define ALPHABET 266
+#define ALPHABETIC 267
+#define ALPHABETIC_LOWER 268
+#define ALPHABETIC_UPPER 269
+#define ALPHANUMERIC 270
+#define ALPHANUMERIC_EDITED 271
+#define ALSO 272
+#define ALTER 273
+#define ALTERNATE 274
+#define AND 275
+#define ANY 276
+#define ARE 277
+#define AREA 278
+#define ARGUMENT_NUMBER 279
+#define ARGUMENT_VALUE 280
+#define AS 281
+#define ASCENDING 282
+#define ASCII 283
+#define ASSIGN 284
+#define AT 285
+#define ATTRIBUTE 286
+#define AUTO 287
+#define AUTOMATIC 288
+#define AWAY_FROM_ZERO 289
+#define BACKGROUND_COLOR 290
+#define BASED 291
+#define BEFORE 292
+#define BELL 293
+#define BINARY 294
+#define BINARY_C_LONG 295
+#define BINARY_CHAR 296
+#define BINARY_DOUBLE 297
+#define BINARY_LONG 298
+#define BINARY_SHORT 299
+#define BLANK 300
+#define BLINK 301
+#define BLOCK 302
+#define BOTTOM 303
+#define BY 304
+#define BYTE_LENGTH 305
+#define CALL 306
+#define CANCEL 307
+#define CF 308
+#define CH 309
+#define CHAINING 310
+#define CHARACTER 311
+#define CHARACTERS 312
+#define CLASS 313
+#define CLASSIFICATION 314
+#define CLOSE 315
+#define CODE 316
+#define CODE_SET 317
+#define COLLATING 318
+#define COL 319
+#define COLS 320
+#define COLUMN 321
+#define COLUMNS 322
+#define COMMA 323
+#define COMMAND_LINE 324
+#define COMMA_DELIM 325
+#define COMMIT 326
+#define COMMON 327
+#define COMP 328
+#define COMPUTE 329
+#define COMP_1 330
+#define COMP_2 331
+#define COMP_3 332
+#define COMP_4 333
+#define COMP_5 334
+#define COMP_6 335
+#define COMP_X 336
+#define CONCATENATE_FUNC 337
+#define CONDITION 338
+#define CONFIGURATION 339
+#define CONSTANT 340
+#define CONTAINS 341
+#define CONTENT 342
+#define CONTINUE 343
+#define CONTROL 344
+#define CONTROLS 345
+#define CONVERSION 346
+#define CONVERTING 347
+#define COPY 348
+#define CORRESPONDING 349
+#define COUNT 350
+#define CRT 351
+#define CRT_UNDER 352
+#define CURRENCY 353
+#define CURRENT_DATE_FUNC 354
+#define CURSOR 355
+#define CYCLE 356
+#define DATA 357
+#define DATE 358
+#define DAY 359
+#define DAY_OF_WEEK 360
+#define DE 361
+#define DEBUGGING 362
+#define DECIMAL_POINT 363
+#define DECLARATIVES 364
+#define DEFAULT 365
+#define DELETE 366
+#define DELIMITED 367
+#define DELIMITER 368
+#define DEPENDING 369
+#define DESCENDING 370
+#define DETAIL 371
+#define DISC 372
+#define DISK 373
+#define DISPLAY 374
+#define DISPLAY_OF_FUNC 375
+#define DIVIDE 376
+#define DIVISION 377
+#define DOWN 378
+#define DUPLICATES 379
+#define DYNAMIC 380
+#define EBCDIC 381
+#define EC 382
+#define ELSE 383
+#define END 384
+#define END_ACCEPT 385
+#define END_ADD 386
+#define END_CALL 387
+#define END_COMPUTE 388
+#define END_DELETE 389
+#define END_DISPLAY 390
+#define END_DIVIDE 391
+#define END_EVALUATE 392
+#define END_FUNCTION 393
+#define END_IF 394
+#define END_MULTIPLY 395
+#define END_PERFORM 396
+#define END_PROGRAM 397
+#define END_READ 398
+#define END_RETURN 399
+#define END_REWRITE 400
+#define END_SEARCH 401
+#define END_START 402
+#define END_STRING 403
+#define END_SUBTRACT 404
+#define END_UNSTRING 405
+#define END_WRITE 406
+#define ENTRY 407
+#define ENVIRONMENT 408
+#define ENVIRONMENT_NAME 409
+#define ENVIRONMENT_VALUE 410
+#define EOL 411
+#define EOP 412
+#define EOS 413
+#define EQUAL 414
+#define ERASE 415
+#define ERROR 416
+#define ESCAPE 417
+#define EVALUATE 418
+#define EVENT_STATUS 419
+#define EXCEPTION 420
+#define EXCEPTION_CONDITION 421
+#define EXCLUSIVE 422
+#define EXIT 423
+#define EXPONENTIATION 424
+#define EXTEND 425
+#define EXTERNAL 426
+#define FD 427
+#define FILE_CONTROL 428
+#define FILE_ID 429
+#define FILLER 430
+#define FINAL 431
+#define FIRST 432
+#define FLOAT_BINARY_128 433
+#define FLOAT_BINARY_32 434
+#define FLOAT_BINARY_64 435
+#define FLOAT_DECIMAL_16 436
+#define FLOAT_DECIMAL_34 437
+#define FLOAT_DECIMAL_7 438
+#define FLOAT_EXTENDED 439
+#define FLOAT_LONG 440
+#define FLOAT_SHORT 441
+#define FOOTING 442
+#define FOR 443
+#define FOREGROUND_COLOR 444
+#define FOREVER 445
+#define FORMATTED_CURRENT_FUNC 446
+#define FORMATTED_DATE_FUNC 447
+#define FORMATTED_DATETIME_FUNC 448
+#define FORMATTED_TIME_FUNC 449
+#define FREE 450
+#define FROM 451
+#define FROM_CRT 452
+#define FULL 453
+#define FUNCTION 454
+#define FUNCTION_ID 455
+#define FUNCTION_NAME 456
+#define GENERATE 457
+#define GIVING 458
+#define GLOBAL 459
+#define GO 460
+#define GOBACK 461
+#define GREATER 462
+#define GREATER_OR_EQUAL 463
+#define GROUP 464
+#define HEADING 465
+#define HIGHLIGHT 466
+#define HIGH_VALUE 467
+#define ID 468
+#define IDENTIFICATION 469
+#define IF 470
+#define IGNORE 471
+#define IGNORING 472
+#define IN 473
+#define INDEX 474
+#define INDEXED 475
+#define INDICATE 476
+#define INITIALIZE 477
+#define INITIALIZED 478
+#define INITIATE 479
+#define INPUT 480
+#define INPUT_OUTPUT 481
+#define INSPECT 482
+#define INTO 483
+#define INTRINSIC 484
+#define INVALID 485
+#define INVALID_KEY 486
+#define IS 487
+#define I_O 488
+#define I_O_CONTROL 489
+#define JUSTIFIED 490
+#define KEPT 491
+#define KEY 492
+#define KEYBOARD 493
+#define LABEL 494
+#define LAST 495
+#define LEADING 496
+#define LEFT 497
+#define LEFTLINE 498
+#define LENGTH 499
+#define LENGTH_OF 500
+#define LESS 501
+#define LESS_OR_EQUAL 502
+#define LIMIT 503
+#define LIMITS 504
+#define LINAGE 505
+#define LINAGE_COUNTER 506
+#define LINE 507
+#define LINE_COUNTER 508
+#define LINES 509
+#define LINKAGE 510
+#define LITERAL 511
+#define LOCALE 512
+#define LOCALE_DATE_FUNC 513
+#define LOCALE_TIME_FUNC 514
+#define LOCALE_TIME_FROM_FUNC 515
+#define LOCAL_STORAGE 516
+#define LOCK 517
+#define LOWER 518
+#define LOWER_CASE_FUNC 519
+#define LOWLIGHT 520
+#define LOW_VALUE 521
+#define MANUAL 522
+#define MEMORY 523
+#define MERGE 524
+#define MINUS 525
+#define MNEMONIC_NAME 526
+#define MODE 527
+#define MOVE 528
+#define MULTIPLE 529
+#define MULTIPLY 530
+#define NAME 531
+#define NATIONAL 532
+#define NATIONAL_EDITED 533
+#define NATIONAL_OF_FUNC 534
+#define NATIVE 535
+#define NEAREST_AWAY_FROM_ZERO 536
+#define NEAREST_EVEN 537
+#define NEAREST_TOWARD_ZERO 538
+#define NEGATIVE 539
+#define NEXT 540
+#define NEXT_PAGE 541
+#define NO 542
+#define NO_ECHO 543
+#define NORMAL 544
+#define NOT 545
+#define NOT_END 546
+#define NOT_EOP 547
+#define NOT_EQUAL 548
+#define NOT_EXCEPTION 549
+#define NOT_INVALID_KEY 550
+#define NOT_OVERFLOW 551
+#define NOT_SIZE_ERROR 552
+#define NO_ADVANCING 553
+#define NUMBER 554
+#define NUMBERS 555
+#define NUMERIC 556
+#define NUMERIC_EDITED 557
+#define NUMVALC_FUNC 558
+#define OBJECT_COMPUTER 559
+#define OCCURS 560
+#define OF 561
+#define OFF 562
+#define OMITTED 563
+#define ON 564
+#define ONLY 565
+#define OPEN 566
+#define OPTIONAL 567
+#define OR 568
+#define ORDER 569
+#define ORGANIZATION 570
+#define OTHER 571
+#define OUTPUT 572
+#define OVERLINE 573
+#define PACKED_DECIMAL 574
+#define PADDING 575
+#define PAGE 576
+#define PAGE_COUNTER 577
+#define PARAGRAPH 578
+#define PERFORM 579
+#define PH 580
+#define PF 581
+#define PICTURE 582
+#define PICTURE_SYMBOL 583
+#define PLUS 584
+#define POINTER 585
+#define POSITION 586
+#define POSITIVE 587
+#define PRESENT 588
+#define PREVIOUS 589
+#define PRINTER 590
+#define PRINTING 591
+#define PROCEDURE 592
+#define PROCEDURES 593
+#define PROCEED 594
+#define PROGRAM 595
+#define PROGRAM_ID 596
+#define PROGRAM_NAME 597
+#define PROGRAM_POINTER 598
+#define PROHIBITED 599
+#define PROMPT 600
+#define QUOTE 601
+#define RANDOM 602
+#define RD 603
+#define READ 604
+#define READY_TRACE 605
+#define RECORD 606
+#define RECORDING 607
+#define RECORDS 608
+#define RECURSIVE 609
+#define REDEFINES 610
+#define REEL 611
+#define REFERENCE 612
+#define REFERENCES 613
+#define RELATIVE 614
+#define RELEASE 615
+#define REMAINDER 616
+#define REMOVAL 617
+#define RENAMES 618
+#define REPLACE 619
+#define REPLACING 620
+#define REPORT 621
+#define REPORTING 622
+#define REPORTS 623
+#define REPOSITORY 624
+#define REPO_FUNCTION 625
+#define REQUIRED 626
+#define RESERVE 627
+#define RESET 628
+#define RESET_TRACE 629
+#define RETURN 630
+#define RETURNING 631
+#define REVERSE_FUNC 632
+#define REVERSE_VIDEO 633
+#define REVERSED 634
+#define REWIND 635
+#define REWRITE 636
+#define RF 637
+#define RH 638
+#define RIGHT 639
+#define ROLLBACK 640
+#define ROUNDED 641
+#define RUN 642
+#define SAME 643
+#define SCREEN 644
+#define SCREEN_CONTROL 645
+#define SCROLL 646
+#define SD 647
+#define SEARCH 648
+#define SECTION 649
+#define SECURE 650
+#define SEGMENT_LIMIT 651
+#define SELECT 652
+#define SEMI_COLON 653
+#define SENTENCE 654
+#define SEPARATE 655
+#define SEQUENCE 656
+#define SEQUENTIAL 657
+#define SET 658
+#define SHARING 659
+#define SIGN 660
+#define SIGNED 661
+#define SIGNED_INT 662
+#define SIGNED_LONG 663
+#define SIGNED_SHORT 664
+#define SIZE 665
+#define SIZE_ERROR 666
+#define SORT 667
+#define SORT_MERGE 668
+#define SOURCE 669
+#define SOURCE_COMPUTER 670
+#define SPACE 671
+#define SPECIAL_NAMES 672
+#define STANDARD 673
+#define STANDARD_1 674
+#define STANDARD_2 675
+#define START 676
+#define STATIC 677
+#define STATUS 678
+#define STDCALL 679
+#define STEP 680
+#define STOP 681
+#define STRING 682
+#define SUBSTITUTE_FUNC 683
+#define SUBSTITUTE_CASE_FUNC 684
+#define SUBTRACT 685
+#define SUM 686
+#define SUPPRESS 687
+#define SYMBOLIC 688
+#define SYNCHRONIZED 689
+#define SYSTEM_DEFAULT 690
+#define TALLYING 691
+#define TAPE 692
+#define TERMINATE 693
+#define TEST 694
+#define THAN 695
+#define THEN 696
+#define THRU 697
+#define TIME 698
+#define TIMEOUT 699
+#define TIMES 700
+#define TO 701
+#define TOK_AMPER 702
+#define TOK_CLOSE_PAREN 703
+#define TOK_COLON 704
+#define TOK_DIV 705
+#define TOK_DOT 706
+#define TOK_EQUAL 707
+#define TOK_FALSE 708
+#define TOK_FILE 709
+#define TOK_GREATER 710
+#define TOK_INITIAL 711
+#define TOK_LESS 712
+#define TOK_MINUS 713
+#define TOK_MUL 714
+#define TOK_NULL 715
+#define TOK_OVERFLOW 716
+#define TOK_OPEN_PAREN 717
+#define TOK_PLUS 718
+#define TOK_TRUE 719
+#define TOP 720
+#define TOWARD_GREATER 721
+#define TOWARD_LESSER 722
+#define TRAILING 723
+#define TRANSFORM 724
+#define TRIM_FUNC 725
+#define TRUNCATION 726
+#define TYPE 727
+#define UNDERLINE 728
+#define UNIT 729
+#define UNLOCK 730
+#define UNSIGNED 731
+#define UNSIGNED_INT 732
+#define UNSIGNED_LONG 733
+#define UNSIGNED_SHORT 734
+#define UNSTRING 735
+#define UNTIL 736
+#define UP 737
+#define UPDATE 738
+#define UPON 739
+#define UPON_ARGUMENT_NUMBER 740
+#define UPON_COMMAND_LINE 741
+#define UPON_ENVIRONMENT_NAME 742
+#define UPON_ENVIRONMENT_VALUE 743
+#define UPPER 744
+#define UPPER_CASE_FUNC 745
+#define USAGE 746
+#define USE 747
+#define USER 748
+#define USER_DEFAULT 749
+#define USER_FUNCTION_NAME 750
+#define USER_REPO_FUNCTION 751
+#define USING 752
+#define VALUE 753
+#define VARYING 754
+#define WAIT 755
+#define WHEN 756
+#define WHEN_COMPILED_FUNC 757
+#define WITH 758
+#define WORD 759
+#define WORDS 760
+#define WORKING_STORAGE 761
+#define WRITE 762
+#define YYYYDDD 763
+#define YYYYMMDD 764
+#define ZERO 765
+#define SHIFT_PREFER 766
+
+
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE yylval;
 
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void *YYPARSE_PARAM);
-#else
-int yyparse ();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void);
-#else
-int yyparse ();
-#endif
-#endif /* ! YYPARSE_PARAM */
-
-#endif /* !YY_YY_PARSER_H_INCLUDED  */
