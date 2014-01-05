@@ -1,7 +1,7 @@
 /*
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
-   Copyright (C) 2013      Ron Norman
+   Copyright (C) 2013-2014 Ron Norman
 
    This file is part of OpenCOBOL / GNU COBOL.
 
@@ -206,24 +206,6 @@ cob_field_dup (cob_field *f, int incr)
 	cob_move (&temp, fld);
 	return fld;
 }
-
-#if 0
-/*
- * Make a new field the same format and data as that given
- */
-static cob_field *
-cob_field_save (cob_field *f)
-{
-	cob_field	*fld = calloc(1,sizeof(cob_field));
-
-	fld->size = f->size;
-	fld->data = calloc(1,f->size);
-	fld->attr = f->attr;
-
-	cob_move (f, fld);
-	return fld;
-}
-#endif
 
 /*
  * Free a field created by cob_field_dup or cob_field_save
@@ -601,9 +583,6 @@ do_page_footing(cob_report *r)
 		r->curr_line = r->def_lines;
 		r->incr_line = FALSE;
 	} else {
-#if 0
-		cob_write(f, f->record, COB_WRITE_AFTER|COB_WRITE_PAGE, NULL, 0);
-#endif
 		r->curr_line = 1;
 	}
 	saveLineCounter(r);
@@ -1005,6 +984,14 @@ cob_report_terminate(cob_report *r, int ctl)
 	cob_report_control_ref	*rr;
 	cob_report_line		*pl;
 
+	if(!r->initiate_done) {
+		LOG("INITIATE was never done!\n");
+		return 0;
+	}
+	if(r->first_generate) {
+		LOG("No GENERATE was ever done!\n");
+		return 0;
+	}
 	if(ctl > 0) {	 /* Continue Processing Footings from last point */
 		for(rc = r->controls; rc; rc = rc->next) {
 			for(rr = rc->control_ref; rr; rr = rr->next) {
@@ -1101,6 +1088,8 @@ PrintFootingFinal:
 	}
 	zero_all_counters(r, COB_REPORT_CONTROL_FOOTING_FINAL,NULL);
 
+	do_page_footing(r);
+
 	pl = get_line_type(r, r->first_line,COB_REPORT_FOOTING);
 	if(pl) {
 		if(pl->use_decl) {
@@ -1112,7 +1101,6 @@ PrintReportFooting:
 		report_line_type(r,r->first_line,COB_REPORT_FOOTING);
 		r->in_report_footing = FALSE;
 	}
-	do_page_footing(r);
 
 	/*
 	 * Free control temp areas
