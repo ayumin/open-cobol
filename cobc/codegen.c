@@ -5670,12 +5670,20 @@ compute_report_rcsz (struct cb_field *p)
 /* Report data definition */
 
 /* Individual fields of the report(s) */
+static int report_col_pos = 0;
 static void
 output_report_data (struct cb_field *p)
 {
     	if(p == NULL)
 	    return;
 	if(p->storage == CB_STORAGE_REPORT) {
+		if((p->report_flag & COB_REPORT_LINE))
+			report_col_pos = 0;
+		if(p->report_flag & COB_REPORT_COLUMN_PLUS) {
+			p->report_column = report_col_pos + p->report_column;
+			p->report_flag &= ~COB_REPORT_COLUMN_PLUS;
+		}
+		report_col_pos = p->report_column + p->size;
 		if(!(p->report_flag & COB_REPORT_REF_EMITED)) {
 			p->report_flag |= COB_REPORT_REF_EMITED;
 			output ("static cob_field %s%d\t= ", CB_PREFIX_FIELD, p->id);
@@ -8774,6 +8782,7 @@ codegen (struct cb_program *prog, const int nested)
 			if(rep) {
 				output_emit_field(rep->line_counter,NULL);
 				output_emit_field(rep->page_counter,NULL);
+				report_col_pos = 0;
 				output_report_data(rep->records);
 				output_local ("\n");
 			}
