@@ -126,6 +126,17 @@
 #if	1	/* RXWRXW - Status 02 */
 #undef	COB_WITH_STATUS_02
 #endif
+
+#ifdef VB_GET_RTD
+#define ISAM_ERRNO  VB_GET_RTD->iserrno
+#define ISAM_RECLEN VB_GET_RTD->isreclen
+#define ISAM_RECNUM VB_GET_RTD->isrecnum
+#else
+#define ISAM_ERRNO  iserrno
+#define ISAM_RECLEN isreclen
+#define ISAM_RECNUM isrecnum
+#endif
+
 #endif
 
 /* Isam File handler packet */
@@ -1901,7 +1912,7 @@ static int
 fisretsts(const int dfltsts)
 {
 	/* Translate ISAM status to COBOL status */
-	switch(iserrno) {
+	switch(ISAM_ERRNO) {
 	case 0:
 		return COB_STATUS_00_SUCCESS;
 	case ENOREC:
@@ -1964,7 +1975,7 @@ restorefileposition(cob_file * f)
 	indexfile * fh = (indexfile *) f->file;
 	if(fh->saverecnum >= 0) {
 		/* Switch back to index */
-		isrecnum = fh->saverecnum;
+		ISAM_RECNUM = fh->saverecnum;
 		/* Switch to recnum mode */
 		keydesc k0;
 		memset((void *)&k0, 0, sizeof(k0));
@@ -1974,13 +1985,13 @@ restorefileposition(cob_file * f)
 		isstart(fh->isfd, &fh->key[fh->curkey], 0,
 				fh->recwrk, ISEQUAL);
 		isread(fh->isfd, fh->recwrk, ISEQUAL);
-		while(isrecnum != fh->saverecnum) {
+		while(ISAM_RECNUM != fh->saverecnum) {
 			/* Read back into position */
 			if(isread(fh->isfd, fh->recwrk, fh->readdir)) {
 				break;
 			}
 		}
-		if(isrecnum == fh->saverecnum) {
+		if(ISAM_RECNUM == fh->saverecnum) {
 			if(fh->readdir == ISNEXT) {
 				/* Back off by one so next read gets this */
 				isread(fh->isfd, fh->recwrk, ISPREV);
@@ -2010,13 +2021,13 @@ savefileposition(cob_file * f)
 			/* Read next record in file */
 			if(isread(fh->isfd, fh->recwrk, fh->readdir)) {
 				fh->saverecnum = -1;
-				fh->saveerrno = iserrno;
+				fh->saveerrno = ISAM_ERRNO;
 				if(fh->saveerrno == EENDFILE ||
 						fh->saveerrno == ENOREC)  {
 					fh->eofpending = fh->readdir;
 				}
 			} else {
-				fh->saverecnum = isrecnum;
+				fh->saverecnum = ISAM_RECNUM;
 				fh->saveerrno = 0;
 			}
 			/* Restore saved record data */
@@ -2687,7 +2698,7 @@ indexed_open(cob_file * f, char * filename, const int mode, const int sharing)
 #ifdef	ISVARLEN
 	if(f->record_min != f->record_max) {
 		vmode = ISVARLEN;
-		isreclen = (int) f->record_min;
+		ISAM_RECLEN = (int) f->record_min;
 	}
 #endif
 	if(!f->lock_mode) {
@@ -2710,9 +2721,9 @@ indexed_open(cob_file * f, char * filename, const int mode, const int sharing)
 	case COB_OPEN_OUTPUT:
 		lmode = ISEXCLLOCK;
 		omode = ISOUTPUT;
-		iserrno = 0;
+		ISAM_ERRNO = 0;
 		isfd = isopen(filename, ISINPUT | ISEXCLLOCK | vmode);
-		if(iserrno == EFLOCKED) {
+		if(ISAM_ERRNO == EFLOCKED) {
 			return COB_STATUS_61_FILE_SHARING;
 		} else {
 			if(isfd >= 0) {
@@ -2743,7 +2754,7 @@ indexed_open(cob_file * f, char * filename, const int mode, const int sharing)
 		}
 		fh->key[k].k_type = CHARTYPE;
 	}
-	iserrno = 0;
+	ISAM_ERRNO = 0;
 	fh->lmode = 0;
 	if(!dobld) {
 		if(lmode == ISAUTOLOCK) {
@@ -2822,7 +2833,7 @@ indexed_open(cob_file * f, char * filename, const int mode, const int sharing)
 	}
 	if(dobld) {
 		for(k = 1; k < f->nkeys; ++k) {
-			iserrno = 0;
+			ISAM_ERRNO = 0;
 			if(isaddindex(isfd, &fh->key[k])) {
 				ret = COB_STATUS_39_CONFLICT_ATTRIBUTE;
 			}
@@ -3304,7 +3315,7 @@ indexed_read(cob_file * f, cob_field * key, const int read_opts)
 	if((fh->lmode & ISLOCK) && !(f->lock_mode & COB_LOCK_MULTIPLE)) {
 		isrelease(fh->isfd);
 	}
-	iserrno = 0;
+	ISAM_ERRNO = 0;
 	fh->readdir = -1;
 	int ret = COB_STATUS_00_SUCCESS;
 	if(isread(fh->isfd, (char *) f->record->data, ISEQUAL | lmode)) {
@@ -3323,10 +3334,10 @@ indexed_read(cob_file * f, cob_field * key, const int read_opts)
 	f->flag_begin_of_file = 0;
 	memcpy(fh->savekey, f->record->data + fh->key[0].k_start,
 		   (size_t)fh->key[0].k_leng);
-	fh->recnum = isrecnum;
+	fh->recnum = ISAM_RECNUM;
 #ifdef	ISVARLEN
 	if(f->record_min != f->record_max) {
-		f->record->size = isreclen;
+		f->record->size = ISAM_RECLEN;
 	}
 #endif
 	return 0;
@@ -3416,7 +3427,7 @@ indexed_read_next(cob_file * f, const int read_opts)
 	if((fh->lmode & ISLOCK) && !(f->lock_mode & COB_LOCK_MULTIPLE)) {
 		isrelease(fh->isfd);
 	}
-	iserrno = 0;
+	ISAM_ERRNO = 0;
 	switch(read_opts & COB_READ_MASK) {
 	case COB_READ_NEXT:
 		fh->readdir = ISNEXT;
@@ -3440,36 +3451,36 @@ indexed_read_next(cob_file * f, const int read_opts)
 				bool domoveback = false;
 				switch(fh->startcond) {
 				case COB_GE:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) == 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISPREV);
 						domoveback = true;
 					}
 					if(domoveback) {
-						isread(fh->isfd, (char *) f->record->data, iserrno == 0 ? ISNEXT : ISFIRST);
+						isread(fh->isfd, (char *) f->record->data, ISAM_ERRNO == 0 ? ISNEXT : ISFIRST);
 					}
 					break;
 				case COB_LE:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) == 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISNEXT);
 						domoveback = true;
 					}
 					if(domoveback) {
-						isread(fh->isfd, (char *) f->record->data, iserrno == 0 ? ISPREV : ISLAST);
+						isread(fh->isfd, (char *) f->record->data, ISAM_ERRNO == 0 ? ISPREV : ISLAST);
 					}
 					break;
 				case COB_LT:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) >= 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISPREV);
 					}
 					break;
 				case COB_GT:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) <= 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISNEXT);
@@ -3523,7 +3534,7 @@ indexed_read_next(cob_file * f, const int read_opts)
 				bool domoveback = false;
 				switch(fh->startcond) {
 				case COB_LE:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) == 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISNEXT);
@@ -3534,21 +3545,21 @@ indexed_read_next(cob_file * f, const int read_opts)
 					}
 					break;
 				case COB_LT:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) >= 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISPREV);
 					}
 					break;
 				case COB_GT:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) <= 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISNEXT);
 					}
 					break;
 				case COB_GE:
-					while(iserrno == 0
+					while(ISAM_ERRNO == 0
 							&& memcmp(f->record->data + fh->key[fh->curkey].k_start, fh->savekey, (size_t)fh->key[fh->curkey].k_leng) < 0)
 					{
 						isread(fh->isfd, (char *) f->record->data, ISNEXT);
@@ -3614,10 +3625,10 @@ indexed_read_next(cob_file * f, const int read_opts)
 	f->flag_begin_of_file = 0;
 	memcpy(fh->savekey, f->record->data + fh->key[0].k_start,
 		   (size_t)fh->key[0].k_leng);
-	fh->recnum = isrecnum;
+	fh->recnum = ISAM_RECNUM;
 #ifdef	ISVARLEN
 	if(f->record_min != f->record_max) {
-		f->record->size = isreclen;
+		f->record->size = ISAM_RECLEN;
 	}
 #endif
 
@@ -3912,7 +3923,7 @@ indexed_write(cob_file * f, const int opt)
 
 #ifdef	ISVARLEN
 	if(f->record_min != f->record_max) {
-		isreclen = (int) f->record->size;
+		ISAM_RECLEN = (int) f->record->size;
 	}
 #endif
 	if(unlikely(iswrite(fh->isfd, (char *) f->record->data))) {
@@ -4050,7 +4061,7 @@ indexed_rewrite(cob_file * f, const int opt)
 			restorefileposition(f);
 			return COB_STATUS_21_KEY_INVALID;
 		}
-		int curisnum = isrecnum;
+		int curisnum = ISAM_RECNUM;
 		for(size_t k = 1; k < f->nkeys && ret == COB_STATUS_00_SUCCESS; ++k) {
 			if(fh->key[k].k_flags & ISDUPS) {
 				continue;
@@ -4059,7 +4070,7 @@ indexed_rewrite(cob_file * f, const int opt)
 			isstart(fh->isfd, &fh->key[k], fh->key[k].k_leng,
 					fh->recwrk, ISEQUAL);
 			if(!isread(fh->isfd, fh->recwrk, ISEQUAL) &&
-					isrecnum != curisnum) {
+					ISAM_RECNUM != curisnum) {
 				ret = COB_STATUS_22_KEY_EXISTS;
 				break;
 			}
@@ -4073,7 +4084,7 @@ indexed_rewrite(cob_file * f, const int opt)
 			} else {
 #ifdef	ISVARLEN
 				if(f->record_min != f->record_max) {
-					isreclen = (int) f->record->size;
+					ISAM_RECLEN = (int) f->record->size;
 				}
 #endif
 				if(isrewcurr(fh->isfd, (char *) f->record->data)) {
@@ -4098,7 +4109,7 @@ indexed_rewrite(cob_file * f, const int opt)
 	} else {
 #ifdef	ISVARLEN
 		if(f->record_min != f->record_max) {
-			isreclen = (int) f->record->size;
+			ISAM_RECLEN = (int) f->record->size;
 		}
 #endif
 		if(isrewrite(fh->isfd, (char *) f->record->data)) {
