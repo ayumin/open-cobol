@@ -865,7 +865,8 @@ cb_build_identifier (cb_tree x)
 		for (p = f; p->parent; p = p->parent) {
 			;
 		}
-		if (current_statement) {
+		if (current_statement &&
+			strcmp(current_statement->name, "FREE")) {
 			if (p->flag_item_based ||
 			   (f->storage == CB_STORAGE_LINKAGE &&
 			    !p->flag_is_pdiv_parm)) {

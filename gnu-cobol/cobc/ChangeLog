@@ -1,3 +1,8 @@
+2014-01-07  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
+
+   * typeck.c : Bugfix: no exception check for NULL address on FREE statement
+       (as this is explicit allowed)
+
 2012-10-24  Sergey Kashyrin <ska@kiska.net>
 
    * tree.c : Fix incorrect counting of number of digits for "$", "+", and "-"
@@ -8,7 +13,7 @@
    * pplex.l : Lexer was missing comment lines in FREE format, i.e.
        trying to process "* COPY 12345." and look for "12345" file as a copybook :-)
 
-2012-07-24  Simon 'human' Sobisch
+2012-07-24  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * field.c : Added check for maximum size of group items
 
@@ -24,7 +29,7 @@
    * parser.y : Retrofit fixes - exclude level 77 from "Item requires a
        data name" check
 
-2012-05-09  Simon 'human' Sobisch
+2012-05-09  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * cobc.c : Added conversion for enabling options in WIN style
 
@@ -40,7 +45,7 @@
        --info with most important configuration/environment details
        --list-system for displaying all registered system routines
 
-20??-??-??  Simon 'human' Sobisch
+20??-??-??  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * codegen.c : Simplify by handling stuff for different compilers
        by general define (COB_ALIGN)
@@ -52,18 +57,18 @@
        added parsing step and source name to verbose messages,
        added some comments
 
-20??-??-??  Simon 'human' Sobisch
+20??-??-??  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
        fix some compiler warnings, support possible spaces in different
        path names, enable linking of already assembled modules for
        different UNIXes
 
-2009-10-29  Simon 'human' Sobisch
+2009-10-29  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * cobc.c : Warn if -Debug is used (because likely -debug was intended)
 
-2009-10-08  Simon 'human' Sobisch
+2009-10-08  Simon 'human/sf-mensch' Sobisch <sf-mensch@users.sf.net> 
 
    * error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
      in warning/error messages
