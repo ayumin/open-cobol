@@ -1293,7 +1293,8 @@ cb_build_identifier(cb_tree x, const int subchk)
 		if(p->redefines) {
 			p = p->redefines;
 		}
-		if(current_statement && !current_statement->flag_no_based) {
+		if (current_statement && !current_statement->flag_no_based &&
+			strcmp(current_statement->name, "FREE")) {
 			if(p->flag_item_based ||
 					(f->storage == CB_STORAGE_LINKAGE &&
 					 !p->flag_is_pdiv_parm)) {
