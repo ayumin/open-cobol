@@ -2073,7 +2073,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([INITIZIALIZE with reference modification])
+AT_SETUP([INITIALIZE with reference modification])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -2098,7 +2098,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([Initizialized value with defaultbyte])
+AT_SETUP([Initialized value with defaultbyte])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
