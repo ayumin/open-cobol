@@ -21,6 +21,7 @@ along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 ### GNU Cobol Test Suite
 
 AT_INIT([GNU Cobol Tests])
+AT_COLOR_TESTS
 
 AT_TESTED([cobc])
 
@@ -46,7 +47,7 @@ m4_include([run_initialize.at])		# 14.8.19 INITIALIZE statement
 m4_include([run_misc.at])
 m4_include([run_extensions.at])
 m4_include([run_returncode.at])
-m4_include([run_functions.at])
+m4_include([run_functions.at])	# 15 Intrinsic Functions / 9.4 User-Defined Functions
 
 ## Data Representation
 m4_include([data_binary.at])		# USAGE BINARY

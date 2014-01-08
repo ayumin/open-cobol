@@ -605,7 +605,7 @@ esac
 at_change_dir=false
 
 # Whether to enable colored test results.
-at_color=no
+at_color=auto
 # List of the tested programs.
 at_tested='cobc'
 # As many question marks as there are digits in the last test group number.
@@ -842,8 +842,8 @@ at_help_all="1;syn_copy.at:21;COPY: file not found;copy;
 227;run_misc.at:2025;ALLOCATE/FREE with BASED item (I);runmisc;
 228;run_misc.at:2052;ALLOCATE/FREE with BASED item (II);runmisc;
 229;run_misc.at:2096;ALLOCATE CHARACTERS INITIALIZED TO;runmisc;
-230;run_misc.at:2136;INITIZIALIZE with reference modification;runmisc;
-231;run_misc.at:2161;Initizialized value with defaultbyte;runmisc;
+230;run_misc.at:2136;INITIALIZE with reference modification;runmisc;
+231;run_misc.at:2161;Initialized value with defaultbyte;runmisc;
 232;run_misc.at:2185;CALL with OMITTED parameter;runmisc;
 233;run_misc.at:2221;ANY LENGTH (1);runmisc;
 234;run_misc.at:2263;ANY LENGTH (2);runmisc;
@@ -1335,7 +1335,7 @@ Execution tuning:
   -C, --directory=DIR
                  change to directory DIR before starting
       --color[=never|auto|always]
-                 enable colored test results on terminal, or always
+                 disable colored test results, or enable even without terminal
   -j, --jobs[=N]
                  Allow N jobs at once; infinite jobs with no arg (default 1)
   -k, --keywords=KEYWORDS
@@ -18038,7 +18038,7 @@ read at_status <"$at_status_file"
 #AT_STOP_229
 #AT_START_230
 at_fn_group_banner 230 'run_misc.at:2136' \
-  "INITIZIALIZE with reference modification" "       "
+  "INITIALIZE with reference modification" "         "
 at_xfail=no
 (
   $as_echo "230. $at_setup_line: testing $at_desc ..."
@@ -18099,7 +18099,7 @@ read at_status <"$at_status_file"
 #AT_STOP_230
 #AT_START_231
 at_fn_group_banner 231 'run_misc.at:2161' \
-  "Initizialized value with defaultbyte" "           "
+  "Initialized value with defaultbyte" "             "
 at_xfail=no
 (
   $as_echo "231. $at_setup_line: testing $at_desc ..."
