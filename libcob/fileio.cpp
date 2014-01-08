@@ -2866,7 +2866,9 @@ indexed_open(cob_file * f, char * filename, const int mode, const int sharing)
 
 	cob_chk_file_mapping();
 
+#if	0	/* RXWRXW - Access check BDB Human */
 	int checkvalue = (mode == COB_OPEN_INPUT) ? R_OK : R_OK | W_OK;
+#endif
 	bool nonexistent = false;
 	if(bdb_nofile(filename)) {
 		nonexistent = true;
