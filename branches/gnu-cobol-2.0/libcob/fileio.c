@@ -3030,17 +3030,21 @@ dobuild:
 	cob_u32_t		flags = 0;
 	int			ret = 0;
 	int			nonexistent;
+#if	0	/* RXWRXW - Access check BDB Human */
 	int			checkvalue;
+#endif
 
 	COB_UNUSED (sharing);
 
 	cob_chk_file_mapping ();
 
+#if	0	/* RXWRXW - Access check BDB Human */
 	if (mode == COB_OPEN_INPUT) {
 		checkvalue = R_OK;
 	} else {
 		checkvalue = R_OK | W_OK;
 	}
+#endif
 
 	nonexistent = 0;
 	if (bdb_nofile (filename)) {
