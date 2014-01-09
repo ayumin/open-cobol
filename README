@@ -1,6 +1,6 @@
 			       GNU Cobol
-		       http://www.gnu.org/software/gnucobol/
-		http://sourceforge.net/projects/gnu-cobol/
+		       http://www.opencobol.org/
+		http://sourceforge.net/projects/open-cobol/
 
 GNU Cobol is an open-source COBOL compiler, which translates COBOL
 programs to C code and compiles it using a native C compiler.
