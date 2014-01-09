@@ -3036,8 +3036,10 @@ dobuild:
 	cob_u32_t		flags = 0;
 	int			ret = 0;
 	int			nonexistent;
-#if 0 /* RXW */
+
+#if	0	/* RXWRXW - Access check BDB Human */
 	int			checkvalue;
+
 	if (mode == COB_OPEN_INPUT) {
 		checkvalue = R_OK;
 	} else {

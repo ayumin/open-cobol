@@ -1783,15 +1783,13 @@ yydestruct (yymsg, yytype, yyvaluep)
 
 /* Prevent warnings from -Wmissing-prototypes.  */
 #ifdef YYPARSE_PARAM
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+#if defined __STDC__ || defined __cplusplus
 int yyparse (void *YYPARSE_PARAM);
 #else
 int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+#if defined __STDC__ || defined __cplusplus
 int yyparse (void);
 #else
 int yyparse ();
@@ -2900,7 +2898,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 2904 "ppparse.c"
+#line 2902 "ppparse.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3019,6 +3017,8 @@ yyerrorlab:
   /* Pacify compilers like GCC when the user code never invokes
      YYERROR and the label yyerrorlab therefore never appears in user
      code.  */
+  if (/*CONSTCOND*/ 0)
+     goto yyerrorlab;
 
   /* Do not reclaim the symbols of the rule which action triggered
      this YYERROR.  */
@@ -3128,7 +3128,7 @@ yyreturn:
 
 
 
-/* Line 2065 of yacc.c  */
+/* Line 2067 of yacc.c  */
 #line 1202 "ppparse.y"
 
 

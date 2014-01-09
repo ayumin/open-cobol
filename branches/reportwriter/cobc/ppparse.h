@@ -105,7 +105,7 @@
 typedef union YYSTYPE
 {
 
-/* Line 2066 of yacc.c  */
+/* Line 2068 of yacc.c  */
 #line 501 "ppparse.y"
 
 	char			*s;
@@ -117,7 +117,7 @@ typedef union YYSTYPE
 
 
 
-/* Line 2066 of yacc.c  */
+/* Line 2068 of yacc.c  */
 #line 122 "ppparse.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
