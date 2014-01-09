@@ -1,5 +1,5 @@
 #
-# Makefile gnucobol/copy
+# Makefile gnu-cobol/copy
 #
 # Copyright (C) 2008-2012 Roger While
 #

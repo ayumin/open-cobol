@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnu-cobol 2.0\n"
-"Report-Msgid-Bugs-To: gnu-cobol-list@lists.sourceforge.net\n"
+"Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
 "POT-Creation-Date: 2013-11-23 01:38-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"

@@ -340,8 +340,8 @@ overwritten by one of the following options:
 
 '-free'
      Free format.  The program-text area starts in column 1 and
-     continues till the end of line.  Effectively 255 characters in GNU
-     Cobol.
+     continues till the end of line.  Effectively 255 characters in
+     GNU Cobol.
 
 '-fixed'
      Fixed format.  Source code is divided into a 1-6 column sequence
