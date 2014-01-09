@@ -23,5 +23,6 @@ bin_SCRIPTS=cob-config
 bin_PROGRAMS = cobcrun
 cobcrun_SOURCES = cobcrun.cpp
 
-cobcrun: cobcrun.cpp
-	@. ../tests/atconfig; . ../tests/atlocal; cobc -x cobcrun.cpp
+AM_LDFLAGS = $(COB_EXPORT_DYN)
+cobcrun_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)
+cobcrun_LDADD = $(top_builddir)/libcob/libcob.la
