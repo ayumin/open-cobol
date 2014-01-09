@@ -33,6 +33,8 @@ AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_MACRO_DIR([m4])
 AC_LANG([C++])
 
+AC_PROG_CXX
+
 # Note for SUN Solaris (gcc)
 # export/setenv CXXFLAGS "-m64 -mptr64"
 # export/setenv LDFLAGS "-m64 -mptr64 -L/usr/local/lib/sparcv9"
@@ -92,7 +94,15 @@ save_libs="$LIBS"
 
 # Basic capability tests
 
-AC_PROG_CXX([xlc++_r xlc++ CC aCC c++ g++])
+case $host_os in
+  cygwin*)
+	AC_PROG_CXX([xlc++_r xlc++ c++ g++ CC aCC])
+	;;
+  *)
+	AC_PROG_CXX([xlc++_r xlc++ CC aCC c++ g++])
+	;;
+esac
+
 AC_PROG_CC([xlc gcc cc])
 AC_PROG_CC_STDC
 AC_PROG_CPP
