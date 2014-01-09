@@ -1338,6 +1338,70 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+AT_SETUP([UNSTRING DELIMITED ALL SPACE-2])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION  DIVISION.
+       PROGRAM-ID.     prog.
+       ENVIRONMENT     DIVISION.
+       DATA            DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-RECORD. 
+           02 VALUE SPACE           PIC X(04). 
+           02 VALUE "ABC AND DE"    PIC X(10). 
+           02 VALUE SPACE           PIC X(07).
+           02 VALUE "FG AND HIJ"    PIC X(10).
+           02 VALUE SPACE           PIC X(08). 
+       01  SPACE-2                  PIC X(02) VALUE SPACE.
+       01  WS-DUMMY                 PIC X(15).
+       01  WS-POINTER               PIC 99.
+       PROCEDURE       DIVISION.
+           MOVE 1 TO WS-POINTER.
+      *
+           PERFORM 0001-SUB.
+           IF WS-DUMMY NOT = SPACE 
+              DISPLAY "Expected space - Got " WS-DUMMY
+              END-DISPLAY 
+           END-IF. 
+           IF WS-POINTER NOT = 5
+              DISPLAY "Expected 5 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF. 
+      *
+           PERFORM 0001-SUB.
+           IF WS-DUMMY NOT = "ABC AND DE"
+              DISPLAY "Expected ABC AND DE - Got " WS-DUMMY
+              END-DISPLAY 
+           END-IF. 
+           IF WS-POINTER NOT = 21
+              DISPLAY "Expected 21 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF. 
+      *
+           PERFORM 0001-SUB.
+           IF WS-DUMMY NOT = " FG AND HIJ"
+              DISPLAY "Expected  FG AND HIJ - Got " WS-DUMMY
+              END-DISPLAY 
+           END-IF. 
+           IF WS-POINTER NOT = 40
+              DISPLAY "Expected 40 - Got " WS-POINTER
+              END-DISPLAY
+           END-IF. 
+           STOP RUN.
+       0001-SUB.
+           UNSTRING WS-RECORD
+                    DELIMITED BY ALL SPACE-2
+              INTO WS-DUMMY
+              POINTER WS-POINTER
+           END-UNSTRING.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
 AT_SETUP([UNSTRING DELIMITED POINTER])
 AT_KEYWORDS([runmisc])
 
@@ -1958,7 +2022,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([ALLOCATE/FREE with BASED item])
+AT_SETUP([ALLOCATE/FREE with BASED item (I)])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -1983,6 +2047,51 @@ AT_CHECK([$COMPILE prog.cob])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
+
+AT_SETUP([ALLOCATE/FREE with BASED item (II)])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 MYFLD         BASED.
+             03 MYFLDX  PIC X.
+             03 MYFLD9  PIC 9.
+       PROCEDURE        DIVISION.
+           IF ADDRESS OF MYFLD NOT = NULL
+              DISPLAY "BASED ITEM WITH ADDRESS ON START"
+              END-DISPLAY
+           END-IF.
+           FREE MYFLD.
+           ALLOCATE MYFLD.
+           IF ADDRESS OF MYFLD = NULL
+              DISPLAY "BASED ITEM WITHOUT ADDRESS AFTER ALLOCATE"
+              END-DISPLAY
+           END-IF.
+           INITIALIZE MYFLD.
+           IF MYFLD NOT = " 0"
+              DISPLAY "BASED ITEM INITIALIZED WRONG: "
+                 WITH NO ADVANCING
+              END-DISPLAY
+              DISPLAY MYFLD
+              END-DISPLAY
+           END-IF.
+
+           FREE ADDRESS OF MYFLD.
+           IF ADDRESS OF MYFLD NOT = NULL
+              DISPLAY "BASED ITEM WITH ADDRESS AFTER FREE"
+              END-DISPLAY
+           END-IF.
+])
+
+AT_CHECK([$COMPILE prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
 
 AT_SETUP([ALLOCATE CHARACTERS INITIALIZED TO])
 AT_KEYWORDS([runmisc])
@@ -2024,7 +2133,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([INITIZIALIZE with reference modification])
+AT_SETUP([INITIALIZE with reference modification])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -2049,7 +2158,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([Initizialized value with defaultbyte])
+AT_SETUP([Initialized value with defaultbyte])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [

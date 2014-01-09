@@ -1,3 +1,13 @@
+2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+
+   * typeck.c : Bugfix: no exception check for NULL address on FREE statement
+       (as this is explicit allowed)
+
+2014-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* codegen.c : Fixing Bug #55
+		UDF with no parameters do not compile
+
 2013-11-20  Ron Norman
 
 	* Report Writer module
