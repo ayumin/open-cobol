@@ -396,8 +396,8 @@ at_help_all='1;fundamental.at:25;DISPLAY literals;fundamental;
 85;misc.at:1718;COB_PRE_LOAD test;runmisc;
 86;misc.at:1743;COB_LOAD_CASE=UPPER test;runmisc;
 87;misc.at:1768;88 level with FALSE IS clause;runmisc;
-88;misc.at:1794;ALLOCATE/FREE with BASED item (I);runmisc;
-89;misc.at:1819;ALLOCATE/FREE with BASED item (II);runmisc;
+88;misc.at:1794;ALLOCATE/FREE with BASED item (1);runmisc;
+89;misc.at:1819;ALLOCATE/FREE with BASED item (2);runmisc;
 90;misc.at:1864;INITIALIZE with reference modification;runmisc initialize;
 91;misc.at:1888;CALL with OMITTED parameter;;
 92;misc.at:1926;ANY LENGTH;;
@@ -9293,10 +9293,10 @@ $at_traceon
     at_status=`cat $at_status_file`
     ;;
 
-  88 ) # 88. misc.at:1794: ALLOCATE/FREE with BASED item (I)
+  88 ) # 88. misc.at:1794: ALLOCATE/FREE with BASED item (1)
     at_setup_line='misc.at:1794'
-    at_desc='ALLOCATE/FREE with BASED item (I)'
-    $at_quiet $ECHO_N " 88: ALLOCATE/FREE with BASED item (I)            $ECHO_C"
+    at_desc='ALLOCATE/FREE with BASED item (1)'
+    $at_quiet $ECHO_N " 88: ALLOCATE/FREE with BASED item (1)            $ECHO_C"
     at_xfail=no
     (
       echo "88. misc.at:1794: testing ..."
@@ -9379,10 +9379,10 @@ $at_traceon
     at_status=`cat $at_status_file`
     ;;
 
-  89 ) # 89. misc.at:1819: ALLOCATE/FREE with BASED item (II)
+  89 ) # 89. misc.at:1819: ALLOCATE/FREE with BASED item (2)
     at_setup_line='misc.at:1819'
-    at_desc='ALLOCATE/FREE with BASED item (II)'
-    $at_quiet $ECHO_N " 89: ALLOCATE/FREE with BASED item (II)           $ECHO_C"
+    at_desc='ALLOCATE/FREE with BASED item (2)'
+    $at_quiet $ECHO_N " 89: ALLOCATE/FREE with BASED item (2)           $ECHO_C"
     at_xfail=no
     (
       echo "89. misc.at:1819: testing ..."
