@@ -19,6 +19,7 @@
 ### GNU Cobol C++ Test Suite
 
 ### ISO+IEC+1989-2002 15 Intrinsic Functions
+### ISO+IEC+1989-2002 9.4 User-Defined Functions
 
 AT_SETUP([FUNCTION ABS])
 AT_KEYWORDS([functions])
@@ -2613,6 +2614,61 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE -fintrinsics=PI,E -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+### ISO+IEC+1989-2002 9.4 User-Defined Functions
+
+AT_SETUP([User-Defined FUNCTION with/without parameter])
+AT_KEYWORDS([functions])
+
+# CPP version currently has a codegen issue here:
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       CONFIGURATION    SECTION.
+       REPOSITORY.
+           FUNCTION     WITHPAR
+           FUNCTION     WITHOUTPAR.
+       PROCEDURE        DIVISION.
+           IF WITHPAR(1) NOT = 2
+              DISPLAY WITHPAR(1)
+              END-DISPLAY
+           END-IF.
+           IF WITHOUTPAR NOT = 1
+              DISPLAY WITHOUTPAR
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+       END PROGRAM prog.
+
+       IDENTIFICATION   DIVISION.
+       FUNCTION-ID.     WITHPAR.
+       DATA             DIVISION.
+       LINKAGE          SECTION.
+       01 PAR-IN        PIC 9.
+       01 PAR-OUT       PIC 9.
+       PROCEDURE DIVISION USING PAR-IN RETURNING PAR-OUT.
+           ADD 1 TO PAR-IN GIVING PAR-OUT END-ADD.
+           GOBACK.
+       END FUNCTION WITHPAR.
+
+       IDENTIFICATION   DIVISION.
+       FUNCTION-ID.     WITHOUTPAR.
+       DATA             DIVISION.
+       LINKAGE          SECTION.
+       01 PAR           PIC 9.
+       PROCEDURE DIVISION RETURNING PAR.
+           MOVE 1 TO PAR.
+           GOBACK.
+       END FUNCTION WITHOUTPAR.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP

@@ -7089,10 +7089,10 @@ output_entry_function(cb_program * prog, cb_tree entry,
 		}
 		str += output("{\n");
 		str += output("  struct cob_func_loc\t*floc;\n\n");
+		str += output("  /* Save environment */\n");
+		str += output("  floc = cob_save_func(cob_fret, cob_pam, %u", parmnum);
 #if	0	/* RXWRXW - UFUNC */
-		str += output("  floc = cob_save_func(cob_fret, cob_pam, %u);\n",
-					  parmnum);
-		if(!using_list) {
+		if (!using_list) {
 			str += output("  floc->ret_fld = %s_(0);\n", prog->program_id);
 			str += output("  **cob_fret = *floc->ret_fld;\n");
 			str += output("  cob_restore_func(floc);\n");
@@ -7122,19 +7122,20 @@ output_entry_function(cb_program * prog, cb_tree entry,
 		}
 		str += output("  }\n");
 #else
-		str += output("  /* Save environment */\n");
-		str += output("  floc = cob_save_func(cob_fret, cob_pam, %u", parmnum);
 		for(cob_u32_t n = 0; n < parmnum; ++n) {
 			str += output(", f%u", n);
 		}
 		str += output(");\n");
 #endif
 
-		str += output("  floc->ret_fld = %s_(0, ", prog->program_id);
-		for(cob_u32_t n = 0; n < parmnum; ++n) {
-			str += output("floc->data[%u]", n);
-			if(n != parmnum - 1) {
-				str += output(", ");
+		str += output("  floc->ret_fld = %s_(0", prog->program_id);
+		if (parmnum != 0) {
+			str += output(", ");
+			for(cob_u32_t n = 0; n < parmnum; ++n) {
+				str += output("floc->data[%u]", n);
+				if (n != parmnum - 1) {
+					str += output(", ");
+				}
 			}
 		}
 		str += output(");\n");
