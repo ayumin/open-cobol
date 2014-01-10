@@ -1959,7 +1959,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([ALLOCATE/FREE with BASED item (I)])
+AT_SETUP([ALLOCATE/FREE with BASED item (1)])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -1986,11 +1986,8 @@ AT_CHECK([./prog], [0])
 AT_CLEANUP
 
 
-AT_SETUP([ALLOCATE/FREE with BASED item (II)])
+AT_SETUP([ALLOCATE/FREE with BASED item (2)])
 AT_KEYWORDS([runmisc])
-
-# CPP version currently has a codegen issue here:
-AT_XFAIL_IF(true)
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
