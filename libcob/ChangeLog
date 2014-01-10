@@ -1,3 +1,8 @@
+2013-12-26  Luke Bryan <cobcoder@users.sourceforge.net>
+
+        * strings.cpp : Fix Unstring delimited by all delimiter
+		size > 1 issue, see bug #54.
+
 2013-06-12  Sergey Kashyrin <ska@kiska.net>
 
 	* Switch to C++
