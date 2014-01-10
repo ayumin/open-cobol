@@ -839,8 +839,8 @@ at_help_all="1;syn_copy.at:21;COPY: file not found;copy;
 224;run_misc.at:1948;COB_PRE_LOAD test;runmisc;
 225;run_misc.at:1973;COB_LOAD_CASE=UPPER test;runmisc;
 226;run_misc.at:1998;88 level with FALSE IS clause;runmisc;
-227;run_misc.at:2025;ALLOCATE/FREE with BASED item (I);runmisc;
-228;run_misc.at:2052;ALLOCATE/FREE with BASED item (II);runmisc;
+227;run_misc.at:2025;ALLOCATE/FREE with BASED item (1);runmisc;
+228;run_misc.at:2052;ALLOCATE/FREE with BASED item (2);runmisc;
 229;run_misc.at:2096;ALLOCATE CHARACTERS INITIALIZED TO;runmisc;
 230;run_misc.at:2136;INITIALIZE with reference modification;runmisc;
 231;run_misc.at:2161;Initialized value with defaultbyte;runmisc;
@@ -17821,7 +17821,7 @@ read at_status <"$at_status_file"
 #AT_STOP_226
 #AT_START_227
 at_fn_group_banner 227 'run_misc.at:2025' \
-  "ALLOCATE/FREE with BASED item (I)" "              "
+  "ALLOCATE/FREE with BASED item (1)" "              "
 at_xfail=no
 (
   $as_echo "227. $at_setup_line: testing $at_desc ..."
@@ -17883,7 +17883,7 @@ read at_status <"$at_status_file"
 #AT_STOP_227
 #AT_START_228
 at_fn_group_banner 228 'run_misc.at:2052' \
-  "ALLOCATE/FREE with BASED item (II)" "             "
+  "ALLOCATE/FREE with BASED item (2)" "             "
 at_xfail=no
 (
   $as_echo "228. $at_setup_line: testing $at_desc ..."
