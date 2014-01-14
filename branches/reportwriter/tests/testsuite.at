@@ -37,6 +37,7 @@ m4_include([syn_misc.at])		# Miscellanous
 m4_include([syn_move.at])		# 14.8.24 MOVE statement
 m4_include([syn_multiply.at])		# 14.8.25 MULTIPLY statement
 m4_include([syn_set.at])		# 14.8.35 SET statement
+m4_include([syn_reportwriter.at])
 
 ## Run tests
 m4_include([run_fundamental.at])
@@ -48,6 +49,7 @@ m4_include([run_misc.at])
 m4_include([run_extensions.at])
 m4_include([run_returncode.at])
 m4_include([run_functions.at])	# 15 Intrinsic Functions / 9.4 User-Defined Functions
+m4_include([run_reportwriter.at])
 
 ## Data Representation
 m4_include([data_binary.at])		# USAGE BINARY
