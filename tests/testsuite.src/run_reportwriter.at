@@ -1,0 +1,326 @@
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2012 Roger While
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite
+
+### ISO+IEC+1989-2002 REPORT WRITER module
+
+AT_SETUP([SAMPLE REPORT])
+AT_KEYWORDS([report])
+
+AT_DATA([inp_data],[0152 J. LANGDON       87653 02475
+0152 J. LANGDON       64025 00945
+0152 J. LANGDON       41915 01370
+0152 J. LANGDON       17410 00251
+2468 L. MORRISEY      18520 00375
+2468 L. MORRISEY      20012 00420
+2468 L. MORRISEY      31572 01015
+2468 L. MORRISEY      48792 03750
+2468 L. MORRISEY      50407 01515
+2468 L. MORRISEY      61575 02010
+2468 L. MORRISEY      79204 05170
+2468 L. MORRISEY      85075 03784
+2468 L. MORRISEY      98476 08794
+3451 M. JACKSON       37847 02790
+3451 M. JACKSON       58492 06850
+3451 M. JACKSON       60010 02040
+3451 M. JACKSON       85260 07852
+3451 M. JACKSON       90520 02752
+4512 S. LEVITT        24680 03050
+4512 S. LEVITT        56784 05253
+4512 S. LEVITT        60410 01215
+4512 S. LEVITT        78952 08925
+4512 S. LEVITT        85278 04975
+4512 S. LEVITT        87492 06425
+4512 S. LEVITT        97204 08475
+5417 K. CONKLIN       13579 03572
+5417 K. CONKLIN       24615 01875
+5417 K. CONKLIN       34928 03745
+5417 K. CONKLIN       48527 08750
+5417 K. CONKLIN       50150 01895
+5417 K. CONKLIN       54652 03892
+5417 K. CONKLIN       59765 09895
+5417 K. CONKLIN       71572 01895
+5417 K. CONKLIN       85175 08010
+5417 K. CONKLIN       90275 00460
+5417 K. CONKLIN       91572 01857
+5417 K. CONKLIN       97576 08495
+6213 Z. HAMPTON       15792 06425
+6213 Z. HAMPTON       19975 09875
+6213 Z. HAMPTON       34576 05115
+6213 Z. HAMPTON       49512 08520
+7545 M. LARSON        14676 03845
+7545 M. LARSON        18592 08251
+7545 M. LARSON        19994 09898
+7545 M. LARSON        21214 01515
+7545 M. LARSON        37515 08212
+7545 M. LARSON        38592 09615
+7545 M. LARSON        48485 08714
+7545 M. LARSON        52762 03792
+7545 M. LARSON        57684 08015
+7545 M. LARSON        79015 09625
+7545 M. LARSON        80123 00560
+7545 M. LARSON        82462 02015
+7545 M. LARSON        91520 01815
+7545 M. LARSON        93715 04015
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+           SELECT TRANSACTION-DATA
+           ASSIGN TO EXTERNAL DATAIN
+           ORGANIZATION IS LINE SEQUENTIAL.
+           
+           SELECT REPORT-FILE
+           ASSIGN TO EXTERNAL LINE ADVANCING SYSPRINT.
+
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TRANSACTION-DATA
+          LABEL RECORDS ARE OMITTED
+          BLOCK CONTAINS 0 RECORDS
+          RECORD CONTAINS 80 CHARACTERS
+          DATA RECORD IS TRANSACTION-RECORD.
+       01 TRANSACTION-RECORD.
+          03 TR-CUSTOMER-NUMBER     PIC 9(04).
+          03 FILLER                 PIC X(01).
+          03 TR-CUSTOMER-NAME       PIC X(16).
+          03 FILLER                 PIC X(01).
+          03 TR-ITEM-NUMBER         PIC 9(05).
+          03 FILLER                 REDEFINES TR-ITEM-NUMBER.
+             05 TR-ITEM-DEPARTMENT  PIC 9(01).
+             05 FILLER              PIC 9(04).
+          03 FILLER                 PIC X(01).
+          03 TR-ITEM-COST           PIC 9(03)V99.
+          03 FILLER                 PIC X(47).
+       FD REPORT-FILE
+          LABEL RECORDS ARE OMITTED
+          REPORT IS CUSTOMER-REPORT.
+       WORKING-STORAGE  SECTION.
+       01 END-OF-FILE-SWITCH        PIC X(1)    VALUE 'N'.
+          88 END-OF-FILE            VALUE 'Y'.
+      
+       REPORT           SECTION.
+       RD CUSTOMER-REPORT
+          PAGE LIMIT IS 66 LINES
+          HEADING 1
+          FIRST DETAIL 5
+          LAST DETAIL 58.
+      
+       01 PAGE-HEAD-GROUP TYPE PAGE HEADING.
+          02 LINE 2.
+             03 COLUMN 27   PIC X(41) VALUE
+                'S A M P L E  R E P O R T'.
+          02 LINE PLUS 2.
+             03 COLUMN 01   PIC X(09) VALUE 'CUST. NO.'.
+             03 COLUMN 15   PIC X(10) VALUE 'CUST. NAME'.
+             03 COLUMN 30   PIC X(05) VALUE 'DEPT.'.
+             03 COLUMN 39   PIC X(08) VALUE 'ITEM NO.'.
+             03 COLUMN 51   PIC X(09) VALUE 'ITEM COST'.
+      
+       01 CHARGE-DETAIL TYPE DETAIL.
+          02 LINE PLUS 1.
+             03 COLUMN 03   PIC Z(04) SOURCE TR-CUSTOMER-NUMBER.
+             03 COLUMN 10   PIC X(16) SOURCE TR-CUSTOMER-NAME.
+             03 COLUMN 32   PIC 9(01) SOURCE TR-ITEM-DEPARTMENT.
+             03 COLUMN 40   PIC 9(05) SOURCE TR-ITEM-NUMBER.
+             03 COLUMN 51   PIC $$$$.99 SOURCE TR-ITEM-COST.
+       PROCEDURE        DIVISION.
+      
+           OPEN INPUT TRANSACTION-DATA,
+                OUTPUT REPORT-FILE.
+      
+           INITIATE CUSTOMER-REPORT.
+      
+           READ TRANSACTION-DATA
+               AT END
+                   MOVE 'Y' TO END-OF-FILE-SWITCH 
+           END-READ.
+      
+           PERFORM UNTIL EXIT
+              GENERATE CHARGE-DETAIL
+              READ TRANSACTION-DATA
+                  AT END
+                     EXIT PERFORM
+              END-READ
+           END-PERFORM.
+      
+           TERMINATE CUSTOMER-REPORT.
+      
+           CLOSE TRANSACTION-DATA,
+                 REPORT-FILE.
+      
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -std=mf -o prog prog.cob], [0], ,
+[prog.cob: 17: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 19: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 20: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 34: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+])
+
+AT_CHECK([export DD_DATAIN=./inp_data
+export DD_SYSPRINT=./report.txt
+./prog], [0])
+
+AT_CAPTURE_FILE(./report.txt)
+
+AT_DATA([reference],[
+                          S A M P L E  R E P O R T
+
+CUST. NO.     CUST. NAME     DEPT.    ITEM NO.    ITEM COST
+   152   J. LANGDON            8       87653       $24.75
+   152   J. LANGDON            6       64025        $9.45
+   152   J. LANGDON            4       41915       $13.70
+   152   J. LANGDON            1       17410        $2.51
+  2468   L. MORRISEY           1       18520        $3.75
+  2468   L. MORRISEY           2       20012        $4.20
+  2468   L. MORRISEY           3       31572       $10.15
+  2468   L. MORRISEY           4       48792       $37.50
+  2468   L. MORRISEY           5       50407       $15.15
+  2468   L. MORRISEY           6       61575       $20.10
+  2468   L. MORRISEY           7       79204       $51.70
+  2468   L. MORRISEY           8       85075       $37.84
+  2468   L. MORRISEY           9       98476       $87.94
+  3451   M. JACKSON            3       37847       $27.90
+  3451   M. JACKSON            5       58492       $68.50
+  3451   M. JACKSON            6       60010       $20.40
+  3451   M. JACKSON            8       85260       $78.52
+  3451   M. JACKSON            9       90520       $27.52
+  4512   S. LEVITT             2       24680       $30.50
+  4512   S. LEVITT             5       56784       $52.53
+  4512   S. LEVITT             6       60410       $12.15
+  4512   S. LEVITT             7       78952       $89.25
+  4512   S. LEVITT             8       85278       $49.75
+  4512   S. LEVITT             8       87492       $64.25
+  4512   S. LEVITT             9       97204       $84.75
+  5417   K. CONKLIN            1       13579       $35.72
+  5417   K. CONKLIN            2       24615       $18.75
+  5417   K. CONKLIN            3       34928       $37.45
+  5417   K. CONKLIN            4       48527       $87.50
+  5417   K. CONKLIN            5       50150       $18.95
+  5417   K. CONKLIN            5       54652       $38.92
+  5417   K. CONKLIN            5       59765       $98.95
+  5417   K. CONKLIN            7       71572       $18.95
+  5417   K. CONKLIN            8       85175       $80.10
+  5417   K. CONKLIN            9       90275        $4.60
+  5417   K. CONKLIN            9       91572       $18.57
+  5417   K. CONKLIN            9       97576       $84.95
+  6213   Z. HAMPTON            1       15792       $64.25
+  6213   Z. HAMPTON            1       19975       $98.75
+  6213   Z. HAMPTON            3       34576       $51.15
+  6213   Z. HAMPTON            4       49512       $85.20
+  7545   M. LARSON             1       14676       $38.45
+  7545   M. LARSON             1       18592       $82.51
+  7545   M. LARSON             1       19994       $98.98
+  7545   M. LARSON             2       21214       $15.15
+  7545   M. LARSON             3       37515       $82.12
+  7545   M. LARSON             3       38592       $96.15
+  7545   M. LARSON             4       48485       $87.14
+  7545   M. LARSON             5       52762       $37.92
+  7545   M. LARSON             5       57684       $80.15
+  7545   M. LARSON             7       79015       $96.25
+  7545   M. LARSON             8       80123        $5.60
+  7545   M. LARSON             8       82462       $20.15
+  7545   M. LARSON             9       91520       $18.15
+
+
+
+
+
+  
+
+
+
+                          S A M P L E  R E P O R T
+
+CUST. NO.     CUST. NAME     DEPT.    ITEM NO.    ITEM COST
+  7545   M. LARSON             9       93715       $40.15
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+])
+
+AT_CHECK([diff reference report.txt], [0])
+
+AT_CLEANUP
