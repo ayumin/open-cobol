@@ -1,3 +1,6 @@
+2014-01-17 Ron Norman <rjn@inglenet.com>
+   * intrinsic.c  - Change cob_intr_random to correctly compute RANDOM number
+
 2013-12-26  Luke Bryan <cobcoder@users.sourceforge.net>
 
    * strings.c : Fix Unstring delimited by all delimiter
