@@ -1,9 +1,18 @@
 			          GNU Cobol
-		       http://www.opencobol.org/
 		http://sourceforge.net/projects/open-cobol/
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
+                 http://opencobol.add1tocobol.com/gnucobol
+		        http://www.opencobol.org/
+
+GNU Cobol is a free COBOL compiler, which translates COBOL
 programs to C code and compiles it using a native C compiler.
+
+Although many have participated, most development thanks go to
+
+    Roger While
+    Keisuke Nishida
+
+This kit is the first official GNU Cobol 1.1 FTP upload.
 
 This package contains the following subdirectories:
 
@@ -98,7 +107,7 @@ The following libraries ARE required WHEN :
     libdb is used to implement indexed file I/O and SORT/MERGE.
 
     Berkeley DB is distributed under the original BSD License (1.85)
-    or their own open-source license (2.x or later).  Note that, as
+    or their own license (2.x or later).  Note that, as
     of 2.x, if you linked your software with Berkeley DB, you must
     distribute the source code of your software along with your
     software, or you have to pay royalty to Oracle.

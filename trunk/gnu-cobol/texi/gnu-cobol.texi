@@ -75,8 +75,9 @@ approved by the Free Software Foundation.
 @node Top, Getting Started, (dir), (dir)
 @top GNU Cobol Manual
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC.
+GNU Cobol is a free COBOL compiler, which translates COBOL
+programs to C code and compiles it using GCC or other native
+operating system C compiler.
 
 This manual corresponds to GNU Cobol @value{VERSION}.
 
