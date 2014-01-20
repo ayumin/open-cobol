@@ -1,3 +1,7 @@
+2014-01-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* gettext extra message catalogues en@quot and en@boldquot added
+
 2002-05-29  Keisuke Nishida  <knishida@netlab.jp>
 
 	* ja.po: New file.
