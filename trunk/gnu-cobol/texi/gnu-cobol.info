@@ -31,8 +31,9 @@ File: gnu-cobol.info,  Node: Top,  Next: Getting Started,  Prev: (dir),  Up: (di
 GNU Cobol Manual
 ****************
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC.
+GNU Cobol is a free COBOL compiler, which translates COBOL programs to
+C code and compiles it using GCC or other native operating system C
+compiler.
 
    This manual corresponds to GNU Cobol 1.1.
 
@@ -770,36 +771,36 @@ not complete and not very useful yet.
 
 
 Tag Table:
-Node: Top1000
-Node: Getting Started2809
-Node: Hello World!2988
-Node: Compile3873
-Node: Compiler Options4234
-Node: Built Target4599
-Ref: Built Target-Footnote-15820
-Node: Source Format5873
-Node: Warning Options6253
-Node: Multiple Sources6639
-Node: Static Linking7321
-Node: Dynamic Linking8846
-Ref: Dynamic Linking-Footnote-110246
-Ref: Dynamic Linking-Footnote-210299
-Node: Building Library10352
-Node: Using Library10737
-Node: C Interface11310
-Node: Main C Program11656
-Node: Static C to COBOL12573
-Node: Dynamic C to COBOL14061
-Node: Static COBOL to C15513
-Node: Dynamic COBOL to C16947
-Node: Customize17354
-Node: Customizing Compiler17580
-Node: Customizing Library18160
-Node: Optimize18583
-Node: Optimize Options18888
-Node: Optimize Call19430
-Node: Optimize Binary19810
-Node: Debug20392
-Node: Debug Options20531
+Node: Top1001
+Node: Getting Started2845
+Node: Hello World!3023
+Node: Compile3907
+Node: Compiler Options4267
+Node: Built Target4631
+Ref: Built Target-Footnote-15851
+Node: Source Format5904
+Node: Warning Options6283
+Node: Multiple Sources6668
+Node: Static Linking7349
+Node: Dynamic Linking8873
+Ref: Dynamic Linking-Footnote-110272
+Ref: Dynamic Linking-Footnote-210325
+Node: Building Library10378
+Node: Using Library10762
+Node: C Interface11334
+Node: Main C Program11679
+Node: Static C to COBOL12595
+Node: Dynamic C to COBOL14082
+Node: Static COBOL to C15533
+Node: Dynamic COBOL to C16966
+Node: Customize17372
+Node: Customizing Compiler17597
+Node: Customizing Library18176
+Node: Optimize18597
+Node: Optimize Options18901
+Node: Optimize Call19442
+Node: Optimize Binary19821
+Node: Debug20402
+Node: Debug Options20540
 
 End Tag Table
