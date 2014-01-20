@@ -1,8 +1,8 @@
-			          GNU Cobol
+		                 GNU Cobol
 		http://sourceforge.net/projects/open-cobol/
 
-                 http://opencobol.add1tocobol.com/gnucobol
-		        http://www.opencobol.org/
+		http://opencobol.add1tocobol.com/gnucobol
+		         http://www.opencobol.org/
 
 GNU Cobol is a free COBOL compiler, which translates COBOL
 programs to C code and compiles it using a native C compiler.
@@ -39,15 +39,15 @@ Requirements
 ============
 
   ***
-     NOTE
-	For all the following packages (required or optional),
-	BOTH runtime AND development components are necessary.
+    NOTE
+    For all the following packages (required or optional),
+    BOTH runtime AND development components are necessary.
   ***
   ***
-     NOTE
-	All the following packages are normally part of a Linux
-	distribution. Cygwin also has these as installable packages
-	ALWAYS install the distro packages when available !!
+    NOTE
+    All the following packages are normally part of a Linux
+    distribution. Cygwin also has these as installable packages
+    ALWAYS install the distro packages when available !!
   ***
 
 GNU Cobol requires the following external libraries to be installed:
@@ -66,8 +66,8 @@ GNU Cobol requires the following external libraries to be installed:
     http://www.gnu.org/software/libtool/libtool.html
 
     ***
-	NOTE - libltdl is NOT needed when installing on Linux
-	or Windows (including Cygwin and MingW).
+    NOTE - libltdl is NOT needed when installing on Linux
+    or Windows (including Cygwin and MingW).
     ***
 
     libltdl is used to implement dynamic CALL statements.
@@ -91,18 +91,18 @@ The following libraries ARE required WHEN :
 
      The following NOTE(S) ONLY apply to DB <= 4.1
 
-	    * NOTE *
-	     The BDB version 4.0 was never officially supported from
-	     sleepycat but, unfortunately, found it's way into Linux
-	     releases. Install a newer version.
+        * NOTE *
+        The BDB version 4.0 was never officially supported from
+        sleepycat but, unfortunately, found it's way into Linux
+        releases. Install a newer version.
 
-	    * NOTE *
-	     If you are generating BDB yourself and the BDB 
-	     version is <= 4 (and version < 1), you need to specify
-	     --enable-compat185 as a minimum to the BDB configure.
-	     BDB does NOT have the usual install path of either
-	     /usr or /usr/local. Therefore, it is recommended to
-	     specify --prefix=/usr/local to the configure.
+        * NOTE *
+        If you are generating BDB yourself and the BDB 
+        version is <= 4 (and version < 1), you need to specify
+        --enable-compat185 as a minimum to the BDB configure.
+        BDB does NOT have the usual install path of either
+        /usr or /usr/local. Therefore, it is recommended to
+        specify --prefix=/usr/local to the configure.
 
     libdb is used to implement indexed file I/O and SORT/MERGE.
 
@@ -136,11 +136,11 @@ Installation
 ============
 
   **
-	NOTE
-	Due to deficiencies in the tools used to prepare
-	GNU Cobol (autoconf/automake/libtool), it is
-	NOT generally possible to use path names with
-	spaces embedded within them (Mainly Cygwin/MingW/Windows ports).
+    NOTE
+    Due to deficiencies in the tools used to prepare GNU Cobol
+    (autoconf/automake/libtool), it is NOT generally possible
+    to use path names with spaces embedded within them
+    (Mainly Cygwin/MingW/Windows ports).
   **
  
 To generate/install GNU Cobol :
