@@ -1,9 +1,16 @@
-			       GNU Cobol
-		       http://www.opencobol.org/
+		                 GNU Cobol
 		http://sourceforge.net/projects/open-cobol/
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using a native C compiler.
+		http://opencobol.add1tocobol.com/gnucobol
+		         http://www.opencobol.org/
+
+GNU Cobol is a free and open-source COBOL compiler, which translates
+COBOL programs to C code and compiles it using a native C compiler.
+
+Although many have participated, most development thanks go to
+
+    Roger While
+    Keisuke Nishida
 
 This package contains the following subdirectories:
 
@@ -15,6 +22,7 @@ This package contains the following subdirectories:
     po          International messages
     doc         'info' and 'pdf' files
     tests       Test suite
+    extras      useful COBOL programs 
     cobreport   Sample Report Writer programs and tests
 
 All programs except those in lib and libcob are distributed under
@@ -118,10 +126,10 @@ Installation
 ============
 
 ** NOTE **
-	Due to deficiencies in the tools used to prepare
-	GNU Cobol (autoconf/automake/libtool), it is
-	NOT generally possible to use path names with
-	spaces embedded within them (Mainly Cygwin/MingW/Windows ports).
+   Due to deficiencies in the tools used to prepare GNU Cobol
+   (autoconf/automake/libtool), it is NOT generally possible
+   to use path names with spaces embedded within them
+   (Mainly Cygwin/MingW/Windows ports).
  
 ** NOTE **
 	The default installation path for GNU Cobol is /usr/local.
