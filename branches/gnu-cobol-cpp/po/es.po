@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnu-cobol 2.0\n"
 "Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
-"POT-Creation-Date: 2013-11-04 14:40-0500\n"
+"POT-Creation-Date: 2014-01-21 17:26+0100\n"
 "PO-Revision-Date: 2011-06-09 15:37-0700\n"
 "Last-Translator: randy <rcoman@curreyadkins.com>\n"
 "Language-Team: JCurrey <jcurrey@myorsa.com>\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "X-Poedit-Language: Spanish\n"
 "X-Poedit-Country: \n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,-1,22,-1\n"
@@ -139,7 +139,7 @@ msgstr "Abortando compilación de %s en el renglón %d"
 msgid "Cannot allocate memory - Aborting"
 msgstr "No se puede asignar %d bytes de memoria - Abortando"
 
-#: cobc/cobc.cpp:1382 bin/cobcrun.cpp:62
+#: cobc/cobc.cpp:1383 bin/cobcrun.cpp:63
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
@@ -148,434 +148,434 @@ msgstr ""
 " existe garantía; ni siquiera para COMERCIALIZACIÓN o AJUSTES PARA UN "
 "PROPÓSITO PARTICULAR."
 
-#: cobc/cobc.cpp:1384 bin/cobcrun.cpp:64
+#: cobc/cobc.cpp:1385 bin/cobcrun.cpp:65
 #, c-format
 msgid "Built     %s"
 msgstr "Construido  %s"
 
-#: cobc/cobc.cpp:1386 bin/cobcrun.cpp:66
+#: cobc/cobc.cpp:1387 bin/cobcrun.cpp:67
 #, c-format
 msgid "Packaged  %s"
 msgstr "Empaquetado  %s"
 
-#: cobc/cobc.cpp:1388
+#: cobc/cobc.cpp:1389
 #, c-format
 msgid "C version %s%s"
 msgstr "Version C %s%s"
 
-#: cobc/cobc.cpp:1395
+#: cobc/cobc.cpp:1396
 msgid "Executing:"
 msgstr "Ejecutando:"
 
-#: cobc/cobc.cpp:1451 bin/cobcrun.cpp:117
+#: cobc/cobc.cpp:1452 bin/cobcrun.cpp:118
 msgid "Build information"
 msgstr "Información de generación"
 
-#: cobc/cobc.cpp:1452
+#: cobc/cobc.cpp:1453
 msgid "Build environment"
 msgstr "Ambiente de generación"
 
-#: cobc/cobc.cpp:1458 bin/cobcrun.cpp:124
+#: cobc/cobc.cpp:1459 bin/cobcrun.cpp:125
 #, fuzzy
 msgid "GNU Cobol C++ information"
 msgstr "Información de GNU Cobol"
 
-#: cobc/cobc.cpp:1470 cobc/cobc.cpp:1472 bin/cobcrun.cpp:136
-#: bin/cobcrun.cpp:138
+#: cobc/cobc.cpp:1471 cobc/cobc.cpp:1473 bin/cobcrun.cpp:137
+#: bin/cobcrun.cpp:139
 msgid "Dynamic loading"
 msgstr "Carga dinámica"
 
-#: cobc/cobc.cpp:1470 bin/cobcrun.cpp:136
+#: cobc/cobc.cpp:1471 bin/cobcrun.cpp:137
 msgid "System"
 msgstr "Sistema"
 
-#: cobc/cobc.cpp:1472 bin/cobcrun.cpp:138
+#: cobc/cobc.cpp:1473 bin/cobcrun.cpp:139
 msgid "Libtool"
 msgstr "Libtool"
 
-#: cobc/cobc.cpp:1476 bin/cobcrun.cpp:142
+#: cobc/cobc.cpp:1477 bin/cobcrun.cpp:143
 msgid "Enabled"
 msgstr "Activado"
 
-#: cobc/cobc.cpp:1478 bin/cobcrun.cpp:144
+#: cobc/cobc.cpp:1479 bin/cobcrun.cpp:145
 msgid "Disabled"
 msgstr "Desactivado"
 
-#: cobc/cobc.cpp:1482 bin/cobcrun.cpp:149
+#: cobc/cobc.cpp:1483 bin/cobcrun.cpp:150
 msgid "Variable format"
 msgstr "Formato de variable"
 
-#: cobc/cobc.cpp:1485 bin/cobcrun.cpp:152
+#: cobc/cobc.cpp:1486 bin/cobcrun.cpp:153
 msgid "8 bytes"
 msgstr "8 bytes"
 
-#: cobc/cobc.cpp:1487 bin/cobcrun.cpp:154
+#: cobc/cobc.cpp:1488 bin/cobcrun.cpp:155
 msgid "4 bytes"
 msgstr "4 bytes"
 
-#: cobc/cobc.cpp:1491 cobc/cobc.cpp:1493 bin/cobcrun.cpp:158
-#: bin/cobcrun.cpp:160
+#: cobc/cobc.cpp:1492 cobc/cobc.cpp:1494 bin/cobcrun.cpp:159
+#: bin/cobcrun.cpp:161
 msgid "Sequential handler"
 msgstr "Controlador secuencial"
 
-#: cobc/cobc.cpp:1491 cobc/cobc.cpp:1496 bin/cobcrun.cpp:158
-#: bin/cobcrun.cpp:163
+#: cobc/cobc.cpp:1492 cobc/cobc.cpp:1497 bin/cobcrun.cpp:159
+#: bin/cobcrun.cpp:164
 msgid "External"
 msgstr "Externo"
 
-#: cobc/cobc.cpp:1493 bin/cobcrun.cpp:160
+#: cobc/cobc.cpp:1494 bin/cobcrun.cpp:161
 msgid "Internal"
 msgstr "Interno"
 
-#: cobc/cobc.cpp:1496 cobc/cobc.cpp:1499 cobc/cobc.cpp:1502 cobc/cobc.cpp:1505
-#: cobc/cobc.cpp:1508 bin/cobcrun.cpp:163 bin/cobcrun.cpp:166
-#: bin/cobcrun.cpp:169 bin/cobcrun.cpp:172 bin/cobcrun.cpp:175
+#: cobc/cobc.cpp:1497 cobc/cobc.cpp:1500 cobc/cobc.cpp:1503 cobc/cobc.cpp:1506
+#: cobc/cobc.cpp:1509 bin/cobcrun.cpp:164 bin/cobcrun.cpp:167
+#: bin/cobcrun.cpp:170 bin/cobcrun.cpp:173 bin/cobcrun.cpp:176
 msgid "ISAM handler"
 msgstr "Controlador ISAM"
 
-#: cobc/cobc.cpp:1499 bin/cobcrun.cpp:166
+#: cobc/cobc.cpp:1500 bin/cobcrun.cpp:167
 msgid "BDB"
 msgstr "BDB"
 
-#: cobc/cobc.cpp:1502
+#: cobc/cobc.cpp:1503
 #, fuzzy
 msgid "C-ISAM(Experimental)"
 msgstr "C-ISAM (Experimental)"
 
-#: cobc/cobc.cpp:1505
+#: cobc/cobc.cpp:1506
 #, fuzzy
 msgid "D-ISAM(Experimental)"
 msgstr "D-ISAM (Experimental)"
 
-#: cobc/cobc.cpp:1508
+#: cobc/cobc.cpp:1509
 #, fuzzy
 msgid "VBISAM(Experimental)"
 msgstr "VBISAM (Experimental)"
 
-#: cobc/cobc.cpp:1518
+#: cobc/cobc.cpp:1519
 msgid "- NOT set with -Wall"
 msgstr "- NO esta definido con -Wall"
 
-#: cobc/cobc.cpp:1545
+#: cobc/cobc.cpp:1546
 msgid "Usage: cobc [options] file ..."
 msgstr "Uso: cobc [options] file ..."
 
-#: cobc/cobc.cpp:1547
+#: cobc/cobc.cpp:1548
 msgid "Options:"
 msgstr "Opciones:"
 
-#: cobc/cobc.cpp:1548
+#: cobc/cobc.cpp:1549
 msgid "  -help                 Display this message"
 msgstr "  -help                 Muestra este mensaje"
 
-#: cobc/cobc.cpp:1549
+#: cobc/cobc.cpp:1550
 msgid "  -version, -V          Display compiler version"
 msgstr " -version, -V           Muestra version del compilador"
 
-#: cobc/cobc.cpp:1550
+#: cobc/cobc.cpp:1551
 msgid "  -info, -i             Display compiler build information"
 msgstr ""
 "  -info, -i             Muestra la información de generación del compilador"
 
-#: cobc/cobc.cpp:1551
+#: cobc/cobc.cpp:1552
 msgid "  -v                    Display the commands invoked by the compiler"
 msgstr ""
 "-v                     Muestra los comandos invocados por el compilador"
 
-#: cobc/cobc.cpp:1552
+#: cobc/cobc.cpp:1553
 msgid "  -x                    Build an executable program"
 msgstr "-x                     Genera un programa ejecutable    "
 
-#: cobc/cobc.cpp:1553
+#: cobc/cobc.cpp:1554
 #, fuzzy
 msgid "  -m                    Build a dynamically loadable module(default)"
 msgstr ""
 " -m                   Generar un módulo de carga dinámica (por defecto)"
 
-#: cobc/cobc.cpp:1554
+#: cobc/cobc.cpp:1555
 msgid "  -std=<dialect>        Warnings/features for a specific dialect :"
 msgstr ""
 "  -std=<dialect>        Alertas/prestaciones para dialecto específico :"
 
-#: cobc/cobc.cpp:1555
+#: cobc/cobc.cpp:1556
 msgid "                          cobol2002   Cobol 2002"
 msgstr "                          cobol2002   Cobol 2002"
 
-#: cobc/cobc.cpp:1556
+#: cobc/cobc.cpp:1557
 msgid "                          cobol85     Cobol 85"
 msgstr "                          cobol85     Cobol 85"
 
-#: cobc/cobc.cpp:1557
+#: cobc/cobc.cpp:1558
 msgid "                          ibm         IBM Compatible"
 msgstr "                          ibm         Compatible con IBM"
 
-#: cobc/cobc.cpp:1558
+#: cobc/cobc.cpp:1559
 msgid "                          mvs         MVS Compatible"
 msgstr "                          mvs         Compatible con MVS"
 
-#: cobc/cobc.cpp:1559
+#: cobc/cobc.cpp:1560
 msgid "                          bs2000      BS2000 Compatible"
 msgstr "                          bs2000      Compatible con BS2000"
 
-#: cobc/cobc.cpp:1560
+#: cobc/cobc.cpp:1561
 msgid "                          mf          Micro Focus Compatible"
 msgstr "                          mf          Compatible con Micro Focus"
 
-#: cobc/cobc.cpp:1561
+#: cobc/cobc.cpp:1562
 msgid "                          default     When not specified"
 msgstr ""
 "                          por defecto     Cuando no ha sido especificado"
 
-#: cobc/cobc.cpp:1562
+#: cobc/cobc.cpp:1563
 msgid "                        See config/default.conf and config/*.conf"
 msgstr "                        Ver config/default.conf y config/*.conf"
 
-#: cobc/cobc.cpp:1563
+#: cobc/cobc.cpp:1564
 msgid "  -free                 Use free source format"
 msgstr "  -free                 Utilizar formato de liberar origen"
 
-#: cobc/cobc.cpp:1564
+#: cobc/cobc.cpp:1565
 #, fuzzy
 msgid "  -fixed                Use fixed source format(default)"
 msgstr "  -fixed                Utilizar formato de origen fijo (por defecto)"
 
-#: cobc/cobc.cpp:1565
+#: cobc/cobc.cpp:1566
 msgid "  -O, -O2, -Os          Enable optimization"
 msgstr "  -O,  -O2, -Os         Optimización activado"
 
-#: cobc/cobc.cpp:1566
+#: cobc/cobc.cpp:1567
 msgid "  -g                    Enable C compiler debug / stack check / trace"
 msgstr ""
 "  -g                    Permite depuración de compilador C / verificación de "
 "montón / rastrear"
 
-#: cobc/cobc.cpp:1567
+#: cobc/cobc.cpp:1568
 msgid "  -debug                Enable all run-time error checking"
 msgstr ""
 "  -debug                Permite verificación de errores en tiempo de "
 "ejecución"
 
-#: cobc/cobc.cpp:1568
+#: cobc/cobc.cpp:1569
 msgid "  -o <file>             Place the output into <file>"
 msgstr "  -o <file>      Coloque el resultado en <file>"
 
-#: cobc/cobc.cpp:1569
+#: cobc/cobc.cpp:1570
 msgid "  -b                    Combine all input files into a single"
 msgstr ""
 "  -b                    Combinar todos los archivos de entrada en un solo"
 
-#: cobc/cobc.cpp:1570
+#: cobc/cobc.cpp:1571
 msgid "                        dynamically loadable module"
 msgstr "                       módulo de carga dinámica"
 
-#: cobc/cobc.cpp:1571
+#: cobc/cobc.cpp:1572
 msgid "  -E                    Preprocess only; do not compile or link"
 msgstr "  -E                    Preprocesar solamente; no compilar o enlazar"
 
-#: cobc/cobc.cpp:1572
+#: cobc/cobc.cpp:1573
 msgid "  -C                    Translation only; convert COBOL to C"
 msgstr "  -C                    Traducción solamente; convertir COBOL a C"
 
-#: cobc/cobc.cpp:1573
+#: cobc/cobc.cpp:1574
 msgid "  -S                    Compile only; output assembly file"
 msgstr ""
 "  -S                     Compilar solamente; salida de archivo de ensamblado"
 
-#: cobc/cobc.cpp:1574
+#: cobc/cobc.cpp:1575
 msgid "  -c                    Compile and assemble, but do not link"
 msgstr "  -c                    Compilar y ensamblar, pero no enlanzar"
 
-#: cobc/cobc.cpp:1575
+#: cobc/cobc.cpp:1576
 #, fuzzy
 msgid "  -P(=<dir or file>)    Generate preprocessed program listing(.lst)"
 msgstr "  -P(=<dir o file>)    Genera listado de programa preprocesado (.lst)"
 
-#: cobc/cobc.cpp:1576
+#: cobc/cobc.cpp:1577
 msgid "  -Xref                 Generate cross reference through 'cobxref'"
 msgstr "  -Xref                 Genera referencia cruzada mediante 'cobxref'"
 
-#: cobc/cobc.cpp:1577
+#: cobc/cobc.cpp:1578
 #, fuzzy
 msgid "                       (V. Coen's 'cobxref' must be in path)"
 msgstr "                        ('cobxref' de V.Coen debe de estar en la ruta)"
 
-#: cobc/cobc.cpp:1578
+#: cobc/cobc.cpp:1579
 msgid "  -I <directory>        Add <directory> to copy/include search path"
 msgstr ""
 "  -I <directory>        Añadir <directory> para copiar/incluir ruta de "
 "búsqueda"
 
-#: cobc/cobc.cpp:1579
+#: cobc/cobc.cpp:1580
 msgid "  -L <directory>        Add <directory> to library search path"
 msgstr ""
 "  -L <directory>       Añadir <directory> a la ruta de búsqueda de bibloteca"
 
-#: cobc/cobc.cpp:1580
+#: cobc/cobc.cpp:1581
 msgid "  -l <lib>              Link the library <lib>"
 msgstr "  -l <lib>              Enlace a bibloteca <lib>"
 
-#: cobc/cobc.cpp:1581
+#: cobc/cobc.cpp:1582
 msgid "  -A <options>          Add <options> to the C compile phase"
 msgstr "  -A  <options>      Añadir <options> a la fase de compilador C"
 
-#: cobc/cobc.cpp:1582
+#: cobc/cobc.cpp:1583
 msgid "  -Q <options>          Add <options> to the C link phase"
 msgstr "  -Q <options>          Agregar <options> a la frase de enlace C "
 
-#: cobc/cobc.cpp:1583
+#: cobc/cobc.cpp:1584
 msgid "  -D <define>           DEFINE <define> to the COBOL compiler"
 msgstr "  -D  <define>          DEFINE <define> a el compilador COBOL"
 
-#: cobc/cobc.cpp:1584
+#: cobc/cobc.cpp:1585
 msgid "  -K <entry>            Generate CALL to <entry> as static"
 msgstr "  -K <entry>        Generar CALL a <entry> como estática "
 
-#: cobc/cobc.cpp:1585
+#: cobc/cobc.cpp:1586
 msgid "  -conf=<file>          User defined dialect configuration - See -std="
 msgstr ""
 "  -conf=<file>          Configuración de dialecto definido por usuario - Ver "
 "-std="
 
-#: cobc/cobc.cpp:1586
+#: cobc/cobc.cpp:1587
 msgid "  -list-reserved        Display reserved words"
 msgstr "  -list-reserved        Mostrar palabras reservadas"
 
-#: cobc/cobc.cpp:1587
+#: cobc/cobc.cpp:1588
 msgid "  -list-intrinsics      Display intrinsic functions"
 msgstr "  -list-intrinsics      Mostrar funciones intrínsica"
 
-#: cobc/cobc.cpp:1588
+#: cobc/cobc.cpp:1589
 msgid "  -list-mnemonics       Display mnemonic names"
 msgstr "  -list-mnemonics    Muestra nombres mnemotécnico"
 
-#: cobc/cobc.cpp:1589
+#: cobc/cobc.cpp:1590
 msgid "  -list-system          Display system routines"
 msgstr "  -list-system         Muestra rutinas del sistema"
 
-#: cobc/cobc.cpp:1590
+#: cobc/cobc.cpp:1591
 msgid "  -save-temps(=<dir>)   Save intermediate files"
 msgstr " -save-temps(=<dir>)   Guardar archivos intermediate "
 
-#: cobc/cobc.cpp:1591
+#: cobc/cobc.cpp:1592
 msgid "                        - Default : current directory"
 msgstr "                       - (por efecto el directorio actual)"
 
-#: cobc/cobc.cpp:1592
+#: cobc/cobc.cpp:1593
 msgid "  -ext <extension>      Add default file extension"
 msgstr "  -ext <extension>      Añadir por defecto extensión de archivo"
 
-#: cobc/cobc.cpp:1596
+#: cobc/cobc.cpp:1597
 msgid "  -W                    Enable ALL warnings"
 msgstr "  -W                    Activar ALL las alertas"
 
-#: cobc/cobc.cpp:1597
+#: cobc/cobc.cpp:1598
 msgid "  -Wall                 Enable all warnings except as noted below"
 msgstr ""
 "  -Wall                 Activar todas las alertas excepto lo señalado abajo"
 
-#: cobc/cobc.cpp:1630
+#: cobc/cobc.cpp:1631
 msgid "Only one of options 'E', 'S', 'C', 'c' may be specified"
 msgstr "Solamente una de las opciones 'E', 'S', 'C', 'c' se puede especificar"
 
-#: cobc/cobc.cpp:1636
+#: cobc/cobc.cpp:1637
 msgid "Only one of options 'm', 'x', 'b' may be specified"
 msgstr "Solo una opción 'm', 'x', 'b' puede ser especificada"
 
-#: cobc/cobc.cpp:1651
+#: cobc/cobc.cpp:1652
 #, c-format
 msgid "'%s' is not an intrinsic function"
 msgstr "'%s' no es una función intrínseca"
 
-#: cobc/cobc.cpp:1797
+#: cobc/cobc.cpp:1798
 msgid "Invalid output file name"
 msgstr "Nombre de archivo de salida inválido"
 
-#: cobc/cobc.cpp:1839
+#: cobc/cobc.cpp:1840
 #, c-format
 msgid "Invalid option -std=%s"
 msgstr "Inválida opción -std=%s"
 
-#: cobc/cobc.cpp:1873
+#: cobc/cobc.cpp:1874
 #, c-format
 msgid "Warning - '%s' is not a directory, defaulting to current directory"
 msgstr ""
 "Alerta - '%s' no es un directorio, por defectuo en el directorio actual"
 
-#: cobc/cobc.cpp:1905
+#: cobc/cobc.cpp:1906
 #, c-format
 msgid "Warning - assuming '%s' is a DEFINE - did you intend to use -debug?"
 msgstr "Alerta - asumiendo '%s' es un DEFINE - querias depurar?"
 
-#: cobc/cobc.cpp:2104
+#: cobc/cobc.cpp:2105
 msgid "Invalid option detected"
 msgstr "Opción inválida detectada"
 
-#: cobc/cobc.cpp:2117
+#: cobc/cobc.cpp:2118
 msgid "Failed to load the initial config file"
 msgstr "No se pudo cargar el archivo config inicial"
 
-#: cobc/cobc.cpp:2123
+#: cobc/cobc.cpp:2124
 #, c-format
 msgid "Invalid tab-width value - %d"
 msgstr "Valor inválido a etiqueta-anchura- %d"
 
-#: cobc/cobc.cpp:2129
+#: cobc/cobc.cpp:2130
 #, c-format
 msgid "Invalid text-column value - %d"
 msgstr "Valór inválido a columna-texto - %d"
 
-#: cobc/cobc.cpp:2282
+#: cobc/cobc.cpp:2283
 msgid "Invalid file name parameter"
 msgstr "Parámetro nombre de archivo inválido"
 
-#: cobc/cobc.cpp:2548
+#: cobc/cobc.cpp:2549
 #, c-format
 msgid "Unknown option ignored:\t%s"
 msgstr "Opción desconosida ignorada:\t%s"
 
-#: cobc/cobc.cpp:2606 cobc/cobc.cpp:2661 cobc/cobc.cpp:2718 cobc/cobc.cpp:2808
-#: cobc/cobc.cpp:2835 cobc/cobc.cpp:2877
+#: cobc/cobc.cpp:2607 cobc/cobc.cpp:2662 cobc/cobc.cpp:2719 cobc/cobc.cpp:2809
+#: cobc/cobc.cpp:2836 cobc/cobc.cpp:2878
 msgid "Return status:"
 msgstr "Estado de resultado:"
 
-#: cobc/cobc.cpp:2749
+#: cobc/cobc.cpp:2750
 msgid "Preprocessing:"
 msgstr "Preprocesamiento:"
 
-#: cobc/cobc.cpp:2813
+#: cobc/cobc.cpp:2814
 msgid "'cobxref' execution unsuccessful"
 msgstr "'cobxref' execución sin éxito"
 
-#: cobc/cobc.cpp:2817
+#: cobc/cobc.cpp:2818
 #, c-format
 msgid "Check that 'cobxref' is in %%PATH%%"
 msgstr "Comprobar que 'cobxref' este dentro de %%PATH%%"
 
-#: cobc/cobc.cpp:2820
+#: cobc/cobc.cpp:2821
 msgid "Check that 'cobxref' is in $PATH"
 msgstr "Comprobar que 'cobxref' este dentro de $PATH"
 
-#: cobc/cobc.cpp:2824
+#: cobc/cobc.cpp:2825
 msgid "No listing produced"
 msgstr "No produció listado"
 
-#: cobc/cobc.cpp:2859
+#: cobc/cobc.cpp:2860
 msgid "Parsing:"
 msgstr "Analizando:"
 
-#: cobc/cobc.cpp:2916
+#: cobc/cobc.cpp:2917
 msgid "Translating:"
 msgstr "Traduciendo:"
 
-#: cobc/cobc.cpp:3744
+#: cobc/cobc.cpp:3745
 msgid "No input files"
 msgstr "No archivo de entrada"
 
-#: cobc/cobc.cpp:3834
+#: cobc/cobc.cpp:3835
 msgid "-o option invalid in this combination"
 msgstr "-o opción inválida con esta combinación"
 
-#: cobc/cobc.cpp:3856
+#: cobc/cobc.cpp:3857
 msgid "Command line:\t"
 msgstr "Línea de comandos:\t"
 
@@ -619,7 +619,7 @@ msgstr "Inválida opción -std=%s"
 msgid "%s: option requires an argument -- %c\n"
 msgstr ""
 
-#: cobc/cobgetopt.cpp:632
+#: cobc/cobgetopt.cpp:631
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
 msgstr ""
@@ -637,7 +637,7 @@ msgstr "Elemento CONSTANT inesperado"
 #: cobc/codegen.cpp:844 cobc/codegen.cpp:919 cobc/codegen.cpp:1077
 #: cobc/codegen.cpp:1546 cobc/codegen.cpp:1792 cobc/codegen.cpp:2217
 #: cobc/codegen.cpp:2426 cobc/codegen.cpp:5229 cobc/typeck.cpp:710
-#: cobc/typeck.cpp:3044 cobc/typeck.cpp:6042
+#: cobc/typeck.cpp:3045 cobc/typeck.cpp:6043
 #, c-format
 msgid "Unexpected tree tag %d"
 msgstr "Inesperada etiqueta de árbol %d"
@@ -1635,7 +1635,7 @@ msgstr "ALLOCATE CHARACTERS requiere cláusula RETURNING"
 msgid "Recursive program call - assuming RECURSIVE attribute"
 msgstr "Recursiva programa, llame al - asumiendo atributo RECURSIVO"
 
-#: cobc/parser.y:5965 cobc/typeck.cpp:7995
+#: cobc/parser.y:5965 cobc/typeck.cpp:7996
 msgid "Invalid mnemonic name"
 msgstr "Nombre mnemotécnico inválido"
 
@@ -1717,7 +1717,7 @@ msgstr "INSPECT le falta una palabra clave"
 msgid "SHARING and LOCK clauses are mutually exclusive"
 msgstr "Cláusulas SHARING y LOCK son mutuamente excluyentes"
 
-#: cobc/parser.y:7590 cobc/typeck.cpp:7088 cobc/typeck.cpp:7912
+#: cobc/parser.y:7590 cobc/typeck.cpp:7089 cobc/typeck.cpp:7913
 msgid "LOCK clause invalid with file LOCK AUTOMATIC"
 msgstr "Cláusula de LOCK inválida con archivo LOCK AUTOMATIC"
 
@@ -1725,7 +1725,7 @@ msgstr "Cláusula de LOCK inválida con archivo LOCK AUTOMATIC"
 msgid "KEY clause invalid with this file type"
 msgstr "Cláusula de KEY inválida con este tipo de archivo"
 
-#: cobc/parser.y:7600 cobc/typeck.cpp:7084 cobc/typeck.cpp:7908
+#: cobc/parser.y:7600 cobc/typeck.cpp:7085 cobc/typeck.cpp:7909
 msgid "INVALID KEY clause invalid with this file type"
 msgstr "Cláusula de INVALID KEY inválida con este tipo de archivo"
 
@@ -1733,7 +1733,7 @@ msgstr "Cláusula de INVALID KEY inválida con este tipo de archivo"
 msgid "File sort requires KEY phrase"
 msgstr "Archivo de ordenar requiere frase KEY "
 
-#: cobc/parser.y:8033 cobc/typeck.cpp:7564
+#: cobc/parser.y:8033 cobc/typeck.cpp:7565
 msgid "Table sort without keys not implemented yet"
 msgstr "Ordenar tabla sin claves no ha sido implementado aún"
 
@@ -2227,8 +2227,8 @@ msgid "Record size exceeds maximum allowed(%d) - File '%s'"
 msgstr "Tamaño de récord excede el máximo permitido (%d) - Archivo '%s'"
 
 #: cobc/tree.cpp:2420 cobc/tree.cpp:2425 cobc/tree.cpp:2437
-#: cobc/typeck.cpp:2819 cobc/typeck.cpp:2824 cobc/typeck.cpp:2829
-#: cobc/typeck.cpp:3410 cobc/typeck.cpp:3430 cobc/typeck.cpp:3530
+#: cobc/typeck.cpp:2820 cobc/typeck.cpp:2825 cobc/typeck.cpp:2830
+#: cobc/typeck.cpp:3411 cobc/typeck.cpp:3431 cobc/typeck.cpp:3531
 msgid "Invalid expression"
 msgstr "Expresión inválida"
 
@@ -2319,7 +2319,7 @@ msgstr "Uso de ON/OFF requiere el nombre de un SWITCH"
 msgid "ASSIGN interpreted as %s"
 msgstr "ASSIGN interpretarse en el %s"
 
-#: cobc/typeck.cpp:1224 cobc/typeck.cpp:1336
+#: cobc/typeck.cpp:1224 cobc/typeck.cpp:1337
 #, c-format
 msgid "Subscripts missing for '%s' - Defaulting to 1"
 msgstr ""
@@ -2329,610 +2329,610 @@ msgstr ""
 msgid "'%s' cannot be reference modified"
 msgstr "'%s' no puede ser modificado por referencia"
 
-#: cobc/typeck.cpp:1247 cobc/typeck.cpp:1279 cobc/typeck.cpp:1463
+#: cobc/typeck.cpp:1247 cobc/typeck.cpp:1279 cobc/typeck.cpp:1464
 #, c-format
 msgid "'%s' cannot be subscripted"
 msgstr "'%s' no puede ser subíndice"
 
-#: cobc/typeck.cpp:1250 cobc/typeck.cpp:1466
+#: cobc/typeck.cpp:1250 cobc/typeck.cpp:1467
 #, c-format
 msgid "'%s' requires 1 subscript"
 msgstr "'%s' requiere 1 subíndice"
 
-#: cobc/typeck.cpp:1253 cobc/typeck.cpp:1469
+#: cobc/typeck.cpp:1253 cobc/typeck.cpp:1470
 #, c-format
 msgid "'%s' requires %d subscripts"
 msgstr "'%s; requiere %d subíndices"
 
-#: cobc/typeck.cpp:1320
+#: cobc/typeck.cpp:1321
 #, c-format
 msgid "'%s' has no OCCURS clause"
 msgstr "'%s' no tiene cláusula de OCCURS"
 
-#: cobc/typeck.cpp:1368 libcob/common.cpp:2096
+#: cobc/typeck.cpp:1369 libcob/common.cpp:2096
 #, c-format
 msgid "Subscript of '%s' out of bounds: %d"
 msgstr "Subíndice de '%s' fuera de límites: %d"
 
-#: cobc/typeck.cpp:1420 cobc/typeck.cpp:1429 libcob/common.cpp:2108
+#: cobc/typeck.cpp:1421 cobc/typeck.cpp:1430 libcob/common.cpp:2108
 #, c-format
 msgid "Offset of '%s' out of bounds: %d"
 msgstr "Compensación de '%s' fuera de límites: %d"
 
-#: cobc/typeck.cpp:1424 cobc/typeck.cpp:1433 libcob/common.cpp:2115
+#: cobc/typeck.cpp:1425 cobc/typeck.cpp:1434 libcob/common.cpp:2115
 #, c-format
 msgid "Length of '%s' out of bounds: %d"
 msgstr "Longitud de '%s' fuera de límites: %d"
 
-#: cobc/typeck.cpp:1521
+#: cobc/typeck.cpp:1522
 msgid "Reference modification not allowed here"
 msgstr "Modificado por referencia no se permite aquí"
 
-#: cobc/typeck.cpp:1529
+#: cobc/typeck.cpp:1530
 msgid "ANY LENGTH item not allowed here"
 msgstr "Elemento de ANY LENGTH no se permite aquí"
 
-#: cobc/typeck.cpp:1533
+#: cobc/typeck.cpp:1534
 msgid "88 level item not allowed here"
 msgstr "Elemento del nivel 88 no es permitido aquí"
 
-#: cobc/typeck.cpp:1537
+#: cobc/typeck.cpp:1538
 msgid "Variable length item not allowed here"
 msgstr "Elemento de longitud variable no es permitido aquí"
 
-#: cobc/typeck.cpp:1636
+#: cobc/typeck.cpp:1637
 #, c-format
 msgid "'%s' is not an alphabet name"
 msgstr "'%s' no es un nombre de alfabeto"
 
-#: cobc/typeck.cpp:1849
+#: cobc/typeck.cpp:1850
 #, c-format
 msgid "Duplicate character values in alphabet '%s'"
 msgstr "Valores de carácter duplicados en alfabeto '%s'"
 
-#: cobc/typeck.cpp:1853
+#: cobc/typeck.cpp:1854
 #, c-format
 msgid "Invalid character values in alphabet '%s'"
 msgstr "Valores de carácter inválidos en alfabeto '%s'"
 
-#: cobc/typeck.cpp:1908
+#: cobc/typeck.cpp:1909
 msgid "Invalid ALPHABET name"
 msgstr "Nombre de ALPHABET inválido"
 
-#: cobc/typeck.cpp:1964 cobc/typeck.cpp:1968
+#: cobc/typeck.cpp:1965 cobc/typeck.cpp:1969
 #, c-format
 msgid "Duplicate values in class '%s'"
 msgstr "Valores duplicados en clase '%s'"
 
-#: cobc/typeck.cpp:1984
+#: cobc/typeck.cpp:1985
 #, c-format
 msgid "'%s' is not a locale name"
 msgstr "'%s' no es un nombre local"
 
-#: cobc/typeck.cpp:2145
+#: cobc/typeck.cpp:2146
 #, c-format
 msgid "'%s' will be implicitly defined"
 msgstr "'%s' será definido de forma implícita"
 
-#: cobc/typeck.cpp:2162
+#: cobc/typeck.cpp:2163
 #, c-format
 msgid "ASSIGN data item '%s' invalid"
 msgstr "ASSIGN elementos de datos '%s' inválido"
 
-#: cobc/typeck.cpp:2173
+#: cobc/typeck.cpp:2174
 #, c-format
 msgid "'%s' CURSOR is not 4 or 6 characters long"
 msgstr "'%s' CURSOR no es de 4 o 6 caractéres de longitud"
 
-#: cobc/typeck.cpp:2183
+#: cobc/typeck.cpp:2184
 #, c-format
 msgid "'%s' CRT STATUS is not 4 characters long"
 msgstr "'%s' CRT STATUS no es de 4 caractéres de longitud"
 
-#: cobc/typeck.cpp:2226
+#: cobc/typeck.cpp:2227
 #, c-format
 msgid "'%s' ODO field item invalid here"
 msgstr "'%s' elemento de campo ODO inválido aquí"
 
-#: cobc/typeck.cpp:2232
+#: cobc/typeck.cpp:2233
 #, c-format
 msgid "'%s' cannot have OCCURS DEPENDING"
 msgstr "'%s' no puede tener OCURRS DEPENDING"
 
-#: cobc/typeck.cpp:2243
+#: cobc/typeck.cpp:2244
 #, c-format
 msgid "'%s' ODO item must have GLOBAL attribute"
 msgstr "'%s' elemento ODO debe tener atributo GLOBAL"
 
-#: cobc/typeck.cpp:2265
+#: cobc/typeck.cpp:2266
 msgid "RECORD DEPENDING item must be in WORKING/LOCAL/LINKAGE section"
 msgstr ""
 "Elemento RECORD DEPENDING debe de estar en sección WORKING/LOCAL/LINKAGE"
 
-#: cobc/typeck.cpp:2270
+#: cobc/typeck.cpp:2271
 msgid "Invalid RECORD DEPENDING item"
 msgstr "Elemento RECORD DEPENDING inválido"
 
-#: cobc/typeck.cpp:2293 cobc/typeck.cpp:2296
+#: cobc/typeck.cpp:2294 cobc/typeck.cpp:2297
 #, c-format
 msgid "'%s' is not in DECLARATIVES"
 msgstr "'%s' no se encuentra en DECLARATIVES"
 
-#: cobc/typeck.cpp:2303
+#: cobc/typeck.cpp:2304
 #, c-format
 msgid "Invalid reference to '%s' (In DECLARATIVES)"
 msgstr "Referencia a '%s' inválida (En DECLARATIVES)"
 
-#: cobc/typeck.cpp:2310
+#: cobc/typeck.cpp:2311
 #, c-format
 msgid "'%s' not a procedure name"
 msgstr "'%s' no es el nombre de un procedimiento"
 
-#: cobc/typeck.cpp:2329
+#: cobc/typeck.cpp:2330
 #, c-format
 msgid "'%s' - DEBUGGING target invalid with ALL PROCEDURES"
 msgstr "'%s' - objectivo de DEBUGGING inválido con ALL PROCEDURES"
 
-#: cobc/typeck.cpp:2333
+#: cobc/typeck.cpp:2334
 #, c-format
 msgid "'%s' - DEBUGGING target invalid"
 msgstr "'%s' - objetivo de DEBUGGING inválido"
 
-#: cobc/typeck.cpp:2348
+#: cobc/typeck.cpp:2349
 #, c-format
 msgid "'%s' is not a valid DEBUGGING target"
 msgstr "'%s' no es un objetivo válido de DEBUGGING"
 
-#: cobc/typeck.cpp:2388
+#: cobc/typeck.cpp:2389
 #, c-format
 msgid "'%s' is not an alterable paragraph"
 msgstr "'%s' no es un párrafo modificable"
 
-#: cobc/typeck.cpp:2563
+#: cobc/typeck.cpp:2564
 msgid "Suggest parentheses around AND within OR"
 msgstr "Parentesis sugeridos alrededor de AND dentro de OR"
 
-#: cobc/typeck.cpp:2928
+#: cobc/typeck.cpp:2929
 #, c-format
 msgid "Internal decimal structure size exceeded - %d"
 msgstr "Tamaño de estructura decimal interna excedido - %d"
 
-#: cobc/typeck.cpp:2966
+#: cobc/typeck.cpp:2967
 #, c-format
 msgid "Unexpected operation %d"
 msgstr "Operación %d inesperada"
 
-#: cobc/typeck.cpp:2981
+#: cobc/typeck.cpp:2982
 msgid "Unexpected constant expansion"
 msgstr "Expansión inesperada de constante "
 
-#: cobc/typeck.cpp:3783 cobc/typeck.cpp:3828
+#: cobc/typeck.cpp:3784 cobc/typeck.cpp:3829
 msgid "No CORRESPONDING items found"
 msgstr "No se encontraron elementos CORRESPONDING"
 
-#: cobc/typeck.cpp:3944
+#: cobc/typeck.cpp:3945
 msgid "Invalid PROMPT literal"
 msgstr "Literal PROMPT inválido"
 
-#: cobc/typeck.cpp:3949
+#: cobc/typeck.cpp:3950
 msgid "Invalid PROMPT identifier"
 msgstr "Identificador PROMPT inválido"
 
-#: cobc/typeck.cpp:4172 cobc/typeck.cpp:4197
+#: cobc/typeck.cpp:4173 cobc/typeck.cpp:4198
 #, c-format
 msgid "Invalid input device '%s'"
 msgstr "Dispositivo de entrada '%s' inválido"
 
-#: cobc/typeck.cpp:4192 cobc/typeck.cpp:4203 cobc/typeck.cpp:4835
-#: cobc/typeck.cpp:4840 cobc/typeck.cpp:4849
+#: cobc/typeck.cpp:4193 cobc/typeck.cpp:4204 cobc/typeck.cpp:4836
+#: cobc/typeck.cpp:4841 cobc/typeck.cpp:4850
 #, c-format
 msgid "'%s' is not defined in SPECIAL-NAMES"
 msgstr "'%s' no esta definido en SPECIAL-NAMES"
 
-#: cobc/typeck.cpp:4229
+#: cobc/typeck.cpp:4230
 msgid "Target of ALLOCATE is not a BASED item"
 msgstr "Destino de ALLOCATE no es un elemento BASED"
 
-#: cobc/typeck.cpp:4237
+#: cobc/typeck.cpp:4238
 msgid "Target of RETURNING is not a data pointer"
 msgstr "Destino de RETURNING no es un puntero de datos"
 
-#: cobc/typeck.cpp:4244
+#: cobc/typeck.cpp:4245
 msgid "The CHARACTERS field of ALLOCATE must be numeric"
 msgstr "El campo CHARACTERS de ALLOCATE debe ser numérico"
 
-#: cobc/typeck.cpp:4258
+#: cobc/typeck.cpp:4259
 msgid "INITIALIZED TO item is not alphanumeric"
 msgstr "Elemento INITIALIZED TO no es alfanumérico"
 
-#: cobc/typeck.cpp:4295
+#: cobc/typeck.cpp:4296
 msgid "Only alphanumeric FUNCTION types are allowed here"
 msgstr "Solamente tipos alfanuméricos FUNCTION son permitidos aquí"
 
-#: cobc/typeck.cpp:4303
+#: cobc/typeck.cpp:4304
 msgid "Invalid RETURNING field"
 msgstr "Campo RETURNING inválido"
 
-#: cobc/typeck.cpp:4325
+#: cobc/typeck.cpp:4326
 msgid "STDCALL not available on this platform"
 msgstr "STDCALL no disponible en esta plataforma"
 
-#: cobc/typeck.cpp:4331
+#: cobc/typeck.cpp:4332
 msgid "STDCALL used on 64-bit Windows platform"
 msgstr "STDCALL utilizado en plataforma Windows de 64 bits"
 
-#: cobc/typeck.cpp:4337
+#: cobc/typeck.cpp:4338
 msgid "STATIC CALL convention requires a literal program name"
 msgstr "Convención STATIC CALL requiere un nombre literal de programa"
 
-#: cobc/typeck.cpp:4353
+#: cobc/typeck.cpp:4354
 #, fuzzy
 msgid "Numeric literal is negative"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.cpp:4430
+#: cobc/typeck.cpp:4431
 #, fuzzy
 msgid "Numeric literal exceeds size limits"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.cpp:4436
+#: cobc/typeck.cpp:4437
 msgid "Figurative constant invalid here"
 msgstr "Constante figurativa inválida aquí"
 
-#: cobc/typeck.cpp:4443
+#: cobc/typeck.cpp:4444
 #, c-format
 msgid "'%s' is not a valid data name"
 msgstr "'%s' no es un nombre valido de datos"
 
-#: cobc/typeck.cpp:4449
+#: cobc/typeck.cpp:4450
 #, c-format
 msgid "'%s' ANY LENGTH item not passed BY REFERENCE"
 msgstr "'%s' Elemento de ANY LENGTH no pasó BY REFERENCE"
 
-#: cobc/typeck.cpp:4456
+#: cobc/typeck.cpp:4457
 #, c-format
 msgid "'%s' is not a 01 or 77 level item"
 msgstr "'%s' no es un elemento de nivel 01 ó 77"
 
-#: cobc/typeck.cpp:4479
+#: cobc/typeck.cpp:4480
 #, c-format
 msgid "Wrong number of CALL parameters for '%s'"
 msgstr "Número incorrecto de parámetros en CALL para '%s'"
 
-#: cobc/typeck.cpp:4527 cobc/typeck.cpp:4576 cobc/typeck.cpp:4608
-#: cobc/typeck.cpp:6830 cobc/typeck.cpp:6954 cobc/typeck.cpp:7074
-#: cobc/typeck.cpp:7902
+#: cobc/typeck.cpp:4528 cobc/typeck.cpp:4577 cobc/typeck.cpp:4609
+#: cobc/typeck.cpp:6831 cobc/typeck.cpp:6955 cobc/typeck.cpp:7075
+#: cobc/typeck.cpp:7903
 msgid "Operation not allowed on SORT files"
 msgstr "Operación no permitida en archivos de SORT"
 
-#: cobc/typeck.cpp:4580 cobc/typeck.cpp:7078
+#: cobc/typeck.cpp:4581 cobc/typeck.cpp:7079
 msgid "Operation not allowed on LINE SEQUENTIAL files"
 msgstr "Operación no permitida en archivos de LINE SEQUENTIAL"
 
-#: cobc/typeck.cpp:4708
+#: cobc/typeck.cpp:4709
 #, c-format
 msgid "'%s' is an invalid type for DISPLAY operand"
 msgstr "'%s' es un tipo inválido de operando de DISPLAY"
 
-#: cobc/typeck.cpp:4713
+#: cobc/typeck.cpp:4714
 msgid "Invalid type for DISPLAY operand"
 msgstr "Tipo inválido para operando de DISPLAY"
 
-#: cobc/typeck.cpp:4816
+#: cobc/typeck.cpp:4817
 msgid "Invalid output device"
 msgstr "Dispositivo de salida inválido"
 
-#: cobc/typeck.cpp:4844
+#: cobc/typeck.cpp:4845
 #, c-format
 msgid "'%s' is not an output device"
 msgstr "'%s' no es un dispositivo de salida"
 
-#: cobc/typeck.cpp:4926
+#: cobc/typeck.cpp:4927
 msgid "Invalid use of 88 level in WHEN expression"
 msgstr "Uso inválido de nivel 88 en expresion WHEN"
 
-#: cobc/typeck.cpp:4981
+#: cobc/typeck.cpp:4982
 msgid "Wrong number of WHEN parameters"
 msgstr "Número equivocado de parámetros para WHEN"
 
-#: cobc/typeck.cpp:5046 cobc/typeck.cpp:5058
+#: cobc/typeck.cpp:5047 cobc/typeck.cpp:5059
 #, c-format
 msgid "Target %d of FREE is not a BASED data item"
 msgstr "Objectivo %d de FREE no es un elemento de datos BASED"
 
-#: cobc/typeck.cpp:5064
+#: cobc/typeck.cpp:5065
 #, c-format
 msgid "Target %d of FREE must be a data pointer"
 msgstr "Objetivo %d de FREE debe ser un puntero de datos"
 
-#: cobc/typeck.cpp:5088
+#: cobc/typeck.cpp:5089
 msgid "GO TO with multiple procedure-names"
 msgstr "GO TO con multiples nombres-procedimiento"
 
-#: cobc/typeck.cpp:5222
+#: cobc/typeck.cpp:5223
 msgid "REPLACING operands differ in size"
 msgstr "Operandos de REPLACING difieren en tamaño"
 
-#: cobc/typeck.cpp:5244
+#: cobc/typeck.cpp:5245
 msgid "Invalid target for INSPECT"
 msgstr "Destino inválido para INSPECT"
 
-#: cobc/typeck.cpp:5262
+#: cobc/typeck.cpp:5263
 msgid "Invalid target for REPLACING/CONVERTING"
 msgstr "Destino inválido para REPLACING/CONVERTING"
 
-#: cobc/typeck.cpp:5284
+#: cobc/typeck.cpp:5285
 msgid "Data name expected before CHARACTERS"
 msgstr "Nombre de datos esperado antes que CHARACTERS"
 
-#: cobc/typeck.cpp:5295
+#: cobc/typeck.cpp:5296
 msgid "Data name expected before ALL"
 msgstr "Nombre de datos esperado antes que ALL"
 
-#: cobc/typeck.cpp:5306
+#: cobc/typeck.cpp:5307
 msgid "Data name expected before LEADING"
 msgstr "Nombre de datos esperado antes de LEADING"
 
-#: cobc/typeck.cpp:5317
+#: cobc/typeck.cpp:5318
 msgid "Data name expected before TRAILING"
 msgstr "Nombre de datos esperado antes de TRAILING"
 
-#: cobc/typeck.cpp:5327
+#: cobc/typeck.cpp:5328
 #, c-format
 msgid "ALL, LEADING or TRAILING expected before '%s'"
 msgstr "ALL, LEADING o TRAILING esperado antes de '%s'"
 
-#: cobc/typeck.cpp:5337
+#: cobc/typeck.cpp:5338
 msgid "Operand has wrong size"
 msgstr "Operando tiene el tamaño equivocado"
 
-#: cobc/typeck.cpp:5398
+#: cobc/typeck.cpp:5399
 #, c-format
 msgid "Internal register '%s' defined as BINARY-LONG"
 msgstr "Registros internos '%s' definidos como BINARY-LONG"
 
-#: cobc/typeck.cpp:5401
+#: cobc/typeck.cpp:5402
 #, c-format
 msgid "'%s' defined here as USAGE %s"
 msgstr "'%s' definido aquí como USAGE %s"
 
-#: cobc/typeck.cpp:5404
+#: cobc/typeck.cpp:5405
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT"
 msgstr "'%s' definido aquí como USAGE FLOAT"
 
-#: cobc/typeck.cpp:5407
+#: cobc/typeck.cpp:5408
 #, c-format
 msgid "'%s' defined here as USAGE DOUBLE"
 msgstr "'%s' definido aquí como USAGE DOUBLE"
 
-#: cobc/typeck.cpp:5410
+#: cobc/typeck.cpp:5411
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT EXTENDED"
 msgstr "'%s' definido aquí como USAGE FLOAT EXTENDED"
 
-#: cobc/typeck.cpp:5413
+#: cobc/typeck.cpp:5414
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-7"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-7"
 
-#: cobc/typeck.cpp:5416
+#: cobc/typeck.cpp:5417
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-16"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-16"
 
-#: cobc/typeck.cpp:5419
+#: cobc/typeck.cpp:5420
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-34"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-34"
 
-#: cobc/typeck.cpp:5422
+#: cobc/typeck.cpp:5423
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-DECIMAL-16"
 msgstr "'%s' definido aquí como USAGE FLOAT-DECIMAL-16"
 
-#: cobc/typeck.cpp:5425
+#: cobc/typeck.cpp:5426
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-DECIMAL-34"
 msgstr "'%s' definido aquí como USAGE FLOAT-DECIMAL-34"
 
-#: cobc/typeck.cpp:5428
+#: cobc/typeck.cpp:5429
 #, c-format
 msgid "'%s' defined here as PIC %s"
 msgstr "'%s' definido aquí como PIC %s"
 
-#: cobc/typeck.cpp:5431
+#: cobc/typeck.cpp:5432
 #, c-format
 msgid "'%s' defined here as a group of length %d"
 msgstr "'%s' definido aquí como un grupo de longitud %d"
 
-#: cobc/typeck.cpp:5486
+#: cobc/typeck.cpp:5487
 msgid "Overlapping MOVE may produce unpredictable results"
 msgstr "Superposición de MOVE puede producir resultados impredecibles"
 
-#: cobc/typeck.cpp:5568
+#: cobc/typeck.cpp:5569
 msgid "Invalid destination for MOVE"
 msgstr "Destinación inválida para MOVE"
 
-#: cobc/typeck.cpp:5589 cobc/typeck.cpp:5601
+#: cobc/typeck.cpp:5590 cobc/typeck.cpp:5602
 msgid "Source is non-numeric - substituting zero"
 msgstr "Origen es no-numérico - substituyendo cero"
 
-#: cobc/typeck.cpp:5687
+#: cobc/typeck.cpp:5688
 msgid "Numeric move to ALPHABETIC"
 msgstr "Movimiento numérico a ALPHABETIC"
 
-#: cobc/typeck.cpp:5701
+#: cobc/typeck.cpp:5702
 msgid "Data item not signed"
 msgstr "Elemento de datos no tiene signo"
 
-#: cobc/typeck.cpp:5705
+#: cobc/typeck.cpp:5706
 msgid "Ignoring sign"
 msgstr "Ignorando signo"
 
-#: cobc/typeck.cpp:6029
+#: cobc/typeck.cpp:6030
 msgid "Invalid source for MOVE"
 msgstr "Origen inválido para MOVE"
 
-#: cobc/typeck.cpp:6050
+#: cobc/typeck.cpp:6051
 msgid "Invalid VALUE clause"
 msgstr "Cláusula VALUE inválida"
 
-#: cobc/typeck.cpp:6052
+#: cobc/typeck.cpp:6053
 msgid "Invalid MOVE statement"
 msgstr "Declaración MOVE inválida"
 
-#: cobc/typeck.cpp:6058
+#: cobc/typeck.cpp:6059
 msgid "Invalid VALUE clause - literal exceeds data size"
 msgstr "Cláusula VALUE inválida - literal excede tamaño de dato"
 
-#: cobc/typeck.cpp:6062
+#: cobc/typeck.cpp:6063
 msgid "Numeric literal exceeds data size"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.cpp:6071
+#: cobc/typeck.cpp:6072
 msgid "Move non-integer to alphanumeric"
 msgstr "Mover no-números enteros a alfanumérico"
 
-#: cobc/typeck.cpp:6077
+#: cobc/typeck.cpp:6078
 msgid "Numeric value is expected"
 msgstr "Valor numérico es esperado"
 
-#: cobc/typeck.cpp:6082
+#: cobc/typeck.cpp:6083
 msgid "Alphanumeric value is expected"
 msgstr "Valor alfanumerico es esperado "
 
-#: cobc/typeck.cpp:6087
+#: cobc/typeck.cpp:6088
 msgid "Value does not fit the picture string"
 msgstr "Valor no se ajusta a la cadena de picture"
 
-#: cobc/typeck.cpp:6092
+#: cobc/typeck.cpp:6093
 msgid "Value size exceeds data size"
 msgstr "Tamaño de valor excede tamaño de datos"
 
-#: cobc/typeck.cpp:6097
+#: cobc/typeck.cpp:6098
 msgid "Sending field larger than receiving field"
 msgstr "Campo a enviar más grande que el campo a recibir"
 
-#: cobc/typeck.cpp:6102
+#: cobc/typeck.cpp:6103
 msgid "Some digits may be truncated"
 msgstr "Algunos digitos pueden ser truncado"
 
-#: cobc/typeck.cpp:6800
+#: cobc/typeck.cpp:6801
 #, c-format
 msgid "Invalid MOVE target - %s"
 msgstr "Destino inválido al MOVE - %s"
 
-#: cobc/typeck.cpp:6835
+#: cobc/typeck.cpp:6836
 msgid "OPEN I-O not allowed on LINE SEQUENTIAL files"
 msgstr "OPEN I-O no se permite en archivos de LINE SEQUENTIAL"
 
-#: cobc/typeck.cpp:6967
+#: cobc/typeck.cpp:6968
 #, fuzzy
 msgid "READ PREVIOUS not allowed for this file type"
 msgstr "RELEASE no permitido en este elemento de récord"
 
-#: cobc/typeck.cpp:6975
+#: cobc/typeck.cpp:6976
 msgid "KEY ignored with sequential READ"
 msgstr "KEY ignorado con READ sequencial"
 
-#: cobc/typeck.cpp:7055
+#: cobc/typeck.cpp:7056
 msgid "REWRITE requires a record name as subject"
 msgstr "REWRITE requiere un nombre de registro como sujeto"
 
-#: cobc/typeck.cpp:7060
+#: cobc/typeck.cpp:7061
 msgid "REWRITE subject does not refer to a record name"
 msgstr "Sujeto a REWRITE no hace referencia a un nombre de récord"
 
-#: cobc/typeck.cpp:7124
+#: cobc/typeck.cpp:7125
 msgid "RELEASE requires a record name as subject"
 msgstr "RELEASE require un nombre de un récord como sujeto"
 
-#: cobc/typeck.cpp:7130
+#: cobc/typeck.cpp:7131
 msgid "RELEASE subject does not refer to a record name"
 msgstr "Sujeto de RELEASE no hace referencia a nombre de un récord"
 
-#: cobc/typeck.cpp:7136
+#: cobc/typeck.cpp:7137
 msgid "RELEASE not allowed on this record item"
 msgstr "RELEASE no permitido en este elemento de récord"
 
-#: cobc/typeck.cpp:7212 cobc/typeck.cpp:7233 cobc/typeck.cpp:7241
+#: cobc/typeck.cpp:7213 cobc/typeck.cpp:7234 cobc/typeck.cpp:7242
 msgid "Invalid SEARCH ALL condition"
 msgstr "Condición inválida de SEARCH ALL"
 
-#: cobc/typeck.cpp:7361
+#: cobc/typeck.cpp:7362
 msgid "The targets of SET must be either indexes or pointers"
 msgstr "Los destinos del SET deben ser índices o indicadores"
 
-#: cobc/typeck.cpp:7373 cobc/typeck.cpp:7377
+#: cobc/typeck.cpp:7374 cobc/typeck.cpp:7378
 msgid "SET targets must be PROGRAM-POINTER"
 msgstr "Destinos de SET deben ser PROGRAM-POINTER"
 
-#: cobc/typeck.cpp:7393
+#: cobc/typeck.cpp:7394
 #, c-format
 msgid "The address of '%s' cannot be changed"
 msgstr "La dirección de '%s' no puede ser cambiada"
 
-#: cobc/typeck.cpp:7413
+#: cobc/typeck.cpp:7414
 #, c-format
 msgid "SET target is invalid - '%s'"
 msgstr "SET objetivo no es válido - '%s'"
 
-#: cobc/typeck.cpp:7460 cobc/typeck.cpp:7465 cobc/typeck.cpp:7487
-#: cobc/typeck.cpp:7492
+#: cobc/typeck.cpp:7461 cobc/typeck.cpp:7466 cobc/typeck.cpp:7488
+#: cobc/typeck.cpp:7493
 msgid "Invalid SET statement"
 msgstr "Declaración inválida de SET"
 
-#: cobc/typeck.cpp:7496
+#: cobc/typeck.cpp:7497
 msgid "Field does not have FALSE clause"
 msgstr "Campo no tiene cláusula FALSE"
 
-#: cobc/typeck.cpp:7516
+#: cobc/typeck.cpp:7517
 msgid "SET ATTRIBUTE requires a screen item as subject"
 msgstr "SET ATTRIBUTE requiere un nombre de registro como sujeto"
 
-#: cobc/typeck.cpp:7522
+#: cobc/typeck.cpp:7523
 msgid "SET ATTRIBUTE subject does not refer to a screen item"
 msgstr "SET ATTRIBUTE sujeto no hace referencia a un punto en la pantalla"
 
-#: cobc/typeck.cpp:7548
+#: cobc/typeck.cpp:7549
 msgid "Invalid SORT filename"
 msgstr "Nombre de archivo para SORT inválido"
 
-#: cobc/typeck.cpp:7591
+#: cobc/typeck.cpp:7592
 msgid "Invalid SORT USING parameter"
 msgstr "Parámetro inválido en SORT USING"
 
-#: cobc/typeck.cpp:7617
+#: cobc/typeck.cpp:7618
 msgid "Invalid SORT GIVING parameter"
 msgstr "Parámetro inválido en SORT GIVING"
 
-#: cobc/typeck.cpp:7658 cobc/typeck.cpp:7672 cobc/typeck.cpp:7692
+#: cobc/typeck.cpp:7659 cobc/typeck.cpp:7673 cobc/typeck.cpp:7693
 msgid "Invalid key item"
 msgstr "Elemento clave inválido"
 
-#: cobc/typeck.cpp:7717
+#: cobc/typeck.cpp:7718
 msgid "START not allowed on SEQUENTIAL files"
 msgstr "START no permitido en archivos SEQUENTIAL"
 
-#: cobc/typeck.cpp:7722
+#: cobc/typeck.cpp:7723
 msgid "LENGTH/SIZE clause only allowed on INDEXED files"
 msgstr "Clásula LENGTH/SIZE solamente permitida en archivos INDEXED"
 
-#: cobc/typeck.cpp:7727
+#: cobc/typeck.cpp:7728
 #, fuzzy
 msgid "START not allowed with ACCESS MODE RANDOM"
 msgstr "GLOBAL no se permite con RD"
 
-#: cobc/typeck.cpp:7885
+#: cobc/typeck.cpp:7886
 msgid "WRITE requires a record name as subject"
 msgstr "WRITE requiere un nombre de récord como sujeto"
 
-#: cobc/typeck.cpp:7890
+#: cobc/typeck.cpp:7891
 msgid "WRITE subject does not refer to a record name"
 msgstr "Sujeto a WRITE no hace referencia a un nombre de récord"
 
-#: cobc/typeck.cpp:7915
+#: cobc/typeck.cpp:7916
 msgid "LOCK clause invalid here"
 msgstr "Cláusula LOCK inválida aquí"
 
@@ -3248,40 +3248,40 @@ msgstr "‘cobcommandline’ - Ejecución no se ha inicializado"
 msgid "Parameter to SYSTEM call is larger than 8192 characters"
 msgstr "Parámetro para llamada de SYSTEM es mayor de 8192 caractéres"
 
-#: libcob/fileio.cpp:2033
+#: libcob/fileio.cpp:2050
 #, c-format
 msgid "BDB error: %s"
 msgstr "Error BDB: %s"
 
-#: libcob/fileio.cpp:2042
+#: libcob/fileio.cpp:2059
 #, c-format
 msgid "BDB error: %s %s"
 msgstr "Error BDB: %s %s"
 
-#: libcob/fileio.cpp:2055
+#: libcob/fileio.cpp:2072
 #, c-format
 msgid "Cannot join BDB environment, error: %d %s"
 msgstr "No se puede unir a ambiente BDB, error: %d %s"
 
-#: libcob/fileio.cpp:2075
+#: libcob/fileio.cpp:2092
 #, c-format
 msgid "Cannot join BDB environment, env_open: %d %s"
 msgstr "No se puede unir a ambiente BDB, env_open: %d %s"
 
-#: libcob/fileio.cpp:4978
+#: libcob/fileio.cpp:5002
 msgid "'CBL_CHECK_FILE_EXIST' - File detail area is too short"
 msgstr ""
 "'CBL_CHECK_FILE_EXIST' - Área de detalle de archivo es demasiada pequeña"
 
-#: libcob/fileio.cpp:5201
+#: libcob/fileio.cpp:5225
 msgid "'C$FILEINFO' - File detail area is too short"
 msgstr "'C$FILEINFO' - Área de detalle de archivo es demasiada pequeña"
 
-#: libcob/fileio.cpp:5427
+#: libcob/fileio.cpp:5451
 msgid "SORT is unable to acquire temporary file"
 msgstr "SORT no puede obtener archivo temporal"
 
-#: libcob/fileio.cpp:5936
+#: libcob/fileio.cpp:5960
 #, c-format
 msgid "WARNING - Implicit CLOSE of %s ('%s')"
 msgstr "WARNING - CLOSE implícito de %s ('%s')"
@@ -3294,55 +3294,55 @@ msgstr "Fracaso en inicializar cursores"
 msgid "(Not representable)"
 msgstr "(No representable)"
 
-#: bin/cobcrun.cpp:73
+#: bin/cobcrun.cpp:74
 msgid "Usage: cobcrun PROGRAM [param ...]"
 msgstr "Uso:     cobcrun PROGRAM [param …]"
 
-#: bin/cobcrun.cpp:74
+#: bin/cobcrun.cpp:75
 msgid "or   : cobcrun --help (-h)"
 msgstr "or   : cobcrun --help (-h)"
 
-#: bin/cobcrun.cpp:75
+#: bin/cobcrun.cpp:76
 msgid "       Print this help"
 msgstr "      Imprimir esta ayuda"
 
-#: bin/cobcrun.cpp:76
+#: bin/cobcrun.cpp:77
 msgid "or   : cobcrun --version (-V)"
 msgstr "o    : cobcrun --version (-V)"
 
-#: bin/cobcrun.cpp:77
+#: bin/cobcrun.cpp:78
 msgid "       Print version information"
 msgstr "       Imprimir la información de versión "
 
-#: bin/cobcrun.cpp:78
+#: bin/cobcrun.cpp:79
 msgid "or   : cobcrun --info (-i)"
 msgstr "o    : cobcrun --info (-i)"
 
-#: bin/cobcrun.cpp:79
+#: bin/cobcrun.cpp:80
 msgid "       Print build information"
 msgstr "        Imprimir la información de la generación"
 
-#: bin/cobcrun.cpp:92
+#: bin/cobcrun.cpp:93
 msgid "Memory allocation failure"
 msgstr "Fracaso en asignación de memoria"
 
-#: bin/cobcrun.cpp:169
+#: bin/cobcrun.cpp:170
 msgid "C-ISAM (Experimental)"
 msgstr "C-ISAM (Experimental)"
 
-#: bin/cobcrun.cpp:172
+#: bin/cobcrun.cpp:173
 msgid "D-ISAM (Experimental)"
 msgstr "D-ISAM (Experimental)"
 
-#: bin/cobcrun.cpp:175
+#: bin/cobcrun.cpp:176
 msgid "VBISAM (Experimental)"
 msgstr "VBISAM (Experimental)"
 
-#: bin/cobcrun.cpp:204
+#: bin/cobcrun.cpp:205
 msgid "Invalid option"
 msgstr "Opción inválida"
 
-#: bin/cobcrun.cpp:209
+#: bin/cobcrun.cpp:210
 msgid "PROGRAM name exceeds 31 characters"
 msgstr "Nombre de PROGRAM excede 31 caractéres"
 

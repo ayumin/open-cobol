@@ -1,7 +1,7 @@
 \input texinfo
 @setfilename gnucobol.info
 @setcontentsaftertitlepage
-@settitle GNU Cobol Manual
+@settitle GNU Cobol C++ Manual
 @setchapternewpage on
 @footnotestyle end
 
@@ -12,13 +12,14 @@
 @ifinfo
 @dircategory COBOL
 @direntry
-* GNU Cobol: (gnucobol).      A COBOL compiler
+* GNU Cobol C++: (gnucobolcpp).      A COBOL compiler
 @end direntry
 
-This file documents GNU Cobol, a COBOL compiler
+This file documents GNU Cobol C++, a COBOL compiler
 
 Copyright @copyright{} 2002,2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright @copyright{} 2007-2012 Roger While
+Copyright @copyright{} 2013 Sergey Kashyrin
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -43,23 +44,23 @@ approved by the Free Software Foundation.
 @end ifinfo
 
 @titlepage
-@title GNU Cobol Manual
-@subtitle for GNU Cobol @value{VERSION}
-@author Keisuke Nishida / Roger While
+@title GNU Cobol C++ Manual
+@subtitle for GNU Cobol C++ @value{VERSION}
+@author Keisuke Nishida / Roger While / Sergey Kashyrin
 
 Edition @value{EDITION} @*
-Updated for GNU Cobol @value{VERSION} @*
+Updated for GNU Cobol C++ @value{VERSION} @*
 @value{UPDATED} @*
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC or other C compiler
-system.
+GNU Cobol C++ is a free and open-source COBOL compiler, which translates
+COBOL programs to C++ code and compiles it using a native C++ compiler.
 
-This manual corresponds to GNU Cobol @value{VERSION}.
+This manual corresponds to GNU Cobol C++ @value{VERSION}.
 
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2002,2003,2004,2005,2006 Keisuke Nishida@*
 Copyright @copyright{} 2007-2012 Roger While
+Copyright @copyright{} 2013 Sergey Kashyrin
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -103,7 +104,7 @@ Compile
 
 * Compiler Options::            Compiler options
 * Multiple Sources::            Compiling multiple source files
-* C Interface::                 Dealing with C files
+* C++ Interface::               Dealing with C++ files
 
 Compiler Options
 
@@ -124,11 +125,11 @@ Multiple Sources
 
 C Interface
 
-* Main C Program::              Writing Main Program in C
-* Static C to COBOL::           
-* Dynamic C to COBOL::          
-* Static COBOL to C::           
-* Dynamic COBOL to C::          
+* Main C++ Program::              Writing Main Program in C++
+* Static C++ to COBOL::           
+* Dynamic C++ to COBOL::          
+* Static COBOL to C++::           
+* Dynamic COBOL to C++::          
 
 Customize
 
@@ -238,7 +239,7 @@ This chapter describes how to compile COBOL programs using GNU Cobol.
 @menu
 * Compiler Options::            Compiler options
 * Multiple Sources::            Compiling multiple source files
-* C Interface::                 Dealing with C files
+* C++ Interface::               Dealing with C++ files
 @end menu
 
 @node Compiler Options, Multiple Sources, Compile, Compile
@@ -307,7 +308,7 @@ No further actions will be taken except for further display options.
 @subsection Built Target
 
 The @code{cobc} compiler can handle @file{*.cob}, @file{*.cbl} as
-COBOL source code, @file{*.c} for C source code, @file{*.o} for
+COBOL source code, @file{*.cpp} for C++ source code, @file{*.o} for
 object code, @file{*.i} for preprocessed code and @file{*.so}
 for dynamic modules and will do the right thing in terms of
 generation, compilation, or link.
@@ -322,11 +323,11 @@ removed.  COPY statements are expanded.
 The output is saved in file @file{*.i}.
 
 @item -C
-Translation only.  COBOL source files are translated into C files.
-The output is saved in file @file{*.c}.
+Translation only.  COBOL source files are translated into C++ files.
+The output is saved in file @file{*.cpp}.
 
 @item -S
-Compile only.  Translated C files are compiled by the C compiler
+Compile only.  Translated C++ files are compiled by the C++ compiler
 to assembler code.
 The output is saved in file @file{*.s}.
 
@@ -351,7 +352,7 @@ image.  The main entry point being the outermost @code{PROGRAM-ID}.
 
 This option takes effect at the translation stage.
 If you give this option with @code{-C}, you will see the main
-function at the end of the generated C file.
+function at the end of the generated C++ file.
 
 @item -I <directory>
 Add <directory> to copy/include search path
@@ -563,7 +564,7 @@ Save intermediate files (default current directory)
 
 @end table
 
-@node Multiple Sources, C Interface, Compiler Options, Compile
+@node Multiple Sources, C++ Interface, Compiler Options, Compile
 @section Multiple Sources
 
 A program often consists of multiple source files.  This section
@@ -603,7 +604,7 @@ $ cobc -c -x main.cob
 $ cobc -x -o prog main.o subr1.o subr2.o
 @end example
 
-You can link C routines as well using either method:
+You can link C++ routines as well using either method:
 
 Method 1:
 @example
@@ -612,12 +613,12 @@ $ cobc -o prog main.cob subrs.c
 
 Method 2:
 @example
-$ cobc -c subrs.c
+$ cobc -c subrs.cpp
 $ cobc -c -x main.cob
 $ cobc -x -o prog main.o subrs.o
 @end example
 
-Any number of functions can be contained in a single C file.
+Any number of functions can be contained in a single C++ file.
 
 The linked programs will be called dynamically; that is, the symbol
 will be resolved at run time.  For example, the following COBOL
@@ -627,7 +628,7 @@ statement
 CALL "subr" USING X.
 @end example
 
-will be converted into an equivalent C code like this:
+will be converted into an equivalent C++ code like this:
 
 @example
 int (*func)() = cob_resolve("subr");
@@ -708,13 +709,13 @@ $ ./main
 @subsection Building Library
 
 You can build a shared library by combining multiple COBOL programs
-and even C routines:
+and even C++ routines:
 
 @example
 $ cobc -c subr1.cob
 $ cobc -c subr2.cob
-$ cc -c subr3.c
-$ cc -shared -o libsubrs.so subr1.o subr2.o subr3.o
+$ c++ -c subr3.cpp
+$ c++ -shared -o libsubrs.so subr1.o subr2.o subr3.o
 @end example
 
 @node Using Library,  , Building Library, Multiple Sources
@@ -737,23 +738,23 @@ Then, compile the main program, linking the library as follows:
 $ cobc -x main.cob -L/your/cobol/lib -lsubrs
 @end example
 
-@node C Interface,  , Multiple Sources, Compile
-@section C Interface
+@node C++ Interface,  , Multiple Sources, Compile
+@section C++ Interface
 
-This chapter describes how to combine C programs with COBOL programs.
+This chapter describes how to combine C++ programs with COBOL programs.
 
 @menu
-* Main C Program::              Writing Main Program in C
-* Static C to COBOL::           
-* Dynamic C to COBOL::          
-* Static COBOL to C::           
-* Dynamic COBOL to C::          
+* Main C++ Program::              Writing Main Program in C++
+* Static C++ to COBOL::           
+* Dynamic C++ to COBOL::          
+* Static COBOL to C++::           
+* Dynamic COBOL to C++::          
 @end menu
 
-@node Main C Program, Static C to COBOL, C Interface, C Interface
-@subsection Writing Main Program in C
+@node Main C++ Program, Static C++ to COBOL, C++ Interface, C++ Interface
+@subsection Writing Main Program in C++
 
-Include @file{libcob.h} in your C program.
+Include @file{libcob.h} in your C++ program.
 Call @code{cob_init} before using any COBOL module:
 
 @example
@@ -780,10 +781,10 @@ main (int argc, char **argv)
 You can write @code{cobc_init(0, NULL);} if you do not want to pass
 command line arguments to COBOL.
 
-You can compile your C program as follows:
+You can compile your C++ program as follows:
 
 @example
-cc -c `cob-config --cflags` main.c
+c++ -c `cob-config --cflags` main.cpp
 @end example
 
 The compiled object must be linked with libcob as follows:
@@ -792,10 +793,10 @@ The compiled object must be linked with libcob as follows:
 cc -o main main.o `cob-config --libs`
 @end example
 
-@node Static C to COBOL, Dynamic C to COBOL, Main C Program, C Interface
+@node Static C++ to COBOL, Dynamic C++ to COBOL, Main C++ Program, C++ Interface
 @subsection Static linking with COBOL programs
 
-Let's call the following COBOL module from a C program:
+Let's call the following COBOL module from a C++ program:
 
 @example
 ---- say.cob ---------------------------
@@ -814,7 +815,7 @@ Let's call the following COBOL module from a C program:
 
 This program accepts two arguments, displays them, and exits.
 
-From the viewpoint of C, this is equivalent to a function having the
+From the viewpoint of C++, this is equivalent to a function having the
 following prototype:
 
 @example
@@ -824,7 +825,7 @@ extern int say(char *hello, char *world);
 So, your main program will look like as follows:
 
 @example
----- hello.c ---------------------------
+---- hello.cpp -------------------------
 #include <libcob.h>
 
 extern int say(char *hello, char *world);
@@ -832,15 +833,12 @@ extern int say(char *hello, char *world);
 int
 main()
 @{
-  int ret;
   char hello[7] = "Hello ";
   char world[7] = "World!";
 
   cob_init(0, NULL);
 
-  ret = say(hello, world);
-
-  return ret;
+  return say(hello, world);
 @}
 ----------------------------------------
 @end example
@@ -848,17 +846,17 @@ main()
 Compile these programs as follows:
 
 @example
-$ cc -c `cob-config --cflags` hello.c
+$ c++ -c `cob-config --cflags` hello.cpp
 $ cobc -c -static say.cob
 $ cobc -x -o hello hello.o say.o
 $ ./hello
 Hello World!
 @end example
 
-@node Dynamic C to COBOL, Static COBOL to C, Static C to COBOL, C Interface
+@node Dynamic C++ to COBOL, Static COBOL to C++, Static C++ to COBOL, C++ Interface
 @subsection Dynamic linking with COBOL programs
 
-You can find a COBOL module having a specific PROGRAM-ID by using a C
+You can find a COBOL module having a specific PROGRAM-ID by using a C++
 function @code{cob_resolve}, which takes the module name as a string
 and returns a pointer to the module function.
 
@@ -868,7 +866,7 @@ the function @code{cob_resolve_error} returns the error message.
 Let's see an example:
 
 @example
----- hello-dynamic.c -------------------
+---- hello-dynamic.cpp -----------------
 #include <libcob.h>
 
 static int (*say)(char *hello, char *world);
@@ -876,7 +874,6 @@ static int (*say)(char *hello, char *world);
 int
 main()
 @{
-  int ret;
   char hello[7] = "Hello ";
   char world[7] = "World!";
 
@@ -892,9 +889,7 @@ main()
   @}
 
   /* call the module found and exit with the return code */
-  ret = say(hello, world);
-
-  return ret;
+  return say(hello, world);
 @}
 ----------------------------------------
 @end example
@@ -902,7 +897,7 @@ main()
 Compile these programs as follows:
 
 @example
-$ cc -c `cob-config --cflags` hello-dynamic.c 
+$ c++ -c `cob-config --cflags` hello-dynamic.cpp
 $ cobc -x -o hello hello-dynamic.o
 $ cobc -m say.cob
 $ export COB_LIBRARY_PATH=.
@@ -910,20 +905,19 @@ $ ./hello
 Hello World!
 @end example
 
-@node Static COBOL to C, Dynamic COBOL to C, Dynamic C to COBOL, C Interface
-@subsection Static linking with C programs
+@node Static COBOL to C++, Dynamic COBOL to C++, Dynamic C++ to COBOL, C++ Interface
+@subsection Static linking with C++ programs
 
-Let's call the following C function from COBOL:
+Let's call the following C++ function from COBOL:
 
 @example
----- say.c -----------------------------
+---- say.cpp ---------------------------
 int
-say(char *hello, char *world)
+say (char *hello, char *world)
 @{
-  int i;
-  for (i = 0; i < 6; i++)
+  for (int i = 0; i < 6; i++)
     putchar(hello[i]);
-  for (i = 0; i < 6; i++)
+  for (int i = 0; i < 6; i++)
     putchar(world[i]);
   putchar('\n');
   return 0;
@@ -933,7 +927,7 @@ say(char *hello, char *world)
 
 This program is equivalent to the foregoing @file{say.cob}.
 
-Note that, unlike C, the arguments passed from COBOL programs are not
+Note that, unlike C++, the arguments passed from COBOL programs are not
 terminated by the null character (i.e., @code{\0}).
 
 You can call this function in the same way you call COBOL programs:
@@ -956,21 +950,21 @@ You can call this function in the same way you call COBOL programs:
 Compile these programs as follows:
 
 @example
-$ cc -c say.c
+$ c++ -c say.cpp
 $ cobc -c -static -x hello.cob
 $ cobc -x -o hello hello.o say.o
 $ ./hello
 Hello World!
 @end example
 
-@node Dynamic COBOL to C,  , Static COBOL to C, C Interface
-@subsection Dynamic linking with C programs
+@node Dynamic COBOL to C++,  , Static COBOL to C++, C++ Interface
+@subsection Dynamic linking with C++ programs
 
-You can create a dynamic-linking module from a C program by passing an
-option @code{-shared} to the C compiler:
+You can create a dynamic-linking module from a C++ program by passing an
+option @code{-shared} to the C++ compiler:
 
 @example
-$ cc -shared -o say.so say.c
+$ c++ -shared -o say.so say.cpp
 $ cobc -x hello.cob
 $ export COB_LIBRARY_PATH=.
 $ ./hello
@@ -994,11 +988,11 @@ Environment variables (default value):
 
 @table @code
 @item COB_CC
-C compiler ("gcc")
+C++ compiler ("g++")
 @item COB_CFLAGS
-Flags passed to the C compiler ("-I$(PREFIX)/include")
+Flags passed to the C++ compiler ("-I$(PREFIX)/include")
 @item COB_LDFLAGS
-Flags passed to the C compiler ("")
+Flags passed to the C++ compiler ("")
 @item COB_LIBS
 Standard libraries linked with the program ("-L$(PREFIX)/lib -lcob")
 @item COB_LDADD
@@ -1031,13 +1025,13 @@ Dynamic-linking module path (".:$(PREFIX)/lib/gnu-cobol")
 
 There are three compiler options for optimization: @code{-O}, @code{-Os}
 and @code{-O2}.  These options enable optimization at both translation
-(from COBOL to C) and compilation (C to assembly) levels.
+(from COBOL to C++) and compilation (C++ to assembly) levels.
 
 Currently, there is no difference between these optimization options at
 the translation level.
 
 The option @code{-O}, @code{-Os} or @code{-O2} is passed to the
-C compiler as it is and used for C level optimization.
+C++ compiler as it is and used for C++ level optimization.
 
 @node Optimize Call, Optimize Binary, Optimize Options, Optimize
 @section Optimize Call

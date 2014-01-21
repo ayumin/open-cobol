@@ -3441,9 +3441,9 @@ cob_intr_random(const int params, ...)
 {
 	va_list		args;
 
-	va_start(args, params);
+	va_start (args, params);
 
-	if(params) {
+	if (params) {
 		cob_field * f = va_arg(args, cob_field *);
 		int seed = cob_get_int(f);
 		if(seed < 0) {
@@ -3462,22 +3462,10 @@ cob_intr_random(const int params, ...)
 #else
 	int randnum = rand();
 #endif
-	int rexp10 = 1;
-	int i;
-	for(i = 0; i < 10; ++i) {
-		if((randnum / rexp10) == 0) {
-			break;
-		}
-		rexp10 *= 10;
-	}
-	if(i == 0) {
-		i = 1;
-	}
-	cob_field_attr attr(COB_TYPE_NUMERIC_BINARY, 20, 9, COB_FLAG_HAVE_SIGN, NULL);
-	attr.scale = i;
-	cob_field field(8, NULL, &attr);
+	cob_field_attr attr(COB_TYPE_NUMERIC_DOUBLE, 20, 9, COB_FLAG_HAVE_SIGN, NULL);
+	cob_field field(sizeof(double), NULL, &attr);
 	make_field_entry(&field);
-	cob_s64_t val = (cob_s64_t)randnum;
+	double val = (double)randnum / (double)RAND_MAX;
 	memcpy(curr_field->data, &val, sizeof(val));
 	return curr_field;
 }
