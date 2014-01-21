@@ -1,4 +1,4 @@
-This is gnucobol.info, produced by makeinfo version 5.1 from
+This is gnucobol.info, produced by makeinfo version 4.8 from
 gnucobol.texi.
 
 INFO-DIR-SECTION COBOL
@@ -6,10 +6,10 @@ START-INFO-DIR-ENTRY
 * GNU Cobol: (gnucobol).      A COBOL compiler
 END-INFO-DIR-ENTRY
 
-This file documents GNU Cobol, a COBOL compiler
+   This file documents GNU Cobol, a COBOL compiler
 
-   Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida Copyright
-(C) 2007-2012 Roger While
+   Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
+Copyright (C) 2007-2012 Roger While
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -35,15 +35,15 @@ File: gnucobol.info,  Node: Top,  Next: Getting Started,  Up: (dir)
 * Customize::                   Customizing the compiler
 * Optimize::                    Optimizing your program
 * Debug::                       Debugging your program
-* Appendix A::                  'cobc --help'
-* Appendix B::                  'cobc --info'
-* Appendix C::                  'cobc --list-reserved'
-* Appendix D::                  'cobc --list-intrinsics'
-* Appendix E::                  'cobc --list-system'
-* Appendix F::                  'cobc --list-mnemonics'
+* Appendix A::                  `cobc --help'
+* Appendix B::                  `cobc --info'
+* Appendix C::                  `cobc --list-reserved'
+* Appendix D::                  `cobc --list-intrinsics'
+* Appendix E::                  `cobc --list-system'
+* Appendix F::                  `cobc --list-mnemonics'
 * Appendix G::                  config/default.conf
 
- -- The Detailed Node Listing --
+ --- The Detailed Node Listing ---
 
 Getting Started
 
@@ -75,10 +75,10 @@ Multiple Sources
 C Interface
 
 * Main C Program::              Writing Main Program in C
-* Static C to COBOL::           
-* Dynamic C to COBOL::          
-* Static COBOL to C::           
-* Dynamic COBOL to C::          
+* Static C to COBOL::
+* Dynamic C to COBOL::
+* Static COBOL to C::
+* Dynamic COBOL to C::
 
 Customize
 
@@ -109,7 +109,6 @@ Appendix F
 
 Appendix G
 
-
 
 File: gnucobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: Top
 
@@ -137,17 +136,17 @@ This is a sample program that displays "Hello World":
             STOP RUN.
      ----------------------------------------
 
-   The compiler is 'cobc', which is executed as follows:
+   The compiler is `cobc', which is executed as follows:
 
      $ cobc -x hello.cob
      $ ./hello
      Hello World!
 
-   The executable file name (i.e., 'hello' in this case) is determined
+   The executable file name (i.e., `hello' in this case) is determined
 by removing the extension from the source file name.
 
    You can specify the executable file name by specifying the compiler
-option '-o' as follows:
+option `-o' as follows:
 
      $ cobc -x -o hello-world hello.cob
      $ ./hello-world
@@ -170,8 +169,8 @@ option '-o' as follows:
      $ ./hellonew
      Hello New World!
 
-   Showing the use of free format, to end of line comments, the 'goback'
-verb, and proper use of terminator with 'end-display'.
+   Showing the use of free format, to end of line comments, the
+`goback' verb, and proper use of terminator with `end-display'.
 
 
 File: gnucobol.info,  Node: Compile,  Next: Customize,  Prev: Getting Started,  Up: Top
@@ -193,9 +192,9 @@ File: gnucobol.info,  Node: Compiler Options,  Next: Multiple Sources,  Prev: Co
 2.1 Compiler Options
 ====================
 
-The compiler 'cobc' accepts the options described in this section.
+The compiler `cobc' accepts the options described in this section.
 General syntax -
-'cobc' [options] file [file ..]
+`cobc' [options] file [file ..]
 A complete list of options can be displayed by using the help option.
 
 * Menu:
@@ -216,41 +215,43 @@ File: gnucobol.info,  Node: Help Options,  Next: Built Target,  Prev: Compiler O
 
 The following switches can be used for informational displays:
 
-'--help'
-     Display help screen (*note cobc -help: Appendix A.).  '-h' will
-     also display the help.  No further actions will be taken except for
-     further display options.
+`--help'
+     Display help screen (*note cobc -help: Appendix A.).  `-h' will
+     also display the help.  No further actions will be taken except
+     for further display options.
 
-'--version'
+`--version'
      Display compiler version, author package date and executable build
-     date.  '-V' will also display version.  No further actions will be
+     date.  `-V' will also display version.  No further actions will be
      taken except for further display options.
 
-'--info'
+`--info'
      Display build information (*note cobc -info: Appendix B.).  No
      further actions will be taken except for further display options.
 
-'-v'
+`-v'
      Verbosely displays the programs invoked during compilations.
 
-'--list-reserved'
+`--list-reserved'
      Display reserved words(*note cobc -list-reserved: Appendix C.).  A
      Y/N field shows if the word is supported.  (1) No further actions
      will be taken except for further display options.
 
-'--list-intrinsics'
+`--list-intrinsics'
      Display intrinsic functions (*note cobc -list-intrinsics: Appendix
-     D.).  A Y/N field shows if the function is implemented.  No further
-     actions will be taken except for further display options.
-
-'--list-system'
-     Display system routines (*note cobc -list-system: Appendix E.).  No
+     D.).  A Y/N field shows if the function is implemented.  No
      further actions will be taken except for further display options.
 
-'--list-mnemonics'
+`--list-system'
+     Display system routines (*note cobc -list-system: Appendix E.).
+     No further actions will be taken except for further display
+     options.
+
+`--list-mnemonics'
      Display mnemonic names (*note cobc -list-mnemonics: Appendix F.).
      No further actions will be taken except for further display
      options.
+
 
    ---------- Footnotes ----------
 
@@ -262,66 +263,67 @@ File: gnucobol.info,  Node: Built Target,  Next: Source Format,  Prev: Help Opti
 2.1.2 Built Target
 ------------------
 
-The 'cobc' compiler can handle '*.cob', '*.cbl' as COBOL source code,
-'*.c' for C source code, '*.o' for object code, '*.i' for preprocessed
-code and '*.so' for dynamic modules and will do the right thing in terms
-of generation, compilation, or link.
+The `cobc' compiler can handle `*.cob', `*.cbl' as COBOL source code,
+`*.c' for C source code, `*.o' for object code, `*.i' for preprocessed
+code and `*.so' for dynamic modules and will do the right thing in
+terms of generation, compilation, or link.
 
    The following options specify the target type produced by the
 compiler:
 
-'-E'
+`-E'
      Preprocess only.  Compiler directives are executed.  Comment lines
-     are removed.  COPY statements are expanded.  The output is saved in
-     file '*.i'.
+     are removed.  COPY statements are expanded.  The output is saved
+     in file `*.i'.
 
-'-C'
+`-C'
      Translation only.  COBOL source files are translated into C files.
-     The output is saved in file '*.c'.
+     The output is saved in file `*.c'.
 
-'-S'
-     Compile only.  Translated C files are compiled by the C compiler to
-     assembler code.  The output is saved in file '*.s'.
+`-S'
+     Compile only.  Translated C files are compiled by the C compiler
+     to assembler code.  The output is saved in file `*.s'.
 
-'-c'
-     Compile and assemble.  This is equivalent to 'cc -c'.  The output
-     is saved in file '*.o'.
+`-c'
+     Compile and assemble.  This is equivalent to `cc -c'.  The output
+     is saved in file `*.o'.
 
-'-m'
-     Compile, assemble, and build a dynamically loadable module (i.e., a
-     shared library).  The output is saved in file '*.so'.  This is the
-     default behaviour if not other options are given.  (1).
+`-m'
+     Compile, assemble, and build a dynamically loadable module (i.e.,
+     a shared library).  The output is saved in file `*.so'.  This is
+     the default behaviour if not other options are given.  (1).
 
-'-b'
+`-b'
      Compile, assemble, and combine all input files into a single
-     dynamically loadable module.  Unless '-o' is also used, the output
-     is saved using the first filename as '*.so'.
+     dynamically loadable module.  Unless `-o' is also used, the output
+     is saved using the first filename as `*.so'.
 
-'-x'
+`-x'
      Include the main function in the output, creating an executable
-     image.  The main entry point being the outermost 'PROGRAM-ID'.
+     image.  The main entry point being the outermost `PROGRAM-ID'.
 
      This option takes effect at the translation stage.  If you give
-     this option with '-C', you will see the main function at the end of
-     the generated C file.
+     this option with `-C', you will see the main function at the end
+     of the generated C file.
 
-'-I <directory>'
+`-I <directory>'
      Add <directory> to copy/include search path
 
-'-L <directory>'
+`-L <directory>'
      Add <directory> to library search path
 
-'-l <lib>'
+`-l <lib>'
      Link the library <lib>
 
-'-D <define>'
+`-D <define>'
      Pass <define> to the COBOL compiler
 
-'-o <file>'
+`-o <file>'
      Place the output into <file>
 
-   Without any options above, the compiler builds a dynamically loadable
-module.
+
+   Without any options above, the compiler builds a dynamically
+loadable module.
 
    ---------- Footnotes ----------
 
@@ -338,18 +340,18 @@ GNU Cobol supports both fixed and free source format.
    The default format is the fixed format.  This can be explicitly
 overwritten by one of the following options:
 
-'-free'
+`-free'
      Free format.  The program-text area starts in column 1 and
-     continues till the end of line.  Effectively 255 characters in
-     GNU Cobol.
+     continues till the end of line.  Effectively 255 characters in GNU
+     Cobol.
 
-'-fixed'
+`-fixed'
      Fixed format.  Source code is divided into a 1-6 column sequence
      number area, column 7 indicator area, columns 8-72 program-text
      area, with columns 72-80 as a reference area.  Historically this
      format is based on 80 character punch cards.  FIXED format is the
      default used by the compiler unless overridden by compiler switch
-     or source code directive, '>>SOURCE [FORMAT] [IS] {FIXED|FREE}'.
+     or source code directive, `>>SOURCE [FORMAT] [IS] {FIXED|FREE}'.
 
 
 File: gnucobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev: Source Format,  Up: Compiler Options
@@ -357,50 +359,50 @@ File: gnucobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev
 2.1.4 Warning Options
 ---------------------
 
-'-W'
-     Enable every possible warning.  This includes more information than
-     -Wall would normally provide.
+`-W'
+     Enable every possible warning.  This includes more information
+     than -Wall would normally provide.
 
-'-Wall'
+`-Wall'
      Enable all common warnings
 
-'-Warchaic'
+`-Warchaic'
      Warn if archaic features are used
 
-'-Wcall-params'
+`-Wcall-params'
      Warn non 01/77 items for CALL params (NOT set with -Wall)
 
-'-Wcolumn-overflow'
+`-Wcolumn-overflow'
      Warn if text after column 72 in FIXED format (NOT set with -Wall)
 
-'-Wconstant'
+`-Wconstant'
      Warn inconsistent constant
 
-'-Wimplicit-define'
+`-Wimplicit-define'
      Warn implicitly defined data items
 
-'-Wlinkage'
+`-Wlinkage'
      Warn dangling LINKAGE items (NOT set with -Wall)
 
-'-Wobsolete'
+`-Wobsolete'
      Warn if obsolete features are used
 
-'-Wparentheses'
+`-Wparentheses'
      Warn lack of parentheses around AND within OR
 
-'-Wredefinition'
+`-Wredefinition'
      Warn incompatible redefinition of data items
 
-'-Wstrict-typing'
+`-Wstrict-typing'
      Warn type mismatch strictly
 
-'-Wterminator'
+`-Wterminator'
      Warn lack of scope terminator END-XXX (NOT set with -Wall)
 
-'-Wtruncate'
+`-Wtruncate'
      Warn possible field truncation (NOT set with -Wall)
 
-'-Wunreachable'
+`-Wunreachable'
      Warn unreachable statements (NOT set with -Wall)
 
 
@@ -409,35 +411,36 @@ File: gnucobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev:
 2.1.5 Configuration Options
 ---------------------------
 
-'-std=<dialect>'
+`-std=<dialect>'
      Compiler uses the given dialect to determine certain compiler
      features and warnings.
-     *Note config/default.conf: Appendix G, and 'config/*.conf'.
+     *Note config/default.conf: Appendix G, and `config/*.conf'.
 
-'-std=cobol2002'
+`-std=cobol2002'
      Cobol 2002
 
-'-std=cobol85'
+`-std=cobol85'
      Cobol 85
 
-'-std=ibm'
+`-std=ibm'
      IBM Compatible
 
-'-std=mvs'
+`-std=mvs'
      MVS Compatible
 
-'-std=bs2000'
+`-std=bs2000'
      BS2000 Compatible
 
-'-std=mf'
+`-std=mf'
      Micro Focus Compatible
 
-'-std=default'
+`-std=default'
      When not specified
 
-'-conf=<file>'
-     User defined dialect configuration.  See '-std=' above.
-     *Note config/default.conf: Appendix G, and 'config/*.conf'.
+`-conf=<file>'
+     User defined dialect configuration. See `-std=' above.
+     *Note config/default.conf: Appendix G, and `config/*.conf'.
+
 
 
 File: gnucobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configuration Options,  Up: Compiler Options
@@ -445,46 +448,47 @@ File: gnucobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configu
 2.1.6 Debug Switches
 --------------------
 
-'-debug'
+`-debug'
      Enable all run-time error checking
 
-'-g'
+`-g'
      Produce debugging information in the output
 
-'-O'
-     Enable optimization of code size and execution speed.  See 'man
+`-O'
+     Enable optimization of code size and execution speed.  See `man
      gcc' for details.
 
-'-O2'
+`-O2'
      Optimize even more.
 
-'-Os'
-     Optimize for size.  Optimizer will favour code size over execution
+`-Os'
+     Optimize for size. Optimizer will favour code size over execution
      speed.
 
-'-ftrace'
+`-ftrace'
      Generate trace code (Executed SECTION/PARAGRAPH)
 
-'-ftraceall'
+`-ftraceall'
      Generate trace code (Executed SECTION/PARAGRAPH/STATEMENTS)
 
-'-fsyntax-only'
+`-fsyntax-only'
      Syntax error checking only; don't emit any output
 
-'-fdebugging-line'
+`-fdebugging-line'
      Enable debugging lines ('D' in indicator column)
 
-'-fsource-location'
+`-fsource-location'
      Generate source location code (Turned on by -debug or -g)
 
-'-fimplicit-init'
+`-fimplicit-init'
      Do automatic initialization of the Cobol runtime system
 
-'-fstack-check'
+`-fstack-check'
      PERFORM stack checking (Turned on by -debug or -g)
 
-'-fnotrunc'
+`-fnotrunc'
      Do not truncate binary fields according to PICTURE
+
 
 
 File: gnucobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler Options
@@ -492,32 +496,33 @@ File: gnucobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler 
 2.1.7 Miscellaneous
 -------------------
 
-'-P'
-     Generate and place a program listing into '*.lst'
+`-P'
+     Generate and place a program listing into `*.lst'
 
-'-ext <extension>'
+`-ext <extension>'
      Add default file extension
 
-'-fmfcomment'
+`-fmfcomment'
      '*' or '/' in column 1 treated as comment (FIXED only)
 
-'-fsign=ASCII'
+`-fsign=ASCII'
      Numeric display sign ASCII (Default on ASCII machines)
 
-'-fsign=EBCDIC'
+`-fsign=EBCDIC'
      Numeric display sign EBCDIC (Default on EBCDIC machines)
 
-'-ffunctions-all'
+`-ffunctions-all'
      Allow use of intrinsic functions without FUNCTION keyword
 
-'-ffold-copy=LOWER'
+`-ffold-copy=LOWER'
      Fold COPY subject to lower case (Default no transformation)
 
-'-ffold-copy=UPPER'
+`-ffold-copy=UPPER'
      Fold COPY subject to upper case (Default no transformation)
 
-'-save-temps(=<dir>)'
+`-save-temps(=<dir>)'
      Save intermediate files (default current directory)
+
 
 
 File: gnucobol.info,  Node: Multiple Sources,  Next: C Interface,  Prev: Compiler Options,  Up: Compile
@@ -528,9 +533,9 @@ File: gnucobol.info,  Node: Multiple Sources,  Next: C Interface,  Prev: Compile
 A program often consists of multiple source files.  This section
 describes how to compile multiple source files.
 
-   This section also describes how to build a shared library that can be
-used by any COBOL programs and how to use external libraries from COBOL
-programs.
+   This section also describes how to build a shared library that can
+be used by any COBOL programs and how to use external libraries from
+COBOL programs.
 
 * Menu:
 
@@ -552,9 +557,9 @@ single executable.
 
      $ cobc -x -o prog main.cob subr1.cob subr2.cob
 
-   Another way is to compile each file with the option '-c', and link
-them at the end.  The top-level program must be compiled with the option
-'-x':
+   Another way is to compile each file with the option `-c', and link
+them at the end.  The top-level program must be compiled with the
+option `-x':
 
      $ cobc -c subr1.cob
      $ cobc -c subr2.cob
@@ -585,13 +590,13 @@ statement
      if (func != NULL)
        func (X);
 
-   With the compiler options '-fstatic-call', more efficient code will
+   With the compiler options `-fstatic-call', more efficient code will
 be generated like this:
 
      subr(X);
 
    Note that this option is effective only when the called program name
-is a literal (like 'CALL "subr".').  With a data name (like 'CALL
+is a literal (like `CALL "subr".').  With a data name (like `CALL
 SUBR.'), the program is still called dynamically.
 
 
@@ -601,14 +606,14 @@ File: gnucobol.info,  Node: Dynamic Linking,  Next: Building Library,  Prev: Sta
 ---------------------
 
 There are two methods to achieve this.  Method 1 (Using driver program).
-Compile all programs with the option '-m':
+Compile all programs with the option `-m':
      $ cobc -m main.cob subr.cob
-   This creates shared object files 'main.so subr.so' (1).
+   This creates shared object files `main.so subr.so' (1).
 
    Before running the main program, install the module files in your
 library directory:
      $ cp subr.so /your/cobol/lib
-   Set the environment variable 'COB_LIBRARY_PATH' to your library
+   Set the environment variable `COB_LIBRARY_PATH' to your library
 directory, and run the main program:
      $ export COB_LIBRARY_PATH=/your/cobol/lib
    Note: You may set the variable to directly point to the directory
@@ -623,15 +628,15 @@ separately.
    The main program is compiled as usual:
      $ cobc -x -o main main.cob
 
-   Subprograms are compiled with the option '-m':
+   Subprograms are compiled with the option `-m':
      $ cobc -m subr.cob
-   This creates a module file 'subr.so' (2).
+   This creates a module file `subr.so' (2).
 
    Before running the main program, install the module files in your
 library directory:
      $ cp subr.so /your/cobol/lib
 
-   Now, set the environment variable 'COB_LIBRARY_PATH' to your library
+   Now, set the environment variable `COB_LIBRARY_PATH' to your library
 directory, and run the main program:
      $ export COB_LIBRARY_PATH=/your/cobol/lib
      $ ./main
@@ -667,7 +672,7 @@ You can use a shared library by linking it with your main program.
    Before linking the library, install it in your system library
 directory:
      $ cp libsubrs.so /usr/lib
-   or install it somewhere else and set 'LD_LIBRARY_PATH':
+   or install it somewhere else and set `LD_LIBRARY_PATH':
      $ cp libsubrs.so /your/cobol/lib
      $ export LD_LIBRARY_PATH=/your/cobol/lib
 
@@ -685,10 +690,10 @@ This chapter describes how to combine C programs with COBOL programs.
 * Menu:
 
 * Main C Program::              Writing Main Program in C
-* Static C to COBOL::           
-* Dynamic C to COBOL::          
-* Static COBOL to C::           
-* Dynamic COBOL to C::          
+* Static C to COBOL::
+* Dynamic C to COBOL::
+* Static COBOL to C::
+* Dynamic COBOL to C::
 
 
 File: gnucobol.info,  Node: Main C Program,  Next: Static C to COBOL,  Prev: C Interface,  Up: C Interface
@@ -696,7 +701,7 @@ File: gnucobol.info,  Node: Main C Program,  Next: Static C to COBOL,  Prev: C I
 2.3.1 Writing Main Program in C
 -------------------------------
 
-Include 'libcob.h' in your C program.  Call 'cob_init' before using any
+Include `libcob.h' in your C program.  Call `cob_init' before using any
 COBOL module:
 
      #include <libcob.h>
@@ -718,7 +723,7 @@ COBOL module:
 
      }
 
-   You can write 'cobc_init(0, NULL);' if you do not want to pass
+   You can write `cobc_init(0, NULL);' if you do not want to pass
 command line arguments to COBOL.
 
    You can compile your C program as follows:
@@ -794,11 +799,11 @@ File: gnucobol.info,  Node: Dynamic C to COBOL,  Next: Static COBOL to C,  Prev:
 -----------------------------------------
 
 You can find a COBOL module having a specific PROGRAM-ID by using a C
-function 'cob_resolve', which takes the module name as a string and
+function `cob_resolve', which takes the module name as a string and
 returns a pointer to the module function.
 
-   'cob_resolve' returns NULL if there is no module.  In this case, the
-function 'cob_resolve_error' returns the error message.
+   `cob_resolve' returns NULL if there is no module.  In this case, the
+function `cob_resolve_error' returns the error message.
 
    Let's see an example:
 
@@ -863,10 +868,10 @@ Let's call the following C function from COBOL:
      }
      ----------------------------------------
 
-   This program is equivalent to the foregoing 'say.cob'.
+   This program is equivalent to the foregoing `say.cob'.
 
    Note that, unlike C, the arguments passed from COBOL programs are not
-terminated by the null character (i.e., '\0').
+terminated by the null character (i.e., `\0').
 
    You can call this function in the same way you call COBOL programs:
 
@@ -898,7 +903,7 @@ File: gnucobol.info,  Node: Dynamic COBOL to C,  Prev: Static COBOL to C,  Up: C
 -------------------------------------
 
 You can create a dynamic-linking module from a C program by passing an
-option '-shared' to the C compiler:
+option `-shared' to the C compiler:
 
      $ cc -shared -o say.so say.c
      $ cobc -x hello.cob
@@ -927,16 +932,20 @@ These settings are effective at compile-time.
 
    Environment variables (default value):
 
-'COB_CC'
+`COB_CC'
      C compiler ("gcc")
-'COB_CFLAGS'
+
+`COB_CFLAGS'
      Flags passed to the C compiler ("-I$(PREFIX)/include")
-'COB_LDFLAGS'
+
+`COB_LDFLAGS'
      Flags passed to the C compiler ("")
-'COB_LIBS'
+
+`COB_LIBS'
      Standard libraries linked with the program ("-L$(PREFIX)/lib
      -lcob")
-'COB_LDADD'
+
+`COB_LDADD'
      Additional libraries linked with the program ("")
 
 
@@ -949,7 +958,7 @@ These settings are effective at run-time.
 
    Environment variables (default value):
 
-'COB_LIBRARY_PATH'
+`COB_LIBRARY_PATH'
      Dynamic-linking module path (".:$(PREFIX)/lib/gnu-cobol")
 
 
@@ -970,14 +979,14 @@ File: gnucobol.info,  Node: Optimize Options,  Next: Optimize Call,  Prev: Optim
 4.1 Optimize Options
 ====================
 
-There are three compiler options for optimization: '-O', '-Os' and
-'-O2'.  These options enable optimization at both translation (from
+There are three compiler options for optimization: `-O', `-Os' and
+`-O2'.  These options enable optimization at both translation (from
 COBOL to C) and compilation (C to assembly) levels.
 
    Currently, there is no difference between these optimization options
 at the translation level.
 
-   The option '-O', '-Os' or '-O2' is passed to the C compiler as it is
+   The option `-O', `-Os' or `-O2' is passed to the C compiler as it is
 and used for C level optimization.
 
 
@@ -987,7 +996,7 @@ File: gnucobol.info,  Node: Optimize Call,  Next: Optimize Binary,  Prev: Optimi
 =================
 
 When a CALL statement is executed, the called program is linked at run
-time.  By specifying the compiler option '-fstatic-call', you can
+time.  By specifying the compiler option `-fstatic-call', you can
 statically link the program at compile time and call it efficiently.
 (*note Static Linking::)
 
@@ -1002,11 +1011,11 @@ big-endian form.  On those machines whose native byte order is
 little-endian, this is not quite efficient.
 
    If you prefer, you can store binary items in the native form of your
-machine.  Set the config option 'binary-byteorder' to 'native' in your
+machine.  Set the config option `binary-byteorder' to `native' in your
 config file (*note Customize::).
 
-   In addition, setting the option 'binary-size' to '2-4-8' or '1-2-4-8'
-is more efficient than others.
+   In addition, setting the option `binary-size' to `2-4-8' or
+`1-2-4-8' is more efficient than others.
 
 
 File: gnucobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
@@ -1024,7 +1033,7 @@ File: gnucobol.info,  Node: Debug Options,  Prev: Debug,  Up: Debug
 5.1 Debug Options
 =================
 
-The compiler option '-debug' can be used during the development of your
+The compiler option `-debug' can be used during the development of your
 programs.  It enables all run-time error checking, such as subscript
 boundary checks and numeric data checks, and displays run-time errors
 with source locations.
@@ -1032,8 +1041,9 @@ with source locations.
 
 File: gnucobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
 
-Appendix A 'cobc --help'
-************************
+Appendix A `cobc --help'
+**********************
+
 
 Usage: cobc [options] file ...
 
@@ -1150,12 +1160,12 @@ Options:
   -foptional-file       Treat all files as OPTIONAL
 			- unless NOT OPTIONAL specified
 
-
 
 File: gnucobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
 
-Appendix B 'cobc --info'
-************************
+Appendix B `cobc --info'
+**********************
+
 
 cobc (GNU Cobol) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
@@ -1196,8 +1206,9 @@ ISAM handler             : BDB
 
 File: gnucobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
 
-Appendix C 'cobc --list-reserved'
-*********************************
+Appendix C `cobc --list-reserved'
+*******************************
+
 
 
 Reserved Words			Implemented (Y/N)
@@ -1800,8 +1811,9 @@ COB-CRT-STATUS			PIC 9(4)
 
 File: gnucobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
 
-Appendix D 'cobc --list-intrinsics'
-***********************************
+Appendix D `cobc --list-intrinsics'
+*********************************
+
 
 
 Intrinsic Function		Implemented	Parameters
@@ -1913,8 +1925,9 @@ YEAR-TO-YYYY			Y		Variable
 
 File: gnucobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
 
-Appendix E 'cobc --list-system'
-*******************************
+Appendix E `cobc --list-system'
+*****************************
+
 
 
 System routine			Parameters
@@ -1972,8 +1985,9 @@ X"F5"				2
 
 File: gnucobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
 
-Appendix F 'cobc --list-mnemonics'
-**********************************
+Appendix F `cobc --list-mnemonics'
+********************************
+
 
 
 Mnemonic names
@@ -2042,7 +2056,8 @@ SW15		Switch name
 File: gnucobol.info,  Node: Appendix G,  Up: Top
 
 Appendix G config/default.conf
-******************************
+****************************
+
 
 # GNU Cobol compiler configuration
 #
@@ -2190,48 +2205,48 @@ value-of-clause:			obsolete
 
 
 Tag Table:
-Node: Top1011
-Node: Getting Started3291
-Node: Hello World!3468
-Node: Compile4852
-Node: Compiler Options5211
-Node: Help Options5885
-Ref: Help Options-Footnote-17521
-Node: Built Target7564
-Ref: Built Target-Footnote-19678
-Node: Source Format9731
-Node: Warning Options10641
-Node: Configuration Options11825
-Node: Debug Switches12570
-Node: Miscellaneous13656
-Node: Multiple Sources14465
-Node: Static Linking15145
-Node: Dynamic Linking16670
-Ref: Dynamic Linking-Footnote-118068
-Ref: Dynamic Linking-Footnote-218121
-Node: Building Library18174
-Node: Using Library18557
-Node: C Interface19128
-Node: Main C Program19514
-Node: Static C to COBOL20429
-Node: Dynamic C to COBOL21916
-Node: Static COBOL to C23366
-Node: Dynamic COBOL to C24798
-Node: Customize25203
-Node: Customizing Compiler25427
-Node: Customizing Library26001
-Node: Optimize26315
-Node: Optimize Options26618
-Node: Optimize Call27158
-Node: Optimize Binary27536
-Node: Debug28116
-Node: Debug Options28272
-Node: Appendix A28615
-Node: Appendix B34495
-Node: Appendix C36151
-Node: Appendix D45848
-Node: Appendix E48263
-Node: Appendix F49216
-Node: Appendix G50552
+Node: Top1018
+Node: Getting Started3257
+Node: Hello World!3434
+Node: Compile4818
+Node: Compiler Options5177
+Node: Help Options5851
+Ref: Help Options-Footnote-17492
+Node: Built Target7535
+Ref: Built Target-Footnote-19650
+Node: Source Format9703
+Node: Warning Options10613
+Node: Configuration Options11797
+Node: Debug Switches12542
+Node: Miscellaneous13628
+Node: Multiple Sources14438
+Node: Static Linking15118
+Node: Dynamic Linking16643
+Ref: Dynamic Linking-Footnote-118041
+Ref: Dynamic Linking-Footnote-218094
+Node: Building Library18147
+Node: Using Library18530
+Node: C Interface19101
+Node: Main C Program19445
+Node: Static C to COBOL20360
+Node: Dynamic C to COBOL21847
+Node: Static COBOL to C23297
+Node: Dynamic COBOL to C24729
+Node: Customize25134
+Node: Customizing Compiler25358
+Node: Customizing Library25936
+Node: Optimize26250
+Node: Optimize Options26553
+Node: Optimize Call27093
+Node: Optimize Binary27471
+Node: Debug28051
+Node: Debug Options28207
+Node: Appendix A28550
+Node: Appendix B34426
+Node: Appendix C36079
+Node: Appendix D45773
+Node: Appendix E48185
+Node: Appendix F49135
+Node: Appendix G50468
 
 End Tag Table
