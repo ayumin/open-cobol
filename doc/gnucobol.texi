@@ -51,9 +51,9 @@ Edition @value{EDITION} @*
 Updated for GNU Cobol @value{VERSION} @*
 @value{UPDATED} @*
 
-GNU Cobol is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC or other C compiler
-system.
+GNU Cobol is a free and open-source COBOL compiler, which translates
+COBOL programs to C code and compiles it using GCC or other native
+operating system C compiler.
 
 This manual corresponds to GNU Cobol @value{VERSION}.
 

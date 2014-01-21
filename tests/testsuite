@@ -17883,7 +17883,7 @@ read at_status <"$at_status_file"
 #AT_STOP_227
 #AT_START_228
 at_fn_group_banner 228 'run_misc.at:2052' \
-  "ALLOCATE/FREE with BASED item (2)" "             "
+  "ALLOCATE/FREE with BASED item (2)" "              "
 at_xfail=no
 (
   $as_echo "228. $at_setup_line: testing $at_desc ..."

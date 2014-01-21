@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnu-cobol 2.0\n"
 "Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-11 13:36+0100\n"
+"POT-Creation-Date: 2014-01-21 16:34+0100\n"
 "PO-Revision-Date: 2011-06-09 15:37-0700\n"
 "Last-Translator: randy <rcoman@curreyadkins.com>\n"
 "Language-Team: JCurrey <jcurrey@myorsa.com>\n"
@@ -561,15 +561,15 @@ msgstr "Analizando:"
 msgid "Translating:"
 msgstr "Traduciendo:"
 
-#: cobc/cobc.c:3962
+#: cobc/cobc.c:3963
 msgid "No input files"
 msgstr "No archivo de entrada"
 
-#: cobc/cobc.c:4052
+#: cobc/cobc.c:4053
 msgid "-o option invalid in this combination"
 msgstr "-o opción inválida con esta combinación"
 
-#: cobc/cobc.c:4076
+#: cobc/cobc.c:4077
 msgid "Command line:\t"
 msgstr "Línea de comandos:\t"
 
@@ -631,7 +631,7 @@ msgstr "Elemento CONSTANT inesperado"
 #: cobc/codegen.c:765 cobc/codegen.c:840 cobc/codegen.c:1003
 #: cobc/codegen.c:1322 cobc/codegen.c:1564 cobc/codegen.c:1982
 #: cobc/codegen.c:2189 cobc/codegen.c:5039 cobc/typeck.c:813
-#: cobc/typeck.c:3272 cobc/typeck.c:6416
+#: cobc/typeck.c:3273 cobc/typeck.c:6417
 #, c-format
 msgid "Unexpected tree tag %d"
 msgstr "Inesperada etiqueta de árbol %d"
@@ -1612,7 +1612,7 @@ msgstr "ALLOCATE CHARACTERS requiere cláusula RETURNING"
 msgid "Recursive program call - assuming RECURSIVE attribute"
 msgstr "Recursiva programa, llame al - asumiendo atributo RECURSIVO"
 
-#: cobc/parser.y:6054 cobc/typeck.c:8476
+#: cobc/parser.y:6054 cobc/typeck.c:8477
 msgid "Invalid mnemonic name"
 msgstr "Nombre mnemotécnico inválido"
 
@@ -1694,7 +1694,7 @@ msgstr "INSPECT le falta una palabra clave"
 msgid "SHARING and LOCK clauses are mutually exclusive"
 msgstr "Cláusulas SHARING y LOCK son mutuamente excluyentes"
 
-#: cobc/parser.y:7705 cobc/typeck.c:7505 cobc/typeck.c:8388
+#: cobc/parser.y:7705 cobc/typeck.c:7506 cobc/typeck.c:8389
 msgid "LOCK clause invalid with file LOCK AUTOMATIC"
 msgstr "Cláusula de LOCK inválida con archivo LOCK AUTOMATIC"
 
@@ -1702,7 +1702,7 @@ msgstr "Cláusula de LOCK inválida con archivo LOCK AUTOMATIC"
 msgid "KEY clause invalid with this file type"
 msgstr "Cláusula de KEY inválida con este tipo de archivo"
 
-#: cobc/parser.y:7715 cobc/typeck.c:7501 cobc/typeck.c:8384
+#: cobc/parser.y:7715 cobc/typeck.c:7502 cobc/typeck.c:8385
 msgid "INVALID KEY clause invalid with this file type"
 msgstr "Cláusula de INVALID KEY inválida con este tipo de archivo"
 
@@ -1710,7 +1710,7 @@ msgstr "Cláusula de INVALID KEY inválida con este tipo de archivo"
 msgid "File sort requires KEY phrase"
 msgstr "Archivo de ordenar requiere frase KEY "
 
-#: cobc/parser.y:8150 cobc/typeck.c:8018
+#: cobc/parser.y:8150 cobc/typeck.c:8019
 msgid "Table sort without keys not implemented yet"
 msgstr "Ordenar tabla sin claves no ha sido implementado aún"
 
@@ -1979,7 +1979,7 @@ msgstr "Nombre de interruptor"
 msgid "Feature name"
 msgstr "Nombre de prestación"
 
-#: cobc/reserved.c:2519 libcob/common.c:3647 libcob/common.c:3719
+#: cobc/reserved.c:2519 libcob/common.c:3715 libcob/common.c:3787
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -2199,9 +2199,9 @@ msgstr "Tamaño de récord demasiado grande '%s' (%d)"
 msgid "Record size exceeds maximum allowed (%d) - File '%s'"
 msgstr "Tamaño de récord excede el máximo permitido (%d) - Archivo '%s'"
 
-#: cobc/tree.c:2576 cobc/tree.c:2581 cobc/tree.c:2593 cobc/typeck.c:3040
-#: cobc/typeck.c:3045 cobc/typeck.c:3050 cobc/typeck.c:3670 cobc/typeck.c:3690
-#: cobc/typeck.c:3787
+#: cobc/tree.c:2576 cobc/tree.c:2581 cobc/tree.c:2593 cobc/typeck.c:3041
+#: cobc/typeck.c:3046 cobc/typeck.c:3051 cobc/typeck.c:3671 cobc/typeck.c:3691
+#: cobc/typeck.c:3788
 msgid "Invalid expression"
 msgstr "Expresión inválida"
 
@@ -2292,7 +2292,7 @@ msgstr "Uso de ON/OFF requiere el nombre de un SWITCH"
 msgid "ASSIGN interpreted as %s"
 msgstr "ASSIGN interpretarse en el %s"
 
-#: cobc/typeck.c:1358 cobc/typeck.c:1486
+#: cobc/typeck.c:1358 cobc/typeck.c:1487
 #, c-format
 msgid "Subscripts missing for '%s' - Defaulting to 1"
 msgstr ""
@@ -2302,608 +2302,608 @@ msgstr ""
 msgid "'%s' cannot be reference modified"
 msgstr "'%s' no puede ser modificado por referencia"
 
-#: cobc/typeck.c:1381 cobc/typeck.c:1429 cobc/typeck.c:1619
+#: cobc/typeck.c:1381 cobc/typeck.c:1429 cobc/typeck.c:1620
 #, c-format
 msgid "'%s' cannot be subscripted"
 msgstr "'%s' no puede ser subíndice"
 
-#: cobc/typeck.c:1384 cobc/typeck.c:1622
+#: cobc/typeck.c:1384 cobc/typeck.c:1623
 #, c-format
 msgid "'%s' requires 1 subscript"
 msgstr "'%s' requiere 1 subíndice"
 
-#: cobc/typeck.c:1387 cobc/typeck.c:1625
+#: cobc/typeck.c:1387 cobc/typeck.c:1626
 #, c-format
 msgid "'%s' requires %d subscripts"
 msgstr "'%s; requiere %d subíndices"
 
-#: cobc/typeck.c:1470
+#: cobc/typeck.c:1471
 #, c-format
 msgid "'%s' has no OCCURS clause"
 msgstr "'%s' no tiene cláusula de OCCURS"
 
-#: cobc/typeck.c:1518 libcob/common.c:2196
+#: cobc/typeck.c:1519 libcob/common.c:2264
 #, c-format
 msgid "Subscript of '%s' out of bounds: %d"
 msgstr "Subíndice de '%s' fuera de límites: %d"
 
-#: cobc/typeck.c:1571 cobc/typeck.c:1581 libcob/common.c:2208
+#: cobc/typeck.c:1572 cobc/typeck.c:1582 libcob/common.c:2276
 #, c-format
 msgid "Offset of '%s' out of bounds: %d"
 msgstr "Compensación de '%s' fuera de límites: %d"
 
-#: cobc/typeck.c:1575 cobc/typeck.c:1585 libcob/common.c:2215
+#: cobc/typeck.c:1576 cobc/typeck.c:1586 libcob/common.c:2283
 #, c-format
 msgid "Length of '%s' out of bounds: %d"
 msgstr "Longitud de '%s' fuera de límites: %d"
 
-#: cobc/typeck.c:1684
+#: cobc/typeck.c:1685
 msgid "Reference modification not allowed here"
 msgstr "Modificado por referencia no se permite aquí"
 
-#: cobc/typeck.c:1692
+#: cobc/typeck.c:1693
 msgid "ANY LENGTH item not allowed here"
 msgstr "Elemento de ANY LENGTH no se permite aquí"
 
-#: cobc/typeck.c:1696
+#: cobc/typeck.c:1697
 msgid "88 level item not allowed here"
 msgstr "Elemento del nivel 88 no es permitido aquí"
 
-#: cobc/typeck.c:1700
+#: cobc/typeck.c:1701
 msgid "Variable length item not allowed here"
 msgstr "Elemento de longitud variable no es permitido aquí"
 
-#: cobc/typeck.c:1807
+#: cobc/typeck.c:1808
 #, c-format
 msgid "'%s' is not an alphabet name"
 msgstr "'%s' no es un nombre de alfabeto"
 
-#: cobc/typeck.c:2038
+#: cobc/typeck.c:2039
 #, c-format
 msgid "Duplicate character values in alphabet '%s'"
 msgstr "Valores de carácter duplicados en alfabeto '%s'"
 
-#: cobc/typeck.c:2042
+#: cobc/typeck.c:2043
 #, c-format
 msgid "Invalid character values in alphabet '%s'"
 msgstr "Valores de carácter inválidos en alfabeto '%s'"
 
-#: cobc/typeck.c:2096
+#: cobc/typeck.c:2097
 msgid "Invalid ALPHABET name"
 msgstr "Nombre de ALPHABET inválido"
 
-#: cobc/typeck.c:2151 cobc/typeck.c:2155
+#: cobc/typeck.c:2152 cobc/typeck.c:2156
 #, c-format
 msgid "Duplicate values in class '%s'"
 msgstr "Valores duplicados en clase '%s'"
 
-#: cobc/typeck.c:2171
+#: cobc/typeck.c:2172
 #, c-format
 msgid "'%s' is not a locale name"
 msgstr "'%s' no es un nombre local"
 
-#: cobc/typeck.c:2348
+#: cobc/typeck.c:2349
 #, c-format
 msgid "'%s' will be implicitly defined"
 msgstr "'%s' será definido de forma implícita"
 
-#: cobc/typeck.c:2365
+#: cobc/typeck.c:2366
 #, c-format
 msgid "ASSIGN data item '%s' invalid"
 msgstr "ASSIGN elementos de datos '%s' inválido"
 
-#: cobc/typeck.c:2376
+#: cobc/typeck.c:2377
 #, c-format
 msgid "'%s' CURSOR is not 4 or 6 characters long"
 msgstr "'%s' CURSOR no es de 4 o 6 caractéres de longitud"
 
-#: cobc/typeck.c:2386
+#: cobc/typeck.c:2387
 #, c-format
 msgid "'%s' CRT STATUS is not 4 characters long"
 msgstr "'%s' CRT STATUS no es de 4 caractéres de longitud"
 
-#: cobc/typeck.c:2428
+#: cobc/typeck.c:2429
 #, c-format
 msgid "'%s' ODO field item invalid here"
 msgstr "'%s' elemento de campo ODO inválido aquí"
 
-#: cobc/typeck.c:2434
+#: cobc/typeck.c:2435
 #, c-format
 msgid "'%s' cannot have OCCURS DEPENDING"
 msgstr "'%s' no puede tener OCURRS DEPENDING"
 
-#: cobc/typeck.c:2445
+#: cobc/typeck.c:2446
 #, c-format
 msgid "'%s' ODO item must have GLOBAL attribute"
 msgstr "'%s' elemento ODO debe tener atributo GLOBAL"
 
-#: cobc/typeck.c:2467
+#: cobc/typeck.c:2468
 msgid "RECORD DEPENDING item must be in WORKING/LOCAL/LINKAGE section"
 msgstr ""
 "Elemento RECORD DEPENDING debe de estar en sección WORKING/LOCAL/LINKAGE"
 
-#: cobc/typeck.c:2472
+#: cobc/typeck.c:2473
 msgid "Invalid RECORD DEPENDING item"
 msgstr "Elemento RECORD DEPENDING inválido"
 
-#: cobc/typeck.c:2506 cobc/typeck.c:2509
+#: cobc/typeck.c:2507 cobc/typeck.c:2510
 #, c-format
 msgid "'%s' is not in DECLARATIVES"
 msgstr "'%s' no se encuentra en DECLARATIVES"
 
-#: cobc/typeck.c:2516
+#: cobc/typeck.c:2517
 #, c-format
 msgid "Invalid reference to '%s' (In DECLARATIVES)"
 msgstr "Referencia a '%s' inválida (En DECLARATIVES)"
 
-#: cobc/typeck.c:2523
+#: cobc/typeck.c:2524
 #, c-format
 msgid "'%s' not a procedure name"
 msgstr "'%s' no es el nombre de un procedimiento"
 
-#: cobc/typeck.c:2542
+#: cobc/typeck.c:2543
 #, c-format
 msgid "'%s' - DEBUGGING target invalid with ALL PROCEDURES"
 msgstr "'%s' - objectivo de DEBUGGING inválido con ALL PROCEDURES"
 
-#: cobc/typeck.c:2546
+#: cobc/typeck.c:2547
 #, c-format
 msgid "'%s' - DEBUGGING target invalid"
 msgstr "'%s' - objetivo de DEBUGGING inválido"
 
-#: cobc/typeck.c:2561
+#: cobc/typeck.c:2562
 #, c-format
 msgid "'%s' is not a valid DEBUGGING target"
 msgstr "'%s' no es un objetivo válido de DEBUGGING"
 
-#: cobc/typeck.c:2601
+#: cobc/typeck.c:2602
 #, c-format
 msgid "'%s' is not an alterable paragraph"
 msgstr "'%s' no es un párrafo modificable"
 
-#: cobc/typeck.c:2782
+#: cobc/typeck.c:2783
 msgid "Suggest parentheses around AND within OR"
 msgstr "Parentesis sugeridos alrededor de AND dentro de OR"
 
-#: cobc/typeck.c:3157
+#: cobc/typeck.c:3158
 #, c-format
 msgid "Internal decimal structure size exceeded - %d"
 msgstr "Tamaño de estructura decimal interna excedido - %d"
 
-#: cobc/typeck.c:3195
+#: cobc/typeck.c:3196
 #, c-format
 msgid "Unexpected operation %d"
 msgstr "Operación %d inesperada"
 
-#: cobc/typeck.c:3215
+#: cobc/typeck.c:3216
 msgid "Unexpected constant expansion"
 msgstr "Expansión inesperada de constante "
 
-#: cobc/typeck.c:4057 cobc/typeck.c:4110
+#: cobc/typeck.c:4058 cobc/typeck.c:4111
 msgid "No CORRESPONDING items found"
 msgstr "No se encontraron elementos CORRESPONDING"
 
-#: cobc/typeck.c:4242
+#: cobc/typeck.c:4243
 msgid "Invalid PROMPT literal"
 msgstr "Literal PROMPT inválido"
 
-#: cobc/typeck.c:4247
+#: cobc/typeck.c:4248
 msgid "Invalid PROMPT identifier"
 msgstr "Identificador PROMPT inválido"
 
-#: cobc/typeck.c:4470 cobc/typeck.c:4497
+#: cobc/typeck.c:4471 cobc/typeck.c:4498
 #, c-format
 msgid "Invalid input device '%s'"
 msgstr "Dispositivo de entrada '%s' inválido"
 
-#: cobc/typeck.c:4492 cobc/typeck.c:4503 cobc/typeck.c:5169 cobc/typeck.c:5174
-#: cobc/typeck.c:5183
+#: cobc/typeck.c:4493 cobc/typeck.c:4504 cobc/typeck.c:5170 cobc/typeck.c:5175
+#: cobc/typeck.c:5184
 #, c-format
 msgid "'%s' is not defined in SPECIAL-NAMES"
 msgstr "'%s' no esta definido en SPECIAL-NAMES"
 
-#: cobc/typeck.c:4532
+#: cobc/typeck.c:4533
 msgid "Target of ALLOCATE is not a BASED item"
 msgstr "Destino de ALLOCATE no es un elemento BASED"
 
-#: cobc/typeck.c:4540
+#: cobc/typeck.c:4541
 msgid "Target of RETURNING is not a data pointer"
 msgstr "Destino de RETURNING no es un puntero de datos"
 
-#: cobc/typeck.c:4547
+#: cobc/typeck.c:4548
 msgid "The CHARACTERS field of ALLOCATE must be numeric"
 msgstr "El campo CHARACTERS de ALLOCATE debe ser numérico"
 
-#: cobc/typeck.c:4560
+#: cobc/typeck.c:4561
 msgid "INITIALIZED TO item is not alphanumeric"
 msgstr "Elemento INITIALIZED TO no es alfanumérico"
 
-#: cobc/typeck.c:4612
+#: cobc/typeck.c:4613
 msgid "Only alphanumeric FUNCTION types are allowed here"
 msgstr "Solamente tipos alfanuméricos FUNCTION son permitidos aquí"
 
-#: cobc/typeck.c:4620
+#: cobc/typeck.c:4621
 msgid "Invalid RETURNING field"
 msgstr "Campo RETURNING inválido"
 
-#: cobc/typeck.c:4641
+#: cobc/typeck.c:4642
 msgid "STDCALL not available on this platform"
 msgstr "STDCALL no disponible en esta plataforma"
 
-#: cobc/typeck.c:4647
+#: cobc/typeck.c:4648
 msgid "STDCALL used on 64-bit Windows platform"
 msgstr "STDCALL utilizado en plataforma Windows de 64 bits"
 
-#: cobc/typeck.c:4653
+#: cobc/typeck.c:4654
 msgid "STATIC CALL convention requires a literal program name"
 msgstr "Convención STATIC CALL requiere un nombre literal de programa"
 
-#: cobc/typeck.c:4669
+#: cobc/typeck.c:4670
 #, fuzzy
 msgid "Numeric literal is negative"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.c:4746
+#: cobc/typeck.c:4747
 #, fuzzy
 msgid "Numeric literal exceeds size limits"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.c:4752
+#: cobc/typeck.c:4753
 msgid "Figurative constant invalid here"
 msgstr "Constante figurativa inválida aquí"
 
-#: cobc/typeck.c:4760
+#: cobc/typeck.c:4761
 #, c-format
 msgid "'%s' is not a valid data name"
 msgstr "'%s' no es un nombre valido de datos"
 
-#: cobc/typeck.c:4766
+#: cobc/typeck.c:4767
 #, c-format
 msgid "'%s' ANY LENGTH item not passed BY REFERENCE"
 msgstr "'%s' Elemento de ANY LENGTH no pasó BY REFERENCE"
 
-#: cobc/typeck.c:4773
+#: cobc/typeck.c:4774
 #, c-format
 msgid "'%s' is not a 01 or 77 level item"
 msgstr "'%s' no es un elemento de nivel 01 ó 77"
 
-#: cobc/typeck.c:4796
+#: cobc/typeck.c:4797
 #, c-format
 msgid "Wrong number of CALL parameters for '%s'"
 msgstr "Número incorrecto de parámetros en CALL para '%s'"
 
-#: cobc/typeck.c:4846 cobc/typeck.c:4897 cobc/typeck.c:4929 cobc/typeck.c:7228
-#: cobc/typeck.c:7368 cobc/typeck.c:7491 cobc/typeck.c:8379
+#: cobc/typeck.c:4847 cobc/typeck.c:4898 cobc/typeck.c:4930 cobc/typeck.c:7229
+#: cobc/typeck.c:7369 cobc/typeck.c:7492 cobc/typeck.c:8380
 msgid "Operation not allowed on SORT files"
 msgstr "Operación no permitida en archivos de SORT"
 
-#: cobc/typeck.c:4901 cobc/typeck.c:7495
+#: cobc/typeck.c:4902 cobc/typeck.c:7496
 msgid "Operation not allowed on LINE SEQUENTIAL files"
 msgstr "Operación no permitida en archivos de LINE SEQUENTIAL"
 
-#: cobc/typeck.c:5039
+#: cobc/typeck.c:5040
 #, c-format
 msgid "'%s' is an invalid type for DISPLAY operand"
 msgstr "'%s' es un tipo inválido de operando de DISPLAY"
 
-#: cobc/typeck.c:5044
+#: cobc/typeck.c:5045
 msgid "Invalid type for DISPLAY operand"
 msgstr "Tipo inválido para operando de DISPLAY"
 
-#: cobc/typeck.c:5147
+#: cobc/typeck.c:5148
 msgid "Invalid output device"
 msgstr "Dispositivo de salida inválido"
 
-#: cobc/typeck.c:5178
+#: cobc/typeck.c:5179
 #, c-format
 msgid "'%s' is not an output device"
 msgstr "'%s' no es un dispositivo de salida"
 
-#: cobc/typeck.c:5265
+#: cobc/typeck.c:5266
 msgid "Invalid use of 88 level in WHEN expression"
 msgstr "Uso inválido de nivel 88 en expresion WHEN"
 
-#: cobc/typeck.c:5325
+#: cobc/typeck.c:5326
 msgid "Wrong number of WHEN parameters"
 msgstr "Número equivocado de parámetros para WHEN"
 
-#: cobc/typeck.c:5394 cobc/typeck.c:5406
+#: cobc/typeck.c:5395 cobc/typeck.c:5407
 #, c-format
 msgid "Target %d of FREE is not a BASED data item"
 msgstr "Objectivo %d de FREE no es un elemento de datos BASED"
 
-#: cobc/typeck.c:5412
+#: cobc/typeck.c:5413
 #, c-format
 msgid "Target %d of FREE must be a data pointer"
 msgstr "Objetivo %d de FREE debe ser un puntero de datos"
 
-#: cobc/typeck.c:5436
+#: cobc/typeck.c:5437
 msgid "GO TO with multiple procedure-names"
 msgstr "GO TO con multiples nombres-procedimiento"
 
-#: cobc/typeck.c:5578
+#: cobc/typeck.c:5579
 msgid "REPLACING operands differ in size"
 msgstr "Operandos de REPLACING difieren en tamaño"
 
-#: cobc/typeck.c:5600
+#: cobc/typeck.c:5601
 msgid "Invalid target for INSPECT"
 msgstr "Destino inválido para INSPECT"
 
-#: cobc/typeck.c:5618
+#: cobc/typeck.c:5619
 msgid "Invalid target for REPLACING/CONVERTING"
 msgstr "Destino inválido para REPLACING/CONVERTING"
 
-#: cobc/typeck.c:5640
+#: cobc/typeck.c:5641
 msgid "Data name expected before CHARACTERS"
 msgstr "Nombre de datos esperado antes que CHARACTERS"
 
-#: cobc/typeck.c:5651
+#: cobc/typeck.c:5652
 msgid "Data name expected before ALL"
 msgstr "Nombre de datos esperado antes que ALL"
 
-#: cobc/typeck.c:5662
+#: cobc/typeck.c:5663
 msgid "Data name expected before LEADING"
 msgstr "Nombre de datos esperado antes de LEADING"
 
-#: cobc/typeck.c:5673
+#: cobc/typeck.c:5674
 msgid "Data name expected before TRAILING"
 msgstr "Nombre de datos esperado antes de TRAILING"
 
-#: cobc/typeck.c:5683
+#: cobc/typeck.c:5684
 #, c-format
 msgid "ALL, LEADING or TRAILING expected before '%s'"
 msgstr "ALL, LEADING o TRAILING esperado antes de '%s'"
 
-#: cobc/typeck.c:5693
+#: cobc/typeck.c:5694
 msgid "Operand has wrong size"
 msgstr "Operando tiene el tamaño equivocado"
 
-#: cobc/typeck.c:5759
+#: cobc/typeck.c:5760
 #, c-format
 msgid "Internal register '%s' defined as BINARY-LONG"
 msgstr "Registros internos '%s' definidos como BINARY-LONG"
 
-#: cobc/typeck.c:5762
+#: cobc/typeck.c:5763
 #, c-format
 msgid "'%s' defined here as USAGE %s"
 msgstr "'%s' definido aquí como USAGE %s"
 
-#: cobc/typeck.c:5765
+#: cobc/typeck.c:5766
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT"
 msgstr "'%s' definido aquí como USAGE FLOAT"
 
-#: cobc/typeck.c:5768
+#: cobc/typeck.c:5769
 #, c-format
 msgid "'%s' defined here as USAGE DOUBLE"
 msgstr "'%s' definido aquí como USAGE DOUBLE"
 
-#: cobc/typeck.c:5771
+#: cobc/typeck.c:5772
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT EXTENDED"
 msgstr "'%s' definido aquí como USAGE FLOAT EXTENDED"
 
-#: cobc/typeck.c:5774
+#: cobc/typeck.c:5775
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-7"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-7"
 
-#: cobc/typeck.c:5777
+#: cobc/typeck.c:5778
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-16"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-16"
 
-#: cobc/typeck.c:5780
+#: cobc/typeck.c:5781
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-BINARY-34"
 msgstr "'%s' definido aquí como USAGE FLOAT-BINARY-34"
 
-#: cobc/typeck.c:5783
+#: cobc/typeck.c:5784
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-DECIMAL-16"
 msgstr "'%s' definido aquí como USAGE FLOAT-DECIMAL-16"
 
-#: cobc/typeck.c:5786
+#: cobc/typeck.c:5787
 #, c-format
 msgid "'%s' defined here as USAGE FLOAT-DECIMAL-34"
 msgstr "'%s' definido aquí como USAGE FLOAT-DECIMAL-34"
 
-#: cobc/typeck.c:5789
+#: cobc/typeck.c:5790
 #, c-format
 msgid "'%s' defined here as PIC %s"
 msgstr "'%s' definido aquí como PIC %s"
 
-#: cobc/typeck.c:5792
+#: cobc/typeck.c:5793
 #, c-format
 msgid "'%s' defined here as a group of length %d"
 msgstr "'%s' definido aquí como un grupo de longitud %d"
 
-#: cobc/typeck.c:5916
+#: cobc/typeck.c:5917
 msgid "Overlapping MOVE may produce unpredictable results"
 msgstr "Superposición de MOVE puede producir resultados impredecibles"
 
-#: cobc/typeck.c:5951
+#: cobc/typeck.c:5952
 msgid "Invalid destination for MOVE"
 msgstr "Destinación inválida para MOVE"
 
-#: cobc/typeck.c:5972 cobc/typeck.c:5984
+#: cobc/typeck.c:5973 cobc/typeck.c:5985
 msgid "Source is non-numeric - substituting zero"
 msgstr "Origen es no-numérico - substituyendo cero"
 
-#: cobc/typeck.c:6069
+#: cobc/typeck.c:6070
 msgid "Numeric move to ALPHABETIC"
 msgstr "Movimiento numérico a ALPHABETIC"
 
-#: cobc/typeck.c:6083
+#: cobc/typeck.c:6084
 msgid "Data item not signed"
 msgstr "Elemento de datos no tiene signo"
 
-#: cobc/typeck.c:6087
+#: cobc/typeck.c:6088
 msgid "Ignoring sign"
 msgstr "Ignorando signo"
 
-#: cobc/typeck.c:6405
+#: cobc/typeck.c:6406
 msgid "Invalid source for MOVE"
 msgstr "Origen inválido para MOVE"
 
-#: cobc/typeck.c:6424
+#: cobc/typeck.c:6425
 msgid "Invalid VALUE clause"
 msgstr "Cláusula VALUE inválida"
 
-#: cobc/typeck.c:6426
+#: cobc/typeck.c:6427
 msgid "Invalid MOVE statement"
 msgstr "Declaración MOVE inválida"
 
-#: cobc/typeck.c:6432
+#: cobc/typeck.c:6433
 msgid "Invalid VALUE clause - literal exceeds data size"
 msgstr "Cláusula VALUE inválida - literal excede tamaño de dato"
 
-#: cobc/typeck.c:6436
+#: cobc/typeck.c:6437
 msgid "Numeric literal exceeds data size"
 msgstr "Literal numérico excede tamaño de dato "
 
-#: cobc/typeck.c:6445
+#: cobc/typeck.c:6446
 msgid "Move non-integer to alphanumeric"
 msgstr "Mover no-números enteros a alfanumérico"
 
-#: cobc/typeck.c:6451
+#: cobc/typeck.c:6452
 msgid "Numeric value is expected"
 msgstr "Valor numérico es esperado"
 
-#: cobc/typeck.c:6456
+#: cobc/typeck.c:6457
 msgid "Alphanumeric value is expected"
 msgstr "Valor alfanumerico es esperado "
 
-#: cobc/typeck.c:6461
+#: cobc/typeck.c:6462
 msgid "Value does not fit the picture string"
 msgstr "Valor no se ajusta a la cadena de picture"
 
-#: cobc/typeck.c:6466
+#: cobc/typeck.c:6467
 msgid "Value size exceeds data size"
 msgstr "Tamaño de valor excede tamaño de datos"
 
-#: cobc/typeck.c:6471
+#: cobc/typeck.c:6472
 msgid "Sending field larger than receiving field"
 msgstr "Campo a enviar más grande que el campo a recibir"
 
-#: cobc/typeck.c:6476
+#: cobc/typeck.c:6477
 msgid "Some digits may be truncated"
 msgstr "Algunos digitos pueden ser truncado"
 
-#: cobc/typeck.c:7197
+#: cobc/typeck.c:7198
 #, c-format
 msgid "Invalid MOVE target - %s"
 msgstr "Destino inválido al MOVE - %s"
 
-#: cobc/typeck.c:7233
+#: cobc/typeck.c:7234
 msgid "OPEN I-O not allowed on LINE SEQUENTIAL files"
 msgstr "OPEN I-O no se permite en archivos de LINE SEQUENTIAL"
 
-#: cobc/typeck.c:7381
+#: cobc/typeck.c:7382
 #, fuzzy
 msgid "READ PREVIOUS not allowed for this file type"
 msgstr "RELEASE no permitido en este elemento de récord"
 
-#: cobc/typeck.c:7389
+#: cobc/typeck.c:7390
 msgid "KEY ignored with sequential READ"
 msgstr "KEY ignorado con READ sequencial"
 
-#: cobc/typeck.c:7472
+#: cobc/typeck.c:7473
 msgid "REWRITE requires a record name as subject"
 msgstr "REWRITE requiere un nombre de registro como sujeto"
 
-#: cobc/typeck.c:7477
+#: cobc/typeck.c:7478
 msgid "REWRITE subject does not refer to a record name"
 msgstr "Sujeto a REWRITE no hace referencia a un nombre de récord"
 
-#: cobc/typeck.c:7544
+#: cobc/typeck.c:7545
 msgid "RELEASE requires a record name as subject"
 msgstr "RELEASE require un nombre de un récord como sujeto"
 
-#: cobc/typeck.c:7550
+#: cobc/typeck.c:7551
 msgid "RELEASE subject does not refer to a record name"
 msgstr "Sujeto de RELEASE no hace referencia a nombre de un récord"
 
-#: cobc/typeck.c:7556
+#: cobc/typeck.c:7557
 msgid "RELEASE not allowed on this record item"
 msgstr "RELEASE no permitido en este elemento de récord"
 
-#: cobc/typeck.c:7639 cobc/typeck.c:7660 cobc/typeck.c:7667
+#: cobc/typeck.c:7640 cobc/typeck.c:7661 cobc/typeck.c:7668
 msgid "Invalid SEARCH ALL condition"
 msgstr "Condición inválida de SEARCH ALL"
 
-#: cobc/typeck.c:7797
+#: cobc/typeck.c:7798
 msgid "The targets of SET must be either indexes or pointers"
 msgstr "Los destinos del SET deben ser índices o indicadores"
 
-#: cobc/typeck.c:7809 cobc/typeck.c:7813
+#: cobc/typeck.c:7810 cobc/typeck.c:7814
 msgid "SET targets must be PROGRAM-POINTER"
 msgstr "Destinos de SET deben ser PROGRAM-POINTER"
 
-#: cobc/typeck.c:7829
+#: cobc/typeck.c:7830
 #, c-format
 msgid "The address of '%s' cannot be changed"
 msgstr "La dirección de '%s' no puede ser cambiada"
 
-#: cobc/typeck.c:7849
+#: cobc/typeck.c:7850
 #, c-format
 msgid "SET target is invalid - '%s'"
 msgstr "SET objetivo no es válido - '%s'"
 
-#: cobc/typeck.c:7904 cobc/typeck.c:7909 cobc/typeck.c:7936 cobc/typeck.c:7941
+#: cobc/typeck.c:7905 cobc/typeck.c:7910 cobc/typeck.c:7937 cobc/typeck.c:7942
 msgid "Invalid SET statement"
 msgstr "Declaración inválida de SET"
 
-#: cobc/typeck.c:7945
+#: cobc/typeck.c:7946
 msgid "Field does not have FALSE clause"
 msgstr "Campo no tiene cláusula FALSE"
 
-#: cobc/typeck.c:7967
+#: cobc/typeck.c:7968
 msgid "SET ATTRIBUTE requires a screen item as subject"
 msgstr "SET ATTRIBUTE requiere un nombre de registro como sujeto"
 
-#: cobc/typeck.c:7973
+#: cobc/typeck.c:7974
 msgid "SET ATTRIBUTE subject does not refer to a screen item"
 msgstr "SET ATTRIBUTE sujeto no hace referencia a un punto en la pantalla"
 
-#: cobc/typeck.c:8002
+#: cobc/typeck.c:8003
 msgid "Invalid SORT filename"
 msgstr "Nombre de archivo para SORT inválido"
 
-#: cobc/typeck.c:8045
+#: cobc/typeck.c:8046
 msgid "Invalid SORT USING parameter"
 msgstr "Parámetro inválido en SORT USING"
 
-#: cobc/typeck.c:8074
+#: cobc/typeck.c:8075
 msgid "Invalid SORT GIVING parameter"
 msgstr "Parámetro inválido en SORT GIVING"
 
-#: cobc/typeck.c:8120 cobc/typeck.c:8133 cobc/typeck.c:8153
+#: cobc/typeck.c:8121 cobc/typeck.c:8134 cobc/typeck.c:8154
 msgid "Invalid key item"
 msgstr "Elemento clave inválido"
 
-#: cobc/typeck.c:8183
+#: cobc/typeck.c:8184
 msgid "START not allowed on SEQUENTIAL files"
 msgstr "START no permitido en archivos SEQUENTIAL"
 
-#: cobc/typeck.c:8188
+#: cobc/typeck.c:8189
 msgid "LENGTH/SIZE clause only allowed on INDEXED files"
 msgstr "Clásula LENGTH/SIZE solamente permitida en archivos INDEXED"
 
-#: cobc/typeck.c:8193
+#: cobc/typeck.c:8194
 #, fuzzy
 msgid "START not allowed with ACCESS MODE RANDOM"
 msgstr "GLOBAL no se permite con RD"
 
-#: cobc/typeck.c:8362
+#: cobc/typeck.c:8363
 msgid "WRITE requires a record name as subject"
 msgstr "WRITE requiere un nombre de récord como sujeto"
 
-#: cobc/typeck.c:8367
+#: cobc/typeck.c:8368
 msgid "WRITE subject does not refer to a record name"
 msgstr "Sujeto a WRITE no hace referencia a un nombre de récord"
 
-#: cobc/typeck.c:8391
+#: cobc/typeck.c:8392
 msgid "LOCK clause invalid here"
 msgstr "Cláusula LOCK inválida aquí"
 
@@ -3021,189 +3021,199 @@ msgstr "Parámetro NULL pasado a ‘cob_longjmp’"
 msgid "Call to 'cob_longjmp' with no prior 'cob_setjmp'"
 msgstr "Llamada a ‘cob_longjmp’ con no previo ‘cob_setjmp’"
 
-#: libcob/common.c:312
-#, c-format
-msgid "Attempt to reference unallocated memory (Signal SIGSEGV)"
+#: libcob/common.c:374
+#, fuzzy, c-format
+msgid "Attempt to reference unallocated memory"
 msgstr "Intento de referencia a memoria sin asignar (Signal SIGSEGV)"
 
-#: libcob/common.c:314 libcob/common.c:322
+#: libcob/common.c:376 libcob/common.c:379
+#, c-format
+msgid "Caught Signal"
+msgstr ""
+
+#: libcob/common.c:382
+#, c-format
+msgid "(Signal %s)"
+msgstr ""
+
+#: libcob/common.c:387
 #, c-format
 msgid "Abnormal termination - File contents may be incorrect"
 msgstr "Terminación anormal - Contenidos de archivo pueden estar incorrectos"
 
-#: libcob/common.c:1262
+#: libcob/common.c:1323
 msgid "Malloc error"
 msgstr "Error en malloc"
 
-#: libcob/common.c:1297 libcob/common.c:1303
+#: libcob/common.c:1358 libcob/common.c:1364
 msgid "cob_init() has not been called"
 msgstr "cob_init() no ha sido llamado"
 
-#: libcob/common.c:1300
+#: libcob/common.c:1361
 msgid "Attempt to CANCEL active program"
 msgstr "Intento de CANCEL programa activo"
 
-#: libcob/common.c:1306
+#: libcob/common.c:1367
 msgid "Codegen error - Please report this"
 msgstr "Error en codegen - Por favor reporte esto"
 
-#: libcob/common.c:1309
+#: libcob/common.c:1370
 msgid "Recursive call of chained program"
 msgstr "Llamada recursiva de programa encadenado"
 
-#: libcob/common.c:1312
+#: libcob/common.c:1373
 msgid "Stack overflow, possible PERFORM depth exceeded"
 msgstr "Desbordamiento de montón, posible profundidad excedida de PERFORM"
 
-#: libcob/common.c:1315
+#: libcob/common.c:1376
 msgid "Invalid entry/exit in GLOBAL USE procedure"
 msgstr "Inválida entrada/salida en procedimiento USO GLOBAL"
 
-#: libcob/common.c:1318
+#: libcob/common.c:1379
 msgid "Unable to allocate memory"
 msgstr "Asignación de memoria sin exito"
 
-#: libcob/common.c:1321
+#: libcob/common.c:1382
 msgid "Invalid entry into module"
 msgstr "Entrada a módulo inválida"
 
-#: libcob/common.c:1324
+#: libcob/common.c:1385
 msgid "Invalid recursive COBOL CALL"
 msgstr "Inválido COBOL CALL recursivo"
 
-#: libcob/common.c:1331
+#: libcob/common.c:1392
 msgid "End of file"
 msgstr "Fin del archivo"
 
-#: libcob/common.c:1334
+#: libcob/common.c:1395
 msgid "Key out of range"
 msgstr "Clave fuera de rango"
 
-#: libcob/common.c:1337
+#: libcob/common.c:1398
 msgid "Key order not ascending"
 msgstr "Orden de clave no es ascendente"
 
-#: libcob/common.c:1340
+#: libcob/common.c:1401
 msgid "Record key already exists"
 msgstr "Clave de registro ya existe"
 
-#: libcob/common.c:1343
+#: libcob/common.c:1404
 msgid "Record key does not exist"
 msgstr "Clave de registro no existe"
 
-#: libcob/common.c:1346
+#: libcob/common.c:1407
 msgid "Permanent file error"
 msgstr "Error permanente de archivo"
 
-#: libcob/common.c:1349
+#: libcob/common.c:1410
 msgid "File does not exist"
 msgstr "No existe archivo"
 
-#: libcob/common.c:1352
+#: libcob/common.c:1413
 msgid "Permission denied"
 msgstr "Permiso negado"
 
-#: libcob/common.c:1355
+#: libcob/common.c:1416
 msgid "File already open"
 msgstr "Archivo ya abierto"
 
-#: libcob/common.c:1358
+#: libcob/common.c:1419
 msgid "File not open"
 msgstr "Archivo no abierto"
 
-#: libcob/common.c:1361
+#: libcob/common.c:1422
 msgid "READ must be executed first"
 msgstr "READ debe ser executada primero"
 
-#: libcob/common.c:1364
+#: libcob/common.c:1425
 msgid "Record overflow"
 msgstr "Desbordamiento de registro"
 
-#: libcob/common.c:1367
+#: libcob/common.c:1428
 msgid "Failed to read"
 msgstr "No ha podido leer"
 
-#: libcob/common.c:1370
+#: libcob/common.c:1431
 msgid "READ/START not allowed"
 msgstr "READ/START no son permitidos"
 
-#: libcob/common.c:1373
+#: libcob/common.c:1434
 msgid "WRITE not allowed"
 msgstr "WRITE no es permitido"
 
-#: libcob/common.c:1376
+#: libcob/common.c:1437
 msgid "DELETE/REWRITE not allowed"
 msgstr "DELETE/REWRITE no son permitidos"
 
-#: libcob/common.c:1379
+#: libcob/common.c:1440
 msgid "Record locked by another file connector"
 msgstr "Registro bloqueado por otro conector de archivo"
 
-#: libcob/common.c:1382
+#: libcob/common.c:1443
 msgid "LINAGE values invalid"
 msgstr "Valores de LINAGE inválido"
 
-#: libcob/common.c:1385
+#: libcob/common.c:1446
 msgid "File sharing conflict"
 msgstr "Conflicto al compartir archivo"
 
-#: libcob/common.c:1388
+#: libcob/common.c:1449
 msgid "Runtime library is not configured for this operation"
 msgstr "Bibloteca de ejecución no está configurado para esta operación"
 
-#: libcob/common.c:1391
+#: libcob/common.c:1452
 msgid "Unknown file error"
 msgstr "Error desconocido de archivo"
 
-#: libcob/common.c:1397
+#: libcob/common.c:1458
 #, c-format
 msgid "%s (Status = %02d) File : '%s'"
 msgstr "%s (Estado = %02d) Archivo : ‘%s’"
 
-#: libcob/common.c:1402
+#: libcob/common.c:1463
 msgid "Attempt to use non-implemented function"
 msgstr "Intento de usar función no implementada"
 
-#: libcob/common.c:1405
+#: libcob/common.c:1466
 #, c-format
 msgid "Unknown failure : %d"
 msgstr "Fracaso desconocido : %d"
 
-#: libcob/common.c:1522
+#: libcob/common.c:1583
 msgid "Error - Version mismatch"
 msgstr "Error - Conflicto de versión"
 
-#: libcob/common.c:1523
+#: libcob/common.c:1584
 #, c-format
 msgid "%s has version/patch level %s/%d"
 msgstr "%s tiene versión/nivel de parche %s/%d"
 
-#: libcob/common.c:1525
+#: libcob/common.c:1586
 #, c-format
 msgid "Library has version/patch level %s/%d"
 msgstr "Biblioteca tiene versión/nivel de parche %s/%d"
 
-#: libcob/common.c:1535
+#: libcob/common.c:1596
 #, c-format
 msgid "CALL to %s requires %d parameters"
 msgstr "CALL para %s requiere parámetros %d"
 
-#: libcob/common.c:2146
+#: libcob/common.c:2214
 #, c-format
 msgid "BASED/LINKAGE item '%s' has NULL address"
 msgstr "Elemento BASED/LINKAGE ‘%s’ tiene dirección NULL"
 
-#: libcob/common.c:2171
+#: libcob/common.c:2239
 #, c-format
 msgid "'%s' not numeric: '%s'"
 msgstr "'%s' no es numerico: '%s'"
 
-#: libcob/common.c:2184
+#: libcob/common.c:2252
 #, c-format
 msgid "OCCURS DEPENDING ON '%s' out of bounds: %d"
 msgstr "OCCURS DEPENDING ON ‘%s’  fuera de limite: %d"
 
-#: libcob/common.c:2229
+#: libcob/common.c:2297
 #, c-format
 msgid ""
 "EXTERNAL item '%s' previously allocated with size %d, requested size is %d"
@@ -3211,11 +3221,11 @@ msgstr ""
 " Elemento EXTERNAL ‘%s’ previamente asignado con tamaño %d, tamaño pedido es "
 "%d"
 
-#: libcob/common.c:2720
+#: libcob/common.c:2788
 msgid "'cobcommandline' - Runtime has not been initialized"
 msgstr "‘cobcommandline’ - Ejecución no se ha inicializado"
 
-#: libcob/common.c:2865
+#: libcob/common.c:2933
 msgid "Parameter to SYSTEM call is larger than 8192 characters"
 msgstr "Parámetro para llamada de SYSTEM es mayor de 8192 caractéres"
 
@@ -3239,20 +3249,20 @@ msgstr "No se puede unir a ambiente BDB, error: %d %s"
 msgid "Cannot join BDB environment, env_open: %d %s"
 msgstr "No se puede unir a ambiente BDB, env_open: %d %s"
 
-#: libcob/fileio.c:5260
+#: libcob/fileio.c:5264
 msgid "'CBL_CHECK_FILE_EXIST' - File detail area is too short"
 msgstr ""
 "'CBL_CHECK_FILE_EXIST' - Área de detalle de archivo es demasiada pequeña"
 
-#: libcob/fileio.c:5514
+#: libcob/fileio.c:5518
 msgid "'C$FILEINFO' - File detail area is too short"
 msgstr "'C$FILEINFO' - Área de detalle de archivo es demasiada pequeña"
 
-#: libcob/fileio.c:5757
+#: libcob/fileio.c:5761
 msgid "SORT is unable to acquire temporary file"
 msgstr "SORT no puede obtener archivo temporal"
 
-#: libcob/fileio.c:6317
+#: libcob/fileio.c:6321
 #, c-format
 msgid "WARNING - Implicit CLOSE of %s ('%s')"
 msgstr "WARNING - CLOSE implícito de %s ('%s')"

@@ -1,4 +1,4 @@
-This is gnucobol.info, produced by makeinfo version 4.12 from
+This is gnucobol.info, produced by makeinfo version 4.8 from
 gnucobol.texi.
 
 INFO-DIR-SECTION COBOL
@@ -342,8 +342,8 @@ overwritten by one of the following options:
 
 `-free'
      Free format.  The program-text area starts in column 1 and
-     continues till the end of line.  Effectively 255 characters in
-     GNU Cobol.
+     continues till the end of line.  Effectively 255 characters in GNU
+     Cobol.
 
 `-fixed'
      Fixed format.  Source code is divided into a 1-6 column sequence
@@ -1042,7 +1042,8 @@ with source locations.
 File: gnucobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
 
 Appendix A `cobc --help'
-************************
+**********************
+
 
 Usage: cobc [options] file ...
 
@@ -1163,7 +1164,8 @@ Options:
 File: gnucobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
 
 Appendix B `cobc --info'
-************************
+**********************
+
 
 cobc (GNU Cobol) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
@@ -1205,7 +1207,8 @@ ISAM handler             : BDB
 File: gnucobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
 
 Appendix C `cobc --list-reserved'
-*********************************
+*******************************
+
 
 
 Reserved Words			Implemented (Y/N)
@@ -1809,7 +1812,8 @@ COB-CRT-STATUS			PIC 9(4)
 File: gnucobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
 
 Appendix D `cobc --list-intrinsics'
-***********************************
+*********************************
+
 
 
 Intrinsic Function		Implemented	Parameters
@@ -1922,7 +1926,8 @@ YEAR-TO-YYYY			Y		Variable
 File: gnucobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
 
 Appendix E `cobc --list-system'
-*******************************
+*****************************
+
 
 
 System routine			Parameters
@@ -1981,7 +1986,8 @@ X"F5"				2
 File: gnucobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
 
 Appendix F `cobc --list-mnemonics'
-**********************************
+********************************
+
 
 
 Mnemonic names
@@ -2050,7 +2056,8 @@ SW15		Switch name
 File: gnucobol.info,  Node: Appendix G,  Up: Top
 
 Appendix G config/default.conf
-******************************
+****************************
+
 
 # GNU Cobol compiler configuration
 #
@@ -2199,47 +2206,47 @@ value-of-clause:			obsolete
 
 Tag Table:
 Node: Top1018
-Node: Getting Started3258
-Node: Hello World!3436
-Node: Compile4821
-Node: Compiler Options5181
-Node: Help Options5856
-Ref: Help Options-Footnote-17498
-Node: Built Target7541
-Ref: Built Target-Footnote-19657
-Node: Source Format9710
-Node: Warning Options10621
-Node: Configuration Options11806
-Node: Debug Switches12552
-Node: Miscellaneous13639
-Node: Multiple Sources14450
-Node: Static Linking15131
-Node: Dynamic Linking16657
-Ref: Dynamic Linking-Footnote-118056
-Ref: Dynamic Linking-Footnote-218109
-Node: Building Library18162
-Node: Using Library18546
-Node: C Interface19118
-Node: Main C Program19463
-Node: Static C to COBOL20379
-Node: Dynamic C to COBOL21867
-Node: Static COBOL to C23318
-Node: Dynamic COBOL to C24751
-Node: Customize25157
-Node: Customizing Compiler25382
-Node: Customizing Library25961
-Node: Optimize26277
-Node: Optimize Options26581
-Node: Optimize Call27122
-Node: Optimize Binary27501
-Node: Debug28082
-Node: Debug Options28239
-Node: Appendix A28583
-Node: Appendix B34463
-Node: Appendix C36123
-Node: Appendix D45821
-Node: Appendix E48237
-Node: Appendix F49191
-Node: Appendix G50528
+Node: Getting Started3257
+Node: Hello World!3434
+Node: Compile4818
+Node: Compiler Options5177
+Node: Help Options5851
+Ref: Help Options-Footnote-17492
+Node: Built Target7535
+Ref: Built Target-Footnote-19650
+Node: Source Format9703
+Node: Warning Options10613
+Node: Configuration Options11797
+Node: Debug Switches12542
+Node: Miscellaneous13628
+Node: Multiple Sources14438
+Node: Static Linking15118
+Node: Dynamic Linking16643
+Ref: Dynamic Linking-Footnote-118041
+Ref: Dynamic Linking-Footnote-218094
+Node: Building Library18147
+Node: Using Library18530
+Node: C Interface19101
+Node: Main C Program19445
+Node: Static C to COBOL20360
+Node: Dynamic C to COBOL21847
+Node: Static COBOL to C23297
+Node: Dynamic COBOL to C24729
+Node: Customize25134
+Node: Customizing Compiler25358
+Node: Customizing Library25936
+Node: Optimize26250
+Node: Optimize Options26553
+Node: Optimize Call27093
+Node: Optimize Binary27471
+Node: Debug28051
+Node: Debug Options28207
+Node: Appendix A28550
+Node: Appendix B34426
+Node: Appendix C36079
+Node: Appendix D45773
+Node: Appendix E48185
+Node: Appendix F49135
+Node: Appendix G50468
 
 End Tag Table
