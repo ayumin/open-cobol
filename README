@@ -1,8 +1,16 @@
-			       GNU Cobol C++
+		                GNU Cobol C++
 		http://sourceforge.net/projects/open-cobol/
 
-GNU Cobol C++ is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using a native C compiler.
+		http://opencobol.add1tocobol.com/gnucobol
+		         http://www.opencobol.org/
+
+GNU Cobol C++ is a free and open-source COBOL compiler, which translates
+COBOL programs to C++ code and compiles it using a native C++ compiler.
+
+Although many have participated, most development thanks go to
+
+    Roger While
+    Keisuke Nishida
 
 This package contains the following subdirectories:
 
@@ -117,10 +125,10 @@ Installation
 ============
 
 ** NOTE **
-	Due to deficiencies in the tools used to prepare
-	GNU Cobol C++ (autoconf/automake/libtool), it is
-	NOT generally possible to use path names with
-	spaces embedded within them (Mainly Cygwin/MingW/Windows ports).
+   Due to deficiencies in the tools used to prepare GNU Cobol C++
+   (autoconf/automake/libtool), it is NOT generally possible
+   to use path names with spaces embedded within them
+   (Mainly Cygwin/MingW/Windows ports).
  
 ** NOTE **
 	The default installation path for GNU Cobol C++ is /usr/local.

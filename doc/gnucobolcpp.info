@@ -1,15 +1,15 @@
-This is gnucobol.info, produced by makeinfo version 4.13 from
+This is gnucobol.info, produced by makeinfo version 4.8 from
 gnucobol.texi.
 
 INFO-DIR-SECTION COBOL
 START-INFO-DIR-ENTRY
-* GNU Cobol: (gnucobol).      A COBOL compiler
+* GNU Cobol C++: (gnucobolcpp).      A COBOL compiler
 END-INFO-DIR-ENTRY
 
-   This file documents GNU Cobol, a COBOL compiler
+   This file documents GNU Cobol C++, a COBOL compiler
 
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
-Copyright (C) 2007-2012 Roger While
+Copyright (C) 2007-2012 Roger While Copyright (C) 2013 Sergey Kashyrin
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -26,7 +26,7 @@ versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
 
 
-File: gnucobol.info,  Node: Top,  Next: Getting Started,  Up: (dir)
+File: gnucobolcpp.info,  Node: Top,  Next: Getting Started,  Up: (dir)
 
 * Menu:
 
@@ -53,7 +53,7 @@ Compile
 
 * Compiler Options::            Compiler options
 * Multiple Sources::            Compiling multiple source files
-* C Interface::                 Dealing with C files
+* C++ Interface::               Dealing with C++ files
 
 Compiler Options
 
@@ -74,11 +74,11 @@ Multiple Sources
 
 C Interface
 
-* Main C Program::              Writing Main Program in C
-* Static C to COBOL::
-* Dynamic C to COBOL::
-* Static COBOL to C::
-* Dynamic COBOL to C::
+* Main C++ Program::              Writing Main Program in C++
+* Static C++ to COBOL::
+* Dynamic C++ to COBOL::
+* Static COBOL to C++::
+* Dynamic COBOL to C++::
 
 Customize
 
@@ -110,7 +110,7 @@ Appendix F
 Appendix G
 
 
-File: gnucobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: Top
+File: gnucobolcpp.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: Top
 
 1 Getting Started
 *****************
@@ -120,7 +120,7 @@ File: gnucobol.info,  Node: Getting Started,  Next: Compile,  Prev: Top,  Up: To
 * Hello World!::                Hello World!
 
 
-File: gnucobol.info,  Node: Hello World!,  Prev: Getting Started,  Up: Getting Started
+File: gnucobolcpp.info,  Node: Hello World!,  Prev: Getting Started,  Up: Getting Started
 
 1.1 Hello World!
 ================
@@ -173,7 +173,7 @@ option `-o' as follows:
 `goback' verb, and proper use of terminator with `end-display'.
 
 
-File: gnucobol.info,  Node: Compile,  Next: Customize,  Prev: Getting Started,  Up: Top
+File: gnucobolcpp.info,  Node: Compile,  Next: Customize,  Prev: Getting Started,  Up: Top
 
 2 Compile
 *********
@@ -184,10 +184,10 @@ This chapter describes how to compile COBOL programs using GNU Cobol.
 
 * Compiler Options::            Compiler options
 * Multiple Sources::            Compiling multiple source files
-* C Interface::                 Dealing with C files
+* C++ Interface::               Dealing with C++ files
 
 
-File: gnucobol.info,  Node: Compiler Options,  Next: Multiple Sources,  Prev: Compile,  Up: Compile
+File: gnucobolcpp.info,  Node: Compiler Options,  Next: Multiple Sources,  Prev: Compile,  Up: Compile
 
 2.1 Compiler Options
 ====================
@@ -208,7 +208,7 @@ A complete list of options can be displayed by using the help option.
 * Miscellaneous::               Miscellaneous
 
 
-File: gnucobol.info,  Node: Help Options,  Next: Built Target,  Prev: Compiler Options,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Help Options,  Next: Built Target,  Prev: Compiler Options,  Up: Compiler Options
 
 2.1.1 Help Options
 ------------------
@@ -258,15 +258,15 @@ The following switches can be used for informational displays:
    (1) Support may be partial or complete
 
 
-File: gnucobol.info,  Node: Built Target,  Next: Source Format,  Prev: Help Options,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Built Target,  Next: Source Format,  Prev: Help Options,  Up: Compiler Options
 
 2.1.2 Built Target
 ------------------
 
 The `cobc' compiler can handle `*.cob', `*.cbl' as COBOL source code,
-`*.c' for C source code, `*.o' for object code, `*.i' for preprocessed
-code and `*.so' for dynamic modules and will do the right thing in
-terms of generation, compilation, or link.
+`*.cpp' for C++ source code, `*.o' for object code, `*.i' for
+preprocessed code and `*.so' for dynamic modules and will do the right
+thing in terms of generation, compilation, or link.
 
    The following options specify the target type produced by the
 compiler:
@@ -277,12 +277,12 @@ compiler:
      in file `*.i'.
 
 `-C'
-     Translation only.  COBOL source files are translated into C files.
-     The output is saved in file `*.c'.
+     Translation only.  COBOL source files are translated into C++
+     files.  The output is saved in file `*.cpp'.
 
 `-S'
-     Compile only.  Translated C files are compiled by the C compiler
-     to assembler code.  The output is saved in file `*.s'.
+     Compile only.  Translated C++ files are compiled by the C++
+     compiler to assembler code.  The output is saved in file `*.s'.
 
 `-c'
      Compile and assemble.  This is equivalent to `cc -c'.  The output
@@ -304,7 +304,7 @@ compiler:
 
      This option takes effect at the translation stage.  If you give
      this option with `-C', you will see the main function at the end
-     of the generated C file.
+     of the generated C++ file.
 
 `-I <directory>'
      Add <directory> to copy/include search path
@@ -330,7 +330,7 @@ loadable module.
    (1) The extension varies depending on your host.
 
 
-File: gnucobol.info,  Node: Source Format,  Next: Warning Options,  Prev: Built Target,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Source Format,  Next: Warning Options,  Prev: Built Target,  Up: Compiler Options
 
 2.1.3 Source Format
 -------------------
@@ -342,8 +342,8 @@ overwritten by one of the following options:
 
 `-free'
      Free format.  The program-text area starts in column 1 and
-     continues till the end of line.  Effectively 255 characters in
-     GNU Cobol.
+     continues till the end of line.  Effectively 255 characters in GNU
+     Cobol.
 
 `-fixed'
      Fixed format.  Source code is divided into a 1-6 column sequence
@@ -354,7 +354,7 @@ overwritten by one of the following options:
      or source code directive, `>>SOURCE [FORMAT] [IS] {FIXED|FREE}'.
 
 
-File: gnucobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev: Source Format,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Warning Options,  Next: Configuration Options,  Prev: Source Format,  Up: Compiler Options
 
 2.1.4 Warning Options
 ---------------------
@@ -406,7 +406,7 @@ File: gnucobol.info,  Node: Warning Options,  Next: Configuration Options,  Prev
      Warn unreachable statements (NOT set with -Wall)
 
 
-File: gnucobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev: Warning Options,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Configuration Options,  Next: Debug Switches,  Prev: Warning Options,  Up: Compiler Options
 
 2.1.5 Configuration Options
 ---------------------------
@@ -443,7 +443,7 @@ File: gnucobol.info,  Node: Configuration Options,  Next: Debug Switches,  Prev:
 
 
 
-File: gnucobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configuration Options,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configuration Options,  Up: Compiler Options
 
 2.1.6 Debug Switches
 --------------------
@@ -491,7 +491,7 @@ File: gnucobol.info,  Node: Debug Switches,  Next: Miscellaneous,  Prev: Configu
 
 
 
-File: gnucobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler Options
+File: gnucobolcpp.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler Options
 
 2.1.7 Miscellaneous
 -------------------
@@ -525,7 +525,7 @@ File: gnucobol.info,  Node: Miscellaneous,  Prev: Debug Switches,  Up: Compiler 
 
 
 
-File: gnucobol.info,  Node: Multiple Sources,  Next: C Interface,  Prev: Compiler Options,  Up: Compile
+File: gnucobolcpp.info,  Node: Multiple Sources,  Next: C++ Interface,  Prev: Compiler Options,  Up: Compile
 
 2.2 Multiple Sources
 ====================
@@ -545,7 +545,7 @@ COBOL programs.
 * Using Library::               Using external libraries
 
 
-File: gnucobol.info,  Node: Static Linking,  Next: Dynamic Linking,  Prev: Multiple Sources,  Up: Multiple Sources
+File: gnucobolcpp.info,  Node: Static Linking,  Next: Dynamic Linking,  Prev: Multiple Sources,  Up: Multiple Sources
 
 2.2.1 Static Linking
 --------------------
@@ -566,17 +566,17 @@ option `-x':
      $ cobc -c -x main.cob
      $ cobc -x -o prog main.o subr1.o subr2.o
 
-   You can link C routines as well using either method:
+   You can link C++ routines as well using either method:
 
    Method 1:
      $ cobc -o prog main.cob subrs.c
 
    Method 2:
-     $ cobc -c subrs.c
+     $ cobc -c subrs.cpp
      $ cobc -c -x main.cob
      $ cobc -x -o prog main.o subrs.o
 
-   Any number of functions can be contained in a single C file.
+   Any number of functions can be contained in a single C++ file.
 
    The linked programs will be called dynamically; that is, the symbol
 will be resolved at run time.  For example, the following COBOL
@@ -584,7 +584,7 @@ statement
 
      CALL "subr" USING X.
 
-   will be converted into an equivalent C code like this:
+   will be converted into an equivalent C++ code like this:
 
      int (*func)() = cob_resolve("subr");
      if (func != NULL)
@@ -600,7 +600,7 @@ is a literal (like `CALL "subr".').  With a data name (like `CALL
 SUBR.'), the program is still called dynamically.
 
 
-File: gnucobol.info,  Node: Dynamic Linking,  Next: Building Library,  Prev: Static Linking,  Up: Multiple Sources
+File: gnucobolcpp.info,  Node: Dynamic Linking,  Next: Building Library,  Prev: Static Linking,  Up: Multiple Sources
 
 2.2.2 Dynamic Linking
 ---------------------
@@ -648,21 +648,21 @@ directory, and run the main program:
    (2) The extension varies depending on your host.
 
 
-File: gnucobol.info,  Node: Building Library,  Next: Using Library,  Prev: Dynamic Linking,  Up: Multiple Sources
+File: gnucobolcpp.info,  Node: Building Library,  Next: Using Library,  Prev: Dynamic Linking,  Up: Multiple Sources
 
 2.2.3 Building Library
 ----------------------
 
 You can build a shared library by combining multiple COBOL programs and
-even C routines:
+even C++ routines:
 
      $ cobc -c subr1.cob
      $ cobc -c subr2.cob
-     $ cc -c subr3.c
-     $ cc -shared -o libsubrs.so subr1.o subr2.o subr3.o
+     $ c++ -c subr3.cpp
+     $ c++ -shared -o libsubrs.so subr1.o subr2.o subr3.o
 
 
-File: gnucobol.info,  Node: Using Library,  Prev: Building Library,  Up: Multiple Sources
+File: gnucobolcpp.info,  Node: Using Library,  Prev: Building Library,  Up: Multiple Sources
 
 2.2.4 Using Library
 -------------------
@@ -680,29 +680,29 @@ directory:
      $ cobc -x main.cob -L/your/cobol/lib -lsubrs
 
 
-File: gnucobol.info,  Node: C Interface,  Prev: Multiple Sources,  Up: Compile
+File: gnucobolcpp.info,  Node: C++ Interface,  Prev: Multiple Sources,  Up: Compile
 
-2.3 C Interface
-===============
+2.3 C++ Interface
+=================
 
-This chapter describes how to combine C programs with COBOL programs.
+This chapter describes how to combine C++ programs with COBOL programs.
 
 * Menu:
 
-* Main C Program::              Writing Main Program in C
-* Static C to COBOL::
-* Dynamic C to COBOL::
-* Static COBOL to C::
-* Dynamic COBOL to C::
+* Main C++ Program::              Writing Main Program in C++
+* Static C++ to COBOL::
+* Dynamic C++ to COBOL::
+* Static COBOL to C++::
+* Dynamic COBOL to C++::
 
 
-File: gnucobol.info,  Node: Main C Program,  Next: Static C to COBOL,  Prev: C Interface,  Up: C Interface
+File: gnucobolcpp.info,  Node: Main C++ Program,  Next: Static C++ to COBOL,  Prev: C++ Interface,  Up: C++ Interface
 
-2.3.1 Writing Main Program in C
--------------------------------
+2.3.1 Writing Main Program in C++
+---------------------------------
 
-Include `libcob.h' in your C program.  Call `cob_init' before using any
-COBOL module:
+Include `libcob.h' in your C++ program.  Call `cob_init' before using
+any COBOL module:
 
      #include <libcob.h>
 
@@ -726,21 +726,21 @@ COBOL module:
    You can write `cobc_init(0, NULL);' if you do not want to pass
 command line arguments to COBOL.
 
-   You can compile your C program as follows:
+   You can compile your C++ program as follows:
 
-     cc -c `cob-config --cflags` main.c
+     c++ -c `cob-config --cflags` main.cpp
 
    The compiled object must be linked with libcob as follows:
 
      cc -o main main.o `cob-config --libs`
 
 
-File: gnucobol.info,  Node: Static C to COBOL,  Next: Dynamic C to COBOL,  Prev: Main C Program,  Up: C Interface
+File: gnucobolcpp.info,  Node: Static C++ to COBOL,  Next: Dynamic C++ to COBOL,  Prev: Main C++ Program,  Up: C++ Interface
 
 2.3.2 Static linking with COBOL programs
 ----------------------------------------
 
-Let's call the following COBOL module from a C program:
+Let's call the following COBOL module from a C++ program:
 
      ---- say.cob ---------------------------
             IDENTIFICATION DIVISION.
@@ -757,14 +757,14 @@ Let's call the following COBOL module from a C program:
 
    This program accepts two arguments, displays them, and exits.
 
-   From the viewpoint of C, this is equivalent to a function having the
-following prototype:
+   From the viewpoint of C++, this is equivalent to a function having
+the following prototype:
 
      extern int say(char *hello, char *world);
 
    So, your main program will look like as follows:
 
-     ---- hello.c ---------------------------
+     ---- hello.cpp -------------------------
      #include <libcob.h>
 
      extern int say(char *hello, char *world);
@@ -772,33 +772,30 @@ following prototype:
      int
      main()
      {
-       int ret;
        char hello[7] = "Hello ";
        char world[7] = "World!";
 
        cob_init(0, NULL);
 
-       ret = say(hello, world);
-
-       return ret;
+       return say(hello, world);
      }
      ----------------------------------------
 
    Compile these programs as follows:
 
-     $ cc -c `cob-config --cflags` hello.c
+     $ c++ -c `cob-config --cflags` hello.cpp
      $ cobc -c -static say.cob
      $ cobc -x -o hello hello.o say.o
      $ ./hello
      Hello World!
 
 
-File: gnucobol.info,  Node: Dynamic C to COBOL,  Next: Static COBOL to C,  Prev: Static C to COBOL,  Up: C Interface
+File: gnucobolcpp.info,  Node: Dynamic C++ to COBOL,  Next: Static COBOL to C++,  Prev: Static C++ to COBOL,  Up: C++ Interface
 
 2.3.3 Dynamic linking with COBOL programs
 -----------------------------------------
 
-You can find a COBOL module having a specific PROGRAM-ID by using a C
+You can find a COBOL module having a specific PROGRAM-ID by using a C++
 function `cob_resolve', which takes the module name as a string and
 returns a pointer to the module function.
 
@@ -807,7 +804,7 @@ function `cob_resolve_error' returns the error message.
 
    Let's see an example:
 
-     ---- hello-dynamic.c -------------------
+     ---- hello-dynamic.cpp -----------------
      #include <libcob.h>
 
      static int (*say)(char *hello, char *world);
@@ -815,7 +812,6 @@ function `cob_resolve_error' returns the error message.
      int
      main()
      {
-       int ret;
        char hello[7] = "Hello ";
        char world[7] = "World!";
 
@@ -831,15 +827,13 @@ function `cob_resolve_error' returns the error message.
        }
 
        /* call the module found and exit with the return code */
-       ret = say(hello, world);
-
-       return ret;
+       return say(hello, world);
      }
      ----------------------------------------
 
    Compile these programs as follows:
 
-     $ cc -c `cob-config --cflags` hello-dynamic.c
+     $ c++ -c `cob-config --cflags` hello-dynamic.cpp
      $ cobc -x -o hello hello-dynamic.o
      $ cobc -m say.cob
      $ export COB_LIBRARY_PATH=.
@@ -847,21 +841,20 @@ function `cob_resolve_error' returns the error message.
      Hello World!
 
 
-File: gnucobol.info,  Node: Static COBOL to C,  Next: Dynamic COBOL to C,  Prev: Dynamic C to COBOL,  Up: C Interface
+File: gnucobolcpp.info,  Node: Static COBOL to C++,  Next: Dynamic COBOL to C++,  Prev: Dynamic C++ to COBOL,  Up: C++ Interface
 
-2.3.4 Static linking with C programs
-------------------------------------
+2.3.4 Static linking with C++ programs
+--------------------------------------
 
-Let's call the following C function from COBOL:
+Let's call the following C++ function from COBOL:
 
-     ---- say.c -----------------------------
+     ---- say.cpp ---------------------------
      int
-     say(char *hello, char *world)
+     say (char *hello, char *world)
      {
-       int i;
-       for (i = 0; i < 6; i++)
+       for (int i = 0; i < 6; i++)
          putchar(hello[i]);
-       for (i = 0; i < 6; i++)
+       for (int i = 0; i < 6; i++)
          putchar(world[i]);
        putchar('\n');
        return 0;
@@ -870,8 +863,8 @@ Let's call the following C function from COBOL:
 
    This program is equivalent to the foregoing `say.cob'.
 
-   Note that, unlike C, the arguments passed from COBOL programs are not
-terminated by the null character (i.e., `\0').
+   Note that, unlike C++, the arguments passed from COBOL programs are
+not terminated by the null character (i.e., `\0').
 
    You can call this function in the same way you call COBOL programs:
 
@@ -890,29 +883,29 @@ terminated by the null character (i.e., `\0').
 
    Compile these programs as follows:
 
-     $ cc -c say.c
+     $ c++ -c say.cpp
      $ cobc -c -static -x hello.cob
      $ cobc -x -o hello hello.o say.o
      $ ./hello
      Hello World!
 
 
-File: gnucobol.info,  Node: Dynamic COBOL to C,  Prev: Static COBOL to C,  Up: C Interface
+File: gnucobolcpp.info,  Node: Dynamic COBOL to C++,  Prev: Static COBOL to C++,  Up: C++ Interface
 
-2.3.5 Dynamic linking with C programs
--------------------------------------
+2.3.5 Dynamic linking with C++ programs
+---------------------------------------
 
-You can create a dynamic-linking module from a C program by passing an
-option `-shared' to the C compiler:
+You can create a dynamic-linking module from a C++ program by passing an
+option `-shared' to the C++ compiler:
 
-     $ cc -shared -o say.so say.c
+     $ c++ -shared -o say.so say.cpp
      $ cobc -x hello.cob
      $ export COB_LIBRARY_PATH=.
      $ ./hello
      Hello World!
 
 
-File: gnucobol.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: Top
+File: gnucobolcpp.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: Top
 
 3 Customize
 ***********
@@ -923,7 +916,7 @@ File: gnucobol.info,  Node: Customize,  Next: Optimize,  Prev: Compile,  Up: Top
 * Customizing Library::         Customizing Library
 
 
-File: gnucobol.info,  Node: Customizing Compiler,  Next: Customizing Library,  Prev: Customize,  Up: Customize
+File: gnucobolcpp.info,  Node: Customizing Compiler,  Next: Customizing Library,  Prev: Customize,  Up: Customize
 
 3.1 Customizing Compiler
 ========================
@@ -933,13 +926,13 @@ These settings are effective at compile-time.
    Environment variables (default value):
 
 `COB_CC'
-     C compiler ("gcc")
+     C++ compiler ("g++")
 
 `COB_CFLAGS'
-     Flags passed to the C compiler ("-I$(PREFIX)/include")
+     Flags passed to the C++ compiler ("-I$(PREFIX)/include")
 
 `COB_LDFLAGS'
-     Flags passed to the C compiler ("")
+     Flags passed to the C++ compiler ("")
 
 `COB_LIBS'
      Standard libraries linked with the program ("-L$(PREFIX)/lib
@@ -949,7 +942,7 @@ These settings are effective at compile-time.
      Additional libraries linked with the program ("")
 
 
-File: gnucobol.info,  Node: Customizing Library,  Prev: Customizing Compiler,  Up: Customize
+File: gnucobolcpp.info,  Node: Customizing Library,  Prev: Customizing Compiler,  Up: Customize
 
 3.2 Customizing Library
 =======================
@@ -962,7 +955,7 @@ These settings are effective at run-time.
      Dynamic-linking module path (".:$(PREFIX)/lib/gnu-cobol")
 
 
-File: gnucobol.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
+File: gnucobolcpp.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
 
 4 Optimize
 **********
@@ -974,23 +967,23 @@ File: gnucobol.info,  Node: Optimize,  Next: Debug,  Prev: Customize,  Up: Top
 * Optimize Binary::             Use efficient binary representation
 
 
-File: gnucobol.info,  Node: Optimize Options,  Next: Optimize Call,  Prev: Optimize,  Up: Optimize
+File: gnucobolcpp.info,  Node: Optimize Options,  Next: Optimize Call,  Prev: Optimize,  Up: Optimize
 
 4.1 Optimize Options
 ====================
 
 There are three compiler options for optimization: `-O', `-Os' and
 `-O2'.  These options enable optimization at both translation (from
-COBOL to C) and compilation (C to assembly) levels.
+COBOL to C++) and compilation (C++ to assembly) levels.
 
    Currently, there is no difference between these optimization options
 at the translation level.
 
-   The option `-O', `-Os' or `-O2' is passed to the C compiler as it is
-and used for C level optimization.
+   The option `-O', `-Os' or `-O2' is passed to the C++ compiler as it
+is and used for C++ level optimization.
 
 
-File: gnucobol.info,  Node: Optimize Call,  Next: Optimize Binary,  Prev: Optimize Options,  Up: Optimize
+File: gnucobolcpp.info,  Node: Optimize Call,  Next: Optimize Binary,  Prev: Optimize Options,  Up: Optimize
 
 4.2 Optimize Call
 =================
@@ -1001,7 +994,7 @@ statically link the program at compile time and call it efficiently.
 (*note Static Linking::)
 
 
-File: gnucobol.info,  Node: Optimize Binary,  Prev: Optimize Call,  Up: Optimize
+File: gnucobolcpp.info,  Node: Optimize Binary,  Prev: Optimize Call,  Up: Optimize
 
 4.3 Optimize Binary
 ===================
@@ -1018,7 +1011,7 @@ config file (*note Customize::).
 `1-2-4-8' is more efficient than others.
 
 
-File: gnucobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
+File: gnucobolcpp.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
 
 5 Debug
 *******
@@ -1028,7 +1021,7 @@ File: gnucobol.info,  Node: Debug,  Next: Appendix A,  Prev: Optimize,  Up: Top
 * Debug Options::               Debug options
 
 
-File: gnucobol.info,  Node: Debug Options,  Prev: Debug,  Up: Debug
+File: gnucobolcpp.info,  Node: Debug Options,  Prev: Debug,  Up: Debug
 
 5.1 Debug Options
 =================
@@ -1039,10 +1032,11 @@ boundary checks and numeric data checks, and displays run-time errors
 with source locations.
 
 
-File: gnucobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix A,  Next: Appendix B,  Prev: Debug,  Up: Top
 
-Appendix A `cobc --help'
-************************
+Anhang A `cobc --help'
+**********************
+
 
 Usage: cobc [options] file ...
 
@@ -1160,10 +1154,11 @@ Options:
 			- unless NOT OPTIONAL specified
 
 
-File: gnucobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
 
-Appendix B `cobc --info'
-************************
+Anhang B `cobc --info'
+**********************
+
 
 cobc (GNU Cobol) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
@@ -1202,10 +1197,11 @@ Sequential handler       : Internal
 ISAM handler             : BDB
 
 
-File: gnucobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
 
-Appendix C `cobc --list-reserved'
-*********************************
+Anhang C `cobc --list-reserved'
+*******************************
+
 
 
 Reserved Words			Implemented (Y/N)
@@ -1806,10 +1802,11 @@ COB-CRT-STATUS			PIC 9(4)
 'LENGTH OF' phrase		USAGE BINARY-LONG
 
 
-File: gnucobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
 
-Appendix D `cobc --list-intrinsics'
-***********************************
+Anhang D `cobc --list-intrinsics'
+*********************************
+
 
 
 Intrinsic Function		Implemented	Parameters
@@ -1919,10 +1916,11 @@ WHEN-COMPILED			Y		0
 YEAR-TO-YYYY			Y		Variable
 
 
-File: gnucobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
 
-Appendix E `cobc --list-system'
-*******************************
+Anhang E `cobc --list-system'
+*****************************
+
 
 
 System routine			Parameters
@@ -1978,10 +1976,11 @@ X"F4"				2
 X"F5"				2
 
 
-File: gnucobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
 
-Appendix F `cobc --list-mnemonics'
-**********************************
+Anhang F `cobc --list-mnemonics'
+********************************
+
 
 
 Mnemonic names
@@ -2047,10 +2046,11 @@ SW14		Switch name
 SW15		Switch name
 
 
-File: gnucobol.info,  Node: Appendix G,  Up: Top
+File: gnucobolcpp.info,  Node: Appendix G,  Up: Top
 
-Appendix G config/default.conf
-******************************
+Anhang G config/default.conf
+****************************
+
 
 # GNU Cobol compiler configuration
 #
@@ -2198,48 +2198,48 @@ value-of-clause:			obsolete
 
 
 Tag Table:
-Node: Top1015
-Node: Getting Started3254
-Node: Hello World!3431
-Node: Compile4815
-Node: Compiler Options5174
-Node: Help Options5848
-Ref: Help Options-Footnote-17489
-Node: Built Target7532
-Ref: Built Target-Footnote-19647
-Node: Source Format9700
-Node: Warning Options10610
-Node: Configuration Options11794
-Node: Debug Switches12539
-Node: Miscellaneous13625
-Node: Multiple Sources14435
-Node: Static Linking15115
-Node: Dynamic Linking16640
-Ref: Dynamic Linking-Footnote-118038
-Ref: Dynamic Linking-Footnote-218091
-Node: Building Library18144
-Node: Using Library18527
-Node: C Interface19098
-Node: Main C Program19442
-Node: Static C to COBOL20357
-Node: Dynamic C to COBOL21844
-Node: Static COBOL to C23294
-Node: Dynamic COBOL to C24726
-Node: Customize25131
-Node: Customizing Compiler25355
-Node: Customizing Library25933
-Node: Optimize26247
-Node: Optimize Options26550
-Node: Optimize Call27090
-Node: Optimize Binary27468
-Node: Debug28048
-Node: Debug Options28204
-Node: Appendix A28547
-Node: Appendix B34426
-Node: Appendix C36082
-Node: Appendix D45779
-Node: Appendix E48194
-Node: Appendix F49147
-Node: Appendix G50483
+Node: Top1070
+Node: Getting Started3326
+Node: Hello World!3506
+Node: Compile4893
+Node: Compiler Options5257
+Node: Help Options5934
+Ref: Help Options-Footnote-17578
+Node: Built Target7621
+Ref: Built Target-Footnote-19754
+Node: Source Format9807
+Node: Warning Options10720
+Node: Configuration Options11907
+Node: Debug Switches12655
+Node: Miscellaneous13744
+Node: Multiple Sources14557
+Node: Static Linking15242
+Node: Dynamic Linking16778
+Ref: Dynamic Linking-Footnote-118179
+Ref: Dynamic Linking-Footnote-218232
+Node: Building Library18285
+Node: Using Library18677
+Node: C++ Interface19251
+Node: Main C++ Program19618
+Node: Static C++ to COBOL20555
+Node: Dynamic C++ to COBOL22025
+Node: Static COBOL to C++23456
+Node: Dynamic COBOL to C++24905
+Node: Customize25330
+Node: Customizing Compiler25557
+Node: Customizing Library26144
+Node: Optimize26461
+Node: Optimize Options26767
+Node: Optimize Call27318
+Node: Optimize Binary27699
+Node: Debug28282
+Node: Debug Options28441
+Node: Appendix A28787
+Node: Appendix B34666
+Node: Appendix C36322
+Node: Appendix D46019
+Node: Appendix E48434
+Node: Appendix F49387
+Node: Appendix G50723
 
 End Tag Table
