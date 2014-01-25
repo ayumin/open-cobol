@@ -1,3 +1,9 @@
+2014-01-25  Brian Tiffin <btiffin@gnu.org>
+	* cobcrun.c : Added -M path/module command line option
+	  if path/ found, prepend to COB_LIBRARY_PATH
+	  if module (no slash) found, prepend to COB_PRE_LOAD
+	  may set both.
+
 2012-05-09  human
 
 	* cobcrun.c : Added conversion for enabling options in WIN style;
