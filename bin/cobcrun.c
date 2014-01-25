@@ -151,6 +151,7 @@ cobcrun_initial_module (char *module_argument)
 	    envop_return = setenv("COB_LIBRARY_PATH", env_space, 1);
 	    if (envop_return) {
 		fprintf(stderr, "Problem with setenv COB_LIBRARY_PATH: %d\n", errno);
+		return 1;
 	    }
 	    free(pathname);
 	}
@@ -166,6 +167,7 @@ cobcrun_initial_module (char *module_argument)
 	    envop_return = setenv("COB_PRE_LOAD", filename, 1);
 	    if (envop_return) {
 		fprintf(stderr, "Problem with setenv COB_PRE_LOAD: %d\n", errno);
+		return 1;
 	    }
 	    free(filename);
 	}    
@@ -209,7 +211,9 @@ process_command_line (int argc, char *argv[], int *skip)
 			cobcrun_print_version ();
 			return 0;
 		case 'M':
-			cobcrun_initial_module (optarg);
+			if (cobcrun_initial_module (optarg)) {
+				return 1;
+			}
 			*skip = optind;
 			return 99;
 		}
