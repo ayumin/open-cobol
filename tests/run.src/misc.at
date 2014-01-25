@@ -37,9 +37,9 @@ AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      prog.
        PROCEDURE        DIVISION.
-           DISPLAY 1,1,1 NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   DISPLAY 1,1,1 NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -60,23 +60,23 @@ AT_DATA([callee.cob], [
        LOCAL-STORAGE    SECTION.
        01 LCL-X         PIC XXX VALUE "abc".
        PROCEDURE        DIVISION.
-           DISPLAY "WRK-X = " WRK-X
-           END-DISPLAY.
-           DISPLAY "LCL-X = " LCL-X
-           END-DISPLAY.
-           MOVE ZERO TO WRK-X LCL-X.
-           EXIT PROGRAM.
+	   DISPLAY "WRK-X = " WRK-X
+	   END-DISPLAY.
+	   DISPLAY "LCL-X = " LCL-X
+	   END-DISPLAY.
+	   MOVE ZERO TO WRK-X LCL-X.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      caller.
        PROCEDURE        DIVISION.
-           CALL "callee"
-           END-CALL.
-           CALL "callee"
-           END-CALL.
-           STOP RUN.
+	   CALL "callee"
+	   END-CALL.
+	   CALL "callee"
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -102,10 +102,10 @@ AT_DATA([callee.cob], [
        01 WRK-VAR       PIC X(5).
        01 EXT-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
-           DISPLAY EXT-VAR
-           END-DISPLAY.
-           MOVE "World" TO EXT-VAR.
-           EXIT PROGRAM.
+	   DISPLAY EXT-VAR
+	   END-DISPLAY.
+	   MOVE "World" TO EXT-VAR.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -116,12 +116,12 @@ AT_DATA([caller.cob], [
        01 EXT-VAR       PIC X(5) EXTERNAL.
        01 WRK-VAR       PIC X(5).
        PROCEDURE        DIVISION.
-           MOVE "Hello" TO EXT-VAR.
-           CALL "callee"
-           END-CALL.
-           DISPLAY EXT-VAR
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE "Hello" TO EXT-VAR.
+	   CALL "callee"
+	   END-CALL.
+	   DISPLAY EXT-VAR
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -145,12 +145,12 @@ AT_DATA([callee.cob], [
        01 PRG-VAR       PIC X(5) EXTERNAL AS "WRK-VAR".
        01 EXT-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
-           DISPLAY PRG-VAR
-           END-DISPLAY.
-           DISPLAY EXT-VAR
-           END-DISPLAY.
-           MOVE "World" TO EXT-VAR.
-           EXIT PROGRAM.
+	   DISPLAY PRG-VAR
+	   END-DISPLAY.
+	   DISPLAY EXT-VAR
+	   END-DISPLAY.
+	   MOVE "World" TO EXT-VAR.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -161,13 +161,13 @@ AT_DATA([caller.cob], [
        01 MYVAR         PIC X(5) EXTERNAL AS "EXT-VAR".
        01 WRK-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
-           MOVE "Extrn" TO WRK-VAR.
-           MOVE "Hello" TO MYVAR.
-           CALL "callee"
-           END-CALL.
-           DISPLAY MYVAR
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE "Extrn" TO WRK-VAR.
+	   MOVE "Hello" TO MYVAR.
+	   CALL "callee"
+	   END-CALL.
+	   DISPLAY MYVAR
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -192,10 +192,10 @@ AT_DATA([callee.cob], [
        01 WRK-VAR       PIC X(5).
        01 EXT-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
-           DISPLAY EXT-VAR
-           END-DISPLAY.
-           MOVE "World" TO EXT-VAR.
-           EXIT PROGRAM.
+	   DISPLAY EXT-VAR
+	   END-DISPLAY.
+	   MOVE "World" TO EXT-VAR.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -206,12 +206,12 @@ AT_DATA([caller.cob], [
        01 EXT-VAR       PIC X(5) EXTERNAL.
        01 WRK-VAR       PIC X(5).
        PROCEDURE        DIVISION.
-           MOVE "Hello" TO EXT-VAR.
-           CALL "callee"
-           END-CALL.
-           DISPLAY EXT-VAR
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE "Hello" TO EXT-VAR.
+	   CALL "callee"
+	   END-CALL.
+	   DISPLAY EXT-VAR
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -219,6 +219,61 @@ AT_CHECK([${COMPILE_MODULE} caller.cob])
 AT_CHECK([${COBCRUN} caller], [0],
 [Hello
 World
+])
+
+AT_CLEANUP
+
+
+AT_SETUP([cobcrun -M validation])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([callee.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 EXT-VAR       PIC X(9) EXTERNAL.
+       PROCEDURE        DIVISION.
+	   DISPLAY EXT-VAR END-DISPLAY.
+	   MOVE "World" TO EXT-VAR.
+	   EXIT PROGRAM.
+])
+
+AT_DATA([caller.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      caller.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 EXT-VAR       PIC X(9) EXTERNAL.
+       PROCEDURE        DIVISION.
+	   MOVE "Hello" TO EXT-VAR.
+	   CALL "callee" END-CALL.
+	   DISPLAY EXT-VAR END-DISPLAY.
+	   STOP RUN.
+       END PROGRAM CALLER.
+
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      called.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 EXT-VAR       PIC X(9) EXTERNAL.
+       01 CLA-VAR       PIX X(9).
+       PROCEDURE        DIVISION.
+	   MOVE "Greetings" TO EXT-VAR.
+	   CALL "callee" END-CALL.
+	   DISPLAY EXT-VAR END-DISPLAY.
+	   ACCEPT CLA-VAR FROM COMMAND-LINE END-ACCEPT.
+	   DISPLAY CLA-VAR END-DISPLAY.
+	   STOP RUN.
+       END PROGRAM CALLER.
+])
+
+AT_CHECK([${COMPILE_MODULE} callee.cob])
+AT_CHECK([${COMPILE_MODULE} caller.cob])
+AT_CHECK([${COBCRUN} -M ./caller called and stuff], [0],
+[Greetings
+World
+and stuff
 ])
 
 AT_CLEANUP
@@ -236,10 +291,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC 99 VALUE 12.
        PROCEDURE        DIVISION.
-           MOVE X TO X.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE X TO X.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -257,10 +312,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC 9(4) VALUE 0.
        PROCEDURE        DIVISION.
-           MOVE "1" TO X(1:1).
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE "1" TO X(1:1).
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -280,10 +335,10 @@ AT_DATA([prog.cob], [
        01 Y             PIC X(4) VALUE "abcd".
        01 I             PIC 9 VALUE 1.
        PROCEDURE        DIVISION.
-           MOVE X(1:I) TO Y.
-           DISPLAY Y NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE X(1:I) TO Y.
+	   DISPLAY Y NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -300,12 +355,12 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 G.
-         02 X           PIC 9999 VALUE 1234.
+	 02 X           PIC 9999 VALUE 1234.
        PROCEDURE        DIVISION.
-           MOVE "99" TO G(3:2).
-           DISPLAY G NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE "99" TO G(3:2).
+	   DISPLAY G NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -322,13 +377,13 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 G.
-         02 X           PIC X OCCURS 10 INDEXED I.
+	 02 X           PIC X OCCURS 10 INDEXED I.
        PROCEDURE        DIVISION.
-           SET I TO ZERO.
-           MOVE I TO X(1).
-           DISPLAY X(1) NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   SET I TO ZERO.
+	   MOVE I TO X(1).
+	   DISPLAY X(1) NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -358,10 +413,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC XXX.
        PROCEDURE        DIVISION.
-           MOVE X"000102" TO X.
-           CALL "dump" USING X
-           END-CALL.
-           STOP RUN.
+	   MOVE X"000102" TO X.
+	   CALL "dump" USING X
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -382,7 +437,7 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X OCCURS 10.
        PROCEDURE        DIVISION.
-           STOP RUN.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_ONLY} prog.cob], [1], ,
@@ -404,11 +459,11 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(6) VALUE "123   ".
        PROCEDURE        DIVISION.
-           IF X(1:3) NUMERIC
-               DISPLAY "OK" NO ADVANCING
-               END-DISPLAY
-           END-IF.
-           STOP RUN.
+	   IF X(1:3) NUMERIC
+	       DISPLAY "OK" NO ADVANCING
+	       END-DISPLAY
+	   END-IF.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -425,12 +480,12 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 G.
-         02 X           PIC X OCCURS 1 INDEXED BY I.
+	 02 X           PIC X OCCURS 1 INDEXED BY I.
        PROCEDURE        DIVISION.
-         IF I < (I + 2)
-           DISPLAY "OK"
-           END-DISPLAY
-         END-IF.
+	 IF I < (I + 2)
+	   DISPLAY "OK"
+	   END-DISPLAY
+	 END-IF.
 ])
 
 AT_CHECK([${COMPILE_ONLY} -o prog prog.cob])
@@ -445,25 +500,25 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 X             PIC X(333) VALUE
-           '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
+	   '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
       -    'YZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV
       -    'WXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRST
       -    'UVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR
       -    'STUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP
       -    'QRSTUVWXYZ'.
        PROCEDURE        DIVISION.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           MOVE 
-           'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   MOVE 
+	   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
       -    '89abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
       -    '6789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123
       -    '456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01
       -    '23456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
       -    '0123456789' TO X.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -482,10 +537,10 @@ AT_DATA([prog.cob], [
        01 X-X           PIC XXXX VALUE "0001".
        01 X-9           PIC 9999 COMP VALUE 1.
        PROCEDURE        DIVISION.
-         IF X-X = X-9
-           DISPLAY "OK" NO ADVANCING
-           END-DISPLAY
-         END-IF.
+	 IF X-X = X-9
+	   DISPLAY "OK" NO ADVANCING
+	   END-DISPLAY
+	 END-IF.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -503,16 +558,16 @@ AT_DATA([callee.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      callee.
        PROCEDURE        DIVISION.
-           DISPLAY "OK" NO ADVANCING
-           END-DISPLAY.
+	   DISPLAY "OK" NO ADVANCING
+	   END-DISPLAY.
 ])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      caller.
        PROCEDURE        DIVISION.
-           CALL "callee"
-           END-CALL.
+	   CALL "callee"
+	   END-CALL.
 ])
 
 AT_CHECK([${COMPILE_MODULE} -c callee.cob])
@@ -532,10 +587,10 @@ AT_DATA([m1.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC 9(4).
        PROCEDURE        DIVISION.
-           COMPUTE X = 1 + 2
-           END-COMPUTE.
-           DISPLAY X
-           END-DISPLAY.
+	   COMPUTE X = 1 + 2
+	   END-COMPUTE.
+	   DISPLAY X
+	   END-DISPLAY.
 ])
 
 AT_DATA([m2.cob], [
@@ -545,23 +600,23 @@ AT_DATA([m2.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC 9(4).
        PROCEDURE        DIVISION.
-           COMPUTE X = 3 + 4
-           END-COMPUTE.
-           DISPLAY X
-           END-DISPLAY.
+	   COMPUTE X = 3 + 4
+	   END-COMPUTE.
+	   DISPLAY X
+	   END-DISPLAY.
 ])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      caller.
        PROCEDURE        DIVISION.
-           CALL "m1"
-           END-CALL.
-           CALL "m2"
-           END-CALL.
-           CALL "m1"
-           END-CALL.
-           STOP RUN.
+	   CALL "m1"
+	   END-CALL.
+	   CALL "m2"
+	   END-CALL.
+	   CALL "m1"
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} m1.cob])
@@ -600,17 +655,17 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01  MYOCC        PIC 9(8) COMP.
        01  MYTAB.
-           03  MYBYTE   PIC X OCCURS 1 TO 20
-                        DEPENDING ON MYOCC.
+	   03  MYBYTE   PIC X OCCURS 1 TO 20
+			DEPENDING ON MYOCC.
        PROCEDURE        DIVISION.
-           MOVE 9 TO MYOCC.
-           CALL "dump" USING BY CONTENT 1
-           END-CALL.
-           CALL "dump" USING BY CONTENT LENGTH OF MYTAB
-           END-CALL.
-           CALL "dump" USING BY CONTENT LENGTH OF MYOCC
-           END-CALL.
-           STOP RUN.
+	   MOVE 9 TO MYOCC.
+	   CALL "dump" USING BY CONTENT 1
+	   END-CALL.
+	   CALL "dump" USING BY CONTENT LENGTH OF MYTAB
+	   END-CALL.
+	   CALL "dump" USING BY CONTENT LENGTH OF MYOCC
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} dump.c])
@@ -642,10 +697,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(4) VALUE "0001".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING LEADING ZEROS BY SPACES.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   INSPECT X REPLACING LEADING ZEROS BY SPACES.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -663,10 +718,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(3) VALUE "BCA".
        PROCEDURE        DIVISION.
-           INSPECT X CONVERTING "ABC" TO "BCD".
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   INSPECT X CONVERTING "ABC" TO "BCD".
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -685,10 +740,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(3) VALUE "BCA".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING ALL "BC" BY SPACE.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   INSPECT X REPLACING ALL "BC" BY SPACE.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -708,18 +763,18 @@ AT_DATA([prog.cob], [
        01 X             PIC X(4) VALUE "ABC ".
        01 TAL           PIC 999 VALUE 0.
        PROCEDURE        DIVISION.
-           MOVE 0 TO TAL.
-           INSPECT X TALLYING TAL FOR CHARACTERS
-                     BEFORE INITIAL " ".
-           DISPLAY TAL NO ADVANCING
-           END-DISPLAY.
-           MOVE 0 TO TAL.
-           MOVE " ABC" TO X.
-           INSPECT X TALLYING TAL FOR CHARACTERS
-                     BEFORE INITIAL " ".
-           DISPLAY TAL NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE 0 TO TAL.
+	   INSPECT X TALLYING TAL FOR CHARACTERS
+		     BEFORE INITIAL " ".
+	   DISPLAY TAL NO ADVANCING
+	   END-DISPLAY.
+	   MOVE 0 TO TAL.
+	   MOVE " ABC" TO X.
+	   INSPECT X TALLYING TAL FOR CHARACTERS
+		     BEFORE INITIAL " ".
+	   DISPLAY TAL NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -739,18 +794,18 @@ AT_DATA([prog.cob], [
        01 X             PIC X(4) VALUE "ABC ".
        01 TAL           PIC 999 VALUE 0.
        PROCEDURE        DIVISION.
-           MOVE 0 TO TAL.
-           INSPECT X TALLYING TAL FOR CHARACTERS
-                     AFTER INITIAL " ".
-           DISPLAY TAL NO ADVANCING
-           END-DISPLAY.
-           MOVE 0 TO TAL.
-           MOVE " ABC" TO X.
-           INSPECT X TALLYING TAL FOR CHARACTERS
-                     AFTER INITIAL " ".
-           DISPLAY TAL NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE 0 TO TAL.
+	   INSPECT X TALLYING TAL FOR CHARACTERS
+		     AFTER INITIAL " ".
+	   DISPLAY TAL NO ADVANCING
+	   END-DISPLAY.
+	   MOVE 0 TO TAL.
+	   MOVE " ABC" TO X.
+	   INSPECT X TALLYING TAL FOR CHARACTERS
+		     AFTER INITIAL " ".
+	   DISPLAY TAL NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -768,10 +823,10 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(4) VALUE "1000".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING TRAILING ZEROS BY SPACES.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   INSPECT X REPLACING TRAILING ZEROS BY SPACES.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -789,13 +844,13 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(12) VALUE "AAABBCDCCCCC".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING 
-             ALL      "A" BY "Z"
-                      "B" BY "Y"
-             TRAILING "C" BY "X".
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   INSPECT X REPLACING 
+	     ALL      "A" BY "Z"
+		      "B" BY "Y"
+	     TRAILING "C" BY "X".
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -811,46 +866,46 @@ AT_DATA([prog.cob], [
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
-           SWITCH-1 IS SWIT1
-             ON IS SWIT1-ON
-             OFF IS SWIT1-OFF
-           SWITCH-2 IS SWIT2
-             ON IS SWIT2-ON
-             OFF IS SWIT2-OFF.
+	   SWITCH-1 IS SWIT1
+	     ON IS SWIT1-ON
+	     OFF IS SWIT1-OFF
+	   SWITCH-2 IS SWIT2
+	     ON IS SWIT2-ON
+	     OFF IS SWIT2-OFF.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        PROCEDURE        DIVISION.
-           IF SWIT1-ON
-              DISPLAY "ON" NO ADVANCING
-              END-DISPLAY
-           ELSE
-              DISPLAY "OFF" NO ADVANCING
-              END-DISPLAY
-           END-IF.
-           IF SWIT2-ON
-              DISPLAY "ON" NO ADVANCING
-              END-DISPLAY
-           ELSE
-              DISPLAY "OFF" NO ADVANCING
-              END-DISPLAY
-           END-IF.
-           SET SWIT1 TO OFF.
-           SET SWIT2 TO ON.
-           IF SWIT1-ON
-              DISPLAY "ON" NO ADVANCING
-              END-DISPLAY
-           ELSE
-              DISPLAY "OFF" NO ADVANCING
-              END-DISPLAY
-           END-IF.
-           IF SWIT2-ON
-              DISPLAY "ON" NO ADVANCING
-              END-DISPLAY
-           ELSE
-              DISPLAY "OFF" NO ADVANCING
-              END-DISPLAY
-           END-IF.
-           STOP RUN.
+	   IF SWIT1-ON
+	      DISPLAY "ON" NO ADVANCING
+	      END-DISPLAY
+	   ELSE
+	      DISPLAY "OFF" NO ADVANCING
+	      END-DISPLAY
+	   END-IF.
+	   IF SWIT2-ON
+	      DISPLAY "ON" NO ADVANCING
+	      END-DISPLAY
+	   ELSE
+	      DISPLAY "OFF" NO ADVANCING
+	      END-DISPLAY
+	   END-IF.
+	   SET SWIT1 TO OFF.
+	   SET SWIT2 TO ON.
+	   IF SWIT1-ON
+	      DISPLAY "ON" NO ADVANCING
+	      END-DISPLAY
+	   ELSE
+	      DISPLAY "OFF" NO ADVANCING
+	      END-DISPLAY
+	   END-IF.
+	   IF SWIT2-ON
+	      DISPLAY "ON" NO ADVANCING
+	      END-DISPLAY
+	   ELSE
+	      DISPLAY "OFF" NO ADVANCING
+	      END-DISPLAY
+	   END-IF.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -869,13 +924,13 @@ AT_DATA([prog.cob], [
        PROGRAM-ID.      prog.
        DATA             DIVISION.
        PROCEDURE        DIVISION.
-           PERFORM 2 TIMES
-             PERFORM 2 TIMES
-               DISPLAY "X" NO ADVANCING
-               END-DISPLAY
-             END-PERFORM
-           END-PERFORM.
-           STOP RUN.
+	   PERFORM 2 TIMES
+	     PERFORM 2 TIMES
+	       DISPLAY "X" NO ADVANCING
+	       END-DISPLAY
+	     END-PERFORM
+	   END-PERFORM.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -894,14 +949,14 @@ AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      prog.
        PROCEDURE        DIVISION.
-           PERFORM 2 TIMES
-             DISPLAY "OK" NO ADVANCING
-             END-DISPLAY
-             EXIT PERFORM
-             DISPLAY "NOT REACHED"
-             END-DISPLAY
-           END-PERFORM
-           STOP RUN.
+	   PERFORM 2 TIMES
+	     DISPLAY "OK" NO ADVANCING
+	     END-DISPLAY
+	     EXIT PERFORM
+	     DISPLAY "NOT REACHED"
+	     END-DISPLAY
+	   END-PERFORM
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -919,14 +974,14 @@ AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      prog.
        PROCEDURE        DIVISION.
-           PERFORM 2 TIMES
-             DISPLAY "OK" NO ADVANCING
-             END-DISPLAY
-             EXIT PERFORM CYCLE
-             DISPLAY "NOT REACHED"
-             END-DISPLAY
-           END-PERFORM
-           STOP RUN.
+	   PERFORM 2 TIMES
+	     DISPLAY "OK" NO ADVANCING
+	     END-DISPLAY
+	     EXIT PERFORM CYCLE
+	     DISPLAY "NOT REACHED"
+	     END-DISPLAY
+	   END-PERFORM
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -948,17 +1003,17 @@ AT_DATA([prog.cob], [
        01 INDVAL        PIC 9(4).
        PROCEDURE        DIVISION.
        A01.
-           PERFORM VARYING INDVAL FROM 1 BY 1 UNTIL INDVAL > 10
-            IF INDVAL > 2
-               EXIT PARAGRAPH
-            END-IF
-           END-PERFORM
-           .
+	   PERFORM VARYING INDVAL FROM 1 BY 1 UNTIL INDVAL > 10
+	    IF INDVAL > 2
+	       EXIT PARAGRAPH
+	    END-IF
+	   END-PERFORM
+	   .
        A02.
-           DISPLAY INDVAL NO ADVANCING
-           END-DISPLAY
-           STOP RUN
-           .
+	   DISPLAY INDVAL NO ADVANCING
+	   END-DISPLAY
+	   STOP RUN
+	   .
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -981,21 +1036,21 @@ AT_DATA([prog.cob], [
        PROCEDURE        DIVISION.
        A01 SECTION.
        A011.
-           PERFORM VARYING INDVAL FROM 1 BY 1 UNTIL INDVAL > 10
-            IF INDVAL > 2
-               EXIT SECTION
-            END-IF
-           END-PERFORM
-           .
+	   PERFORM VARYING INDVAL FROM 1 BY 1 UNTIL INDVAL > 10
+	    IF INDVAL > 2
+	       EXIT SECTION
+	    END-IF
+	   END-PERFORM
+	   .
        A012.
-           DISPLAY INDVAL NO ADVANCING
-           END-DISPLAY
-           .
+	   DISPLAY INDVAL NO ADVANCING
+	   END-DISPLAY
+	   .
        A02 SECTION.
-           DISPLAY INDVAL NO ADVANCING
-           END-DISPLAY
-           STOP RUN
-           .
+	   DISPLAY INDVAL NO ADVANCING
+	   END-DISPLAY
+	   STOP RUN
+	   .
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1013,18 +1068,18 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 FILLER        PIC X VALUE SPACE.
-         88 X           VALUE "X".
+	 88 X           VALUE "X".
        PROCEDURE        DIVISION.
-           IF X
-               DISPLAY "NO" NO ADVANCING
-               END-DISPLAY
-           END-IF.
-           SET X TO TRUE.
-           IF X
-               DISPLAY "OK" NO ADVANCING
-               END-DISPLAY
-           END-IF.
-           STOP RUN.
+	   IF X
+	       DISPLAY "NO" NO ADVANCING
+	       END-DISPLAY
+	   END-IF.
+	   SET X TO TRUE.
+	   IF X
+	       DISPLAY "OK" NO ADVANCING
+	       END-DISPLAY
+	   END-IF.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1043,13 +1098,13 @@ AT_DATA([prog.cob], [
        01 X             PIC 9(2) VALUE 0.
        01 Y             PIC 9(2) VALUE 0.
        PROCEDURE        DIVISION.
-           COMPUTE X = 100
-           END-COMPUTE.
-           COMPUTE Y = 99
-           END-COMPUTE.
-           DISPLAY Y NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   COMPUTE X = 100
+	   END-COMPUTE.
+	   COMPUTE Y = 99
+	   END-COMPUTE.
+	   DISPLAY Y NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1067,9 +1122,9 @@ AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      prog.
        PROCEDURE        DIVISION.
-           PERFORM 2 TIMES
-             CONTINUE
-           END-PERFORM.
+	   PERFORM 2 TIMES
+	     CONTINUE
+	   END-PERFORM.
 ])
 
 AT_CHECK([${COMPILE_ONLY} prog.cob], [0])
@@ -1086,13 +1141,13 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 G.
-         02 X           PIC X(3) OCCURS 3.
+	 02 X           PIC X(3) OCCURS 3.
        PROCEDURE        DIVISION.
-           STRING "abc" INTO X(1)
-           END-STRING.
-           DISPLAY X(1) NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   STRING "abc" INTO X(1)
+	   END-STRING.
+	   DISPLAY X(1) NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1110,20 +1165,20 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01  G.
-           03 FILLER    PIC XXX VALUE "ABC".
-           03 FILLER    PIC XX  VALUE LOW-VALUES.
-           03 FILLER    PIC XXX VALUE "DEF".
+	   03 FILLER    PIC XXX VALUE "ABC".
+	   03 FILLER    PIC XX  VALUE LOW-VALUES.
+	   03 FILLER    PIC XXX VALUE "DEF".
        01  A            PIC XXX.
        01  B            PIC XXX.
        PROCEDURE        DIVISION.
-           UNSTRING G DELIMITED BY ALL LOW-VALUES
-                      INTO A B
-           END-UNSTRING.
-           DISPLAY A
-           END-DISPLAY.
-           DISPLAY B
-           END-DISPLAY.
-           STOP RUN.
+	   UNSTRING G DELIMITED BY ALL LOW-VALUES
+		      INTO A B
+	   END-UNSTRING.
+	   DISPLAY A
+	   END-DISPLAY.
+	   DISPLAY B
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1144,53 +1199,53 @@ AT_DATA([prog.cob], [
        DATA            DIVISION.
        WORKING-STORAGE SECTION.
        01  WS-RECORD. 
-           02 VALUE SPACE           PIC X(04). 
-           02 VALUE "ABC AND DE"    PIC X(10). 
-           02 VALUE SPACE           PIC X(07).
-           02 VALUE "FG AND HIJ"    PIC X(10).
-           02 VALUE SPACE           PIC X(08). 
+	   02 VALUE SPACE           PIC X(04). 
+	   02 VALUE "ABC AND DE"    PIC X(10). 
+	   02 VALUE SPACE           PIC X(07).
+	   02 VALUE "FG AND HIJ"    PIC X(10).
+	   02 VALUE SPACE           PIC X(08). 
        01  SPACE-2                  PIC X(02) VALUE SPACE.
        01  WS-DUMMY                 PIC X(15).
        01  WS-POINTER               PIC 99.
        PROCEDURE       DIVISION.
-           MOVE 1 TO WS-POINTER.
+	   MOVE 1 TO WS-POINTER.
       *
-           PERFORM 0001-SUB.
-           IF WS-DUMMY NOT = SPACE 
-              DISPLAY "Expected space - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
-           IF WS-POINTER NOT = 5
-              DISPLAY "Expected 5 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF. 
+	   PERFORM 0001-SUB.
+	   IF WS-DUMMY NOT = SPACE 
+	      DISPLAY "Expected space - Got " WS-DUMMY
+	      END-DISPLAY 
+	   END-IF. 
+	   IF WS-POINTER NOT = 5
+	      DISPLAY "Expected 5 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF. 
       *
-           PERFORM 0001-SUB.
-           IF WS-DUMMY NOT = "ABC AND DE"
-              DISPLAY "Expected ABC AND DE - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
-           IF WS-POINTER NOT = 21
-              DISPLAY "Expected 21 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF. 
+	   PERFORM 0001-SUB.
+	   IF WS-DUMMY NOT = "ABC AND DE"
+	      DISPLAY "Expected ABC AND DE - Got " WS-DUMMY
+	      END-DISPLAY 
+	   END-IF. 
+	   IF WS-POINTER NOT = 21
+	      DISPLAY "Expected 21 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF. 
       *
-           PERFORM 0001-SUB.
-           IF WS-DUMMY NOT = " FG AND HIJ"
-              DISPLAY "Expected  FG AND HIJ - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
-           IF WS-POINTER NOT = 40
-              DISPLAY "Expected 40 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF. 
-           STOP RUN.
+	   PERFORM 0001-SUB.
+	   IF WS-DUMMY NOT = " FG AND HIJ"
+	      DISPLAY "Expected  FG AND HIJ - Got " WS-DUMMY
+	      END-DISPLAY 
+	   END-IF. 
+	   IF WS-POINTER NOT = 40
+	      DISPLAY "Expected 40 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF. 
+	   STOP RUN.
        0001-SUB.
-           UNSTRING WS-RECORD
-                    DELIMITED BY ALL SPACE-2
-              INTO WS-DUMMY
-              POINTER WS-POINTER
-           END-UNSTRING.
+	   UNSTRING WS-RECORD
+		    DELIMITED BY ALL SPACE-2
+	      INTO WS-DUMMY
+	      POINTER WS-POINTER
+	   END-UNSTRING.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1212,39 +1267,39 @@ AT_DATA([prog.cob], [
        01  WS-KEYWORD               PIC X(32).
        01  WS-POINTER               PIC 99.
        PROCEDURE       DIVISION.
-           MOVE
+	   MOVE
        '        10  AF-RECORD-TYPE-SEQUENCE-04     PIC   9(05) COMP-3.'
-                  TO WS-LAY-RECORD.
-           MOVE 1 TO WS-POINTER.
-           PERFORM 0001-SUB.
-           IF WS-POINTER NOT = 48
-              DISPLAY "Expected 48 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF.
-           ADD 7  TO WS-POINTER
-           END-ADD.
-           PERFORM 0001-SUB.
-           IF WS-POINTER NOT = 62
-              DISPLAY "Expected 62 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF.
-           PERFORM 0001-SUB.
-           IF WS-POINTER NOT = 63
-              DISPLAY "Expected 63 - Got " WS-POINTER
-              END-DISPLAY
-           END-IF.
-           STOP RUN.
+		  TO WS-LAY-RECORD.
+	   MOVE 1 TO WS-POINTER.
+	   PERFORM 0001-SUB.
+	   IF WS-POINTER NOT = 48
+	      DISPLAY "Expected 48 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF.
+	   ADD 7  TO WS-POINTER
+	   END-ADD.
+	   PERFORM 0001-SUB.
+	   IF WS-POINTER NOT = 62
+	      DISPLAY "Expected 62 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF.
+	   PERFORM 0001-SUB.
+	   IF WS-POINTER NOT = 63
+	      DISPLAY "Expected 63 - Got " WS-POINTER
+	      END-DISPLAY
+	   END-IF.
+	   STOP RUN.
        0001-SUB.
-           UNSTRING WS-LAY-RECORD
-                    DELIMITED
-                    BY ' PIC '
-                    OR ' COMP-3'
-                    OR '.'
-              INTO WS-DUMMY
-              DELIMITER WS-KEYWORD
-              POINTER WS-POINTER
-           END-UNSTRING.
-           .
+	   UNSTRING WS-LAY-RECORD
+		    DELIMITED
+		    BY ' PIC '
+		    OR ' COMP-3'
+		    OR '.'
+	      INTO WS-DUMMY
+	      DELIMITER WS-KEYWORD
+	      POINTER WS-POINTER
+	   END-UNSTRING.
+	   .
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1264,30 +1319,30 @@ AT_DATA([prog.cob], [
        01  WK-CMD       PIC X(8) VALUE "WWADDBCC".
        01  WK-SIGNS     PIC XX   VALUE "AB".
        01  WKS REDEFINES WK-SIGNS.
-           03 WK-SIGN   PIC X OCCURS 2.
+	   03 WK-SIGN   PIC X OCCURS 2.
        01  FILLER.
-           03 WK-DELIM     PIC X OCCURS 2.
+	   03 WK-DELIM     PIC X OCCURS 2.
        01  FILLER.
-           03 WK-DATA      PIC X(2) OCCURS 3.
+	   03 WK-DATA      PIC X(2) OCCURS 3.
        PROCEDURE        DIVISION.
-           UNSTRING WK-CMD DELIMITED BY WK-SIGN(1) OR WK-SIGN(2)
-           INTO WK-DATA(1) DELIMITER IN WK-DELIM(1)
-                WK-DATA(2) DELIMITER IN WK-DELIM(2)
-                WK-DATA(3)
-           END-UNSTRING
-           IF  WK-DATA(1)   NOT = "WW"
-            OR WK-DATA(2)   NOT = "DD"
-            OR WK-DATA(3)   NOT = "CC"
-            OR WK-DELIM(1)  NOT = "A"
-            OR WK-DELIM(2)  NOT = "B"
-               DISPLAY WK-DATA(1)
-                       WK-DATA(2)
-                       WK-DATA(3)
-                       WK-DELIM(1)
-                       WK-DELIM(2)
-               END-DISPLAY
-           END-IF.
-           STOP RUN.
+	   UNSTRING WK-CMD DELIMITED BY WK-SIGN(1) OR WK-SIGN(2)
+	   INTO WK-DATA(1) DELIMITER IN WK-DELIM(1)
+		WK-DATA(2) DELIMITER IN WK-DELIM(2)
+		WK-DATA(3)
+	   END-UNSTRING
+	   IF  WK-DATA(1)   NOT = "WW"
+	    OR WK-DATA(2)   NOT = "DD"
+	    OR WK-DATA(3)   NOT = "CC"
+	    OR WK-DELIM(1)  NOT = "A"
+	    OR WK-DELIM(2)  NOT = "B"
+	       DISPLAY WK-DATA(1)
+		       WK-DATA(2)
+		       WK-DATA(3)
+		       WK-DELIM(1)
+		       WK-DELIM(2)
+	       END-DISPLAY
+	   END-IF.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1313,16 +1368,16 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(10).
        PROCEDURE        DIVISION.
-           OPEN  OUTPUT TEST-FILE.
-           CLOSE TEST-FILE.
-           OPEN  INPUT  TEST-FILE.
-           READ  TEST-FILE INTO X
-               AT END MOVE ZERO TO X
-           END-READ.
-           CLOSE TEST-FILE.
-           DISPLAY X NO ADVANCING
-           END-DISPLAY.
-           STOP RUN.
+	   OPEN  OUTPUT TEST-FILE.
+	   CLOSE TEST-FILE.
+	   OPEN  INPUT  TEST-FILE.
+	   READ  TEST-FILE INTO X
+	       AT END MOVE ZERO TO X
+	   END-READ.
+	   CLOSE TEST-FILE.
+	   DISPLAY X NO ADVANCING
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1343,24 +1398,24 @@ AT_DATA([prog.cob], [
        INPUT-OUTPUT     SECTION.
        FILE-CONTROL.
        SELECT TEST-FILE ASSIGN       "./TEST-FILE"
-                        ORGANIZATION IS  INDEXED
-                        ACCESS MODE  IS  SEQUENTIAL
-                        RECORD KEY   IS  TEST-KEY.
+			ORGANIZATION IS  INDEXED
+			ACCESS MODE  IS  SEQUENTIAL
+			RECORD KEY   IS  TEST-KEY.
        DATA             DIVISION.
        FILE             SECTION.
        FD TEST-FILE.
        01 TEST-KEY      PIC X(10).
        PROCEDURE        DIVISION.
-           OPEN  OUTPUT TEST-FILE.
-           CLOSE TEST-FILE.
-           OPEN  INPUT  TEST-FILE.
-           READ  TEST-FILE
-               AT END
-                   DISPLAY "OK" NO ADVANCING
-                   END-DISPLAY
-           END-READ.
-           CLOSE TEST-FILE.
-           STOP RUN.
+	   OPEN  OUTPUT TEST-FILE.
+	   CLOSE TEST-FILE.
+	   OPEN  INPUT  TEST-FILE.
+	   READ  TEST-FILE
+	       AT END
+		   DISPLAY "OK" NO ADVANCING
+		   END-DISPLAY
+	   END-READ.
+	   CLOSE TEST-FILE.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1379,9 +1434,9 @@ AT_DATA([prog.cob], [
        INPUT-OUTPUT     SECTION.
        FILE-CONTROL.
        SELECT TEST-FILE ASSIGN       "./TEST-FILE"
-                        ORGANIZATION IS RELATIVE
-                        ACCESS MODE  IS RANDOM
-                        RELATIVE KEY IS TEST-KEY.
+			ORGANIZATION IS RELATIVE
+			ACCESS MODE  IS RANDOM
+			RELATIVE KEY IS TEST-KEY.
        DATA             DIVISION.
        FILE             SECTION.
        FD TEST-FILE.
@@ -1390,29 +1445,29 @@ AT_DATA([prog.cob], [
        01 TEST-KEY      PIC 9.
        PROCEDURE        DIVISION.
       *
-           OPEN OUTPUT TEST-FILE.
-           MOVE 1 TO TEST-KEY. MOVE "A" TO TEST-REC. WRITE TEST-REC
-           END-WRITE.
-           MOVE 2 TO TEST-KEY. MOVE "B" TO TEST-REC. WRITE TEST-REC
-           END-WRITE.
-           CLOSE TEST-FILE.
+	   OPEN OUTPUT TEST-FILE.
+	   MOVE 1 TO TEST-KEY. MOVE "A" TO TEST-REC. WRITE TEST-REC
+	   END-WRITE.
+	   MOVE 2 TO TEST-KEY. MOVE "B" TO TEST-REC. WRITE TEST-REC
+	   END-WRITE.
+	   CLOSE TEST-FILE.
       *
-           OPEN I-O TEST-FILE.
-           MOVE 1 TO TEST-KEY. READ TEST-FILE
-           END-READ.
-           MOVE 2 TO TEST-KEY. MOVE "C" TO TEST-REC. REWRITE TEST-REC
-           END-REWRITE.
-           CLOSE TEST-FILE.
+	   OPEN I-O TEST-FILE.
+	   MOVE 1 TO TEST-KEY. READ TEST-FILE
+	   END-READ.
+	   MOVE 2 TO TEST-KEY. MOVE "C" TO TEST-REC. REWRITE TEST-REC
+	   END-REWRITE.
+	   CLOSE TEST-FILE.
       *
-           OPEN INPUT TEST-FILE.
-           MOVE 1 TO TEST-KEY. READ TEST-FILE
-           END-READ. DISPLAY TEST-REC
-           END-DISPLAY.
-           MOVE 2 TO TEST-KEY. READ TEST-FILE
-           END-READ. DISPLAY TEST-REC
-           END-DISPLAY.
-           CLOSE TEST-FILE.
-           STOP RUN.
+	   OPEN INPUT TEST-FILE.
+	   MOVE 1 TO TEST-KEY. READ TEST-FILE
+	   END-READ. DISPLAY TEST-REC
+	   END-DISPLAY.
+	   MOVE 2 TO TEST-KEY. READ TEST-FILE
+	   END-READ. DISPLAY TEST-REC
+	   END-DISPLAY.
+	   CLOSE TEST-FILE.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1433,23 +1488,23 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 G             VALUE "d4b2e1a3c5".
-         02 TBL         OCCURS 5.
-           03 X         PIC X.
-           03 Y         PIC 9.
+	 02 TBL         OCCURS 5.
+	   03 X         PIC X.
+	   03 Y         PIC 9.
        PROCEDURE        DIVISION.
-           SORT TBL ASCENDING KEY X.
-           DISPLAY G
-           END-DISPLAY.
-           SORT TBL DESCENDING KEY Y.
-           DISPLAY G
-           END-DISPLAY.
-           SORT TBL ASCENDING KEY TBL.
-           DISPLAY G
-           END-DISPLAY.
-           SORT TBL DESCENDING KEY.
-           DISPLAY G
-           END-DISPLAY.
-           STOP RUN.
+	   SORT TBL ASCENDING KEY X.
+	   DISPLAY G
+	   END-DISPLAY.
+	   SORT TBL DESCENDING KEY Y.
+	   DISPLAY G
+	   END-DISPLAY.
+	   SORT TBL ASCENDING KEY TBL.
+	   DISPLAY G
+	   END-DISPLAY.
+	   SORT TBL DESCENDING KEY.
+	   DISPLAY G
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1471,30 +1526,30 @@ AT_DATA([prog.cob], [
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
-           ALPHABET ALPHA IS EBCDIC.
+	   ALPHABET ALPHA IS EBCDIC.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 Z  PIC X(10)  VALUE "d4b2e1a3c5".
        01 G             VALUE "d4b2e1a3c5".
-         02 TBL         OCCURS 10.
-           03 X         PIC X.
+	 02 TBL         OCCURS 10.
+	   03 X         PIC X.
        PROCEDURE        DIVISION.
-           SORT TBL ASCENDING KEY X.
-           DISPLAY G
-           END-DISPLAY.
-           MOVE Z TO G.
-           SORT TBL DESCENDING KEY X.
-           DISPLAY G
-           END-DISPLAY.
-           MOVE Z TO G.
-           SORT TBL ASCENDING KEY X SEQUENCE ALPHA.
-           DISPLAY G
-           END-DISPLAY.
-           MOVE Z TO G.
-           SORT TBL DESCENDING KEY X SEQUENCE ALPHA.
-           DISPLAY G
-           END-DISPLAY.
-           STOP RUN.
+	   SORT TBL ASCENDING KEY X.
+	   DISPLAY G
+	   END-DISPLAY.
+	   MOVE Z TO G.
+	   SORT TBL DESCENDING KEY X.
+	   DISPLAY G
+	   END-DISPLAY.
+	   MOVE Z TO G.
+	   SORT TBL ASCENDING KEY X SEQUENCE ALPHA.
+	   DISPLAY G
+	   END-DISPLAY.
+	   MOVE Z TO G.
+	   SORT TBL DESCENDING KEY X SEQUENCE ALPHA.
+	   DISPLAY G
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1528,11 +1583,11 @@ AT_DATA([prog.cob], [
        SD SORT-WRK.
        01 WRK-REC       PIC X(100).
        PROCEDURE        DIVISION.
-           SORT SORT-WRK
-                ASCENDING KEY WRK-REC
-                USING  SORT-IN
-                GIVING SORT-OUT.
-             STOP RUN.
+	   SORT SORT-WRK
+		ASCENDING KEY WRK-REC
+		USING  SORT-IN
+		GIVING SORT-OUT.
+	     STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1553,19 +1608,19 @@ AT_DATA([prog.cob], [
        01 X-ZZZN        PIC ZZZ-.
        01 X-ZZZP        PIC ZZZ+.
        PROCEDURE        DIVISION.
-           MOVE -1 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
-           END-DISPLAY.
-           MOVE  0 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
-           END-DISPLAY.
-           MOVE +1 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
-           END-DISPLAY.
-           MOVE -1 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
-           END-DISPLAY.
-           MOVE  0 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
-           END-DISPLAY.
-           MOVE +1 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
-           END-DISPLAY.
-           STOP RUN.
+	   MOVE -1 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
+	   END-DISPLAY.
+	   MOVE  0 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
+	   END-DISPLAY.
+	   MOVE +1 TO X-ZZZN. DISPLAY "(" X-ZZZN ")"
+	   END-DISPLAY.
+	   MOVE -1 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
+	   END-DISPLAY.
+	   MOVE  0 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
+	   END-DISPLAY.
+	   MOVE +1 TO X-ZZZP. DISPLAY "(" X-ZZZP ")"
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -o prog prog.cob])
@@ -1591,22 +1646,22 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01  XMAIN        PIC X(8).
        01  XMAINRED REDEFINES XMAIN.
-           03  FILLER         PIC X(4).
-           03  XMAIN03.
-               05  XMAIN0501  PIC X(4).
-               05  XMAIN0502 REDEFINES XMAIN0501 PIC X(5).
+	   03  FILLER         PIC X(4).
+	   03  XMAIN03.
+	       05  XMAIN0501  PIC X(4).
+	       05  XMAIN0502 REDEFINES XMAIN0501 PIC X(5).
        PROCEDURE        DIVISION.
-           DISPLAY LENGTH OF XMAIN
-           END-DISPLAY.
-           DISPLAY LENGTH OF XMAINRED
-           END-DISPLAY.
-           DISPLAY LENGTH OF XMAIN03
-           END-DISPLAY.
-           DISPLAY LENGTH OF XMAIN0501
-           END-DISPLAY.
-           DISPLAY LENGTH OF XMAIN0502
-           END-DISPLAY.
-           STOP RUN.
+	   DISPLAY LENGTH OF XMAIN
+	   END-DISPLAY.
+	   DISPLAY LENGTH OF XMAINRED
+	   END-DISPLAY.
+	   DISPLAY LENGTH OF XMAIN03
+	   END-DISPLAY.
+	   DISPLAY LENGTH OF XMAIN0501
+	   END-DISPLAY.
+	   DISPLAY LENGTH OF XMAIN0502
+	   END-DISPLAY.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE} -std=mf -o prog prog.cob], [0], ,
@@ -1639,21 +1694,21 @@ AT_DATA([prog.cob], [
        PROCEDURE        DIVISION.
        ASTART SECTION.
        A01.
-           PERFORM BTEST.
-           DISPLAY "OK"
-           END-DISPLAY.
-           STOP RUN.
+	   PERFORM BTEST.
+	   DISPLAY "OK"
+	   END-DISPLAY.
+	   STOP RUN.
        BTEST SECTION.
        B01.
-           PERFORM B02 VARYING MYOCC FROM 1 BY 1
-                   UNTIL MYOCC > 5.
-           GO TO B99.
+	   PERFORM B02 VARYING MYOCC FROM 1 BY 1
+		   UNTIL MYOCC > 5.
+	   GO TO B99.
        B02.
-           IF MYOCC > 1
-              GO TO B99
-           END-IF.
+	   IF MYOCC > 1
+	      GO TO B99
+	   END-IF.
        B99.
-           EXIT.
+	   EXIT.
 ])
 
 AT_CHECK([${COMPILE} -conf=test.conf -o prog prog.cob])
@@ -1681,13 +1736,13 @@ AT_DATA([callee.cob], [
        01 P2            PIC X(6).
        01 P3            PIC X(6).
        PROCEDURE        DIVISION USING P1 P2.
-           IF P1 = "A"
-              SET ADDRESS OF P3 TO ADDRESS OF P2
-           ELSE
-              DISPLAY P3
-              END-DISPLAY
-           END-IF.
-           EXIT PROGRAM.
+	   IF P1 = "A"
+	      SET ADDRESS OF P3 TO ADDRESS OF P2
+	   ELSE
+	      DISPLAY P3
+	      END-DISPLAY
+	   END-IF.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -1698,13 +1753,13 @@ AT_DATA([caller.cob], [
        01 P1            PIC X    VALUE "A".
        01 P2            PIC X(6) VALUE "NOT OK".
        PROCEDURE        DIVISION.
-           CALL "callee" USING P1 P2
-           END-CALL.
-           MOVE "B"      TO P1.
-           MOVE "OKOKOK" TO P2.
-           CALL "callee" USING P1
-           END-CALL.
-           STOP RUN.
+	   CALL "callee" USING P1 P2
+	   END-CALL.
+	   MOVE "B"      TO P1.
+	   MOVE "OKOKOK" TO P2.
+	   CALL "callee" USING P1
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} -conf=test.conf callee.cob])
@@ -1722,16 +1777,16 @@ AT_DATA([callee.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      callee2.
        PROCEDURE        DIVISION.
-           DISPLAY "OK" NO ADVANCING
-           END-DISPLAY.
+	   DISPLAY "OK" NO ADVANCING
+	   END-DISPLAY.
 ])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      caller.
        PROCEDURE        DIVISION.
-           CALL "callee2"
-           END-CALL.
+	   CALL "callee2"
+	   END-CALL.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -1747,16 +1802,16 @@ AT_DATA([CALLEE.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      callee.
        PROCEDURE        DIVISION.
-           DISPLAY "OK" NO ADVANCING
-           END-DISPLAY.
+	   DISPLAY "OK" NO ADVANCING
+	   END-DISPLAY.
 ])
 
 AT_DATA([caller.cob], [
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      caller.
        PROCEDURE        DIVISION.
-           CALL "callee"
-           END-CALL.
+	   CALL "callee"
+	   END-CALL.
 ])
 
 AT_CHECK([${COMPILE_MODULE} CALLEE.cob])
@@ -1774,14 +1829,14 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01  MYFLD        PIC X(6) VALUE "ABCDEF".
-           88  MYFLD88  VALUE "ABCDEF"
-               FALSE IS "OKOKOK".
+	   88  MYFLD88  VALUE "ABCDEF"
+	       FALSE IS "OKOKOK".
        PROCEDURE        DIVISION.
        ASTART SECTION.
        A01.
-           SET MYFLD88 TO FALSE.
-           DISPLAY MYFLD
-           END-DISPLAY.
+	   SET MYFLD88 TO FALSE.
+	   DISPLAY MYFLD
+	   END-DISPLAY.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -1803,10 +1858,10 @@ AT_DATA([prog.cob], [
        PROCEDURE        DIVISION.
        ASTART SECTION.
        A01.
-           ALLOCATE MYFLD INITIALIZED.
-           DISPLAY MYFLD
-           END-DISPLAY.
-           FREE ADDRESS OF MYFLD.
+	   ALLOCATE MYFLD INITIALIZED.
+	   DISPLAY MYFLD
+	   END-DISPLAY.
+	   FREE ADDRESS OF MYFLD.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -1825,33 +1880,33 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01 MYFLD         BASED.
-             03 MYFLDX  PIC X.
-             03 MYFLD9  PIC 9.
+	     03 MYFLDX  PIC X.
+	     03 MYFLD9  PIC 9.
        PROCEDURE        DIVISION.
-           IF ADDRESS OF MYFLD NOT = NULL
-              DISPLAY "BASED ITEM WITH ADDRESS ON START"
-              END-DISPLAY
-           END-IF.
-           FREE MYFLD.
-           ALLOCATE MYFLD.
-           IF ADDRESS OF MYFLD = NULL
-              DISPLAY "BASED ITEM WITHOUT ADDRESS AFTER ALLOCATE"
-              END-DISPLAY
-           END-IF.
-           INITIALIZE MYFLD.
-           IF MYFLD NOT = " 0"
-              DISPLAY "BASED ITEM INITIALIZED WRONG: "
-                 WITH NO ADVANCING
-              END-DISPLAY
-              DISPLAY MYFLD
-              END-DISPLAY
-           END-IF.
+	   IF ADDRESS OF MYFLD NOT = NULL
+	      DISPLAY "BASED ITEM WITH ADDRESS ON START"
+	      END-DISPLAY
+	   END-IF.
+	   FREE MYFLD.
+	   ALLOCATE MYFLD.
+	   IF ADDRESS OF MYFLD = NULL
+	      DISPLAY "BASED ITEM WITHOUT ADDRESS AFTER ALLOCATE"
+	      END-DISPLAY
+	   END-IF.
+	   INITIALIZE MYFLD.
+	   IF MYFLD NOT = " 0"
+	      DISPLAY "BASED ITEM INITIALIZED WRONG: "
+		 WITH NO ADVANCING
+	      END-DISPLAY
+	      DISPLAY MYFLD
+	      END-DISPLAY
+	   END-IF.
 
-           FREE ADDRESS OF MYFLD.
-           IF ADDRESS OF MYFLD NOT = NULL
-              DISPLAY "BASED ITEM WITH ADDRESS AFTER FREE"
-              END-DISPLAY
-           END-IF.
+	   FREE ADDRESS OF MYFLD.
+	   IF ADDRESS OF MYFLD NOT = NULL
+	      DISPLAY "BASED ITEM WITH ADDRESS AFTER FREE"
+	      END-DISPLAY
+	   END-IF.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -1873,9 +1928,9 @@ AT_DATA([prog.cob], [
        PROCEDURE        DIVISION.
        ASTART SECTION.
        A01.
-           INITIALIZE MYFLD (1:2).
-           DISPLAY MYFLD
-           END-DISPLAY.
+	   INITIALIZE MYFLD (1:2).
+	   DISPLAY MYFLD
+	   END-DISPLAY.
 ])
 
 AT_CHECK([${COMPILE} prog.cob])
@@ -1895,11 +1950,11 @@ AT_DATA([callee.cob], [
        01 P1            PIC X.
        01 P2            PIC X(6).
        PROCEDURE        DIVISION USING P1 P2.
-           IF P2 OMITTED
-              DISPLAY "OKOKOK"
-              END-DISPLAY
-           END-IF.
-           EXIT PROGRAM.
+	   IF P2 OMITTED
+	      DISPLAY "OKOKOK"
+	      END-DISPLAY
+	   END-IF.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -1910,9 +1965,9 @@ AT_DATA([caller.cob], [
        01 P1            PIC X    VALUE "A".
        01 P2            PIC X(6) VALUE "NOT OK".
        PROCEDURE        DIVISION.
-           CALL "callee" USING P1 OMITTED
-           END-CALL.
-           STOP RUN.
+	   CALL "callee" USING P1 OMITTED
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
@@ -1934,12 +1989,12 @@ AT_DATA([callee.cob], [
        LINKAGE          SECTION.
        01 P1            PIC X ANY LENGTH.
        PROCEDURE        DIVISION USING P1.
-           MOVE LENGTH OF P1 TO P2.
-           DISPLAY P2
-           END-DISPLAY.
-           DISPLAY P1
-           END-DISPLAY.
-           EXIT PROGRAM.
+	   MOVE LENGTH OF P1 TO P2.
+	   DISPLAY P2
+	   END-DISPLAY.
+	   DISPLAY P1
+	   END-DISPLAY.
+	   EXIT PROGRAM.
 ])
 
 AT_DATA([caller.cob], [
@@ -1949,9 +2004,9 @@ AT_DATA([caller.cob], [
        WORKING-STORAGE  SECTION.
        01 P1            PIC X(6) VALUE "OKOKOK".
        PROCEDURE        DIVISION.
-           CALL "callee" USING P1
-           END-CALL.
-           STOP RUN.
+	   CALL "callee" USING P1
+	   END-CALL.
+	   STOP RUN.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
