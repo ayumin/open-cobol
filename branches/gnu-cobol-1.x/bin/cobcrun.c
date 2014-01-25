@@ -223,7 +223,7 @@ process_command_line (int argc, char *argv[], int *skip)
 }
 
 /**
- * cobcrun, for invoking entry points from dynamic sharded object libraries
+ * cobcrun, for invoking entry points from dynamic shared object libraries
  */
 int
 main (int argc, char **argv)
