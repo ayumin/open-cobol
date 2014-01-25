@@ -232,7 +232,7 @@ AT_DATA([callee.cob], [
        PROGRAM-ID.      callee.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       01 EXT-VAR       PIC X(9) EXTERNAL.
+       01 EXT-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
 	   DISPLAY EXT-VAR END-DISPLAY.
 	   MOVE "World" TO EXT-VAR.
@@ -244,7 +244,7 @@ AT_DATA([caller.cob], [
        PROGRAM-ID.      caller.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       01 EXT-VAR       PIC X(9) EXTERNAL.
+       01 EXT-VAR       PIC X(5) EXTERNAL.
        PROCEDURE        DIVISION.
 	   MOVE "Hello" TO EXT-VAR.
 	   CALL "callee" END-CALL.
@@ -256,10 +256,10 @@ AT_DATA([caller.cob], [
        PROGRAM-ID.      called.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       01 EXT-VAR       PIC X(9) EXTERNAL.
-       01 CLA-VAR       PIX X(9).
+       01 EXT-VAR       PIC X(5) EXTERNAL.
+       01 CLA-VAR       PIC X(5).
        PROCEDURE        DIVISION.
-	   MOVE "Greetings" TO EXT-VAR.
+	   MOVE "Aloha" TO EXT-VAR.
 	   CALL "callee" END-CALL.
 	   DISPLAY EXT-VAR END-DISPLAY.
 	   ACCEPT CLA-VAR FROM COMMAND-LINE END-ACCEPT.
@@ -270,10 +270,10 @@ AT_DATA([caller.cob], [
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
 AT_CHECK([${COMPILE_MODULE} caller.cob])
-AT_CHECK([${COBCRUN} -M ./caller called and stuff], [0],
-[Greetings
+AT_CHECK([${COBCRUN} -M ./caller called again], [0],
+[Aloha
 World
-and stuff
+again
 ])
 
 AT_CLEANUP
