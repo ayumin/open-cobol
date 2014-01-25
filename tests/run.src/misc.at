@@ -250,7 +250,7 @@ AT_DATA([caller.cob], [
 	   CALL "callee" END-CALL.
 	   DISPLAY EXT-VAR END-DISPLAY.
 	   STOP RUN.
-       END PROGRAM CALLER.
+       END PROGRAM caller.
 
        IDENTIFICATION   DIVISION.
        PROGRAM-ID.      called.
@@ -265,7 +265,7 @@ AT_DATA([caller.cob], [
 	   ACCEPT CLA-VAR FROM COMMAND-LINE END-ACCEPT.
 	   DISPLAY CLA-VAR END-DISPLAY.
 	   STOP RUN.
-       END PROGRAM CALLER.
+       END PROGRAM called.
 ])
 
 AT_CHECK([${COMPILE_MODULE} callee.cob])
