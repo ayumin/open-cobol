@@ -24,7 +24,9 @@
 #include	"defaults.h"
 
 #include	<stdio.h>
+#include        <stdlib.h>
 #include	<string.h>
+#include        <errno.h>
 #include	"libcob.h"
 #include	"tarstamp.h"
 
@@ -42,14 +44,18 @@
 #include <locale.h>
 #endif
 
-static const char short_options[] = "hV";
+static const char short_options[] = "hVM:";
 
 static const struct option long_options[] = {
 	{"help", no_argument, NULL, 'h'},
 	{"version", no_argument, NULL, 'V'},
+	{"module", required_argument, NULL, 'M'},
 	{NULL, 0, NULL, 0}
 };
 
+/**
+ * Display cobcrun build and version date
+ */
 static void
 cobcrun_print_version (void)
 {
@@ -70,14 +76,17 @@ cobcrun_print_version (void)
 	}
 	printf ("cobcrun (%s) %s.%d\n",
 		PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
-	puts ("Copyright (C) 2004-2009 Roger While");
+	puts ("Copyright (C) 2004-2009 Roger While, 2014 Brian Tiffin");
 	printf ("Built    %s\nPackaged %s\n", buff, COB_TAR_DATE);
 }
 
+/**
+ * Display cobcrun help
+ */
 static void
 cobcrun_print_usage (void)
 {
-	printf ("Usage: cobcrun PROGRAM [param ...]");
+	printf ("Usage: cobcrun [-Mmodule] PROGRAM [param ...]");
 	printf ("\n\n");
 	printf ("or   : cobcrun --help");
 	printf ("\n");
@@ -86,11 +95,89 @@ cobcrun_print_usage (void)
 	printf ("or   : cobcrun --version, -V");
 	printf ("\n");
 	printf ("       Display runtime version");
+	printf ("\n");
+	printf ("       where -Mmodule prepends any directory to the");
+	printf ("\n");
+	printf ("           Dynamic Link loader library search path");
+	printf ("\n");
+	printf ("           and any basename to the module preload list");
+	printf ("\n");
+	printf ("           COB_LIBRARY_PATH and COB_PRE_LOAD");
 	printf ("\n\n");
 }
 
+/**
+ * split into path and file, or just path, or just file
+ *  Note: strndup and strdup memory needs to be freed
+ */
+static void
+cobcrun_split_path_file(char** p, char** f, char *pf)
+{
+	 char *slash = pf, *next;
+
+	 while ((next = strpbrk(slash + 1, "\\/"))) slash = next;
+	 if (pf != slash) slash++;
+
+	 *p = strndup(pf, slash - pf);
+	 *f = strdup(slash);
+}
+
+/**
+ * Prepend a new directory path to the library search COB_LIBRARY_PATH
+ * and setup a module COB_PRE_LOAD, for each component included.
+ */
 static int
-process_command_line (int argc, char *argv[])
+cobcrun_initial_module (char *module_argument)
+{
+	int envop_return;
+	char *pathname, *filename;
+	char env_space[COB_MEDIUM_BUFF], *envptr;
+
+	if (!module_argument) {
+	    return 1;
+	}
+
+	/* See if we have a /dir/path/module, or a /dir/path/ or a module (no slash) */
+	cobcrun_split_path_file(&pathname, &filename, module_argument);
+
+	if (pathname && *pathname) {
+	    memset(env_space, 0, COB_MEDIUM_BUFF);
+	    envptr = getenv("COB_LIBRARY_PATH");
+	    if (envptr) {
+		snprintf(env_space, COB_MEDIUM_BUFF, "%s:%s", pathname, envptr);
+	    } else {
+		snprintf(env_space, COB_MEDIUM_BUFF, "%s", pathname);
+	    }
+	    envop_return = setenv("COB_LIBRARY_PATH", env_space, 1);
+	    if (envop_return) {
+		fprintf(stderr, "Problem with setenv COB_LIBRARY_PATH: %d\n", errno);
+	    }
+	    free(pathname);
+	}
+
+	if (filename && *filename) {
+	    memset(env_space, 0, COB_MEDIUM_BUFF);
+	    envptr = getenv("COB_PRE_LOAD");
+	    if (envptr) {
+		snprintf(env_space, COB_MEDIUM_BUFF, "%s:%s", filename, envptr);
+	    } else {
+		snprintf(env_space, COB_MEDIUM_BUFF, "%s", filename);
+	    }
+	    envop_return = setenv("COB_PRE_LOAD", filename, 1);
+	    if (envop_return) {
+		fprintf(stderr, "Problem with setenv COB_PRE_LOAD: %d\n", errno);
+	    }
+	    free(filename);
+	}    
+	return 0;
+}
+
+/**
+ * Process command line arguments; help, version, and module setting
+ *     skip is set to 1 if the argv array needs to adjust for -M arg
+ */
+static int
+process_command_line (int argc, char *argv[], int *skip)
 {
 	int			c, idx;
 
@@ -121,16 +208,23 @@ process_command_line (int argc, char *argv[])
 		case 'V':
 			cobcrun_print_version ();
 			return 0;
+		case 'M':
+			cobcrun_initial_module (optarg);
+			*skip = optind;
+			return 99;
 		}
 	}
 
 	return 99;
 }
 
+/**
+ * cobcrun, for invoking entry points from dynamic sharded object libraries
+ */
 int
 main (int argc, char **argv)
 {
-	int pcl_return;
+	int pcl_return, skip;
 	
 	union {
 		int	(*func)();
@@ -141,18 +235,29 @@ main (int argc, char **argv)
 	setlocale (LC_ALL, "");
 #endif
 
-	pcl_return = process_command_line (argc, argv);
+	
+	skip = 1;
+	pcl_return = process_command_line (argc, argv, &skip);
 
 	if (pcl_return != 99) {
 		return pcl_return;
 	}
 
-	if (strlen (argv[1]) > 31) {
+	/* -M with no program */
+	if (skip >= argc) {
+		fprintf (stderr, "-M path but no PROGRAM name\n");
+		return 1;
+	}
+
+	if (strlen (argv[skip]) > 31) {
 		fprintf (stderr, "Invalid PROGRAM name\n");
 		return 1;
 	}
-	cob_init (argc - 1, &argv[1]);
-	unifunc.func_void = cob_resolve (argv[1]);
+
+	/* Initialize the COBOL system, resolve the PROGRAM name */
+	/*   and invoke, wrapped in a STOP RUN, if found */
+	cob_init (argc - skip, &argv[skip]);
+	unifunc.func_void = cob_resolve (argv[skip]);
 	if (unifunc.func_void == NULL) {
 		cob_call_error ();
 	}
