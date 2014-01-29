@@ -3938,10 +3938,11 @@ main (int argc, char **argv)
 #elif	defined(__GNUC__)
 #if	0	/* RXWRXW - gcse */
 	COBC_ADD_STR (cobc_cflags, " -Wno-unused -fsigned-char -fno-gcse",
+		      NULL, NULL);
 #else
 	COBC_ADD_STR (cobc_cflags, " -Wno-unused -fsigned-char",
-#endif
 		      NULL, NULL);
+#endif
 	/* --param max-goto-duplication-insns=100000 */
 #ifdef	HAVE_PSIGN_OPT
 	COBC_ADD_STR (cobc_cflags, " -Wno-pointer-sign", NULL, NULL);
