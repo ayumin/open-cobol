@@ -1170,6 +1170,8 @@ output_field_dcl(cb_field * f)
 	}
 #if defined(__SUNPRO_CC) || defined(__xlC__)
 	string str("#pragma pack(1)\n");
+#elif defined (__GNUC__) && __GNUC__ < 3
+	string str("");
 #else
 	string str("#pragma pack(push, 1)\n");
 #endif
@@ -1179,6 +1181,8 @@ output_field_dcl(cb_field * f)
 	str += str2;
 #ifdef __SUNPRO_CC
 	str += "#pragma pack(0)\n";
+#elif defined (__GNUC__) && __GNUC__ < 3
+	str += "\n";
 #else
 	str += "#pragma pack(pop)\n";
 #endif
@@ -1190,6 +1194,8 @@ output_fake_dcl(cb_field * f)
 {
 #if defined(__SUNPRO_CC) || defined(__xlC__)
 	string str("#pragma pack(1)\n");
+#elif defined (__GNUC__) && __GNUC__ < 3
+	string str("");
 #else
 	string str("#pragma pack(push, 1)\n");
 #endif
@@ -1199,6 +1205,8 @@ output_fake_dcl(cb_field * f)
 	str += str2;
 #ifdef __SUNPRO_CC
 	str += "#pragma pack(0)\n";
+#elif defined (__GNUC__) && __GNUC__ < 3
+	str += "\n";
 #else
 	str += "#pragma pack(pop)\n";
 #endif
