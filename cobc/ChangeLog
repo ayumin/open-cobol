@@ -1,7 +1,12 @@
+2014-02-05  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* codegen.cpp : Fixing code generation for BASED items in modules,
+		(duplicate output to storage, missing cast and address)
+
 2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-   * typeck.cpp : Bugfix: no exception check for NULL address on FREE statement
-       (as this is explicit allowed)
+	* typeck.cpp : Bugfix: no exception check for NULL address on FREE statement
+		(as this is explicit allowed)
 
 2014-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 

@@ -6081,8 +6081,11 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 									 f->sName, f->name);
 					}
 				} else {
-					string st = output_fake_dcl(f);
-					output_storage("%s", st.c_str());
+					if(!f->bOutDone) {
+						string st = output_fake_dcl(f);
+						output_storage("%s", st.c_str());
+						f->bOutDone = true;
+					}
 					output_local("static %s\t*%s = NULL;\t// %s\n",
 								 f->sType, f->sName, f->name);
 				}
@@ -6126,8 +6129,11 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 									 f->sName, f->name);
 					}
 				} else {
-					string st = output_fake_dcl(f);
-					output_storage("%s", st.c_str());
+					if(!f->bOutDone) {
+						string st = output_fake_dcl(f);
+						output_storage("%s", st.c_str());
+						f->bOutDone = true;
+					}
 					output_local("%s\t*%s = NULL;\t// %s\n",
 								 f->sType, f->sName, f->name);
 					f->bPointer = true;
@@ -6657,7 +6663,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 			if(f->flag_item_based) {
 				string fname = get_parm_name(f);
 				str += output_line("if(%s) {", fname.c_str());
-				str += output_line("\tcob_free_alloc(&%s, NULL);", fname.c_str());
+				str += output_line("\tcob_free_alloc(&*(cob_u8_t **)&%s, NULL);", fname.c_str());
 				str += output_line("\t%s = NULL;", fname.c_str());
 				str += output_line("}");
 			}
@@ -6987,7 +6993,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 		if(f->flag_item_based) {
 			string fname = get_parm_name(f);
 			str += output_line("if(%s) {", fname.c_str());
-			str += output_line("\tcob_free_alloc(&%s, NULL);", fname.c_str());
+			str += output_line("\tcob_free_alloc(&*(cob_u8_t **)&%s, NULL);", fname.c_str());
 			str += output_line("}");
 		}
 	}
