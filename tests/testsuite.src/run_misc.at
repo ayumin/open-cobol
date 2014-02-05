@@ -2480,3 +2480,42 @@ AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
+
+AT_SETUP([REDEFINE with OCCURS clause])
+AT_KEYWORDS([runmisc])
+
+# CPP version currently has a codegen issue here:
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01  D1.
+           03  FILLER   PIC X(03) value '123'.
+       01  D1-R         REDEFINES D1.
+           03  FILLER   OCCURS 1.
+               05 D1-R-ENTRY   PIC X(03).
+       01  D2.
+           03  FILLER   PIC X(03) value 'ABC'.
+       01  D2-R         REDEFINES D2.
+           03  D2-R-ENTRY   PIC X(03)   OCCURS 1.
+
+       PROCEDURE        DIVISION.
+           IF D1-R-ENTRY (1) NOT = "123"
+              DISPLAY D1-R-ENTRY (1)
+              END-DISPLAY
+           END-IF.
+           IF D2-R-ENTRY (1) NOT = "ABC"
+              DISPLAY D2-R-ENTRY (1)
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
