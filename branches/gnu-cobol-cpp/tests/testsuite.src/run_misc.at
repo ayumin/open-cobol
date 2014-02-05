@@ -2090,6 +2090,9 @@ AT_DATA([prog.cob], [
 
 AT_CHECK([$COMPILE prog.cob])
 AT_CHECK([./prog], [0])
+# Run both executable and module as we have a different code generation here
+AT_CHECK([$COMPILE_MODULE prog.cob])
+AT_CHECK([$COBCRUN prog], [0])
 
 AT_CLEANUP
 
