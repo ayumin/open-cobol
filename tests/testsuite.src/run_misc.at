@@ -44,7 +44,7 @@ AT_CHECK([./prog], [0], [111])
 
 AT_CLEANUP
 
-AT_SETUP([LOCAL-STORAGE])
+AT_SETUP([LOCAL-STORAGE (1)])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([callee.cob], [
@@ -76,6 +76,53 @@ AT_DATA([caller.cob], [
 AT_CHECK([$COMPILE_MODULE callee.cob])
 AT_CHECK([$COMPILE -o prog caller.cob])
 AT_CHECK([./prog], [0], [abcabc000abc], [])
+
+AT_CLEANUP
+
+AT_SETUP([LOCAL-STORAGE (2)])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([callee2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee2.
+       DATA             DIVISION.
+       LINKAGE          SECTION.
+       01 LNK-X         PIC XXX.
+       PROCEDURE        DIVISION USING LNK-X.
+           DISPLAY LNK-X NO ADVANCING
+           END-DISPLAY.
+           EXIT PROGRAM.
+])
+
+AT_DATA([callee.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee.
+       DATA             DIVISION.
+       LOCAL-STORAGE    SECTION.
+       01 LCL-X.
+          05 FILLER     PIC XXX VALUE "abc".
+       PROCEDURE        DIVISION.
+           CALL "callee2" USING LCL-X
+           END-CALL.
+           MOVE ZERO TO LCL-X.
+           CALL "callee2" USING LCL-X
+           END-CALL.
+           EXIT PROGRAM.
+])
+
+AT_DATA([caller.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      caller.
+       PROCEDURE        DIVISION.
+           CALL "callee"
+           END-CALL.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE callee2.cob])
+AT_CHECK([$COMPILE_MODULE callee.cob])
+AT_CHECK([$COMPILE -o prog caller.cob])
+AT_CHECK([./prog], [0], [abc000], [])
 
 AT_CLEANUP
 
