@@ -18,7 +18,6 @@
    along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 %expect 0
 
 %defines
@@ -2507,8 +2506,7 @@ file_control_header:
 | FILE_CONTROL TOK_DOT
   {
 	check_headers_present (COBC_HD_ENVIRONMENT_DIVISION,
-			       COBC_HD_INPUT_OUTPUT_SECTION,
-			       0, 0);
+			       COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
 	header_check |= COBC_HD_FILE_CONTROL;
   }
 ;
@@ -2517,8 +2515,7 @@ i_o_control_header:
 | I_O_CONTROL TOK_DOT
   {
 	check_headers_present (COBC_HD_ENVIRONMENT_DIVISION,
-			       COBC_HD_INPUT_OUTPUT_SECTION,
-			       0, 0);
+			       COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
 	header_check |= COBC_HD_I_O_CONTROL;
   }
 ;
@@ -5513,6 +5510,10 @@ procedure_returning:
 */
 		if (f->level != 1 && f->level != 77) {
 			cb_error (_("RETURNING item must have level 01"));
+		} else if(f->flag_occurs) {
+			cb_error(_("RETURNING item should not have OCCURS"));
+		} else if(f->storage == CB_STORAGE_LOCAL) {
+			cb_error (_("RETURNING item should not be in LOCAL-STORAGE"));
 		} else {
 			if (current_program->prog_type == CB_FUNCTION_TYPE) {
 				f->flag_is_returning = 1;
@@ -6566,7 +6567,7 @@ continue_statement:
 	check_unreached = 0;
 	begin_statement ("CONTINUE", 0);
 	cb_emit_continue ();
-	check_unreached = save_unreached;
+	check_unreached = (unsigned int) save_unreached;
   }
 ;
 
@@ -7020,13 +7021,13 @@ evaluate_object_list:
 evaluate_object:
   partial_expr opt_evaluate_thru_expr
   {
-	cb_tree	not;
+	cb_tree	not0;
 	cb_tree	e1;
 	cb_tree	e2;
 	cb_tree	x;
 	cb_tree	parm1;
 
-	not = cb_int0;
+	not0 = cb_int0;
 	e2 = $2;
 	x = NULL;
 	parm1 = $1;
@@ -7036,7 +7037,7 @@ evaluate_object:
 		/* below when it may be part of a partial expression */
 		if (CB_PURPOSE_INT (parm1) == '!') {
 			/* Pop stack if subject not TRUE / FALSE */
-			not = cb_int1;
+			not0 = cb_int1;
 			x = parm1;
 			parm1 = CB_CHAIN (parm1);
 		}
@@ -7062,7 +7063,7 @@ evaluate_object:
 				cb_error_x (e2, _("Invalid THROUGH usage"));
 				e2 = NULL;
 			}
-			not = CB_PURPOSE (parm1);
+			not0 = CB_PURPOSE (parm1);
 			if (x) {
 				/* Rebind the NOT to the partial expression */
 				parm1 = cb_build_list (cb_int ('!'), NULL, parm1);
@@ -7078,7 +7079,7 @@ evaluate_object:
 	e1 = cb_build_expr (parm1);
 
 	eval_inc2++;
-	$$ = CB_BUILD_PAIR (not, CB_BUILD_PAIR (e1, e2));
+	$$ = CB_BUILD_PAIR (not0, CB_BUILD_PAIR (e1, e2));
   }
 | ANY				{ $$ = cb_any; eval_inc2++; }
 | TOK_TRUE			{ $$ = cb_true; eval_inc2++; }
@@ -9087,15 +9088,17 @@ debugging_target:
 				CB_FILE (l)->flag_fl_debug = 1;
 				break;
 			case CB_TAG_FIELD:
-				x = cb_ref ($1);
-				if (CB_INVALID_TREE (x)) {
+				{
+					x = cb_ref($1);
+					if(CB_INVALID_TREE(x)) {
+						break;
+					}
+					needs_field_debug = 1;
+					CB_FIELD(x)->debug_section = current_section;
+					CB_FIELD(x)->flag_field_debug = 1;
+					CB_PURPOSE(z) = x;
 					break;
 				}
-				needs_field_debug = 1;
-				CB_FIELD (x)->debug_section = current_section;
-				CB_FIELD (x)->flag_field_debug = 1;
-				CB_PURPOSE (z) = x;
-				break;
 			default:
 				break;
 			}

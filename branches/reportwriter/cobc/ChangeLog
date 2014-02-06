@@ -12,6 +12,20 @@
 
 	* Report Writer module
 
+201?-??-??  ??
+
+	* parser.* : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE
+
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-06-19  Roger While <simrw@sim-basis.de>
+
+	* parser.y : Fix invalid syntax with OPEN/CLOSE
+	* parser.y, tree.h : Preliminary RW changes
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
