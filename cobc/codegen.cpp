@@ -739,7 +739,7 @@ output_data(cb_tree x)
 				output_base(f, 1);	// Don't output anything
 				string name = "";
 				bool bIndex = f->special_index != 0 || f->children;
-				bool bPtr = f->bPointer && f->occurs_max <= 1;
+				bool bPtr = f->bPointer && !f->flag_occurs;
 				// possible subscripts
 				cb_tree lsub = r->subs;
 				for(; f; f = f->parent) {
@@ -1094,12 +1094,12 @@ output_struct(cb_field * f, int indent, string & head, bool bMain = false, bool 
 			str += "\t";
 		}
 		if(!f->children) {
-			if(f->occurs_max > 1) {
+			if(f->flag_occurs) {
 				str += output_str("cob_u8_t  %s[%d][%d];\t// %s\n",
 								  f->sName, f->occurs_max, f->size, f->name);
 			} else {
 				str += output_str("cob_u8_t  %s[%d];\t// %s\n",
-								  f->sName, f->size * f->occurs_max, f->name);
+								  f->sName, f->size, f->name);
 			}
 			f = f->sister;
 			continue;
@@ -1119,7 +1119,7 @@ output_struct(cb_field * f, int indent, string & head, bool bMain = false, bool 
 			} else {
 				str += output_str("struct %s ", f->sType);
 			}
-			if(f->occurs_max > 1) {
+			if(f->flag_occurs) {
 				str += output_str("%s[%d];\t// %s\n", f->sName, f->occurs_max, f->name);
 			} else {
 				str += output_str("%s;\t// %s\n", f->sName, f->name);
@@ -1137,7 +1137,7 @@ output_struct(cb_field * f, int indent, string & head, bool bMain = false, bool 
 			if(bFake) {
 				str += output_str("};\t// struct %s only\n", f->sType);
 			} else {
-				if(f->occurs_max > 1) {
+				if(f->flag_occurs) {
 					str += output_str("} %s[%d];\t// %s\n", f->sName, f->occurs_max, f->name);
 				} else {
 					str += output_str("} %s;\t// %s\n", f->sName, f->name);
@@ -1161,7 +1161,7 @@ output_field_dcl(cb_field * f)
 						  f->memory_size, COB_ALIGN, f->name);
 	}
 	if(!f->children) {
-		if(f->occurs_max > 1) {
+		if(f->flag_occurs) {
 			return output_str("static cob_u8_t  %s[%d][%d]%s;\t// %s\n",
 							  f->sName, f->occurs_max, f->size, COB_ALIGN, f->name);
 		}
@@ -1223,7 +1223,7 @@ get_parm_name(cb_field * f)
 		f = f->parent;
 	}
 	if(!f->children) {
-		if(f->occurs_max > 1) {
+		if(f->flag_occurs) {
 			f->bUseName = false;
 			return output_str("%s%d", CB_PREFIX_BASE, f->id);
 		}
@@ -6072,7 +6072,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 					f = f->parent;
 				}
 				if(!f->children) {
-					if(f->occurs_max > 1) {
+					if(f->flag_occurs) {
 						f->bUseName = false;
 						output_local("static cob_u8_t\t*%s%d = NULL;\t// %s\n",
 									 CB_PREFIX_BASE, f->id, f->name);
@@ -6120,7 +6120,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 					f = f->parent;
 				}
 				if(!f->children) {
-					if(f->occurs_max > 1) {
+					if(f->flag_occurs) {
 						f->bUseName = false;
 						output_local("cob_u8_t\t*%s%d = NULL; // %s\n",
 									 CB_PREFIX_BASE, f->id, f->name);
@@ -6201,7 +6201,7 @@ output_internal_function(cb_program * prog, cb_tree parameter_list)
 						output_local ("cob_s64_t\tret_%s = 0;\t// %s\n", f->sName, f->name);
 						output_local ("cob_u8_t\t*%s = (unsigned char *)&ret_%s;\t// %s\n", f->sName, f->sName, f->name);
 					} else {
-						if(f->occurs_max > 1) {
+						if(f->flag_occurs) {
 							f->bUseName = false;
 							output_local("static cob_u8_t\t*%s%d = NULL;\t// %s\n", CB_PREFIX_BASE, f->id, f->name);
 						} else {

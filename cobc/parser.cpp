@@ -11218,7 +11218,7 @@ yyreduce:
 		cb_field * f = CB_FIELD_PTR((yyvsp[(2) - (2)]));
 		if(f->level != 1 && f->level != 77) {
 			cb_error(_("RETURNING item must have level 01"));
-		} else if(f->occurs_max > 1) {
+		} else if(f->flag_occurs) {
 			cb_error(_("RETURNING item should not have OCCURS"));
 		} else if(f->storage == CB_STORAGE_LOCAL) {
 			cb_error (_("RETURNING item should not be in LOCAL-STORAGE"));
