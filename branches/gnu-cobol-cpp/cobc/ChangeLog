@@ -17,6 +17,10 @@
 	* codegen.cpp : Fixing Bug #55
 		UDF with no parameters do not compile
 
+201?-??-??  ??
+
+	* parser.* : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE
+
 2013-06-12  Sergey Kashyrin <ska@kiska.net>
 
 	* Switch to C++

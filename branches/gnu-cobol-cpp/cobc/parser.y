@@ -268,6 +268,7 @@ static void
 emit_entry(const char * name, const int encode, cb_tree using_list)
 {
 	char buff[COB_MINI_BUFF];
+
 	snprintf(buff, (size_t)COB_MINI_MAX, "E$%s", name);
 	cb_tree label = cb_build_label(cb_build_reference(buff), NULL);
 	if(encode) {
@@ -347,20 +348,24 @@ emit_entry(const char * name, const int encode, cb_tree using_list)
 	if(current_program->prog_type == CB_FUNCTION_TYPE) {
 		for(cb_tree l = using_list; l; l = CB_CHAIN(l)) {
 			cb_tree x = CB_VALUE(l);
-			if(CB_VALID_TREE(x) && current_program->returning && cb_ref(x) == cb_ref(current_program->returning)) {
+			if(CB_VALID_TREE(x) && current_program->returning &&
+			    cb_ref(x) == cb_ref(current_program->returning)) {
 				cb_error_x(x, _("'%s' USING item duplicates RETURNING item"), cb_name(x));
 			}
 		}
 	}
 
 	for(cb_tree l = current_program->entry_list; l; l = CB_CHAIN(l)) {
-		if(strcmp((const char *)name, (const char *)(CB_LABEL(CB_PURPOSE(l))->name)) == 0) {
-			cb_error_x(current_statement, _("ENTRY '%s' duplicated"), name);
+		if(strcmp((const char *)name,
+			    (const char *)(CB_LABEL(CB_PURPOSE(l))->name)) == 0) {
+			cb_error_x(current_statement,
+				    _("ENTRY '%s' duplicated"), name);
 		}
 	}
 
 	current_program->entry_list =
-		cb_list_append(current_program->entry_list, CB_BUILD_PAIR(label, using_list));
+		cb_list_append(current_program->entry_list,
+				CB_BUILD_PAIR (label, using_list));
 }
 
 static size_t
@@ -375,7 +380,8 @@ increment_depth(void)
 }
 
 static void
-terminator_warning(cb_tree stmt, const unsigned int termid, const char * name)
+terminator_warning (cb_tree stmt, const unsigned int termid,
+		    const char *name)
 {
 	check_unreached = 0;
 	if(term_array[termid]) {
@@ -1397,7 +1403,8 @@ simple_prog:
 	if(increment_depth()) {
 		YYABORT;
 	}
-	cb_tree l = cb_build_alphanumeric_literal(demangle_name, strlen(demangle_name));
+	cb_tree l = cb_build_alphanumeric_literal(demangle_name,
+					   strlen(demangle_name));
 	current_program->program_id = cb_build_program_id(l, NULL, 0);
 	current_program->prog_type = CB_PROGRAM_TYPE;
 	if(!main_flag_set) {
@@ -1691,7 +1698,8 @@ configuration_paragraph:
 source_computer_paragraph:
   SOURCE_COMPUTER TOK_DOT
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION, 0, 0);
 	check_comp_repeated("SOURCE-COMPUTER", SYN_CLAUSE_1);
 	if(warningopt &&(check_comp_duplicate & SYN_CLAUSE_2)) {
 		cb_warning(_("Phrases in non-standard order"));
@@ -1721,7 +1729,8 @@ with_debugging_mode:
 object_computer_paragraph:
   OBJECT_COMPUTER TOK_DOT
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION, 0, 0);
 	check_comp_repeated("OBJECT-COMPUTER", SYN_CLAUSE_2);
   }
   object_computer_entry
@@ -1807,7 +1816,8 @@ computer_words:
 repository_paragraph:
   REPOSITORY TOK_DOT
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION, 0, 0);
   }
   repository_entry
   {
@@ -1884,7 +1894,8 @@ special_names_paragraph:
   SPECIAL_NAMES TOK_DOT
   {
 	check_duplicate = 0;
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION, 0, 0);
 	header_check |= COBC_HD_SPECIAL_NAMES;
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
@@ -1927,7 +1938,9 @@ special_name:
 mnemonic_name_clause:
   WORD
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 		save_tree = NULL;
@@ -2004,7 +2017,9 @@ on_off_clauses:
 alphabet_name_clause:
   ALPHABET undefined_word
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 		$$ = NULL;
@@ -2119,7 +2134,9 @@ alphabet_lits:
 symbolic_characters_clause:
   symbolic_collection sym_in_word
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else if($1) {
@@ -2211,7 +2228,9 @@ integer_list:
 class_name_clause:
   CLASS undefined_word _is class_item_list
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2258,7 +2277,9 @@ class_item:
 locale_clause:
   LOCALE undefined_word _is LITERAL
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2280,7 +2301,9 @@ currency_sign_clause:
 	unsigned char * s = CB_LITERAL($4)->data;
 	unsigned int error_ind = 0;
 
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 		error_ind = 1;
@@ -2369,7 +2392,9 @@ with_pic_symbol:
 decimal_point_clause:
   DECIMAL_POINT _is COMMA
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2386,7 +2411,9 @@ decimal_point_clause:
 numeric_sign_clause:
   NUMERIC SIGN _is TRAILING SEPARATE
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2400,7 +2427,9 @@ numeric_sign_clause:
 cursor_clause:
   CURSOR _is reference
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2416,7 +2445,9 @@ cursor_clause:
 crt_status_clause:
   CRT STATUS _is reference
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2432,7 +2463,9 @@ crt_status_clause:
 screen_control:
   SCREEN_CONTROL _is reference
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2447,7 +2480,9 @@ screen_control:
 event_status:
   EVENT_STATUS _is reference
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_SPECIAL_NAMES, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_SPECIAL_NAMES, 0);
 	if(current_program->nested_level) {
 		cb_error(_("SPECIAL-NAMES not allowed in nested programs"));
 	} else {
@@ -2470,7 +2505,8 @@ input_output_header:
 file_control_header:
 | FILE_CONTROL TOK_DOT
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
 	header_check |= COBC_HD_FILE_CONTROL;
   }
 ;
@@ -2478,7 +2514,8 @@ file_control_header:
 i_o_control_header:
 | I_O_CONTROL TOK_DOT
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_INPUT_OUTPUT_SECTION, 0, 0);
 	header_check |= COBC_HD_I_O_CONTROL;
   }
 ;
@@ -2492,7 +2529,9 @@ file_control_sequence:
 file_control_entry:
   SELECT flag_optional undefined_word
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_INPUT_OUTPUT_SECTION, COBC_HD_FILE_CONTROL, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_INPUT_OUTPUT_SECTION,
+			       COBC_HD_FILE_CONTROL, 0);
 	check_duplicate = 0;
 	if(CB_INVALID_TREE($3)) {
 		YYERROR;
@@ -2881,7 +2920,9 @@ i_o_control_clause:
 same_clause:
   SAME same_option _area _for file_name_list
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_I_O_CONTROL, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_I_O_CONTROL, 0);
 	switch(CB_INTEGER($2)->val) {
 	case 0:
 		/* SAME AREA */
@@ -2919,7 +2960,9 @@ multiple_file_tape_clause:
   }
   _file _tape _contains multiple_file_list
   {
-	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION, COBC_HD_CONFIGURATION_SECTION, COBC_HD_I_O_CONTROL, 0);
+	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
+			       COBC_HD_CONFIGURATION_SECTION,
+			       COBC_HD_I_O_CONTROL, 0);
 	cb_verify(cb_multiple_file_tape_clause, "MULTIPLE FILE TAPE");
 	cobc_cs_check = 0;
   }
@@ -2987,7 +3030,8 @@ file_description_entry:
   file_type file_name
   {
 	current_storage = CB_STORAGE_FILE;
-	check_headers_present(COBC_HD_DATA_DIVISION, COBC_HD_FILE_SECTION, 0, 0);
+	check_headers_present(COBC_HD_DATA_DIVISION,
+			       COBC_HD_FILE_SECTION, 0, 0);
 	check_duplicate = 0;
 	if(CB_INVALID_TREE($2) || cb_ref($2) == cb_error_node) {
 		YYERROR;
@@ -3458,7 +3502,8 @@ data_description:
   constant_entry
 | level_number entry_name
   {
-	cb_tree x = cb_build_field_tree($1, $2, current_field, current_storage, current_file, 0);
+	cb_tree x = cb_build_field_tree($1, $2, current_field, current_storage,
+				 current_file, 0);
 	/* Free tree assocated with level number */
 	cobc_parse_free($1);
 	if(CB_INVALID_TREE(x)) {
@@ -4697,7 +4742,8 @@ screen_description:
   constant_entry
 | level_number entry_name
   {
-	cb_tree x = cb_build_field_tree($1, $2, current_field, current_storage, current_file, 0);
+	cb_tree x = cb_build_field_tree($1, $2, current_field, current_storage,
+				 current_file, 0);
 	/* Free tree assocated with level number */
 	cobc_parse_free($1);
 	check_pic_duplicate = 0;
@@ -5207,7 +5253,13 @@ procedure_returning:
 		} else if(f->storage == CB_STORAGE_LOCAL) {
 			cb_error (_("RETURNING item should not be in LOCAL-STORAGE"));
 		} else {
+#if 0 // What reason do we have for skipping this IF in C++ version?
+			if (current_program->prog_type == CB_FUNCTION_TYPE) {
+				f->flag_is_returning = 1;
+			}
+#else
 			f->flag_is_returning = 1;
+#endif
 			current_program->returning = $2;
 		}
 	}
@@ -5262,6 +5314,7 @@ procedure:
   {
 	if(next_label_list) {
 		char	name[32];
+
 		snprintf(name, sizeof(name), "L$%d", next_label_id);
 		cb_tree plabel = cb_build_label(cb_build_reference(name), NULL);
 		CB_LABEL(plabel)->flag_next_sentence = 1;
@@ -5932,8 +5985,7 @@ call_body:
 	if(CB_LITERAL_P($2) &&
 	    current_program->prog_type == CB_PROGRAM_TYPE &&
 	    !current_program->flag_recursive &&
-	    !strcmp((const char *)(CB_LITERAL($2)->data), current_program->orig_program_id))
-	{
+	    !strcmp ((const char *)(CB_LITERAL($2)->data), current_program->orig_program_id)) {
 		cb_warning_x($2, _("Recursive program call - assuming RECURSIVE attribute"));
 		current_program->flag_recursive = 1;
 	}
