@@ -853,7 +853,7 @@ at_help_all="1;syn_copy.at:21;COPY: file not found;copy;
 238;run_misc.at:2366;DECLARATIVES procedure referencing;runmisc;
 239;run_misc.at:2405;DECLARATIVES procedure referencing (multiple);runmisc;
 240;run_misc.at:2448;SYMBOLIC clause;runmisc;
-241;run_misc.at:2485;REDEFINE with OCCURS clause;runmisc;
+241;run_misc.at:2485;OCCURS clause with 1 entry;runmisc;
 242;run_extensions.at:24;CALL BY CONTENT binary and literal;extensions;
 243;run_extensions.at:73;Hexadecimal numeric literal;extensions;
 244;run_extensions.at:101;Semi-parenthesized condition;extensions;
@@ -18849,15 +18849,12 @@ read at_status <"$at_status_file"
 #AT_STOP_240
 #AT_START_241
 at_fn_group_banner 241 'run_misc.at:2485' \
-  "REDEFINE with OCCURS clause" "                    "
-at_xfail=yes
+  "OCCURS clause with 1 entry" "                     "
+at_xfail=no
 (
   $as_echo "241. $at_setup_line: testing $at_desc ..."
   $at_traceon
 
-
-
-# CPP version currently has a codegen issue here:
 
 
 cat >prog.cob <<'_ATEOF'
@@ -18867,21 +18864,34 @@ cat >prog.cob <<'_ATEOF'
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01  D1.
-           03  FILLER   PIC X(03) value '123'.
-       01  D1-R         REDEFINES D1.
+           03  FILLER   OCCURS 1.
+               05 D1-ENTRY   PIC X(03) value '123'.
+       01  D2.
+           03  D2-ENTRY   PIC X(03)  value 'ABC'  OCCURS 1.
+       01  D1TOR.
+           03  FILLER   PIC X(03) value '456'.
+       01  D1-R         REDEFINES D1TOR.
            03  FILLER   OCCURS 1.
                05 D1-R-ENTRY   PIC X(03).
-       01  D2.
-           03  FILLER   PIC X(03) value 'ABC'.
-       01  D2-R         REDEFINES D2.
+       01  D2TOR.
+           03  FILLER   PIC X(03) value 'DEF'.
+       01  D2-R         REDEFINES D2TOR.
            03  D2-R-ENTRY   PIC X(03)   OCCURS 1.
 
        PROCEDURE        DIVISION.
-           IF D1-R-ENTRY (1) NOT = "123"
+           IF D1-ENTRY (1) NOT = "123"
+              DISPLAY D1-ENTRY (1)
+              END-DISPLAY
+           END-IF.
+           IF D2-ENTRY (1) NOT = "ABC"
+              DISPLAY D2-ENTRY (1)
+              END-DISPLAY
+           END-IF.
+           IF D1-R-ENTRY (1) NOT = "456"
               DISPLAY D1-R-ENTRY (1)
               END-DISPLAY
            END-IF.
-           IF D2-R-ENTRY (1) NOT = "ABC"
+           IF D2-R-ENTRY (1) NOT = "DEF"
               DISPLAY D2-R-ENTRY (1)
               END-DISPLAY
            END-IF.
@@ -18890,28 +18900,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2518: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2518"
+$as_echo "$at_srcdir/run_misc.at:2528: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2528"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2518"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2528"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2519: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2519"
+$as_echo "$at_srcdir/run_misc.at:2529: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2529"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2519"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2529"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
