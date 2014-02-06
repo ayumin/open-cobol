@@ -1,3 +1,7 @@
+2014-02-06  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* codegen.cpp : Fixing #64 code generation on OCCURS clause with 1 entry
+
 2014-02-05  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* codegen.cpp : Fixing #63 code generation for BASED items in modules
