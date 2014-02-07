@@ -16,7 +16,7 @@
    along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// config.h - Win32 VS2005-2010
+// config.h - Win32 VS2005-2012
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */

@@ -1,18 +1,18 @@
 ## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 ## Copyright (C) 2007-2012 Roger While
-## 
+##
 ## This file is part of GNU Cobol C++.
-## 
+##
 ## The GNU Cobol C++ compiler is free software: you can redistribute it
 ## and/or modify it under the terms of the GNU General Public License
 ## as published by the Free Software Foundation, either version 3 of the
 ## License, or (at your option) any later version.
-## 
+##
 ## GNU Cobol C++ is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -935,7 +935,7 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(12) VALUE "AAABBCDCCCCC".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING 
+           INSPECT X REPLACING
              ALL      "A" BY "Z"
                       "B" BY "Y"
              TRAILING "C" BY "X".
@@ -1395,12 +1395,12 @@ AT_DATA([prog.cob], [
        ENVIRONMENT     DIVISION.
        DATA            DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-RECORD. 
-           02 VALUE SPACE           PIC X(04). 
-           02 VALUE "ABC AND DE"    PIC X(10). 
+       01  WS-RECORD.
+           02 VALUE SPACE           PIC X(04).
+           02 VALUE "ABC AND DE"    PIC X(10).
            02 VALUE SPACE           PIC X(07).
            02 VALUE "FG AND HIJ"    PIC X(10).
-           02 VALUE SPACE           PIC X(08). 
+           02 VALUE SPACE           PIC X(08).
        01  SPACE-2                  PIC X(02) VALUE SPACE.
        01  WS-DUMMY                 PIC X(15).
        01  WS-POINTER               PIC 99.
@@ -1408,34 +1408,34 @@ AT_DATA([prog.cob], [
            MOVE 1 TO WS-POINTER.
       *
            PERFORM 0001-SUB.
-           IF WS-DUMMY NOT = SPACE 
+           IF WS-DUMMY NOT = SPACE
               DISPLAY "Expected space - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 5
               DISPLAY "Expected 5 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
       *
            PERFORM 0001-SUB.
            IF WS-DUMMY NOT = "ABC AND DE"
               DISPLAY "Expected ABC AND DE - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 21
               DISPLAY "Expected 21 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
       *
            PERFORM 0001-SUB.
            IF WS-DUMMY NOT = " FG AND HIJ"
               DISPLAY "Expected  FG AND HIJ - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 40
               DISPLAY "Expected 40 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
            STOP RUN.
        0001-SUB.
            UNSTRING WS-RECORD
@@ -1846,7 +1846,7 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE -o prog prog.cob])
-AT_CHECK([./prog], [0]) 
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
@@ -1897,7 +1897,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE -std=mf -o prog prog.cob], [0], ,
 [prog.cob: 12: Warning: Size of 'XMAIN0502' larger than size of 'XMAIN0501'
 ])
-AT_CHECK([./prog], [0]) 
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
@@ -2574,5 +2574,465 @@ AT_DATA([prog.cob], [
 
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+AT_SETUP([C/C++ reserved words/predefined identifiers])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([caller.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      caller.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+      *
+      * Reserved Words in C (that aren't reserved in COBOL)
+      * var names MUST BE IN LOWER CASE (!)
+      *
+       77  const                       PIC X VALUE "A".
+       77  double                      PIC X VALUE "B".
+       77  float                       PIC X VALUE "C".
+       77  int                         PIC X VALUE "D".
+       77  short                       PIC X VALUE "E".
+       77  struct                      PIC X VALUE "F".
+       77  break                       PIC X VALUE "G".
+       77  long                        PIC X VALUE "H".
+       77  switch                      PIC X VALUE "I".
+       77  void                        PIC X VALUE "J".
+       77  case                        PIC X VALUE "K".
+       77  enum                        PIC X VALUE "L".
+       77  goto                        PIC X VALUE "M".
+       77  register                    PIC X VALUE "N".
+       77  sizeof                      PIC X VALUE "O".
+       77  volatile                    PIC X VALUE "P".
+       77  char                        PIC X VALUE "Q".
+       77  do                          PIC X VALUE "R".
+       77  extern                      PIC X VALUE "S".
+       77  static                      PIC X VALUE "T".
+       77  union                       PIC X VALUE "U".
+       77  while                       PIC X VALUE "V".
+      *
+      * More Reserved Words in C++
+      * var names MUST BE IN LOWER CASE (!)
+      *
+       77  asm                         PIC X VALUE "W".
+       77  dynamic_cast                PIC X VALUE "X".
+       77  namespace                   PIC X VALUE "Y".
+       77  reinterpret_cast            PIC X VALUE "Z".
+       77  try                         PIC X VALUE "a".
+       77  bool                        PIC X VALUE "b".
+       77  explicit                    PIC X VALUE "c".
+       77  new                         PIC X VALUE "d".
+       77  static_cast                 PIC X VALUE "e".
+       77  typeid                      PIC X VALUE "f".
+       77  catch                       PIC X VALUE "g".
+       77  operator                    PIC X VALUE "h".
+       77  template                    PIC X VALUE "i".
+       77  typename                    PIC X VALUE "j".
+       77  friend                      PIC X VALUE "k".
+       77  private                     PIC X VALUE "l".
+       77  this                        PIC X VALUE "m".
+       77  const_cast                  PIC X VALUE "n".
+       77  inline                      PIC X VALUE "o".
+       77  public                      PIC X VALUE "p".
+       77  throw                       PIC X VALUE "q".
+       77  virtual                     PIC X VALUE "r".
+       77  mutable                     PIC X VALUE "s".
+       77  protected                   PIC X VALUE "t".
+       77  wchar_t                     PIC X VALUE "u".
+      *
+      * More Reserved Words in C++ (not essential)
+      * var names MUST BE IN LOWER CASE (!)
+      *
+       77  bitand                      PIC X VALUE "v".
+       77  compl                       PIC X VALUE "w".
+       77  not_eq                      PIC X VALUE "x".
+       77  or_eq                       PIC X VALUE "y".
+       77  xor_eq                      PIC X VALUE "z".
+       77  and_eq                      PIC X VALUE "0".
+       77  bitor                       PIC X VALUE "1".
+       77  xor                         PIC X VALUE "2".
+      *
+       PROCEDURE        DIVISION.
+           CALL "callee" USING   const
+                                 double
+                                 float
+                                 int
+                                 short
+                                 struct
+                                 break
+                                 long
+                                 switch
+                                 void
+                                 case
+                                 enum
+                                 goto
+                                 register
+                                 sizeof
+                                 volatile
+                                 char
+                                 do
+                                 extern
+                                 static
+                                 union
+                                 while
+           END-CALL.
+           CALL "callee2" USING  asm
+                                 dynamic_cast
+                                 namespace
+                                 reinterpret_cast
+                                 try
+                                 bool
+                                 explicit
+                                 new
+                                 static_cast
+                                 typeid
+                                 catch
+                                 operator
+                                 template
+                                 typename
+                                 friend
+                                 private
+                                 this
+                                 const_cast
+                                 inline
+                                 public
+                                 throw
+                                 virtual
+                                 mutable
+                                 protected
+                                 wchar_t
+                                 bitand
+                                 compl
+                                 not_eq
+                                 or_eq
+                                 xor_eq
+                                 and_eq
+                                 bitor
+                                 xor
+           END-CALL.
+           MOVE x'00' TO         const
+                                 double
+                                 float
+                                 int
+                                 short
+                                 struct
+                                 break
+                                 long
+                                 switch
+                                 void
+                                 case
+                                 enum
+                                 goto
+                                 register
+                                 sizeof
+                                 volatile
+                                 char
+                                 do
+                                 extern
+                                 static
+                                 union
+                                 while
+                                 asm
+                                 dynamic_cast
+                                 namespace
+                                 reinterpret_cast
+                                 try
+                                 bool
+                                 explicit
+                                 new
+                                 static_cast
+                                 typeid
+                                 catch
+                                 operator
+                                 template
+                                 typename
+                                 friend
+                                 private
+                                 this
+                                 const_cast
+                                 inline
+                                 public
+                                 throw
+                                 virtual
+                                 mutable
+                                 protected
+                                 wchar_t
+                                 bitand
+                                 compl
+                                 not_eq
+                                 or_eq
+                                 xor_eq
+                                 and_eq
+                                 bitor
+                                 xor
+                                 .
+           STOP RUN.
+])
+
+AT_DATA([callee.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee.
+       DATA             DIVISION.
+       LINKAGE SECTION.
+      *
+      * Reserved Words in C (that aren't reserved in COBOL)
+      * var names MUST BE IN LOWER CASE (!)
+      *
+       77  const                       PIC X.
+       77  double                      PIC X.
+       77  float                       PIC X.
+       77  int                         PIC X.
+       77  short                       PIC X.
+       77  struct                      PIC X.
+       77  break                       PIC X.
+       77  long                        PIC X.
+       77  switch                      PIC X.
+       77  void                        PIC X.
+       77  case                        PIC X.
+       77  enum                        PIC X.
+       77  goto                        PIC X.
+       77  register                    PIC X.
+       77  sizeof                      PIC X.
+       77  volatile                    PIC X.
+       77  char                        PIC X.
+       77  do                          PIC X.
+       77  extern                      PIC X.
+       77  static                      PIC X.
+       77  union                       PIC X.
+       77  while                       PIC X.
+       PROCEDURE        DIVISION USING
+                                 const
+                                 double
+                                 float
+                                 int
+                                 short
+                                 struct
+                                 break
+                                 long
+                                 switch
+                                 void
+                                 case
+                                 enum
+                                 goto
+                                 register
+                                 sizeof
+                                 volatile
+                                 char
+                                 do
+                                 extern
+                                 static
+                                 union
+                                 while
+                                 .
+           IF (const                       NOT = "A") OR
+              (double                      NOT = "B") OR
+              (float                       NOT = "C") OR
+              (int                         NOT = "D") OR
+              (short                       NOT = "E") OR
+              (struct                      NOT = "F") OR
+              (break                       NOT = "G") OR
+              (long                        NOT = "H") OR
+              (switch                      NOT = "I") OR
+              (void                        NOT = "J") OR
+              (case                        NOT = "K") OR
+              (enum                        NOT = "L") OR
+              (goto                        NOT = "M") OR
+              (register                    NOT = "N") OR
+              (sizeof                      NOT = "O") OR
+              (volatile                    NOT = "P") OR
+              (char                        NOT = "Q") OR
+              (do                          NOT = "R") OR
+              (extern                      NOT = "S") OR
+              (static                      NOT = "T") OR
+              (union                       NOT = "U") OR
+              (while                       NOT = "V")
+              DISPLAY "At least one var has wrong content!"
+              END-DISPLAY
+           END-IF.
+           MOVE x'FF' TO         const
+                                 double
+                                 float
+                                 int
+                                 short
+                                 struct
+                                 break
+                                 long
+                                 switch
+                                 void
+                                 case
+                                 enum
+                                 goto
+                                 register
+                                 sizeof
+                                 volatile
+                                 char
+                                 do
+                                 extern
+                                 static
+                                 union
+                                 while
+                                 .
+           EXIT PROGRAM.
+])
+
+AT_DATA([callee2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee2.
+       DATA             DIVISION.
+       LINKAGE SECTION.
+      *
+      * More Reserved Words in C++
+      * var names MUST BE IN LOWER CASE (!)
+      *
+       77  asm                         PIC X.
+       77  dynamic_cast                PIC X.
+       77  namespace                   PIC X.
+       77  reinterpret_cast            PIC X.
+       77  try                         PIC X.
+       77  bool                        PIC X.
+       77  explicit                    PIC X.
+       77  new                         PIC X.
+       77  static_cast                 PIC X.
+       77  typeid                      PIC X.
+       77  catch                       PIC X.
+       77  operator                    PIC X.
+       77  template                    PIC X.
+       77  typename                    PIC X.
+       77  friend                      PIC X.
+       77  private                     PIC X.
+       77  this                        PIC X.
+       77  const_cast                  PIC X.
+       77  inline                      PIC X.
+       77  public                      PIC X.
+       77  throw                       PIC X.
+       77  virtual                     PIC X.
+       77  mutable                     PIC X.
+       77  protected                   PIC X.
+       77  wchar_t                     PIC X.
+      *
+      * More Reserved Words in C++ (not essential)
+      *
+       77  bitand                      PIC X.
+       77  compl                       PIC X.
+       77  not_eq                      PIC X.
+       77  or_eq                       PIC X.
+       77  xor_eq                      PIC X.
+       77  and_eq                      PIC X.
+       77  bitor                       PIC X.
+       77  xor                         PIC X.
+       PROCEDURE        DIVISION USING
+                                 asm
+                                 dynamic_cast
+                                 namespace
+                                 reinterpret_cast
+                                 try
+                                 bool
+                                 explicit
+                                 new
+                                 static_cast
+                                 typeid
+                                 catch
+                                 operator
+                                 template
+                                 typename
+                                 friend
+                                 private
+                                 this
+                                 const_cast
+                                 inline
+                                 public
+                                 throw
+                                 virtual
+                                 mutable
+                                 protected
+                                 wchar_t
+                                 bitand
+                                 compl
+                                 not_eq
+                                 or_eq
+                                 xor_eq
+                                 and_eq
+                                 bitor
+                                 xor
+                                 .
+           IF (asm                         NOT = "W") OR
+              (dynamic_cast                NOT = "X") OR
+              (namespace                   NOT = "Y") OR
+              (reinterpret_cast            NOT = "Z") OR
+              (try                         NOT = "a") OR
+              (bool                        NOT = "b") OR
+              (explicit                    NOT = "c") OR
+              (new                         NOT = "d") OR
+              (static_cast                 NOT = "e") OR
+              (typeid                      NOT = "f") OR
+              (catch                       NOT = "g") OR
+              (operator                    NOT = "h") OR
+              (template                    NOT = "i") OR
+              (typename                    NOT = "j") OR
+              (friend                      NOT = "k") OR
+              (private                     NOT = "l") OR
+              (this                        NOT = "m") OR
+              (const_cast                  NOT = "n") OR
+              (inline                      NOT = "o") OR
+              (public                      NOT = "p") OR
+              (throw                       NOT = "q") OR
+              (virtual                     NOT = "r") OR
+              (mutable                     NOT = "s") OR
+              (protected                   NOT = "t") OR
+              (wchar_t                     NOT = "u") OR
+              (bitand                      NOT = "v") OR
+              (compl                       NOT = "w") OR
+              (not_eq                      NOT = "x") OR
+              (or_eq                       NOT = "y") OR
+              (xor_eq                      NOT = "z") OR
+              (and_eq                      NOT = "0") OR
+              (bitor                       NOT = "1") OR
+              (xor                         NOT = "2")
+              DISPLAY "At least one var has wrong content!"
+              END-DISPLAY
+           END-IF.
+           MOVE x'FF' TO         asm
+                                 dynamic_cast
+                                 namespace
+                                 reinterpret_cast
+                                 try
+                                 bool
+                                 explicit
+                                 new
+                                 static_cast
+                                 typeid
+                                 catch
+                                 operator
+                                 template
+                                 typename
+                                 friend
+                                 private
+                                 this
+                                 const_cast
+                                 inline
+                                 public
+                                 throw
+                                 virtual
+                                 mutable
+                                 protected
+                                 wchar_t
+                                 bitand
+                                 compl
+                                 not_eq
+                                 or_eq
+                                 xor_eq
+                                 and_eq
+                                 bitor
+                                 xor
+                                 .
+           EXIT PROGRAM.
+])
+
+AT_CHECK([$COMPILE_MODULE callee.cob])
+AT_CHECK([$COMPILE_MODULE callee2.cob])
+AT_CHECK([$COMPILE -o prog caller.cob])
+AT_CHECK([./prog], [0], [], [])
 
 AT_CLEANUP

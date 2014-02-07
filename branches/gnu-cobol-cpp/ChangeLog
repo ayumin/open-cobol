@@ -71,6 +71,11 @@
 
 --------------------------------------------------------------------------------------
 
+2011-??-??  Roger While <simrw@sim-basis.de>
+
+	* General : Affects most directories - Let make check
+	  skip ISAM tests if not configured with ISAM
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0

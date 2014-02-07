@@ -740,7 +740,7 @@ output_data(cb_tree x)
 				string name = "";
 				bool bIndex = f->special_index != 0 || f->children;
 				bool bPtr = f->bPointer && !f->flag_occurs;
-            bool bNoAdrOp = false;
+				bool bNoAdrOp = false;
 				// possible subscripts
 				cb_tree lsub = r->subs;
 				for(; f; f = f->parent) {
@@ -762,7 +762,7 @@ output_data(cb_tree x)
 						}
 					}
 					if(f->flag_local_storage && !f->parent) {
-                  bNoAdrOp = true;
+						bNoAdrOp = true;
 						string st = "(";
 						st += "(";
 						st += f->sType;

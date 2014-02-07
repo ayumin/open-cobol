@@ -97,7 +97,7 @@ static void reorg_fnames(cb_field * f, const char * basename, const char * add =
 	cb_field * fbase = f;
 	int dupnum = 1;
 	while(f) {
-		if(f->flag_base && *basename == 0 && f->occurs_max <= 1) {
+		if(f->flag_base && *basename == 0 && !f->flag_occurs) {
 			f->bPointer = true;
 		}
 		// Resolving unused duplicate names
@@ -127,7 +127,10 @@ static void reorg_fnames(cb_field * f, const char * basename, const char * add =
 		for(char * p = nm0; *p; ++p) {
 			if(*p == ' ' || *p == '-') {
 				*p = '_';
+			} else {
+				*p = toupper(*p);
 			}
+			
 		}
 		int ct = (int)(strlen(nm0) + strlen(basename) + 2);
 		char * nm = new char[ct];
