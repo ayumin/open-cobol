@@ -26,6 +26,8 @@ AT_COLOR_TESTS
 AT_TESTED([cobc])
 
 ## Syntax tests
+AT_BANNER([Syntax tests])
+
 m4_include([syn_copy.at])
 m4_include([syn_definition.at])
 m4_include([syn_expression.at])
@@ -40,6 +42,8 @@ m4_include([syn_set.at])		# 14.8.35 SET statement
 m4_include([syn_reportwriter.at])
 
 ## Run tests
+AT_BANNER([Run tests])
+
 m4_include([run_fundamental.at])
 m4_include([run_subscripts.at])		# 8.4.1.2 Subscripts
 m4_include([run_refmod.at])		# 8.4.2.3 Reference-modification
@@ -52,6 +56,8 @@ m4_include([run_functions.at])	# 15 Intrinsic Functions / 9.4 User-Defined Funct
 m4_include([run_reportwriter.at])
 
 ## Data Representation
+AT_BANNER([Data Representation])
+
 m4_include([data_binary.at])		# USAGE BINARY
 m4_include([data_display.at])		# USAGE DISPLAY
 m4_include([data_packed.at])		# USAGE PACKED-DECIMAL
