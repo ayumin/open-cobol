@@ -12,6 +12,11 @@
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* fileio.c : Implement COB_VARSEQ_FORMAT to override default format
+		    for variable length sequential files.
+
 2009-06-09  Roger While <simrw@sim-basis.de>
 
 	* move.c : Fix editing symbol moves
@@ -22,8 +27,10 @@
 
 2009-05-25  Roger While <simrw@sim-basis.de>
 
-	* General : Remove extraneous include files -
-		    Integrate into common.h as first step
+	* General : Remove the following extraneous include files:
+		    byteswap.h, call.h, fileio.h, intrinsic.h, move.h, numeric.h,
+		    screenio.h, strings.h, termio.h by integration into common.h
+		    as first step
 
 2009-05-16  Roger While <simrw@sim-basis.de>
 
