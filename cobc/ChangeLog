@@ -21,6 +21,34 @@
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
+20??-??-??  Simon 'human' Sobisch
+
+   * codegen.c : Simplify by handling stuff for different compilers
+       by general define (COB_ALIGN)
+
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+   * cobc.c, cobc.h, tree.h : Simplify by handling stuff for 
+       different compilers by general defines (CB_COPT_x, COB_A_...),
+       added parsing step and source name to verbose messages,
+       added some comments
+
+20??-??-??  Simon 'human' Sobisch
+
+   * cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
+       fix some compiler warnings, support possible spaces in different
+       path names, enable linking of already assembled modules for
+       different UNIXes
+
+2009-10-29  Simon 'human' Sobisch
+
+   * cobc.c : Warn if -Debug is used (because likely -debug was intended)
+
+2009-10-08  Simon 'human' Sobisch
+
+   * error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
+     in warning/error messages
+
 2009-06-19  Roger While <simrw@sim-basis.de>
 
 	* parser.y : Fix invalid syntax with OPEN/CLOSE

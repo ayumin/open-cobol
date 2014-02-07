@@ -1,5 +1,6 @@
 #
 # Configure template for GNU Cobol
+# Process this file with autoconf to produce a configure script.
 #
 # Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 # Copyright (C) 2007-2012 Roger While
