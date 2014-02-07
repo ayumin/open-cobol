@@ -740,6 +740,7 @@ output_data(cb_tree x)
 				string name = "";
 				bool bIndex = f->special_index != 0 || f->children;
 				bool bPtr = f->bPointer && !f->flag_occurs;
+            bool bNoAdrOp = false;
 				// possible subscripts
 				cb_tree lsub = r->subs;
 				for(; f; f = f->parent) {
@@ -761,15 +762,18 @@ output_data(cb_tree x)
 						}
 					}
 					if(f->flag_local_storage && !f->parent) {
-						string st = "((";
+                  bNoAdrOp = true;
+						string st = "(";
+						st += "(";
 						st += f->sType;
-						st += " *)(cob_local_ptr";
+						st += " *)";
+						st += "(cob_local_ptr";
 						if(f->mem_offset) {
-							sprintf(buf, " + %d))", f->mem_offset);
+							sprintf(buf, " + %d", f->mem_offset);
 							st += buf;
-						} else {
-							st += "))";
 						}
+						st += ")";
+						st += ")";
 						name = st + name;
 					} else {
 						name = f->sName + name;
@@ -777,7 +781,11 @@ output_data(cb_tree x)
 				}
 				if(bIndex) {
 					if(bPtr) {
-						name = "*(cob_u8_t **)&" + name;
+						if(bNoAdrOp) {
+							name = "(cob_u8_t *)" + name;
+						} else {
+							name = "*(cob_u8_t **)&" + name;
+						}
 					} else {
 						name = "(cob_u8_t *)&" + name;
 					}

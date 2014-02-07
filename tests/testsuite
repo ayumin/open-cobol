@@ -781,80 +781,80 @@ at_help_all="1;syn_copy.at:21;COPY: file not found;copy;
 166;run_misc.at:30;Comma separator without space;runmisc;
 167;run_misc.at:47;LOCAL-STORAGE (1);runmisc;
 168;run_misc.at:82;LOCAL-STORAGE (2);runmisc;
-169;run_misc.at:132;EXTERNAL data item;runmisc;
-170;run_misc.at:173;EXTERNAL AS data item;runmisc;
-171;run_misc.at:221;cobcrun validation;runmisc;
-172;run_misc.at:263;MOVE to itself;runmisc;
-173;run_misc.at:288;MOVE with refmod;runmisc;
-174;run_misc.at:311;MOVE with refmod (variable);runmisc;
-175;run_misc.at:336;MOVE with group refmod;runmisc;
-176;run_misc.at:360;MOVE indexes;runmisc;
-177;run_misc.at:385;MOVE X'00';runmisc;
-178;run_misc.at:420;MOVE Z'literal';runmisc;
-179;run_misc.at:451;Floating continuation;runmisc;
-180;run_misc.at:474;Level 01 subscripts;runmisc;
-181;run_misc.at:495;Class check with reference modification;runmisc;
-182;run_misc.at:518;Index and parenthesized expression;runmisc;
-183;run_misc.at:540;Alphanumeric and binary numeric;runmisc;
-184;run_misc.at:566;Dynamic call with static linking;runmisc;
-185;run_misc.at:592;CALL m1. CALL m2. CALL m1.;runmisc;
-186;run_misc.at:646;CALL binary literal parameter/LENGTH OF;runmisc;
-187;run_misc.at:702;INSPECT : REPLACING LEADING ZEROS BY SPACES;runmisc;
-188;run_misc.at:725;INSPECT : No repeat conversion check;runmisc;
-189;run_misc.at:748;INSPECT : CONVERTING TO figurative constant;runmisc;
-190;run_misc.at:771;INSPECT : CONVERTING NULL;runmisc;
-191;run_misc.at:794;INSPECT : CONVERTING TO NULL;runmisc;
-192;run_misc.at:817;INSPECT : REPLACING figurative constant;runmisc;
-193;run_misc.at:840;INSPECT : TALLYING BEFORE;runmisc;
-194;run_misc.at:874;INSPECT : TALLYING AFTER;runmisc;
-195;run_misc.at:908;INSPECT : REPLACING TRAILING ZEROS BY SPACES;runmisc;
-196;run_misc.at:931;INSPECT : REPLACING complex;runmisc;
-197;run_misc.at:956;SWITCHES (1);runmisc;
-198;run_misc.at:1012;SWITCHES (2);runmisc;
-199;run_misc.at:1045;Nested PERFORM;runmisc;
-200;run_misc.at:1069;EXIT PERFORM;runmisc;
-201;run_misc.at:1093;EXIT PERFORM CYCLE;runmisc;
-202;run_misc.at:1117;EXIT PARAGRAPH;runmisc;
-203;run_misc.at:1148;EXIT SECTION;runmisc;
-204;run_misc.at:1181;PERFORM UNTIL EXIT;runmisc;
-205;run_misc.at:1211;PERFORM inline (1);runmisc;
-206;run_misc.at:1238;PERFORM inline (2);runmisc;
-207;run_misc.at:1259;88 with FILLER;runmisc;
-208;run_misc.at:1287;Non-overflow after overflow;runmisc;
-209;run_misc.at:1316;PERFORM ... CONTINUE;runmisc;
-210;run_misc.at:1332;STRING with subscript reference;runmisc;
-211;run_misc.at:1358;UNSTRING DELIMITED ALL LOW-VALUE;runmisc;
-212;run_misc.at:1392;UNSTRING DELIMITED ALL SPACE-2;runmisc;
-213;run_misc.at:1456;UNSTRING DELIMITED POINTER;runmisc;
-214;run_misc.at:1510;UNSTRING DELIMITER IN;runmisc;
-215;run_misc.at:1551;READ INTO AT-END sequence;runmisc;
-216;run_misc.at:1587;First READ on empty SEQUENTIAL INDEXED file;runmisc;
-217;run_misc.at:1626;REWRITE a RELATIVE file with RANDOM access;runmisc;
-218;run_misc.at:1692;SORT: table sort;runmisc;
-219;run_misc.at:1733;SORT: EBCDIC table sort;runmisc;
-220;run_misc.at:1770;SORT nonexistent file;runmisc;
-221;run_misc.at:1804;PIC ZZZ-, ZZZ+;runmisc;
-222;run_misc.at:1856;Larger REDEFINES lengths;runmisc;
-223;run_misc.at:1907;PERFORM type OSVS;runmisc;
-224;run_misc.at:1948;Sticky LINKAGE;runmisc;
-225;run_misc.at:1999;COB_PRE_LOAD test;runmisc;
-226;run_misc.at:2024;COB_LOAD_CASE=UPPER test;runmisc;
-227;run_misc.at:2049;88 level with FALSE IS clause;runmisc;
-228;run_misc.at:2076;ALLOCATE/FREE with BASED item (1);runmisc;
-229;run_misc.at:2103;ALLOCATE/FREE with BASED item (2);runmisc;
-230;run_misc.at:2150;ALLOCATE CHARACTERS INITIALIZED TO;runmisc;
-231;run_misc.at:2190;INITIALIZE with reference modification;runmisc;
-232;run_misc.at:2215;Initialized value with defaultbyte;runmisc;
-233;run_misc.at:2239;CALL with OMITTED parameter;runmisc;
-234;run_misc.at:2275;ANY LENGTH (1);runmisc;
-235;run_misc.at:2317;ANY LENGTH (2);runmisc;
-236;run_misc.at:2360;BASED item non-ALLOCATED (debug);runmisc;
-237;run_misc.at:2382;STOP RUN WITH NORMAL STATUS;runmisc;
-238;run_misc.at:2399;STOP RUN WITH ERROR STATUS;runmisc;
-239;run_misc.at:2416;DECLARATIVES procedure referencing;runmisc;
-240;run_misc.at:2455;DECLARATIVES procedure referencing (multiple);runmisc;
-241;run_misc.at:2498;SYMBOLIC clause;runmisc;
-242;run_misc.at:2535;OCCURS clause with 1 entry;runmisc;
+169;run_misc.at:129;EXTERNAL data item;runmisc;
+170;run_misc.at:170;EXTERNAL AS data item;runmisc;
+171;run_misc.at:218;cobcrun validation;runmisc;
+172;run_misc.at:260;MOVE to itself;runmisc;
+173;run_misc.at:285;MOVE with refmod;runmisc;
+174;run_misc.at:308;MOVE with refmod (variable);runmisc;
+175;run_misc.at:333;MOVE with group refmod;runmisc;
+176;run_misc.at:357;MOVE indexes;runmisc;
+177;run_misc.at:382;MOVE X'00';runmisc;
+178;run_misc.at:417;MOVE Z'literal';runmisc;
+179;run_misc.at:448;Floating continuation;runmisc;
+180;run_misc.at:471;Level 01 subscripts;runmisc;
+181;run_misc.at:492;Class check with reference modification;runmisc;
+182;run_misc.at:515;Index and parenthesized expression;runmisc;
+183;run_misc.at:537;Alphanumeric and binary numeric;runmisc;
+184;run_misc.at:563;Dynamic call with static linking;runmisc;
+185;run_misc.at:589;CALL m1. CALL m2. CALL m1.;runmisc;
+186;run_misc.at:643;CALL binary literal parameter/LENGTH OF;runmisc;
+187;run_misc.at:699;INSPECT : REPLACING LEADING ZEROS BY SPACES;runmisc;
+188;run_misc.at:722;INSPECT : No repeat conversion check;runmisc;
+189;run_misc.at:745;INSPECT : CONVERTING TO figurative constant;runmisc;
+190;run_misc.at:768;INSPECT : CONVERTING NULL;runmisc;
+191;run_misc.at:791;INSPECT : CONVERTING TO NULL;runmisc;
+192;run_misc.at:814;INSPECT : REPLACING figurative constant;runmisc;
+193;run_misc.at:837;INSPECT : TALLYING BEFORE;runmisc;
+194;run_misc.at:871;INSPECT : TALLYING AFTER;runmisc;
+195;run_misc.at:905;INSPECT : REPLACING TRAILING ZEROS BY SPACES;runmisc;
+196;run_misc.at:928;INSPECT : REPLACING complex;runmisc;
+197;run_misc.at:953;SWITCHES (1);runmisc;
+198;run_misc.at:1009;SWITCHES (2);runmisc;
+199;run_misc.at:1042;Nested PERFORM;runmisc;
+200;run_misc.at:1066;EXIT PERFORM;runmisc;
+201;run_misc.at:1090;EXIT PERFORM CYCLE;runmisc;
+202;run_misc.at:1114;EXIT PARAGRAPH;runmisc;
+203;run_misc.at:1145;EXIT SECTION;runmisc;
+204;run_misc.at:1178;PERFORM UNTIL EXIT;runmisc;
+205;run_misc.at:1208;PERFORM inline (1);runmisc;
+206;run_misc.at:1235;PERFORM inline (2);runmisc;
+207;run_misc.at:1256;88 with FILLER;runmisc;
+208;run_misc.at:1284;Non-overflow after overflow;runmisc;
+209;run_misc.at:1313;PERFORM ... CONTINUE;runmisc;
+210;run_misc.at:1329;STRING with subscript reference;runmisc;
+211;run_misc.at:1355;UNSTRING DELIMITED ALL LOW-VALUE;runmisc;
+212;run_misc.at:1389;UNSTRING DELIMITED ALL SPACE-2;runmisc;
+213;run_misc.at:1453;UNSTRING DELIMITED POINTER;runmisc;
+214;run_misc.at:1507;UNSTRING DELIMITER IN;runmisc;
+215;run_misc.at:1548;READ INTO AT-END sequence;runmisc;
+216;run_misc.at:1584;First READ on empty SEQUENTIAL INDEXED file;runmisc;
+217;run_misc.at:1623;REWRITE a RELATIVE file with RANDOM access;runmisc;
+218;run_misc.at:1689;SORT: table sort;runmisc;
+219;run_misc.at:1730;SORT: EBCDIC table sort;runmisc;
+220;run_misc.at:1767;SORT nonexistent file;runmisc;
+221;run_misc.at:1801;PIC ZZZ-, ZZZ+;runmisc;
+222;run_misc.at:1853;Larger REDEFINES lengths;runmisc;
+223;run_misc.at:1904;PERFORM type OSVS;runmisc;
+224;run_misc.at:1945;Sticky LINKAGE;runmisc;
+225;run_misc.at:1996;COB_PRE_LOAD test;runmisc;
+226;run_misc.at:2021;COB_LOAD_CASE=UPPER test;runmisc;
+227;run_misc.at:2046;88 level with FALSE IS clause;runmisc;
+228;run_misc.at:2073;ALLOCATE/FREE with BASED item (1);runmisc;
+229;run_misc.at:2100;ALLOCATE/FREE with BASED item (2);runmisc;
+230;run_misc.at:2147;ALLOCATE CHARACTERS INITIALIZED TO;runmisc;
+231;run_misc.at:2187;INITIALIZE with reference modification;runmisc;
+232;run_misc.at:2212;Initialized value with defaultbyte;runmisc;
+233;run_misc.at:2236;CALL with OMITTED parameter;runmisc;
+234;run_misc.at:2272;ANY LENGTH (1);runmisc;
+235;run_misc.at:2314;ANY LENGTH (2);runmisc;
+236;run_misc.at:2357;BASED item non-ALLOCATED (debug);runmisc;
+237;run_misc.at:2379;STOP RUN WITH NORMAL STATUS;runmisc;
+238;run_misc.at:2396;STOP RUN WITH ERROR STATUS;runmisc;
+239;run_misc.at:2413;DECLARATIVES procedure referencing;runmisc;
+240;run_misc.at:2452;DECLARATIVES procedure referencing (multiple);runmisc;
+241;run_misc.at:2495;SYMBOLIC clause;runmisc;
+242;run_misc.at:2532;OCCURS clause with 1 entry;runmisc;
 243;run_extensions.at:24;CALL BY CONTENT binary and literal;extensions;
 244;run_extensions.at:73;Hexadecimal numeric literal;extensions;
 245;run_extensions.at:101;Semi-parenthesized condition;extensions;
@@ -13588,14 +13588,11 @@ read at_status <"$at_status_file"
 #AT_START_168
 at_fn_group_banner 168 'run_misc.at:82' \
   "LOCAL-STORAGE (2)" "                              "
-at_xfail=yes
+at_xfail=no
 (
-  $as_echo "168. $at_setup_line: testing $at_desc ..."
+  $as_echo "169. $at_setup_line: testing $at_desc ..."
   $at_traceon
 
-
-
-# CPP version currently has a codegen issue here:
 
 
 cat >callee2.cob <<'_ATEOF'
@@ -13642,47 +13639,47 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:125: \$COMPILE_MODULE callee2.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee2.cob" "run_misc.at:125"
+$as_echo "$at_srcdir/run_misc.at:122: \$COMPILE_MODULE callee2.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee2.cob" "run_misc.at:122"
 ( $at_check_trace; $COMPILE_MODULE callee2.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:125"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:122"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:126: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:126"
+$as_echo "$at_srcdir/run_misc.at:123: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:123"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:126"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:123"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:127: \$COMPILE -o prog caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:127"
+$as_echo "$at_srcdir/run_misc.at:124: \$COMPILE -o prog caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:124"
 ( $at_check_trace; $COMPILE -o prog caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:127"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:124"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:128: ./prog"
-at_fn_check_prepare_trace "run_misc.at:128"
+$as_echo "$at_srcdir/run_misc.at:125: ./prog"
+at_fn_check_prepare_trace "run_misc.at:125"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -13690,7 +13687,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "abc000" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:128"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:125"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -13701,7 +13698,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_168
 #AT_START_169
-at_fn_group_banner 169 'run_misc.at:132' \
+at_fn_group_banner 169 'run_misc.at:129' \
   "EXTERNAL data item" "                             "
 at_xfail=no
 (
@@ -13747,41 +13744,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:167: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:167"
+$as_echo "$at_srcdir/run_misc.at:164: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:164"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:167"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:164"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:168: \$COMPILE -o prog caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:168"
+$as_echo "$at_srcdir/run_misc.at:165: \$COMPILE -o prog caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:165"
 ( $at_check_trace; $COMPILE -o prog caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:168"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:165"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:169: ./prog"
-at_fn_check_prepare_trace "run_misc.at:169"
+$as_echo "$at_srcdir/run_misc.at:166: ./prog"
+at_fn_check_prepare_trace "run_misc.at:166"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:169"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:166"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -13792,7 +13789,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_169
 #AT_START_170
-at_fn_group_banner 170 'run_misc.at:173' \
+at_fn_group_banner 170 'run_misc.at:170' \
   "EXTERNAL AS data item" "                          "
 at_xfail=no
 (
@@ -13845,41 +13842,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:215: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:215"
+$as_echo "$at_srcdir/run_misc.at:212: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:212"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:215"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:212"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:216: \$COMPILE -o prog caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:216"
+$as_echo "$at_srcdir/run_misc.at:213: \$COMPILE -o prog caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog caller.cob" "run_misc.at:213"
 ( $at_check_trace; $COMPILE -o prog caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:216"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:213"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:217: ./prog"
-at_fn_check_prepare_trace "run_misc.at:217"
+$as_echo "$at_srcdir/run_misc.at:214: ./prog"
+at_fn_check_prepare_trace "run_misc.at:214"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:217"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:214"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -13890,7 +13887,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_170
 #AT_START_171
-at_fn_group_banner 171 'run_misc.at:221' \
+at_fn_group_banner 171 'run_misc.at:218' \
   "cobcrun validation" "                             "
 at_xfail=no
 (
@@ -13934,34 +13931,34 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:254: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:254"
+$as_echo "$at_srcdir/run_misc.at:251: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:251"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:254"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:251"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:255: \$COMPILE_MODULE caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE caller.cob" "run_misc.at:255"
+$as_echo "$at_srcdir/run_misc.at:252: \$COMPILE_MODULE caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE caller.cob" "run_misc.at:252"
 ( $at_check_trace; $COMPILE_MODULE caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:255"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:252"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:256: \$COBCRUN caller"
-at_fn_check_prepare_dynamic "$COBCRUN caller" "run_misc.at:256"
+$as_echo "$at_srcdir/run_misc.at:253: \$COBCRUN caller"
+at_fn_check_prepare_dynamic "$COBCRUN caller" "run_misc.at:253"
 ( $at_check_trace; $COBCRUN caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -13969,7 +13966,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "HelloWorld" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:256"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:253"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -13980,7 +13977,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_171
 #AT_START_172
-at_fn_group_banner 172 'run_misc.at:263' \
+at_fn_group_banner 172 'run_misc.at:260' \
   "MOVE to itself" "                                 "
 at_xfail=no
 (
@@ -14007,8 +14004,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:281: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:281"
+$as_echo "$at_srcdir/run_misc.at:278: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:278"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14017,20 +14014,20 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 8: Warning: Overlapping MOVE may produc
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:281"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:278"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:284: ./prog"
-at_fn_check_prepare_trace "run_misc.at:284"
+$as_echo "$at_srcdir/run_misc.at:281: ./prog"
+at_fn_check_prepare_trace "run_misc.at:281"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:284"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:281"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14041,7 +14038,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_172
 #AT_START_173
-at_fn_group_banner 173 'run_misc.at:288' \
+at_fn_group_banner 173 'run_misc.at:285' \
   "MOVE with refmod" "                               "
 at_xfail=no
 (
@@ -14068,28 +14065,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:306: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:306"
+$as_echo "$at_srcdir/run_misc.at:303: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:303"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:306"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:303"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:307: ./prog"
-at_fn_check_prepare_trace "run_misc.at:307"
+$as_echo "$at_srcdir/run_misc.at:304: ./prog"
+at_fn_check_prepare_trace "run_misc.at:304"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:307"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:304"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14100,7 +14097,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_173
 #AT_START_174
-at_fn_group_banner 174 'run_misc.at:311' \
+at_fn_group_banner 174 'run_misc.at:308' \
   "MOVE with refmod (variable)" "                    "
 at_xfail=no
 (
@@ -14129,28 +14126,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:331: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:331"
+$as_echo "$at_srcdir/run_misc.at:328: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:328"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:331"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:328"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:332: ./prog"
-at_fn_check_prepare_trace "run_misc.at:332"
+$as_echo "$at_srcdir/run_misc.at:329: ./prog"
+at_fn_check_prepare_trace "run_misc.at:329"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:332"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:329"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14161,7 +14158,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_174
 #AT_START_175
-at_fn_group_banner 175 'run_misc.at:336' \
+at_fn_group_banner 175 'run_misc.at:333' \
   "MOVE with group refmod" "                         "
 at_xfail=no
 (
@@ -14189,28 +14186,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:355: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:355"
+$as_echo "$at_srcdir/run_misc.at:352: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:352"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:355"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:352"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:356: ./prog"
-at_fn_check_prepare_trace "run_misc.at:356"
+$as_echo "$at_srcdir/run_misc.at:353: ./prog"
+at_fn_check_prepare_trace "run_misc.at:353"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:356"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:353"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14221,7 +14218,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_175
 #AT_START_176
-at_fn_group_banner 176 'run_misc.at:360' \
+at_fn_group_banner 176 'run_misc.at:357' \
   "MOVE indexes" "                                   "
 at_xfail=no
 (
@@ -14250,28 +14247,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:380: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:380"
+$as_echo "$at_srcdir/run_misc.at:377: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:377"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:380"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:377"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:381: ./prog"
-at_fn_check_prepare_trace "run_misc.at:381"
+$as_echo "$at_srcdir/run_misc.at:378: ./prog"
+at_fn_check_prepare_trace "run_misc.at:378"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:381"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:378"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14282,7 +14279,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_176
 #AT_START_177
-at_fn_group_banner 177 'run_misc.at:385' \
+at_fn_group_banner 177 'run_misc.at:382' \
   "MOVE X'00'" "                                     "
 at_xfail=no
 (
@@ -14322,34 +14319,34 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:414: \$COMPILE_MODULE dump.cpp"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.cpp" "run_misc.at:414"
+$as_echo "$at_srcdir/run_misc.at:411: \$COMPILE_MODULE dump.cpp"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.cpp" "run_misc.at:411"
 ( $at_check_trace; $COMPILE_MODULE dump.cpp
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:414"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:411"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:415: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:415"
+$as_echo "$at_srcdir/run_misc.at:412: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:412"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:415"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:412"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:416: ./prog"
-at_fn_check_prepare_trace "run_misc.at:416"
+$as_echo "$at_srcdir/run_misc.at:413: ./prog"
+at_fn_check_prepare_trace "run_misc.at:413"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14357,7 +14354,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "000102" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:416"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:413"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14368,7 +14365,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_177
 #AT_START_178
-at_fn_group_banner 178 'run_misc.at:420' \
+at_fn_group_banner 178 'run_misc.at:417' \
   "MOVE Z'literal'" "                                "
 at_xfail=no
 (
@@ -14403,21 +14400,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:446: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:446"
+$as_echo "$at_srcdir/run_misc.at:443: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:443"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:446"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:443"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:447: ./prog"
-at_fn_check_prepare_trace "run_misc.at:447"
+$as_echo "$at_srcdir/run_misc.at:444: ./prog"
+at_fn_check_prepare_trace "run_misc.at:444"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14425,7 +14422,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "OK" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:447"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:444"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14436,7 +14433,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_178
 #AT_START_179
-at_fn_group_banner 179 'run_misc.at:451' \
+at_fn_group_banner 179 'run_misc.at:448' \
   "Floating continuation" "                          "
 at_xfail=no
 (
@@ -14461,21 +14458,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:467: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:467"
+$as_echo "$at_srcdir/run_misc.at:464: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:464"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:467"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:464"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:468: ./prog"
-at_fn_check_prepare_trace "run_misc.at:468"
+$as_echo "$at_srcdir/run_misc.at:465: ./prog"
+at_fn_check_prepare_trace "run_misc.at:465"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14483,7 +14480,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "OKOK" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:468"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:465"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14494,7 +14491,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_179
 #AT_START_180
-at_fn_group_banner 180 'run_misc.at:474' \
+at_fn_group_banner 180 'run_misc.at:471' \
   "Level 01 subscripts" "                            "
 at_xfail=no
 (
@@ -14516,8 +14513,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:487: \$COMPILE_ONLY prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_ONLY prog.cob" "run_misc.at:487"
+$as_echo "$at_srcdir/run_misc.at:484: \$COMPILE_ONLY prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_ONLY prog.cob" "run_misc.at:484"
 ( $at_check_trace; $COMPILE_ONLY prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14526,7 +14523,7 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 6: Error: Level 01 item 'X' cannot have
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:487"
+at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:484"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14537,7 +14534,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_180
 #AT_START_181
-at_fn_group_banner 181 'run_misc.at:495' \
+at_fn_group_banner 181 'run_misc.at:492' \
   "Class check with reference modification" "        "
 at_xfail=no
 (
@@ -14564,28 +14561,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:513: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:513"
+$as_echo "$at_srcdir/run_misc.at:510: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:510"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:513"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:510"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:514: ./prog"
-at_fn_check_prepare_trace "run_misc.at:514"
+$as_echo "$at_srcdir/run_misc.at:511: ./prog"
+at_fn_check_prepare_trace "run_misc.at:511"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:514"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:511"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14596,7 +14593,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_181
 #AT_START_182
-at_fn_group_banner 182 'run_misc.at:518' \
+at_fn_group_banner 182 'run_misc.at:515' \
   "Index and parenthesized expression" "             "
 at_xfail=no
 (
@@ -14623,15 +14620,15 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:536: \$COMPILE_ONLY -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_ONLY -o prog prog.cob" "run_misc.at:536"
+$as_echo "$at_srcdir/run_misc.at:533: \$COMPILE_ONLY -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_ONLY -o prog prog.cob" "run_misc.at:533"
 ( $at_check_trace; $COMPILE_ONLY -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:536"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:533"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14642,7 +14639,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_182
 #AT_START_183
-at_fn_group_banner 183 'run_misc.at:540' \
+at_fn_group_banner 183 'run_misc.at:537' \
   "Alphanumeric and binary numeric" "                "
 at_xfail=no
 (
@@ -14670,28 +14667,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:559: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:559"
+$as_echo "$at_srcdir/run_misc.at:556: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:556"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:559"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:556"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:560: ./prog"
-at_fn_check_prepare_trace "run_misc.at:560"
+$as_echo "$at_srcdir/run_misc.at:557: ./prog"
+at_fn_check_prepare_trace "run_misc.at:557"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:560"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:557"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14702,7 +14699,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_183
 #AT_START_184
-at_fn_group_banner 184 'run_misc.at:566' \
+at_fn_group_banner 184 'run_misc.at:563' \
   "Dynamic call with static linking" "               "
 at_xfail=no
 (
@@ -14732,54 +14729,54 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:585: \$COMPILE_MODULE -c callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE -c callee.cob" "run_misc.at:585"
+$as_echo "$at_srcdir/run_misc.at:582: \$COMPILE_MODULE -c callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE -c callee.cob" "run_misc.at:582"
 ( $at_check_trace; $COMPILE_MODULE -c callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:585"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:582"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:586: \$COMPILE -c caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -c caller.cob" "run_misc.at:586"
+$as_echo "$at_srcdir/run_misc.at:583: \$COMPILE -c caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -c caller.cob" "run_misc.at:583"
 ( $at_check_trace; $COMPILE -c caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:586"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:583"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:587: \$COMPILE -o prog caller.o callee.o"
-at_fn_check_prepare_dynamic "$COMPILE -o prog caller.o callee.o" "run_misc.at:587"
+$as_echo "$at_srcdir/run_misc.at:584: \$COMPILE -o prog caller.o callee.o"
+at_fn_check_prepare_dynamic "$COMPILE -o prog caller.o callee.o" "run_misc.at:584"
 ( $at_check_trace; $COMPILE -o prog caller.o callee.o
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:587"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:584"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:588: ./prog"
-at_fn_check_prepare_trace "run_misc.at:588"
+$as_echo "$at_srcdir/run_misc.at:585: ./prog"
+at_fn_check_prepare_trace "run_misc.at:585"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:588"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:585"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14790,7 +14787,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_184
 #AT_START_185
-at_fn_group_banner 185 'run_misc.at:592' \
+at_fn_group_banner 185 'run_misc.at:589' \
   "CALL m1. CALL m2. CALL m1." "                     "
 at_xfail=no
 (
@@ -14849,55 +14846,55 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:638: \$COMPILE_MODULE m1.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE m1.cob" "run_misc.at:638"
+$as_echo "$at_srcdir/run_misc.at:635: \$COMPILE_MODULE m1.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE m1.cob" "run_misc.at:635"
 ( $at_check_trace; $COMPILE_MODULE m1.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:638"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:635"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:639: \$COMPILE_MODULE m2.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE m2.cob" "run_misc.at:639"
+$as_echo "$at_srcdir/run_misc.at:636: \$COMPILE_MODULE m2.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE m2.cob" "run_misc.at:636"
 ( $at_check_trace; $COMPILE_MODULE m2.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:639"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:636"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:640: \$COMPILE -o caller caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:640"
+$as_echo "$at_srcdir/run_misc.at:637: \$COMPILE -o caller caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:637"
 ( $at_check_trace; $COMPILE -o caller caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:640"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:637"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:642: ./caller"
-at_fn_check_prepare_trace "run_misc.at:642"
+$as_echo "$at_srcdir/run_misc.at:639: ./caller"
+at_fn_check_prepare_trace "run_misc.at:639"
 ( $at_check_trace; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:642"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:639"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -14908,7 +14905,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_185
 #AT_START_186
-at_fn_group_banner 186 'run_misc.at:646' \
+at_fn_group_banner 186 'run_misc.at:643' \
   "CALL binary literal parameter/LENGTH OF" "        "
 at_xfail=no
 (
@@ -14959,34 +14956,34 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:684: \$COMPILE_MODULE dump.cpp"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.cpp" "run_misc.at:684"
+$as_echo "$at_srcdir/run_misc.at:681: \$COMPILE_MODULE dump.cpp"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.cpp" "run_misc.at:681"
 ( $at_check_trace; $COMPILE_MODULE dump.cpp
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:684"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:681"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:685: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:685"
+$as_echo "$at_srcdir/run_misc.at:682: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:682"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:685"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:682"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:686: ./prog"
-at_fn_check_prepare_trace "run_misc.at:686"
+$as_echo "$at_srcdir/run_misc.at:683: ./prog"
+at_fn_check_prepare_trace "run_misc.at:683"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -14997,26 +14994,26 @@ echo >>"$at_stdout"; $as_echo "00000001
 00000004
 " | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:686"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:683"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:691: \$COMPILE -conf=test.conf -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o prog prog.cob" "run_misc.at:691"
+$as_echo "$at_srcdir/run_misc.at:688: \$COMPILE -conf=test.conf -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o prog prog.cob" "run_misc.at:688"
 ( $at_check_trace; $COMPILE -conf=test.conf -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:691"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:688"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:692: ./prog"
-at_fn_check_prepare_trace "run_misc.at:692"
+$as_echo "$at_srcdir/run_misc.at:689: ./prog"
+at_fn_check_prepare_trace "run_misc.at:689"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -15027,7 +15024,7 @@ echo >>"$at_stdout"; $as_echo "00000001
 00000004
 " | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:692"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:689"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15038,7 +15035,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_186
 #AT_START_187
-at_fn_group_banner 187 'run_misc.at:702' \
+at_fn_group_banner 187 'run_misc.at:699' \
   "INSPECT : REPLACING LEADING ZEROS BY SPACES" "    "
 at_xfail=no
 (
@@ -15065,28 +15062,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:720: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:720"
+$as_echo "$at_srcdir/run_misc.at:717: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:717"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:720"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:717"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:721: ./prog"
-at_fn_check_prepare_trace "run_misc.at:721"
+$as_echo "$at_srcdir/run_misc.at:718: ./prog"
+at_fn_check_prepare_trace "run_misc.at:718"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:721"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:718"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15097,7 +15094,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_187
 #AT_START_188
-at_fn_group_banner 188 'run_misc.at:725' \
+at_fn_group_banner 188 'run_misc.at:722' \
   "INSPECT : No repeat conversion check" "           "
 at_xfail=no
 (
@@ -15124,28 +15121,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:743: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:743"
+$as_echo "$at_srcdir/run_misc.at:740: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:740"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:743"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:740"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:744: ./prog"
-at_fn_check_prepare_trace "run_misc.at:744"
+$as_echo "$at_srcdir/run_misc.at:741: ./prog"
+at_fn_check_prepare_trace "run_misc.at:741"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:744"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:741"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15156,7 +15153,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_188
 #AT_START_189
-at_fn_group_banner 189 'run_misc.at:748' \
+at_fn_group_banner 189 'run_misc.at:745' \
   "INSPECT : CONVERTING TO figurative constant" "    "
 at_xfail=no
 (
@@ -15183,28 +15180,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:766: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:766"
+$as_echo "$at_srcdir/run_misc.at:763: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:763"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:766"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:763"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:767: ./prog"
-at_fn_check_prepare_trace "run_misc.at:767"
+$as_echo "$at_srcdir/run_misc.at:764: ./prog"
+at_fn_check_prepare_trace "run_misc.at:764"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:767"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:764"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15215,7 +15212,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_189
 #AT_START_190
-at_fn_group_banner 190 'run_misc.at:771' \
+at_fn_group_banner 190 'run_misc.at:768' \
   "INSPECT : CONVERTING NULL" "                      "
 at_xfail=no
 (
@@ -15242,28 +15239,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:789: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:789"
+$as_echo "$at_srcdir/run_misc.at:786: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:786"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:789"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:786"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:790: ./prog"
-at_fn_check_prepare_trace "run_misc.at:790"
+$as_echo "$at_srcdir/run_misc.at:787: ./prog"
+at_fn_check_prepare_trace "run_misc.at:787"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:790"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:787"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15274,7 +15271,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_190
 #AT_START_191
-at_fn_group_banner 191 'run_misc.at:794' \
+at_fn_group_banner 191 'run_misc.at:791' \
   "INSPECT : CONVERTING TO NULL" "                   "
 at_xfail=no
 (
@@ -15301,28 +15298,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:812: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:812"
+$as_echo "$at_srcdir/run_misc.at:809: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:809"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:812"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:809"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:813: ./prog"
-at_fn_check_prepare_trace "run_misc.at:813"
+$as_echo "$at_srcdir/run_misc.at:810: ./prog"
+at_fn_check_prepare_trace "run_misc.at:810"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:813"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:810"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15333,7 +15330,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_191
 #AT_START_192
-at_fn_group_banner 192 'run_misc.at:817' \
+at_fn_group_banner 192 'run_misc.at:814' \
   "INSPECT : REPLACING figurative constant" "        "
 at_xfail=no
 (
@@ -15360,28 +15357,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:835: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:835"
+$as_echo "$at_srcdir/run_misc.at:832: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:832"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:835"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:832"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:836: ./prog"
-at_fn_check_prepare_trace "run_misc.at:836"
+$as_echo "$at_srcdir/run_misc.at:833: ./prog"
+at_fn_check_prepare_trace "run_misc.at:833"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:836"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:833"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15392,7 +15389,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_192
 #AT_START_193
-at_fn_group_banner 193 'run_misc.at:840' \
+at_fn_group_banner 193 'run_misc.at:837' \
   "INSPECT : TALLYING BEFORE" "                      "
 at_xfail=no
 (
@@ -15430,28 +15427,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:869: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:869"
+$as_echo "$at_srcdir/run_misc.at:866: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:866"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:869"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:866"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:870: ./prog"
-at_fn_check_prepare_trace "run_misc.at:870"
+$as_echo "$at_srcdir/run_misc.at:867: ./prog"
+at_fn_check_prepare_trace "run_misc.at:867"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:870"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:867"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15462,7 +15459,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_193
 #AT_START_194
-at_fn_group_banner 194 'run_misc.at:874' \
+at_fn_group_banner 194 'run_misc.at:871' \
   "INSPECT : TALLYING AFTER" "                       "
 at_xfail=no
 (
@@ -15500,28 +15497,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:903: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:903"
+$as_echo "$at_srcdir/run_misc.at:900: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:900"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:903"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:900"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:904: ./prog"
-at_fn_check_prepare_trace "run_misc.at:904"
+$as_echo "$at_srcdir/run_misc.at:901: ./prog"
+at_fn_check_prepare_trace "run_misc.at:901"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:904"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:901"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15532,7 +15529,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_194
 #AT_START_195
-at_fn_group_banner 195 'run_misc.at:908' \
+at_fn_group_banner 195 'run_misc.at:905' \
   "INSPECT : REPLACING TRAILING ZEROS BY SPACES" "   "
 at_xfail=no
 (
@@ -15559,28 +15556,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:926: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:926"
+$as_echo "$at_srcdir/run_misc.at:923: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:923"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:926"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:923"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:927: ./prog"
-at_fn_check_prepare_trace "run_misc.at:927"
+$as_echo "$at_srcdir/run_misc.at:924: ./prog"
+at_fn_check_prepare_trace "run_misc.at:924"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:927"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:924"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15591,7 +15588,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_195
 #AT_START_196
-at_fn_group_banner 196 'run_misc.at:931' \
+at_fn_group_banner 196 'run_misc.at:928' \
   "INSPECT : REPLACING complex" "                    "
 at_xfail=no
 (
@@ -15621,28 +15618,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:952: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:952"
+$as_echo "$at_srcdir/run_misc.at:949: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:949"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:952"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:949"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:953: ./prog"
-at_fn_check_prepare_trace "run_misc.at:953"
+$as_echo "$at_srcdir/run_misc.at:950: ./prog"
+at_fn_check_prepare_trace "run_misc.at:950"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:953"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:950"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15652,7 +15649,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_196
 #AT_START_197
-at_fn_group_banner 197 'run_misc.at:956' \
+at_fn_group_banner 197 'run_misc.at:953' \
   "SWITCHES (1)" "                                   "
 at_xfail=no
 (
@@ -15712,21 +15709,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1007: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:1007"
+$as_echo "$at_srcdir/run_misc.at:1004: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:1004"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1007"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1004"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1008: COB_SWITCH_1=ON COB_SWITCH_2=OFF ./prog"
-at_fn_check_prepare_trace "run_misc.at:1008"
+$as_echo "$at_srcdir/run_misc.at:1005: COB_SWITCH_1=ON COB_SWITCH_2=OFF ./prog"
+at_fn_check_prepare_trace "run_misc.at:1005"
 ( $at_check_trace; COB_SWITCH_1=ON COB_SWITCH_2=OFF ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -15734,7 +15731,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "ONOFFOFFON" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1008"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1005"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15745,7 +15742,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_197
 #AT_START_198
-at_fn_group_banner 198 'run_misc.at:1012' \
+at_fn_group_banner 198 'run_misc.at:1009' \
   "SWITCHES (2)" "                                   "
 at_xfail=no
 (
@@ -15780,28 +15777,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1038: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:1038"
+$as_echo "$at_srcdir/run_misc.at:1035: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:1035"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1038"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1035"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1039: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1039"
+$as_echo "$at_srcdir/run_misc.at:1036: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1036"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1039"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1036"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15812,7 +15809,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_198
 #AT_START_199
-at_fn_group_banner 199 'run_misc.at:1045' \
+at_fn_group_banner 199 'run_misc.at:1042' \
   "Nested PERFORM" "                                 "
 at_xfail=no
 (
@@ -15838,21 +15835,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1062: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1062"
+$as_echo "$at_srcdir/run_misc.at:1059: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1059"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1062"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1059"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1063: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1063"
+$as_echo "$at_srcdir/run_misc.at:1060: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1060"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -15860,7 +15857,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "XXXX" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1063"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1060"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15871,7 +15868,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_199
 #AT_START_200
-at_fn_group_banner 200 'run_misc.at:1069' \
+at_fn_group_banner 200 'run_misc.at:1066' \
   "EXIT PERFORM" "                                   "
 at_xfail=no
 (
@@ -15897,21 +15894,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1086: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1086"
+$as_echo "$at_srcdir/run_misc.at:1083: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1083"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1086"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1083"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1087: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1087"
+$as_echo "$at_srcdir/run_misc.at:1084: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1084"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -15919,7 +15916,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "OK" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1087"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1084"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15930,7 +15927,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_200
 #AT_START_201
-at_fn_group_banner 201 'run_misc.at:1093' \
+at_fn_group_banner 201 'run_misc.at:1090' \
   "EXIT PERFORM CYCLE" "                             "
 at_xfail=no
 (
@@ -15956,21 +15953,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1110: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1110"
+$as_echo "$at_srcdir/run_misc.at:1107: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1107"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1110"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1107"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1111: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1111"
+$as_echo "$at_srcdir/run_misc.at:1108: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1108"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -15978,7 +15975,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "OKOK" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1111"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1108"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -15989,7 +15986,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_201
 #AT_START_202
-at_fn_group_banner 202 'run_misc.at:1117' \
+at_fn_group_banner 202 'run_misc.at:1114' \
   "EXIT PARAGRAPH" "                                 "
 at_xfail=no
 (
@@ -16022,28 +16019,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1141: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1141"
+$as_echo "$at_srcdir/run_misc.at:1138: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1138"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1141"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1138"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1142: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1142"
+$as_echo "$at_srcdir/run_misc.at:1139: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1139"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1142"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1139"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16054,7 +16051,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_202
 #AT_START_203
-at_fn_group_banner 203 'run_misc.at:1148' \
+at_fn_group_banner 203 'run_misc.at:1145' \
   "EXIT SECTION" "                                   "
 at_xfail=no
 (
@@ -16091,28 +16088,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1176: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1176"
+$as_echo "$at_srcdir/run_misc.at:1173: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1173"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1176"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1173"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1177: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1177"
+$as_echo "$at_srcdir/run_misc.at:1174: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1174"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1177"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1174"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16123,7 +16120,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_203
 #AT_START_204
-at_fn_group_banner 204 'run_misc.at:1181' \
+at_fn_group_banner 204 'run_misc.at:1178' \
   "PERFORM UNTIL EXIT" "                             "
 at_xfail=no
 (
@@ -16157,28 +16154,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1206: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1206"
+$as_echo "$at_srcdir/run_misc.at:1203: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1203"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1206"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1203"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1207: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1207"
+$as_echo "$at_srcdir/run_misc.at:1204: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1204"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1207"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1204"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16189,7 +16186,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_204
 #AT_START_205
-at_fn_group_banner 205 'run_misc.at:1211' \
+at_fn_group_banner 205 'run_misc.at:1208' \
   "PERFORM inline (1)" "                             "
 at_xfail=no
 (
@@ -16220,28 +16217,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1233: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1233"
+$as_echo "$at_srcdir/run_misc.at:1230: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1230"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1233"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1230"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1234: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1234"
+$as_echo "$at_srcdir/run_misc.at:1231: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1231"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1234"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1231"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16252,7 +16249,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_205
 #AT_START_206
-at_fn_group_banner 206 'run_misc.at:1238' \
+at_fn_group_banner 206 'run_misc.at:1235' \
   "PERFORM inline (2)" "                             "
 at_xfail=no
 (
@@ -16277,28 +16274,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1254: \$COMPILE -frelax-syntax -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -frelax-syntax -o prog prog.cob" "run_misc.at:1254"
+$as_echo "$at_srcdir/run_misc.at:1251: \$COMPILE -frelax-syntax -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -frelax-syntax -o prog prog.cob" "run_misc.at:1251"
 ( $at_check_trace; $COMPILE -frelax-syntax -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1254"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1251"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1255: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1255"
+$as_echo "$at_srcdir/run_misc.at:1252: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1252"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1255"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1252"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16309,7 +16306,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_206
 #AT_START_207
-at_fn_group_banner 207 'run_misc.at:1259' \
+at_fn_group_banner 207 'run_misc.at:1256' \
   "88 with FILLER" "                                 "
 at_xfail=no
 (
@@ -16341,28 +16338,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1282: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1282"
+$as_echo "$at_srcdir/run_misc.at:1279: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1279"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1282"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1279"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1283: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1283"
+$as_echo "$at_srcdir/run_misc.at:1280: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1280"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1283"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1280"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16373,7 +16370,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_207
 #AT_START_208
-at_fn_group_banner 208 'run_misc.at:1287' \
+at_fn_group_banner 208 'run_misc.at:1284' \
   "Non-overflow after overflow" "                    "
 at_xfail=no
 (
@@ -16404,28 +16401,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1309: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1309"
+$as_echo "$at_srcdir/run_misc.at:1306: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1306"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1309"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1306"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1310: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1310"
+$as_echo "$at_srcdir/run_misc.at:1307: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1307"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1310"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1307"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16436,7 +16433,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_208
 #AT_START_209
-at_fn_group_banner 209 'run_misc.at:1316' \
+at_fn_group_banner 209 'run_misc.at:1313' \
   "PERFORM ... CONTINUE" "                           "
 at_xfail=no
 (
@@ -16457,15 +16454,15 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1328: \$COMPILE_ONLY prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_ONLY prog.cob" "run_misc.at:1328"
+$as_echo "$at_srcdir/run_misc.at:1325: \$COMPILE_ONLY prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_ONLY prog.cob" "run_misc.at:1325"
 ( $at_check_trace; $COMPILE_ONLY prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1328"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1325"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16476,7 +16473,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_209
 #AT_START_210
-at_fn_group_banner 210 'run_misc.at:1332' \
+at_fn_group_banner 210 'run_misc.at:1329' \
   "STRING with subscript reference" "                "
 at_xfail=no
 (
@@ -16506,28 +16503,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1353: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1353"
+$as_echo "$at_srcdir/run_misc.at:1350: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1350"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1353"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1350"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1354: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1354"
+$as_echo "$at_srcdir/run_misc.at:1351: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1351"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1354"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1351"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16538,7 +16535,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_210
 #AT_START_211
-at_fn_group_banner 211 'run_misc.at:1358' \
+at_fn_group_banner 211 'run_misc.at:1355' \
   "UNSTRING DELIMITED ALL LOW-VALUE" "               "
 at_xfail=no
 (
@@ -16576,28 +16573,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1387: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1387"
+$as_echo "$at_srcdir/run_misc.at:1384: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1384"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1387"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1384"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1388: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1388"
+$as_echo "$at_srcdir/run_misc.at:1385: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1385"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1388"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1385"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16608,7 +16605,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_211
 #AT_START_212
-at_fn_group_banner 212 'run_misc.at:1392' \
+at_fn_group_banner 212 'run_misc.at:1389' \
   "UNSTRING DELIMITED ALL SPACE-2" "                 "
 at_xfail=no
 (
@@ -16676,28 +16673,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1451: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1451"
+$as_echo "$at_srcdir/run_misc.at:1448: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1448"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1451"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1448"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1452: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1452"
+$as_echo "$at_srcdir/run_misc.at:1449: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1449"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1452"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1449"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16708,7 +16705,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_212
 #AT_START_213
-at_fn_group_banner 213 'run_misc.at:1456' \
+at_fn_group_banner 213 'run_misc.at:1453' \
   "UNSTRING DELIMITED POINTER" "                     "
 at_xfail=no
 (
@@ -16766,28 +16763,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1505: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1505"
+$as_echo "$at_srcdir/run_misc.at:1502: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1502"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1505"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1502"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1506: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1506"
+$as_echo "$at_srcdir/run_misc.at:1503: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1503"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1506"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1503"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16798,7 +16795,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_213
 #AT_START_214
-at_fn_group_banner 214 'run_misc.at:1510' \
+at_fn_group_banner 214 'run_misc.at:1507' \
   "UNSTRING DELIMITER IN" "                          "
 at_xfail=no
 (
@@ -16843,28 +16840,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1546: \$COMPILE -frelax-syntax -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -frelax-syntax -o prog prog.cob" "run_misc.at:1546"
+$as_echo "$at_srcdir/run_misc.at:1543: \$COMPILE -frelax-syntax -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -frelax-syntax -o prog prog.cob" "run_misc.at:1543"
 ( $at_check_trace; $COMPILE -frelax-syntax -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1546"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1543"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1547: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1547"
+$as_echo "$at_srcdir/run_misc.at:1544: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1544"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1547"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1544"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16875,7 +16872,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_214
 #AT_START_215
-at_fn_group_banner 215 'run_misc.at:1551' \
+at_fn_group_banner 215 'run_misc.at:1548' \
   "READ INTO AT-END sequence" "                      "
 at_xfail=no
 (
@@ -16915,28 +16912,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1582: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1582"
+$as_echo "$at_srcdir/run_misc.at:1579: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1579"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1582"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1579"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1583: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1583"
+$as_echo "$at_srcdir/run_misc.at:1580: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1580"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1583"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1580"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -16947,7 +16944,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_215
 #AT_START_216
-at_fn_group_banner 216 'run_misc.at:1587' \
+at_fn_group_banner 216 'run_misc.at:1584' \
   "First READ on empty SEQUENTIAL INDEXED file" "    "
 at_xfail=no
 (
@@ -16957,15 +16954,15 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1590: test \"\$COB_HAS_ISAM\" = \"yes\" || exit 77"
-at_fn_check_prepare_dynamic "test \"$COB_HAS_ISAM\" = \"yes\" || exit 77" "run_misc.at:1590"
+$as_echo "$at_srcdir/run_misc.at:1587: test \"\$COB_HAS_ISAM\" = \"yes\" || exit 77"
+at_fn_check_prepare_dynamic "test \"$COB_HAS_ISAM\" = \"yes\" || exit 77" "run_misc.at:1587"
 ( $at_check_trace; test "$COB_HAS_ISAM" = "yes" || exit 77
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1590"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1587"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17002,28 +16999,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1621: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1621"
+$as_echo "$at_srcdir/run_misc.at:1618: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1618"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1621"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1618"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1622: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1622"
+$as_echo "$at_srcdir/run_misc.at:1619: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1619"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1622"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1619"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17034,7 +17031,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_216
 #AT_START_217
-at_fn_group_banner 217 'run_misc.at:1626' \
+at_fn_group_banner 217 'run_misc.at:1623' \
   "REWRITE a RELATIVE file with RANDOM access" "     "
 at_xfail=no
 (
@@ -17104,28 +17101,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1687: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1687"
+$as_echo "$at_srcdir/run_misc.at:1684: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1684"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1687"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1684"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1688: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1688"
+$as_echo "$at_srcdir/run_misc.at:1685: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1685"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1688"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1685"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17136,7 +17133,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_217
 #AT_START_218
-at_fn_group_banner 218 'run_misc.at:1692' \
+at_fn_group_banner 218 'run_misc.at:1689' \
   "SORT: table sort" "                               "
 at_xfail=no
 (
@@ -17181,28 +17178,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1728: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1728"
+$as_echo "$at_srcdir/run_misc.at:1725: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1725"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1728"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1725"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1729: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1729"
+$as_echo "$at_srcdir/run_misc.at:1726: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1726"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1729"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1726"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17213,7 +17210,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_218
 #AT_START_219
-at_fn_group_banner 219 'run_misc.at:1733' \
+at_fn_group_banner 219 'run_misc.at:1730' \
   "SORT: EBCDIC table sort" "                        "
 at_xfail=no
 (
@@ -17254,28 +17251,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1765: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1765"
+$as_echo "$at_srcdir/run_misc.at:1762: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1762"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1765"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1762"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1766: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1766"
+$as_echo "$at_srcdir/run_misc.at:1763: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1763"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1766"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1763"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17286,7 +17283,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_219
 #AT_START_220
-at_fn_group_banner 220 'run_misc.at:1770' \
+at_fn_group_banner 220 'run_misc.at:1767' \
   "SORT nonexistent file" "                          "
 at_xfail=no
 (
@@ -17323,41 +17320,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1798: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1798"
+$as_echo "$at_srcdir/run_misc.at:1795: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1795"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1798"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1795"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1799: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1799"
+$as_echo "$at_srcdir/run_misc.at:1796: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1796"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1799"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1796"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1800: cat SORT-OUT"
-at_fn_check_prepare_trace "run_misc.at:1800"
+$as_echo "$at_srcdir/run_misc.at:1797: cat SORT-OUT"
+at_fn_check_prepare_trace "run_misc.at:1797"
 ( $at_check_trace; cat SORT-OUT
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1800"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1797"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17368,7 +17365,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_220
 #AT_START_221
-at_fn_group_banner 221 'run_misc.at:1804' \
+at_fn_group_banner 221 'run_misc.at:1801' \
   "PIC ZZZ-, ZZZ+" "                                 "
 at_xfail=no
 (
@@ -17424,28 +17421,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1851: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1851"
+$as_echo "$at_srcdir/run_misc.at:1848: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:1848"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1851"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1848"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1852: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1852"
+$as_echo "$at_srcdir/run_misc.at:1849: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1849"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1852"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1849"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17456,7 +17453,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_221
 #AT_START_222
-at_fn_group_banner 222 'run_misc.at:1856' \
+at_fn_group_banner 222 'run_misc.at:1853' \
   "Larger REDEFINES lengths" "                       "
 at_xfail=no
 (
@@ -17509,8 +17506,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1900: \$COMPILE -std=mf -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -std=mf -o prog prog.cob" "run_misc.at:1900"
+$as_echo "$at_srcdir/run_misc.at:1897: \$COMPILE -std=mf -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -std=mf -o prog prog.cob" "run_misc.at:1897"
 ( $at_check_trace; $COMPILE -std=mf -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -17519,20 +17516,20 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 12: Warning: Size of 'XMAIN0502' larger
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1900"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1897"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1903: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1903"
+$as_echo "$at_srcdir/run_misc.at:1900: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1900"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1903"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1900"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17543,7 +17540,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_222
 #AT_START_223
-at_fn_group_banner 223 'run_misc.at:1907' \
+at_fn_group_banner 223 'run_misc.at:1904' \
   "PERFORM type OSVS" "                              "
 at_xfail=no
 (
@@ -17590,28 +17587,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1943: \$COMPILE -conf=test.conf -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o prog prog.cob" "run_misc.at:1943"
+$as_echo "$at_srcdir/run_misc.at:1940: \$COMPILE -conf=test.conf -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o prog prog.cob" "run_misc.at:1940"
 ( $at_check_trace; $COMPILE -conf=test.conf -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1943"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1940"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1944: ./prog"
-at_fn_check_prepare_trace "run_misc.at:1944"
+$as_echo "$at_srcdir/run_misc.at:1941: ./prog"
+at_fn_check_prepare_trace "run_misc.at:1941"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1944"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1941"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17622,7 +17619,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_223
 #AT_START_224
-at_fn_group_banner 224 'run_misc.at:1948' \
+at_fn_group_banner 224 'run_misc.at:1945' \
   "Sticky LINKAGE" "                                 "
 at_xfail=no
 (
@@ -17680,41 +17677,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1993: \$COMPILE_MODULE -conf=test.conf callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE -conf=test.conf callee.cob" "run_misc.at:1993"
+$as_echo "$at_srcdir/run_misc.at:1990: \$COMPILE_MODULE -conf=test.conf callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE -conf=test.conf callee.cob" "run_misc.at:1990"
 ( $at_check_trace; $COMPILE_MODULE -conf=test.conf callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1993"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1990"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1994: \$COMPILE -conf=test.conf -o caller caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o caller caller.cob" "run_misc.at:1994"
+$as_echo "$at_srcdir/run_misc.at:1991: \$COMPILE -conf=test.conf -o caller caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -conf=test.conf -o caller caller.cob" "run_misc.at:1991"
 ( $at_check_trace; $COMPILE -conf=test.conf -o caller caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1994"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1991"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:1995: ./caller"
-at_fn_check_prepare_trace "run_misc.at:1995"
+$as_echo "$at_srcdir/run_misc.at:1992: ./caller"
+at_fn_check_prepare_trace "run_misc.at:1992"
 ( $at_check_trace; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1995"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:1992"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17725,7 +17722,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_224
 #AT_START_225
-at_fn_group_banner 225 'run_misc.at:1999' \
+at_fn_group_banner 225 'run_misc.at:1996' \
   "COB_PRE_LOAD test" "                              "
 at_xfail=no
 (
@@ -17755,41 +17752,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2018: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2018"
+$as_echo "$at_srcdir/run_misc.at:2015: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2015"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2018"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2015"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2019: \$COMPILE caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE caller.cob" "run_misc.at:2019"
+$as_echo "$at_srcdir/run_misc.at:2016: \$COMPILE caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE caller.cob" "run_misc.at:2016"
 ( $at_check_trace; $COMPILE caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2019"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2016"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2020: export COB_PRE_LOAD=callee; ./caller"
-at_fn_check_prepare_trace "run_misc.at:2020"
+$as_echo "$at_srcdir/run_misc.at:2017: export COB_PRE_LOAD=callee; ./caller"
+at_fn_check_prepare_trace "run_misc.at:2017"
 ( $at_check_trace; export COB_PRE_LOAD=callee; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2020"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2017"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17800,7 +17797,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_225
 #AT_START_226
-at_fn_group_banner 226 'run_misc.at:2024' \
+at_fn_group_banner 226 'run_misc.at:2021' \
   "COB_LOAD_CASE=UPPER test" "                       "
 at_xfail=no
 (
@@ -17830,41 +17827,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2043: \$COMPILE_MODULE CALLEE.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE CALLEE.cob" "run_misc.at:2043"
+$as_echo "$at_srcdir/run_misc.at:2040: \$COMPILE_MODULE CALLEE.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE CALLEE.cob" "run_misc.at:2040"
 ( $at_check_trace; $COMPILE_MODULE CALLEE.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2043"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2040"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2044: \$COMPILE caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE caller.cob" "run_misc.at:2044"
+$as_echo "$at_srcdir/run_misc.at:2041: \$COMPILE caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE caller.cob" "run_misc.at:2041"
 ( $at_check_trace; $COMPILE caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2044"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2041"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2045: export COB_LOAD_CASE=UPPER; ./caller"
-at_fn_check_prepare_trace "run_misc.at:2045"
+$as_echo "$at_srcdir/run_misc.at:2042: export COB_LOAD_CASE=UPPER; ./caller"
+at_fn_check_prepare_trace "run_misc.at:2042"
 ( $at_check_trace; export COB_LOAD_CASE=UPPER; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2045"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2042"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17875,7 +17872,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_226
 #AT_START_227
-at_fn_group_banner 227 'run_misc.at:2049' \
+at_fn_group_banner 227 'run_misc.at:2046' \
   "88 level with FALSE IS clause" "                  "
 at_xfail=no
 (
@@ -17906,28 +17903,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2071: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2071"
+$as_echo "$at_srcdir/run_misc.at:2068: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2068"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2071"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2068"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2072: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2072"
+$as_echo "$at_srcdir/run_misc.at:2069: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2069"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2072"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2069"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -17938,7 +17935,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_227
 #AT_START_228
-at_fn_group_banner 228 'run_misc.at:2076' \
+at_fn_group_banner 228 'run_misc.at:2073' \
   "ALLOCATE/FREE with BASED item (1)" "              "
 at_xfail=no
 (
@@ -17968,28 +17965,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2097: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2097"
+$as_echo "$at_srcdir/run_misc.at:2094: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2094"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2097"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2094"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2098: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2098"
+$as_echo "$at_srcdir/run_misc.at:2095: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2095"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2098"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2095"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18000,7 +17997,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_228
 #AT_START_229
-at_fn_group_banner 229 'run_misc.at:2103' \
+at_fn_group_banner 229 'run_misc.at:2100' \
   "ALLOCATE/FREE with BASED item (2)" "              "
 at_xfail=no
 (
@@ -18047,9 +18044,36 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2141: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2141"
+$as_echo "$at_srcdir/run_misc.at:2138: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2138"
 ( $at_check_trace; $COMPILE prog.cob
+) >>"$at_stdout" 2>>"$at_stderr"
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2138"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+{ set +x
+$as_echo "$at_srcdir/run_misc.at:2139: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2139"
+( $at_check_trace; ./prog
+) >>"$at_stdout" 2>>"$at_stderr"
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2139"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+# Run both executable and module as we have a different code generation here
+{ set +x
+$as_echo "$at_srcdir/run_misc.at:2141: \$COMPILE_MODULE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE prog.cob" "run_misc.at:2141"
+( $at_check_trace; $COMPILE_MODULE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
@@ -18060,42 +18084,15 @@ $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2142: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2142"
-( $at_check_trace; ./prog
-) >>"$at_stdout" 2>>"$at_stderr"
-at_status=$? at_failed=false
-$at_check_filter
-at_fn_diff_devnull "$at_stderr" || at_failed=:
-at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2142"
-$at_failed && at_fn_log_failure
-$at_traceon; }
-
-# Run both executable and module as we have a different code generation here
-{ set +x
-$as_echo "$at_srcdir/run_misc.at:2144: \$COMPILE_MODULE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE prog.cob" "run_misc.at:2144"
-( $at_check_trace; $COMPILE_MODULE prog.cob
-) >>"$at_stdout" 2>>"$at_stderr"
-at_status=$? at_failed=false
-$at_check_filter
-at_fn_diff_devnull "$at_stderr" || at_failed=:
-at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2144"
-$at_failed && at_fn_log_failure
-$at_traceon; }
-
-{ set +x
-$as_echo "$at_srcdir/run_misc.at:2145: \$COBCRUN prog"
-at_fn_check_prepare_dynamic "$COBCRUN prog" "run_misc.at:2145"
+$as_echo "$at_srcdir/run_misc.at:2142: \$COBCRUN prog"
+at_fn_check_prepare_dynamic "$COBCRUN prog" "run_misc.at:2142"
 ( $at_check_trace; $COBCRUN prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2145"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2142"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18106,7 +18103,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_229
 #AT_START_230
-at_fn_group_banner 230 'run_misc.at:2150' \
+at_fn_group_banner 230 'run_misc.at:2147' \
   "ALLOCATE CHARACTERS INITIALIZED TO" "             "
 at_xfail=no
 (
@@ -18150,28 +18147,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2185: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2185"
+$as_echo "$at_srcdir/run_misc.at:2182: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2182"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2185"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2182"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2186: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2186"
+$as_echo "$at_srcdir/run_misc.at:2183: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2183"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2186"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2183"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18182,7 +18179,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_230
 #AT_START_231
-at_fn_group_banner 231 'run_misc.at:2190' \
+at_fn_group_banner 231 'run_misc.at:2187' \
   "INITIALIZE with reference modification" "         "
 at_xfail=no
 (
@@ -18211,28 +18208,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2210: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2210"
+$as_echo "$at_srcdir/run_misc.at:2207: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_misc.at:2207"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2210"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2207"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2211: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2211"
+$as_echo "$at_srcdir/run_misc.at:2208: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2208"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2211"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2208"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18243,7 +18240,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_231
 #AT_START_232
-at_fn_group_banner 232 'run_misc.at:2215' \
+at_fn_group_banner 232 'run_misc.at:2212' \
   "Initialized value with defaultbyte" "             "
 at_xfail=no
 (
@@ -18271,28 +18268,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2234: \$COMPILE -fdefaultbyte=A prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -fdefaultbyte=A prog.cob" "run_misc.at:2234"
+$as_echo "$at_srcdir/run_misc.at:2231: \$COMPILE -fdefaultbyte=A prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -fdefaultbyte=A prog.cob" "run_misc.at:2231"
 ( $at_check_trace; $COMPILE -fdefaultbyte=A prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2234"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2231"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2235: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2235"
+$as_echo "$at_srcdir/run_misc.at:2232: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2232"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2235"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2232"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18303,7 +18300,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_232
 #AT_START_233
-at_fn_group_banner 233 'run_misc.at:2239' \
+at_fn_group_banner 233 'run_misc.at:2236' \
   "CALL with OMITTED parameter" "                    "
 at_xfail=no
 (
@@ -18344,41 +18341,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2269: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2269"
+$as_echo "$at_srcdir/run_misc.at:2266: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2266"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2269"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2266"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2270: \$COMPILE -o caller caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2270"
+$as_echo "$at_srcdir/run_misc.at:2267: \$COMPILE -o caller caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2267"
 ( $at_check_trace; $COMPILE -o caller caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2270"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2267"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2271: ./caller"
-at_fn_check_prepare_trace "run_misc.at:2271"
+$as_echo "$at_srcdir/run_misc.at:2268: ./caller"
+at_fn_check_prepare_trace "run_misc.at:2268"
 ( $at_check_trace; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2271"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2268"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18389,7 +18386,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_233
 #AT_START_234
-at_fn_group_banner 234 'run_misc.at:2275' \
+at_fn_group_banner 234 'run_misc.at:2272' \
   "ANY LENGTH (1)" "                                 "
 at_xfail=no
 (
@@ -18436,41 +18433,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2311: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2311"
+$as_echo "$at_srcdir/run_misc.at:2308: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2308"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2311"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2308"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2312: \$COMPILE -o caller caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2312"
+$as_echo "$at_srcdir/run_misc.at:2309: \$COMPILE -o caller caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2309"
 ( $at_check_trace; $COMPILE -o caller caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2312"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2309"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2313: ./caller"
-at_fn_check_prepare_trace "run_misc.at:2313"
+$as_echo "$at_srcdir/run_misc.at:2310: ./caller"
+at_fn_check_prepare_trace "run_misc.at:2310"
 ( $at_check_trace; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2313"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2310"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18481,7 +18478,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_234
 #AT_START_235
-at_fn_group_banner 235 'run_misc.at:2317' \
+at_fn_group_banner 235 'run_misc.at:2314' \
   "ANY LENGTH (2)" "                                 "
 at_xfail=no
 (
@@ -18529,41 +18526,41 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2354: \$COMPILE_MODULE callee.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2354"
+$as_echo "$at_srcdir/run_misc.at:2351: \$COMPILE_MODULE callee.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE callee.cob" "run_misc.at:2351"
 ( $at_check_trace; $COMPILE_MODULE callee.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2354"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2351"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2355: \$COMPILE -o caller caller.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2355"
+$as_echo "$at_srcdir/run_misc.at:2352: \$COMPILE -o caller caller.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o caller caller.cob" "run_misc.at:2352"
 ( $at_check_trace; $COMPILE -o caller caller.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2355"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2352"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2356: ./caller"
-at_fn_check_prepare_trace "run_misc.at:2356"
+$as_echo "$at_srcdir/run_misc.at:2353: ./caller"
+at_fn_check_prepare_trace "run_misc.at:2353"
 ( $at_check_trace; ./caller
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2356"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2353"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18574,7 +18571,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_235
 #AT_START_236
-at_fn_group_banner 236 'run_misc.at:2360' \
+at_fn_group_banner 236 'run_misc.at:2357' \
   "BASED item non-ALLOCATED (debug)" "               "
 at_xfail=no
 (
@@ -18598,21 +18595,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2375: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2375"
+$as_echo "$at_srcdir/run_misc.at:2372: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2372"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2375"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2372"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2376: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2376"
+$as_echo "$at_srcdir/run_misc.at:2373: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2373"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -18621,7 +18618,7 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 8: libcob: BASED/LINKAGE item 'X' has N
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:2376"
+at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:2373"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18632,7 +18629,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_236
 #AT_START_237
-at_fn_group_banner 237 'run_misc.at:2382' \
+at_fn_group_banner 237 'run_misc.at:2379' \
   "STOP RUN WITH NORMAL STATUS" "                    "
 at_xfail=no
 (
@@ -18653,28 +18650,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2394: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2394"
+$as_echo "$at_srcdir/run_misc.at:2391: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2391"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2394"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2391"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2395: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2395"
+$as_echo "$at_srcdir/run_misc.at:2392: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2392"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2395"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2392"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18685,7 +18682,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_237
 #AT_START_238
-at_fn_group_banner 238 'run_misc.at:2399' \
+at_fn_group_banner 238 'run_misc.at:2396' \
   "STOP RUN WITH ERROR STATUS" "                     "
 at_xfail=no
 (
@@ -18706,28 +18703,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2411: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2411"
+$as_echo "$at_srcdir/run_misc.at:2408: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2408"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2411"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2408"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2412: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2412"
+$as_echo "$at_srcdir/run_misc.at:2409: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2409"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:2412"
+at_fn_check_status 1 $at_status "$at_srcdir/run_misc.at:2409"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18738,7 +18735,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_238
 #AT_START_239
-at_fn_group_banner 239 'run_misc.at:2416' \
+at_fn_group_banner 239 'run_misc.at:2413' \
   "DECLARATIVES procedure referencing" "             "
 at_xfail=no
 (
@@ -18781,28 +18778,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2450: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2450"
+$as_echo "$at_srcdir/run_misc.at:2447: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2447"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2450"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2447"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2451: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2451"
+$as_echo "$at_srcdir/run_misc.at:2448: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2448"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2451"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2448"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18813,7 +18810,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_239
 #AT_START_240
-at_fn_group_banner 240 'run_misc.at:2455' \
+at_fn_group_banner 240 'run_misc.at:2452' \
   "DECLARATIVES procedure referencing (multiple)" "  "
 at_xfail=no
 (
@@ -18860,28 +18857,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2493: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2493"
+$as_echo "$at_srcdir/run_misc.at:2490: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2490"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2493"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2490"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2494: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2494"
+$as_echo "$at_srcdir/run_misc.at:2491: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2491"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2494"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2491"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18892,7 +18889,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_240
 #AT_START_241
-at_fn_group_banner 241 'run_misc.at:2498' \
+at_fn_group_banner 241 'run_misc.at:2495' \
   "SYMBOLIC clause" "                                "
 at_xfail=no
 (
@@ -18932,28 +18929,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2529: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2529"
+$as_echo "$at_srcdir/run_misc.at:2526: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2526"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2529"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2526"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2530: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2530"
+$as_echo "$at_srcdir/run_misc.at:2527: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2527"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2530"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2527"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -18964,7 +18961,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_241
 #AT_START_242
-at_fn_group_banner 242 'run_misc.at:2535' \
+at_fn_group_banner 242 'run_misc.at:2532' \
   "OCCURS clause with 1 entry" "                     "
 at_xfail=no
 (
@@ -19016,28 +19013,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2578: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2578"
+$as_echo "$at_srcdir/run_misc.at:2575: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_misc.at:2575"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2578"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2575"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2579: ./prog"
-at_fn_check_prepare_trace "run_misc.at:2579"
+$as_echo "$at_srcdir/run_misc.at:2576: ./prog"
+at_fn_check_prepare_trace "run_misc.at:2576"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2579"
+at_fn_check_status 0 $at_status "$at_srcdir/run_misc.at:2576"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
