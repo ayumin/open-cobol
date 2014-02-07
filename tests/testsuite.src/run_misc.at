@@ -1,18 +1,18 @@
 ## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
 ## Copyright (C) 2007-2012 Roger While
-## 
+##
 ## This file is part of GNU Cobol.
-## 
+##
 ## The GNU Cobol compiler is free software: you can redistribute it
 ## and/or modify it under the terms of the GNU General Public License
 ## as published by the Free Software Foundation, either version 3 of the
 ## License, or (at your option) any later version.
-## 
+##
 ## GNU Cobol is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -934,7 +934,7 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(12) VALUE "AAABBCDCCCCC".
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING 
+           INSPECT X REPLACING
              ALL      "A" BY "Z"
                       "B" BY "Y"
              TRAILING "C" BY "X".
@@ -1394,12 +1394,12 @@ AT_DATA([prog.cob], [
        ENVIRONMENT     DIVISION.
        DATA            DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-RECORD. 
-           02 VALUE SPACE           PIC X(04). 
-           02 VALUE "ABC AND DE"    PIC X(10). 
+       01  WS-RECORD.
+           02 VALUE SPACE           PIC X(04).
+           02 VALUE "ABC AND DE"    PIC X(10).
            02 VALUE SPACE           PIC X(07).
            02 VALUE "FG AND HIJ"    PIC X(10).
-           02 VALUE SPACE           PIC X(08). 
+           02 VALUE SPACE           PIC X(08).
        01  SPACE-2                  PIC X(02) VALUE SPACE.
        01  WS-DUMMY                 PIC X(15).
        01  WS-POINTER               PIC 99.
@@ -1407,34 +1407,34 @@ AT_DATA([prog.cob], [
            MOVE 1 TO WS-POINTER.
       *
            PERFORM 0001-SUB.
-           IF WS-DUMMY NOT = SPACE 
+           IF WS-DUMMY NOT = SPACE
               DISPLAY "Expected space - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 5
               DISPLAY "Expected 5 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
       *
            PERFORM 0001-SUB.
            IF WS-DUMMY NOT = "ABC AND DE"
               DISPLAY "Expected ABC AND DE - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 21
               DISPLAY "Expected 21 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
       *
            PERFORM 0001-SUB.
            IF WS-DUMMY NOT = " FG AND HIJ"
               DISPLAY "Expected  FG AND HIJ - Got " WS-DUMMY
-              END-DISPLAY 
-           END-IF. 
+              END-DISPLAY
+           END-IF.
            IF WS-POINTER NOT = 40
               DISPLAY "Expected 40 - Got " WS-POINTER
               END-DISPLAY
-           END-IF. 
+           END-IF.
            STOP RUN.
        0001-SUB.
            UNSTRING WS-RECORD
@@ -1845,7 +1845,7 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE -o prog prog.cob])
-AT_CHECK([./prog], [0]) 
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
@@ -1896,7 +1896,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE -std=mf -o prog prog.cob], [0], ,
 [prog.cob: 12: Warning: Size of 'XMAIN0502' larger than size of 'XMAIN0501'
 ])
-AT_CHECK([./prog], [0]) 
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
@@ -2573,5 +2573,460 @@ AT_DATA([prog.cob], [
 
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+AT_SETUP([C/C++ reserved words/predefined identifiers])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([caller.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      caller.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+      *
+      * Reserved Words in C (that aren't reserved in COBOL)
+      *
+       77  CONST                       PIC X VALUE "A".
+       77  DOUBLE                      PIC X VALUE "B".
+       77  FLOAT                       PIC X VALUE "C".
+       77  INT                         PIC X VALUE "D".
+       77  SHORT                       PIC X VALUE "E".
+       77  STRUCT                      PIC X VALUE "F".
+       77  BREAK                       PIC X VALUE "G".
+       77  LONG                        PIC X VALUE "H".
+       77  SWITCH                      PIC X VALUE "I".
+       77  VOID                        PIC X VALUE "J".
+       77  CASE                        PIC X VALUE "K".
+       77  ENUM                        PIC X VALUE "L".
+       77  GOTO                        PIC X VALUE "M".
+       77  REGISTER                    PIC X VALUE "N".
+       77  SIZEOF                      PIC X VALUE "O".
+       77  VOLATILE                    PIC X VALUE "P".
+       77  CHAR                        PIC X VALUE "Q".
+       77  DO                          PIC X VALUE "R".
+       77  EXTERN                      PIC X VALUE "S".
+       77  STATIC                      PIC X VALUE "T".
+       77  UNION                       PIC X VALUE "U".
+       77  WHILE                       PIC X VALUE "V".
+      *
+      * More Reserved Words in C++
+      *
+       77  ASM                         PIC X VALUE "W".
+       77  DYNAMIC_CAST                PIC X VALUE "X".
+       77  NAMESPACE                   PIC X VALUE "Y".
+       77  REINTERPRET_CAST            PIC X VALUE "Z".
+       77  TRY                         PIC X VALUE "a".
+       77  BOOL                        PIC X VALUE "b".
+       77  EXPLICIT                    PIC X VALUE "c".
+       77  NEW                         PIC X VALUE "d".
+       77  STATIC_CAST                 PIC X VALUE "e".
+       77  TYPEID                      PIC X VALUE "f".
+       77  CATCH                       PIC X VALUE "g".
+       77  OPERATOR                    PIC X VALUE "h".
+       77  TEMPLATE                    PIC X VALUE "i".
+       77  TYPENAME                    PIC X VALUE "j".
+       77  FRIEND                      PIC X VALUE "k".
+       77  PRIVATE                     PIC X VALUE "l".
+       77  THIS                        PIC X VALUE "m".
+       77  CONST_CAST                  PIC X VALUE "n".
+       77  INLINE                      PIC X VALUE "o".
+       77  PUBLIC                      PIC X VALUE "p".
+       77  THROW                       PIC X VALUE "q".
+       77  VIRTUAL                     PIC X VALUE "r".
+       77  MUTABLE                     PIC X VALUE "s".
+       77  PROTECTED                   PIC X VALUE "t".
+       77  WCHAR_T                     PIC X VALUE "u".
+      *
+      * More Reserved Words in C++ (not essential)
+      *
+       77  BITAND                      PIC X VALUE "v".
+       77  COMPL                       PIC X VALUE "w".
+       77  NOT_EQ                      PIC X VALUE "x".
+       77  OR_EQ                       PIC X VALUE "y".
+       77  XOR_EQ                      PIC X VALUE "z".
+       77  AND_EQ                      PIC X VALUE "0".
+       77  BITOR                       PIC X VALUE "1".
+       77  XOR                         PIC X VALUE "2".
+      *
+       PROCEDURE        DIVISION.
+           CALL "callee" USING   CONST
+                                 DOUBLE
+                                 FLOAT
+                                 INT
+                                 SHORT
+                                 STRUCT
+                                 BREAK
+                                 LONG
+                                 SWITCH
+                                 VOID
+                                 CASE
+                                 ENUM
+                                 GOTO
+                                 REGISTER
+                                 SIZEOF
+                                 VOLATILE
+                                 CHAR
+                                 DO
+                                 EXTERN
+                                 STATIC
+                                 UNION
+                                 WHILE
+           END-CALL.
+           CALL "callee2" USING  ASM
+                                 DYNAMIC_CAST
+                                 NAMESPACE
+                                 REINTERPRET_CAST
+                                 TRY
+                                 BOOL
+                                 EXPLICIT
+                                 NEW
+                                 STATIC_CAST
+                                 TYPEID
+                                 CATCH
+                                 OPERATOR
+                                 TEMPLATE
+                                 TYPENAME
+                                 FRIEND
+                                 PRIVATE
+                                 THIS
+                                 CONST_CAST
+                                 INLINE
+                                 PUBLIC
+                                 THROW
+                                 VIRTUAL
+                                 MUTABLE
+                                 PROTECTED
+                                 WCHAR_T
+                                 BITAND
+                                 COMPL
+                                 NOT_EQ
+                                 OR_EQ
+                                 XOR_EQ
+                                 AND_EQ
+                                 BITOR
+                                 XOR
+           END-CALL.
+           MOVE x'00' TO         CONST
+                                 DOUBLE
+                                 FLOAT
+                                 INT
+                                 SHORT
+                                 STRUCT
+                                 BREAK
+                                 LONG
+                                 SWITCH
+                                 VOID
+                                 CASE
+                                 ENUM
+                                 GOTO
+                                 REGISTER
+                                 SIZEOF
+                                 VOLATILE
+                                 CHAR
+                                 DO
+                                 EXTERN
+                                 STATIC
+                                 UNION
+                                 WHILE
+                                 ASM
+                                 DYNAMIC_CAST
+                                 NAMESPACE
+                                 REINTERPRET_CAST
+                                 TRY
+                                 BOOL
+                                 EXPLICIT
+                                 NEW
+                                 STATIC_CAST
+                                 TYPEID
+                                 CATCH
+                                 OPERATOR
+                                 TEMPLATE
+                                 TYPENAME
+                                 FRIEND
+                                 PRIVATE
+                                 THIS
+                                 CONST_CAST
+                                 INLINE
+                                 PUBLIC
+                                 THROW
+                                 VIRTUAL
+                                 MUTABLE
+                                 PROTECTED
+                                 WCHAR_T
+                                 BITAND
+                                 COMPL
+                                 NOT_EQ
+                                 OR_EQ
+                                 XOR_EQ
+                                 AND_EQ
+                                 BITOR
+                                 XOR
+                                 .
+           STOP RUN.
+])
+
+AT_DATA([callee.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee.
+       DATA             DIVISION.
+       LINKAGE SECTION.
+      *
+      * Reserved Words in C (that aren't reserved in COBOL)
+      *
+       77  CONST                       PIC X.
+       77  DOUBLE                      PIC X.
+       77  FLOAT                       PIC X.
+       77  INT                         PIC X.
+       77  SHORT                       PIC X.
+       77  STRUCT                      PIC X.
+       77  BREAK                       PIC X.
+       77  LONG                        PIC X.
+       77  SWITCH                      PIC X.
+       77  VOID                        PIC X.
+       77  CASE                        PIC X.
+       77  ENUM                        PIC X.
+       77  GOTO                        PIC X.
+       77  REGISTER                    PIC X.
+       77  SIZEOF                      PIC X.
+       77  VOLATILE                    PIC X.
+       77  CHAR                        PIC X.
+       77  DO                          PIC X.
+       77  EXTERN                      PIC X.
+       77  STATIC                      PIC X.
+       77  UNION                       PIC X.
+       77  WHILE                       PIC X.
+       PROCEDURE        DIVISION USING
+                                 CONST
+                                 DOUBLE
+                                 FLOAT
+                                 INT
+                                 SHORT
+                                 STRUCT
+                                 BREAK
+                                 LONG
+                                 SWITCH
+                                 VOID
+                                 CASE
+                                 ENUM
+                                 GOTO
+                                 REGISTER
+                                 SIZEOF
+                                 VOLATILE
+                                 CHAR
+                                 DO
+                                 EXTERN
+                                 STATIC
+                                 UNION
+                                 WHILE
+                                 .
+           IF (CONST                       NOT = "A") OR
+              (DOUBLE                      NOT = "B") OR
+              (FLOAT                       NOT = "C") OR
+              (INT                         NOT = "D") OR
+              (SHORT                       NOT = "E") OR
+              (STRUCT                      NOT = "F") OR
+              (BREAK                       NOT = "G") OR
+              (LONG                        NOT = "H") OR
+              (SWITCH                      NOT = "I") OR
+              (VOID                        NOT = "J") OR
+              (CASE                        NOT = "K") OR
+              (ENUM                        NOT = "L") OR
+              (GOTO                        NOT = "M") OR
+              (REGISTER                    NOT = "N") OR
+              (SIZEOF                      NOT = "O") OR
+              (VOLATILE                    NOT = "P") OR
+              (CHAR                        NOT = "Q") OR
+              (DO                          NOT = "R") OR
+              (EXTERN                      NOT = "S") OR
+              (STATIC                      NOT = "T") OR
+              (UNION                       NOT = "U") OR
+              (WHILE                       NOT = "V")
+              DISPLAY "At least one var has wrong content!"
+              END-DISPLAY
+           END-IF.
+           MOVE x'FF' TO         CONST
+                                 DOUBLE
+                                 FLOAT
+                                 INT
+                                 SHORT
+                                 STRUCT
+                                 BREAK
+                                 LONG
+                                 SWITCH
+                                 VOID
+                                 CASE
+                                 ENUM
+                                 GOTO
+                                 REGISTER
+                                 SIZEOF
+                                 VOLATILE
+                                 CHAR
+                                 DO
+                                 EXTERN
+                                 STATIC
+                                 UNION
+                                 WHILE
+                                 .
+           EXIT PROGRAM.
+])
+
+AT_DATA([callee2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      callee2.
+       DATA             DIVISION.
+       LINKAGE SECTION.
+      *
+      * More Reserved Words in C++
+      *
+       77  ASM                         PIC X.
+       77  DYNAMIC_CAST                PIC X.
+       77  NAMESPACE                   PIC X.
+       77  REINTERPRET_CAST            PIC X.
+       77  TRY                         PIC X.
+       77  BOOL                        PIC X.
+       77  EXPLICIT                    PIC X.
+       77  NEW                         PIC X.
+       77  STATIC_CAST                 PIC X.
+       77  TYPEID                      PIC X.
+       77  CATCH                       PIC X.
+       77  OPERATOR                    PIC X.
+       77  TEMPLATE                    PIC X.
+       77  TYPENAME                    PIC X.
+       77  FRIEND                      PIC X.
+       77  PRIVATE                     PIC X.
+       77  THIS                        PIC X.
+       77  CONST_CAST                  PIC X.
+       77  INLINE                      PIC X.
+       77  PUBLIC                      PIC X.
+       77  THROW                       PIC X.
+       77  VIRTUAL                     PIC X.
+       77  MUTABLE                     PIC X.
+       77  PROTECTED                   PIC X.
+       77  WCHAR_T                     PIC X.
+      *
+      * More Reserved Words in C++ (not essential)
+      *
+       77  BITAND                      PIC X.
+       77  COMPL                       PIC X.
+       77  NOT_EQ                      PIC X.
+       77  OR_EQ                       PIC X.
+       77  XOR_EQ                      PIC X.
+       77  AND_EQ                      PIC X.
+       77  BITOR                       PIC X.
+       77  XOR                         PIC X.
+       PROCEDURE        DIVISION USING
+                                 ASM
+                                 DYNAMIC_CAST
+                                 NAMESPACE
+                                 REINTERPRET_CAST
+                                 TRY
+                                 BOOL
+                                 EXPLICIT
+                                 NEW
+                                 STATIC_CAST
+                                 TYPEID
+                                 CATCH
+                                 OPERATOR
+                                 TEMPLATE
+                                 TYPENAME
+                                 FRIEND
+                                 PRIVATE
+                                 THIS
+                                 CONST_CAST
+                                 INLINE
+                                 PUBLIC
+                                 THROW
+                                 VIRTUAL
+                                 MUTABLE
+                                 PROTECTED
+                                 WCHAR_T
+                                 BITAND
+                                 COMPL
+                                 NOT_EQ
+                                 OR_EQ
+                                 XOR_EQ
+                                 AND_EQ
+                                 BITOR
+                                 XOR
+                                 .
+           IF (ASM                         NOT = "W") OR
+              (DYNAMIC_CAST                NOT = "X") OR
+              (NAMESPACE                   NOT = "Y") OR
+              (REINTERPRET_CAST            NOT = "Z") OR
+              (TRY                         NOT = "a") OR
+              (BOOL                        NOT = "b") OR
+              (EXPLICIT                    NOT = "c") OR
+              (NEW                         NOT = "d") OR
+              (STATIC_CAST                 NOT = "e") OR
+              (TYPEID                      NOT = "f") OR
+              (CATCH                       NOT = "g") OR
+              (OPERATOR                    NOT = "h") OR
+              (TEMPLATE                    NOT = "i") OR
+              (TYPENAME                    NOT = "j") OR
+              (FRIEND                      NOT = "k") OR
+              (PRIVATE                     NOT = "l") OR
+              (THIS                        NOT = "m") OR
+              (CONST_CAST                  NOT = "n") OR
+              (INLINE                      NOT = "o") OR
+              (PUBLIC                      NOT = "p") OR
+              (THROW                       NOT = "q") OR
+              (VIRTUAL                     NOT = "r") OR
+              (MUTABLE                     NOT = "s") OR
+              (PROTECTED                   NOT = "t") OR
+              (WCHAR_T                     NOT = "u") OR
+              (BITAND                      NOT = "v") OR
+              (COMPL                       NOT = "w") OR
+              (NOT_EQ                      NOT = "x") OR
+              (OR_EQ                       NOT = "y") OR
+              (XOR_EQ                      NOT = "z") OR
+              (AND_EQ                      NOT = "0") OR
+              (BITOR                       NOT = "1") OR
+              (XOR                         NOT = "2")
+              DISPLAY "At least one var has wrong content!"
+              END-DISPLAY
+           END-IF.
+           MOVE x'FF' TO         ASM
+                                 DYNAMIC_CAST
+                                 NAMESPACE
+                                 REINTERPRET_CAST
+                                 TRY
+                                 BOOL
+                                 EXPLICIT
+                                 NEW
+                                 STATIC_CAST
+                                 TYPEID
+                                 CATCH
+                                 OPERATOR
+                                 TEMPLATE
+                                 TYPENAME
+                                 FRIEND
+                                 PRIVATE
+                                 THIS
+                                 CONST_CAST
+                                 INLINE
+                                 PUBLIC
+                                 THROW
+                                 VIRTUAL
+                                 MUTABLE
+                                 PROTECTED
+                                 WCHAR_T
+                                 BITAND
+                                 COMPL
+                                 NOT_EQ
+                                 OR_EQ
+                                 XOR_EQ
+                                 AND_EQ
+                                 BITOR
+                                 XOR
+                                 .
+           EXIT PROGRAM.
+])
+
+AT_CHECK([$COMPILE_MODULE callee.cob])
+AT_CHECK([$COMPILE_MODULE callee2.cob])
+AT_CHECK([$COMPILE -o prog caller.cob])
+AT_CHECK([./prog], [0], [], [])
 
 AT_CLEANUP
