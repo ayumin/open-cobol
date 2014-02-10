@@ -2858,11 +2858,13 @@ process (const char *cmd)
 	size_t	clen;
 	int	ret;
 
+#ifndef _MSC_VER
 	if (likely(strchr (cmd, '$') == NULL)) {
 		buffptr = (char *)cmd;
 	} else {
 		clen = strlen (cmd) + 64U;
-		buffptr = cobc_malloc (clen);
+		clen = clen + 6U;
+		buffptr = (char *)cobc_malloc (clen);
 		p = buffptr;
 		/* Quote '$' */
 		for (; *cmd; ++cmd) {
@@ -2874,6 +2876,39 @@ process (const char *cmd)
 		}
 		*p = 0;
 	}
+#else
+	/* Silence MSC output "Creating xyz..."
+      Fixme: should only be done when used to process cl.exe
+   */
+	clen = strlen (cmd);
+	if (!verbose_output) {
+		clen += 7U;
+	}
+	if (likely(strchr (cmd, '$') == NULL)) {
+		buffptr = (char *)cobc_malloc (clen);
+		p = buffptr;
+		/* Quote '$' */
+		for (; *cmd; ++cmd) {
+			*p++ = *cmd;
+		}
+	} else {
+		clen += 64U;
+		buffptr = (char *)cobc_malloc (clen);
+		p = buffptr;
+		/* Quote '$' */
+		for (; *cmd; ++cmd) {
+			if (*cmd == '$') {
+				p += sprintf (p, "\\$");
+			} else {
+				*p++ = *cmd;
+			}
+		}
+	}
+	if (!verbose_output) {
+		p += sprintf (p, " 1>NUL");
+	}
+	*p = 0;
+#endif
 
 	if (verbose_output) {
 		cobc_cmd_print (buffptr);
