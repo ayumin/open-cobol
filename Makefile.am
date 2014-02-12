@@ -21,7 +21,7 @@
 
 include_HEADERS = libcob.h
 
-SUBDIRS = libcob cobc bin config copy po doc tests extras
+SUBDIRS = libcob lib cobc bin config copy po doc tests extras
 
 ACLOCAL_AMFLAGS = -I m4 --install
 BUILT_SOURCES = defaults.h

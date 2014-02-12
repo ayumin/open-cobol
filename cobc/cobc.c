@@ -54,7 +54,7 @@
 #include "cobc.h"
 #include "tree.h"
 
-#include "cobgetopt.h"
+#include "lib/cobgetopt.h"
 
 struct strcache {
 	struct strcache	*next;
@@ -1826,9 +1826,18 @@ process_command_line (const int argc, char **argv)
 	int			c;
 	int			idx;
 	int			n;
+	int 			argnum;
 	enum cob_exception_id	i;
 	struct stat		st;
 	char			ext[COB_MINI_BUFF];
+
+	/* Translate command line arguments from WIN to UNIX style */
+	argnum = 1;
+	while (++argnum <= argc) {
+		if (argv[argnum - 1][0] == '/') {
+			argv[argnum - 1][0] = '-';
+		}
+	}
 
 	while ((c = cob_getopt_long_long (argc, argv, short_options,
 					  long_options, &idx, 1)) >= 0) {
@@ -2859,11 +2868,13 @@ process (const char *cmd)
 	size_t	clen;
 	int	ret;
 
+#ifndef _MSC_VER
 	if (likely(strchr (cmd, '$') == NULL)) {
 		buffptr = (char *)cmd;
 	} else {
 		clen = strlen (cmd) + 64U;
-		buffptr = cobc_malloc (clen);
+		clen = clen + 6U;
+		buffptr = (char *)cobc_malloc (clen);
 		p = buffptr;
 		/* Quote '$' */
 		for (; *cmd; ++cmd) {
@@ -2875,6 +2886,39 @@ process (const char *cmd)
 		}
 		*p = 0;
 	}
+#else
+	/* Silence MSC output "Creating xyz..."
+      Fixme: should only be done when used to process cl.exe
+   */
+	clen = strlen (cmd);
+	if (!verbose_output) {
+		clen += 7U;
+	}
+	if (likely(strchr (cmd, '$') == NULL)) {
+		buffptr = (char *)cobc_malloc (clen);
+		p = buffptr;
+		/* Quote '$' */
+		for (; *cmd; ++cmd) {
+			*p++ = *cmd;
+		}
+	} else {
+		clen += 64U;
+		buffptr = (char *)cobc_malloc (clen);
+		p = buffptr;
+		/* Quote '$' */
+		for (; *cmd; ++cmd) {
+			if (*cmd == '$') {
+				p += sprintf (p, "\\$");
+			} else {
+				*p++ = *cmd;
+			}
+		}
+	}
+	if (!verbose_output) {
+		p += sprintf (p, " 1>NUL");
+	}
+	*p = 0;
+#endif
 
 	if (verbose_output) {
 		cobc_cmd_print (buffptr);
