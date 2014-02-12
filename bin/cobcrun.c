@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2004-2012 Roger While
+   Copyright (C) 2012 Simon Sobisch
 
    This file is part of GNU Cobol.
 
@@ -27,6 +28,23 @@
 #include	<string.h>
 #include	"libcob.h"
 #include	"tarstamp.h"
+
+#include "lib/cobgetopt.h"
+
+#ifdef	HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
+static const char short_options[] = "hiV";
+
+#define	CB_NO_ARG	no_argument
+
+static const struct option long_options[] = {
+	{"help",		CB_NO_ARG, NULL, 'h'},
+	{"info",		CB_NO_ARG, NULL, 'i'},
+	{"version",   	CB_NO_ARG, NULL, 'V'},
+	{NULL, 0, NULL, 0}
+};
 
 #if	defined(ENABLE_NLS) && defined(COB_NLS_RUNTIME)
 #include "lib/gettext.h"
@@ -186,36 +204,69 @@ print_info (void)
 #endif
 }
 
-int
-main (int argc, char **argv)
+static int
+process_command_line (int argc, char *argv[])
 {
-	cob_call_union	unifunc;
+	int			c, idx;
 
-	if (unlikely (argc <= 1)) {
+	/* At least one option or module name needed */
+	if (argc <= 1) {
 		print_usage ();
 		return 1;
 	}
 
-	/* Quick check without getopt */
-	if (unlikely(argv[1][0] == '-')) {
-		if (!strncmp (argv[1], "--version", 10) ||
-		    !strncmp (argv[1], "-V", 3)) {
+	/* Translate first command line argument from WIN to UNIX style */
+	if (argv[1][0] == '/') {
+		argv[1][0] = '-';
+	}
+
+	/* Process first command line argument only if not a module */
+	if (argv[1][0] != '-') {
+		return 99;
+	}
+
+	c = cob_getopt_long_long (argc, argv, short_options,
+					  long_options, &idx, 1);
+	if (c > 0) {
+		switch (c) {
+		case '?':
+			/* Unknown option or ambiguous */
+			return 1;
+
+		case 'h':
+			/* --help */
+			print_usage ();
+			return 0;
+
+		case 'i':
+			/* --help */
+			print_info ();
+			return 0;
+
+		case 'V':
+			/* --version */
 			print_version ();
 			return 0;
 		}
-		if (!strncmp (argv[1], "--help", 7) ||
-		    !strncmp (argv[1], "-h", 3)) {
-			print_usage ();
-			return 0;
-		}
-		if (!strncmp (argv[1], "--info", 7) ||
-		    !strncmp (argv[1], "-i", 3)) {
-			print_info ();
-			return 0;
-		}
-		fputs (_("Invalid option"), stderr);
-		putc ('\n', stderr);
-		return 1;
+	}
+
+	return 99;
+}
+
+int
+main (int argc, char **argv)
+{
+	int pcl_return;
+	cob_call_union	unifunc;
+
+#ifdef	HAVE_SETLOCALE
+	setlocale (LC_ALL, "");
+#endif
+
+	pcl_return = process_command_line (argc, argv);
+
+	if (pcl_return != 99) {
+		return pcl_return;
 	}
 	if (strlen (argv[1]) > 31) {
 		fputs (_("PROGRAM name exceeds 31 characters"), stderr);

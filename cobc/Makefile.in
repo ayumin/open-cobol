@@ -82,10 +82,11 @@ am_cobc_OBJECTS = cobc-cobc.$(OBJEXT) cobc-config.$(OBJEXT) \
 	cobc-scanner.$(OBJEXT) cobc-field.$(OBJEXT) \
 	cobc-typeck.$(OBJEXT) cobc-codegen.$(OBJEXT) \
 	cobc-ppparse.$(OBJEXT) cobc-pplex.$(OBJEXT) \
-	cobc-cobgetopt.$(OBJEXT) cobc-codeoptim.$(OBJEXT)
+	cobc-codeoptim.$(OBJEXT)
 cobc_OBJECTS = $(am_cobc_OBJECTS)
 am__DEPENDENCIES_1 =
-cobc_DEPENDENCIES = $(am__DEPENDENCIES_1)
+cobc_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(top_builddir)/lib/libsupport.a
 cobc_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(cobc_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -262,11 +263,10 @@ top_srcdir = @top_srcdir@
 cobc_SOURCES = cobc.c cobc.h config.c tree.c tree.h reserved.c error.c \
 	parser.c parser.h scanner.c field.c typeck.c codegen.c ppparse.c \
 	ppparse.h pplex.c config.def flag.def warning.def codeoptim.def \
-	ppparse.def cobgetopt.c cobgetopt.h codeoptim.c
+	ppparse.def codeoptim.c
 
 cobc_CFLAGS = -I$(top_srcdir)
-# cobc_LDADD = $(COBC_LIBS) $(top_builddir)/lib/libsupport.a
-cobc_LDADD = $(COBC_LIBS)
+cobc_LDADD = $(COBC_LIBS) $(top_builddir)/lib/libsupport.a
 BUILT_SOURCES = parser.c parser.h scanner.c ppparse.c ppparse.h pplex.c
 EXTRA_DIST = ppparse.y pplex.l parser.y scanner.l
 CLEANFILES = parser.output ppparse.output
@@ -359,7 +359,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobc-cobc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobc-cobgetopt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobc-codegen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobc-codeoptim.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobc-config.Po@am__quote@
@@ -561,20 +560,6 @@ cobc-pplex.obj: pplex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pplex.c' object='cobc-pplex.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -c -o cobc-pplex.obj `if test -f 'pplex.c'; then $(CYGPATH_W) 'pplex.c'; else $(CYGPATH_W) '$(srcdir)/pplex.c'; fi`
-
-cobc-cobgetopt.o: cobgetopt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -MT cobc-cobgetopt.o -MD -MP -MF $(DEPDIR)/cobc-cobgetopt.Tpo -c -o cobc-cobgetopt.o `test -f 'cobgetopt.c' || echo '$(srcdir)/'`cobgetopt.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cobc-cobgetopt.Tpo $(DEPDIR)/cobc-cobgetopt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cobgetopt.c' object='cobc-cobgetopt.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -c -o cobc-cobgetopt.o `test -f 'cobgetopt.c' || echo '$(srcdir)/'`cobgetopt.c
-
-cobc-cobgetopt.obj: cobgetopt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -MT cobc-cobgetopt.obj -MD -MP -MF $(DEPDIR)/cobc-cobgetopt.Tpo -c -o cobc-cobgetopt.obj `if test -f 'cobgetopt.c'; then $(CYGPATH_W) 'cobgetopt.c'; else $(CYGPATH_W) '$(srcdir)/cobgetopt.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cobc-cobgetopt.Tpo $(DEPDIR)/cobc-cobgetopt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cobgetopt.c' object='cobc-cobgetopt.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -c -o cobc-cobgetopt.obj `if test -f 'cobgetopt.c'; then $(CYGPATH_W) 'cobgetopt.c'; else $(CYGPATH_W) '$(srcdir)/cobgetopt.c'; fi`
 
 cobc-codeoptim.o: codeoptim.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cobc_CFLAGS) $(CFLAGS) -MT cobc-codeoptim.o -MD -MP -MF $(DEPDIR)/cobc-codeoptim.Tpo -c -o cobc-codeoptim.o `test -f 'codeoptim.c' || echo '$(srcdir)/'`codeoptim.c
