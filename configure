@@ -18061,7 +18061,8 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "libcob/Makefile") CONFIG_FILES="$CONFIG_FILES libcob/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
-    "cobc/Makefile bin/Makefile") CONFIG_FILES="$CONFIG_FILES cobc/Makefile bin/Makefile" ;;
+    "cobc/Makefile") CONFIG_FILES="$CONFIG_FILES cobc/Makefile" ;;
+    "bin/Makefile") CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "config/Makefile") CONFIG_FILES="$CONFIG_FILES config/Makefile" ;;
