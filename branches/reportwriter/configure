@@ -1478,6 +1478,7 @@ it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <gnu-cobol-list@lists.sourceforge.net>.
 GNU Cobol home page: <http://www.gnu.org/software/gnucobol>.
+General help using GNU software: <http://www.gnu.org/gethelp/>.
 _ACEOF
 ac_status=$?
 fi
@@ -13934,6 +13935,7 @@ else
             break 2
           fi
         fi
+
       done
     done
     IFS="$ac_save_IFS"
@@ -13973,6 +13975,7 @@ do
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
+
 done
   done
 IFS=$as_save_IFS
@@ -17012,7 +17015,7 @@ COB_BIGENDIAN="$ac_cv_c_bigendian"
 COB_PATCH_LEVEL=$with_patch_level
 
 
-ac_config_files="$ac_config_files bin/cob-config Makefile libcob/Makefile cobc/Makefile bin/Makefile po/Makefile.in doc/Makefile config/Makefile copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile extras/Makefile"
+ac_config_files="$ac_config_files bin/cob-config Makefile libcob/Makefile lib/Makefile cobc/Makefilebin/Makefile po/Makefile.in doc/Makefile config/Makefile copy/Makefile tests/atlocal tests/Makefile tests/cobol85/Makefile extras/Makefile"
 
 
 ac_config_commands="$ac_config_commands chmod1"
@@ -17625,8 +17628,9 @@ $config_headers
 Configuration commands:
 $config_commands
 
-Report bugs to <gnu-cobol-list@lists.sourceforge.net>.
-GNU Cobol home page: <http://www.gnu.org/software/gnucobol>."
+Report bugs to <open-cobol-list@lists.sourceforge.net>.
+GNU Cobol home page: <http://www.opencobol.org>.
+General help using GNU software: <http://www.gnu.org/gethelp/>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
@@ -18056,6 +18060,7 @@ do
     "bin/cob-config") CONFIG_FILES="$CONFIG_FILES bin/cob-config" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "libcob/Makefile") CONFIG_FILES="$CONFIG_FILES libcob/Makefile" ;;
+    "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
     "cobc/Makefile") CONFIG_FILES="$CONFIG_FILES cobc/Makefile" ;;
     "bin/Makefile") CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;

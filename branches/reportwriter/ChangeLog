@@ -7,6 +7,11 @@
 	* Change package name, and project to GNU Cobol
 	* GNU-ification of source code commencing
 
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* General : Affects most directories - use a modified
+	  version of getopt_long_long (placed in lib)
+
 2011-??-??  Roger While <simrw@sim-basis.de>
 
 	* General : Affects most directories - Let make check
