@@ -2,6 +2,7 @@
 # Makefile gnucobol/bin
 #
 # Copyright (C) 2004-2012 Roger While
+# Copyright (C) 2012 Simon Sobisch
 #
 # This file is part of GNU Cobol.
 #
@@ -24,4 +25,4 @@ cobcrun_SOURCES = cobcrun.c
 
 AM_LDFLAGS = $(COB_EXPORT_DYN)
 cobcrun_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
-cobcrun_LDADD = $(top_builddir)/libcob/libcob.la
+cobcrun_LDADD = $(top_builddir)/lib/libsupport.a $(top_builddir)/libcob/libcob.la
