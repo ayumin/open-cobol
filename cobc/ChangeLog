@@ -1,7 +1,12 @@
+2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+
+	* cobc.c : Tweaked --info for showing current settings (environment) along
+		with settings hard-wired during build (COB_xyz)
+
 2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-   * typeck.c : Bugfix: no exception check for NULL address on FREE statement
-       (as this is explicit allowed)
+	* typeck.c : Bugfix: no exception check for NULL address on FREE statement
+		(as this is explicit allowed)
 
 2014-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
@@ -25,33 +30,39 @@
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
-20??-??-??  Simon 'human' Sobisch
+20??-??-??  Roger While <simrw@sim-basis.de>
 
-   * codegen.c : Simplify by handling stuff for different compilers
-       by general define (COB_ALIGN)
+	* cobc.*, codegen.c, tree.h, typeck.c : Adding new commands to cobc
+		--info with most important configuration/environment details
+		--list-system for displaying all registered system routines
+
+20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+
+	* codegen.c : Simplify by handling stuff for different compilers
+		by general define (COB_ALIGN)
 
 20??-??-??  Roger While <simrw@sim-basis.de>
 
-   * cobc.c, cobc.h, tree.h : Simplify by handling stuff for 
-       different compilers by general defines (CB_COPT_x, COB_A_...),
-       added parsing step and source name to verbose messages,
-       added some comments
+	* cobc.c, cobc.h, tree.h : Simplify by handling stuff for 
+		different compilers by general defines (CB_COPT_x, COB_A_...),
+		added parsing step and source name to verbose messages,
+		added some comments
 
-20??-??-??  Simon 'human' Sobisch
+20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-   * cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
-       fix some compiler warnings, support possible spaces in different
-       path names, enable linking of already assembled modules for
-       different UNIXes
+	* cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
+		fix some compiler warnings, support possible spaces in different
+		path names, enable linking of already assembled modules for
+		different UNIXes
 
-2009-10-29  Simon 'human' Sobisch
+2009-10-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-   * cobc.c : Warn if -Debug is used (because likely -debug was intended)
+	* cobc.c : Warn if -Debug is used (because likely -debug was intended)
 
-2009-10-08  Simon 'human' Sobisch
+2009-10-08  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-   * error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
-     in warning/error messages
+	* error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
+		in warning/error messages
 
 2009-06-19  Roger While <simrw@sim-basis.de>
 

@@ -1,6 +1,6 @@
 /*
    Copyright (C) 2004-2012 Roger While
-   Copyright (C) 2012 Simon Sobisch
+   Copyright (C) 2012,2014 Simon Sobisch
 
    This file is part of GNU Cobol.
 
@@ -17,7 +17,6 @@
    You should have received a copy of the GNU General Public License
    along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 
 #include	"config.h"
 #include	"defaults.h"
@@ -58,8 +57,8 @@ static const struct option long_options[] = {
 #define	CB_IMSG_SIZE	24
 #define	CB_IVAL_SIZE	(80 - CB_IMSG_SIZE - 4)
 
-static void COB_NOINLINE
-print_version (void)
+static void
+cobcrun_print_version (void)
 {
 	int	year;
 	int	day;
@@ -79,6 +78,7 @@ print_version (void)
 	printf ("cobcrun (%s) %s.%d\n",
 		PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
 	puts ("Copyright (C) 2004-2012 Roger While");
+	puts ("Copyright (C) 2012,2014 Simon Sobisch");
 	puts (_("This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	printf (_("Built     %s"), buff);
@@ -87,27 +87,34 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	putchar ('\n');
 }
 
-static void COB_NOINLINE
-print_usage (void)
+static void
+cobcrun_print_usage (void)
 {
 	puts (_("Usage: cobcrun PROGRAM [param ...]"));
-	puts (_("or   : cobcrun --help (-h)"));
-	puts (_("       Print this help"));
-	puts (_("or   : cobcrun --version (-V)"));
-	puts (_("       Print version information"));
-	puts (_("or   : cobcrun --info (-i)"));
-	puts (_("       Print build information"));
+	puts (_("or   : cobcrun options"));
+	putchar ('\n');
+	puts (_("Options:"));
+	puts (_("  -help                 Display this message"));
+	puts (_("  -version, -V          Display runtime version"));
+	puts (_("  -info, -i             Display runtime information (build/environment)"));
 }
 
-static void COB_NOINLINE
-cobc_var_print (const char *msg, const char *val)
+static void
+cobcrun_var_print (const char *msg, const char *val, const unsigned int env)
 {
 	char	*p;
 	char	*token;
 	size_t	n;
+	size_t	lablen;
 	size_t	toklen;
 
-	printf ("%-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+	if (!env) {
+		printf ("%-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+	} else {
+		printf ("  %s: ", _("env"));
+		lablen = CB_IMSG_SIZE - 2 - strlen(_("env")) - 2;
+		printf ("%-*.*s : ", lablen, lablen, msg);
+	}
 	if (strlen(val) <= CB_IVAL_SIZE) {
 		printf("%s\n", val);
 		return;
@@ -136,71 +143,80 @@ cobc_var_print (const char *msg, const char *val)
 	free (p);
 }
 
-static void COB_NOINLINE
-print_info (void)
+static void
+cobcrun_print_info (void)
 {
-	char	buff[4];
+	char	buff[16];
+	char	*s;
 
-	print_version ();
+	cobcrun_print_version ();
+	putchar ('\n');
 	puts (_("Build information"));
-	cobc_var_print ("Build environment",	COB_BLD_BUILD);
-	cobc_var_print ("CC",			COB_BLD_CC);
-	cobc_var_print ("CPPFLAGS",		COB_BLD_CPPFLAGS);
-	cobc_var_print ("CFLAGS",		COB_BLD_CFLAGS);
-	cobc_var_print ("LD",			COB_BLD_LD);
-	cobc_var_print ("LDFLAGS",		COB_BLD_LDFLAGS);
+	cobcrun_var_print (_("Build environment"),	COB_BLD_BUILD, 0);
+	cobcrun_var_print ("CC",			COB_BLD_CC, 0);
+	cobcrun_var_print ("CPPFLAGS",		COB_BLD_CPPFLAGS, 0);
+	cobcrun_var_print ("CFLAGS",		COB_BLD_CFLAGS, 0);
+	cobcrun_var_print ("LD",			COB_BLD_LD, 0);
+	cobcrun_var_print ("LDFLAGS",		COB_BLD_LDFLAGS, 0);
 	putchar ('\n');
 	puts (_("GNU Cobol information"));
-	cobc_var_print ("COB_CC",		COB_CC);
-	cobc_var_print ("COB_CFLAGS",		COB_CFLAGS);
-	cobc_var_print ("COB_LDFLAGS",		COB_LDFLAGS);
-	cobc_var_print ("COB_LIBS",		COB_LIBS);
-	cobc_var_print ("COB_CONFIG_DIR",	COB_CONFIG_DIR);
-	cobc_var_print ("COB_COPY_DIR",		COB_COPY_DIR);
-	cobc_var_print ("COB_LIBRARY_PATH",	COB_LIBRARY_PATH);
-	cobc_var_print ("COB_MODULE_EXT",	COB_MODULE_EXT);
-	cobc_var_print ("COB_EXEEXT",		COB_EXEEXT);
+#if 0 /* Simon: is this relevant for cobcrun? */
+	cobcrun_var_print ("COB_CC",		COB_CC, 0);
+	cobcrun_var_print ("COB_CFLAGS",		COB_CFLAGS, 0);
+	cobcrun_var_print ("COB_LDFLAGS",		COB_LDFLAGS, 0);
+	cobcrun_var_print ("COB_LIBS",		COB_LIBS, 0);
+	cobcrun_var_print ("COB_CONFIG_DIR",	COB_CONFIG_DIR, 0);
+	cobcrun_var_print ("COB_COPY_DIR",		COB_COPY_DIR, 0);
+#endif
+	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
+		cobcrun_var_print ("COB_LIBRARY_PATH",	s, 1);
+	}
+	cobcrun_var_print ("COB_MODULE_EXT",	COB_MODULE_EXT, 0);
+	cobcrun_var_print ("COB_EXEEXT",		COB_EXEEXT, 0);
 
 #if	defined(USE_LIBDL) || defined(_WIN32)
-	cobc_var_print (_("Dynamic loading"),	_("System"));
+	cobcrun_var_print (_("Dynamic loading"),	_("System"), 0);
 #else
-	cobc_var_print (_("Dynamic loading"),	_("Libtool"));
+	cobcrun_var_print (_("Dynamic loading"),	_("Libtool"), 0);
 #endif
 
 #ifdef	COB_PARAM_CHECK
-	cobc_var_print ("\"CBL_\" param check",	_("Enabled"));
+	cobcrun_var_print ("\"CBL_\" param check",	_("Enabled"), 0);
 #else
-	cobc_var_print ("\"CBL_\" param check",	_("Disabled"));
+	cobcrun_var_print ("\"CBL_\" param check",	_("Disabled"), 0);
 #endif
 
-	sprintf (buff, "%d", WITH_VARSEQ);
-	cobc_var_print (_("Variable format"),	buff);
+	snprintf (buff, sizeof(buff), "%d", WITH_VARSEQ);
+	cobcrun_var_print (_("Variable format"),	buff, 0);
+	if ((s = getenv ("COB_VARSEQ_FORMAT")) != NULL) {
+		cobcrun_var_print ("COB_VARSEQ_FORMAT", s, 1);
+	}
 
 #ifdef	COB_LI_IS_LL
-	cobc_var_print ("BINARY-C-LONG",	_("8 bytes"));
+	cobcrun_var_print ("BINARY-C-LONG",	_("8 bytes"), 0);
 #else
-	cobc_var_print ("BINARY-C-LONG",	_("4 bytes"));
+	cobcrun_var_print ("BINARY-C-LONG",	_("4 bytes"), 0);
 #endif
 
 #ifdef	WITH_SEQRA_EXTFH
-	cobc_var_print (_("Sequential handler"),	_("External"));
+	cobcrun_var_print (_("Sequential handler"),	_("External"), 0);
 #else
-	cobc_var_print (_("Sequential handler"),	_("Internal"));
+	cobcrun_var_print (_("Sequential handler"),	_("Internal"), 0);
 #endif
 #ifdef	WITH_INDEX_EXTFH
-	cobc_var_print (_("ISAM handler"),		_("External"));
+	cobcrun_var_print (_("ISAM handler"),		_("External"), 0);
 #endif
 #ifdef	WITH_DB
-	cobc_var_print (_("ISAM handler"),		_("BDB"));
+	cobcrun_var_print (_("ISAM handler"),		_("BDB"), 0);
 #endif
 #ifdef	WITH_CISAM
-	cobc_var_print (_("ISAM handler"),		_("C-ISAM (Experimental)"));
+	cobcrun_var_print (_("ISAM handler"),		_("C-ISAM (Experimental)"), 0);
 #endif
 #ifdef	WITH_DISAM
-	cobc_var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"));
+	cobcrun_var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"), 0);
 #endif
 #ifdef	WITH_VBISAM
-	cobc_var_print (_("ISAM handler"),		_("VBISAM (Experimental)"));
+	cobcrun_var_print (_("ISAM handler"),		_("VBISAM (Experimental)"), 0);
 #endif
 }
 
@@ -211,7 +227,7 @@ process_command_line (int argc, char *argv[])
 
 	/* At least one option or module name needed */
 	if (argc <= 1) {
-		print_usage ();
+		cobcrun_print_usage ();
 		return 1;
 	}
 
@@ -235,17 +251,17 @@ process_command_line (int argc, char *argv[])
 
 		case 'h':
 			/* --help */
-			print_usage ();
+			cobcrun_print_usage ();
 			return 0;
 
 		case 'i':
 			/* --help */
-			print_info ();
+			cobcrun_print_info ();
 			return 0;
 
 		case 'V':
 			/* --version */
-			print_version ();
+			cobcrun_print_version ();
 			return 0;
 		}
 	}
