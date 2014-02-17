@@ -24,10 +24,10 @@ bin_PROGRAMS = cobc
 cobc_SOURCES = cobc.cpp cobc.h config.cpp tree.cpp tree.h reserved.cpp error.cpp \
 	parser.cpp parser.hpp scanner.cpp field.cpp typeck.cpp codegen.cpp ppparse.cpp \
 	ppparse.hpp pplex.cpp config.def flag.def warning.def codeoptim.def \
-	ppparse.def cobgetopt.cpp cobgetopt.h codeoptim.cpp naming.cpp utils.cpp vcache.h
+	ppparse.def codeoptim.cpp naming.cpp utils.cpp vcache.h
 
 cobc_CFLAGS = -I$(top_srcdir)
-cobc_LDADD = $(COBC_LIBS)
+cobc_LDADD = $(COBC_LIBS) $(top_builddir)/lib/libsupport.a
 
 BUILT_SOURCES = parser.cpp parser.hpp scanner.cpp ppparse.cpp ppparse.hpp pplex.cpp
 EXTRA_DIST = ppparse.y pplex.l parser.y scanner.l

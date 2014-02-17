@@ -57,7 +57,7 @@
 #include "cobc.h"
 #include "tree.h"
 
-#include "cobgetopt.h"
+#include "lib/cobgetopt.h"
 
 struct strcache {
 	strcache *	next;
@@ -1666,6 +1666,14 @@ process_command_line(const int argc, char ** argv)
 	int			n;
 	struct stat	st;
 	char		ext[COB_MINI_BUFF];
+
+	/* Translate command line arguments from WIN to UNIX style */
+	int argnum = 1;
+	while (++argnum <= argc) {
+		if (argv[argnum - 1][0] == '/') {
+			argv[argnum - 1][0] = '-';
+		}
+	}
 
 	while((c = cob_getopt_long_long(argc, argv, short_options,
 									long_options, &idx, 1)) >= 0) {
