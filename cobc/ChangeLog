@@ -24,6 +24,10 @@
 	* codegen.cpp : Fixing Bug #55
 		UDF with no parameters do not compile
 
+2012-05-09  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobc.cpp : Added conversion for enabling options in WIN style
+
 201?-??-??  ??
 
 	* parser.* : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE

@@ -2,6 +2,12 @@
 
 	* Switch to C++
 
+2012-05-09  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobcrun.c : Added conversion for enabling options in WIN style;
+	  Use getopt for option parsing;
+	  Set LC_ALL "" for native messages
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0

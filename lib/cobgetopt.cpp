@@ -38,7 +38,17 @@
 #include <unistd.h>
 #endif
 
-#include "cobc.h"
+#include "config.h"
+
+#ifdef	ENABLE_NLS
+#include "lib/gettext.h"
+#define _(s)		gettext(s)
+#define N_(s)		gettext_noop(s)
+#else
+#define _(s)		s
+#define N_(s)		s
+#endif
+
 #include "cobgetopt.h"
 
 #define NONOPTION_P (argv[cob_optind][0] != '-' || argv[cob_optind][1] == '\0')
