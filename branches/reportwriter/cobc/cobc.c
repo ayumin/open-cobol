@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2006-2012 Roger While
+   Copyright (C) 2009,2010,2012,2014 Simon Sobisch
 
    This file is part of GNU Cobol.
 
@@ -1525,6 +1526,7 @@ cobc_print_version (void)
 	puts ("Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida");
 	puts ("Copyright (C) 2006-2012 Roger While");
 	puts ("Copyright (C) 2013 Ron Norman");
+	puts ("Copyright (C) 2009,2010,2012,2014 Simon Sobisch");
 	puts (_("This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	printf (_("Built     %s"), cb_oc_build_stamp);
@@ -1569,14 +1571,21 @@ cobc_cmd_print (const char *cmd)
 }
 
 static void
-cobc_var_print (const char *msg, const char *val)
+cobc_var_print (const char *msg, const char *val, const unsigned int env)
 {
 	char	*p;
 	char	*token;
 	size_t	n;
+	size_t	lablen;
 	size_t	toklen;
 
+	if (!env) {
 	printf ("%-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+	} else {
+		printf ("  %s: ", _("env"));
+		lablen = CB_IMSG_SIZE - 2 - strlen(_("env")) - 2;
+		printf ("%-*.*s : ", lablen, lablen, msg);
+	}
 	if (strlen(val) <= CB_IVAL_SIZE) {
 		printf("%s\n", val);
 		return;
@@ -1604,67 +1613,95 @@ static void
 cobc_print_info (void)
 {
 	char	buff[16];
+	char	*s;
 
 	cobc_print_version ();
+	putchar ('\n');
 	puts (_("Build information"));
-	cobc_var_print (_("Build environment"),	COB_BLD_BUILD);
-	cobc_var_print ("CC",			COB_BLD_CC);
-	cobc_var_print ("CPPFLAGS",		COB_BLD_CPPFLAGS);
-	cobc_var_print ("CFLAGS",		COB_BLD_CFLAGS);
-	cobc_var_print ("LD",			COB_BLD_LD);
-	cobc_var_print ("LDFLAGS",		COB_BLD_LDFLAGS);
+	cobc_var_print (_("Build environment"),	COB_BLD_BUILD, 0);
+	cobc_var_print ("CC",			COB_BLD_CC, 0);
+	cobc_var_print ("CPPFLAGS",		COB_BLD_CPPFLAGS, 0);
+	cobc_var_print ("CFLAGS",		COB_BLD_CFLAGS, 0);
+	cobc_var_print ("LD",			COB_BLD_LD, 0);
+	cobc_var_print ("LDFLAGS",		COB_BLD_LDFLAGS, 0);
 	putchar ('\n');
 	puts (_("GNU Cobol information"));
-	cobc_var_print ("COB_CC",		COB_CC);
-	cobc_var_print ("COB_CFLAGS",		COB_CFLAGS);
-	cobc_var_print ("COB_LDFLAGS",		COB_LDFLAGS);
-	cobc_var_print ("COB_LIBS",		COB_LIBS);
-	cobc_var_print ("COB_CONFIG_DIR",	COB_CONFIG_DIR);
-	cobc_var_print ("COB_COPY_DIR",		COB_COPY_DIR);
-	cobc_var_print ("COB_LIBRARY_PATH",	COB_LIBRARY_PATH);
-	cobc_var_print ("COB_MODULE_EXT",	COB_MODULE_EXT);
-	cobc_var_print ("COB_EXEEXT",		COB_EXEEXT);
+	cobc_var_print ("COB_CC",		COB_CC, 0);
+	if ((s = getenv ("COB_CC")) != NULL) {
+		cobc_var_print ("COB_CC",	s, 1);
+	}
+	cobc_var_print ("COB_CFLAGS",		COB_CFLAGS, 0);
+	if ((s = getenv ("COB_CFLAGS")) != NULL) {
+		cobc_var_print ("COB_CFLAGS",	s, 1);
+	}
+	cobc_var_print ("COB_LDFLAGS",		COB_LDFLAGS, 0);
+	if ((s = getenv ("COB_LDFLAGS")) != NULL) {
+		cobc_var_print ("COB_LDFLAGS",	s, 1);
+	}
+	cobc_var_print ("COB_LIBS",		COB_LIBS, 0);
+	if ((s = getenv ("COB_LIBS")) != NULL) {
+		cobc_var_print ("COB_LIBS",	s, 1);
+	}
+	cobc_var_print ("COB_CONFIG_DIR",	COB_CONFIG_DIR, 0);
+	if ((s = getenv ("COB_CONFIG_DIR")) != NULL) {
+		cobc_var_print ("COB_CONFIG_DIR",	s, 1);
+	}
+	cobc_var_print ("COB_COPY_DIR",		COB_COPY_DIR, 0);
+	if ((s = getenv ("COB_COPY_DIR")) != NULL) {
+		cobc_var_print ("COB_COPY_DIR",	s, 1);
+	}
+	if ((s = getenv ("COBCPY")) != NULL) {
+		cobc_var_print ("COBCPY",	s, 1);
+	}
+	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
+		cobc_var_print ("COB_LIBRARY_PATH",	s, 1);
+	}
+	cobc_var_print ("COB_MODULE_EXT",	COB_MODULE_EXT, 0);
+	cobc_var_print ("COB_EXEEXT",		COB_EXEEXT, 0);
 
 #if	defined(USE_LIBDL) || defined(_WIN32)
-	cobc_var_print (_("Dynamic loading"),	_("System"));
+	cobc_var_print (_("Dynamic loading"),	_("System"), 0);
 #else
-	cobc_var_print (_("Dynamic loading"),	_("Libtool"));
+	cobc_var_print (_("Dynamic loading"),	_("Libtool"), 0);
 #endif
 
 #ifdef	COB_PARAM_CHECK
-	cobc_var_print ("\"CBL_\" param check",	_("Enabled"));
+	cobc_var_print ("\"CBL_\" param check",	_("Enabled"), 0);
 #else
-	cobc_var_print ("\"CBL_\" param check",	_("Disabled"));
+	cobc_var_print ("\"CBL_\" param check",	_("Disabled"), 0);
 #endif
 
 	snprintf (buff, sizeof(buff), "%d", WITH_VARSEQ);
-	cobc_var_print (_("Variable format"),	buff);
+	cobc_var_print (_("Variable format"),	buff, 0);
+	if ((s = getenv ("COB_VARSEQ_FORMAT")) != NULL) {
+		cobc_var_print ("COB_VARSEQ_FORMAT", s, 1);
+	}
 
 #ifdef	COB_LI_IS_LL
-	cobc_var_print ("BINARY-C-LONG",	_("8 bytes"));
+	cobc_var_print ("BINARY-C-LONG",	_("8 bytes"), 0);
 #else
-	cobc_var_print ("BINARY-C-LONG",	_("4 bytes"));
+	cobc_var_print ("BINARY-C-LONG",	_("4 bytes"), 0);
 #endif
 
 #ifdef	WITH_SEQRA_EXTFH
-	cobc_var_print (_("Sequential handler"),	_("External"));
+	cobc_var_print (_("Sequential handler"),	_("External"), 0);
 #else
-	cobc_var_print (_("Sequential handler"),	_("Internal"));
+	cobc_var_print (_("Sequential handler"),	_("Internal"), 0);
 #endif
 #ifdef	WITH_INDEX_EXTFH
-	cobc_var_print (_("ISAM handler"),		_("External"));
+	cobc_var_print (_("ISAM handler"),		_("External"), 0);
 #endif
 #ifdef	WITH_DB
-	cobc_var_print (_("ISAM handler"),		_("BDB"));
+	cobc_var_print (_("ISAM handler"),		_("BDB"), 0);
 #endif
 #ifdef	WITH_CISAM
-	cobc_var_print (_("ISAM handler"),		_("C-ISAM (Experimental)"));
+	cobc_var_print (_("ISAM handler"),		_("C-ISAM (Experimental)"), 0);
 #endif
 #ifdef	WITH_DISAM
-	cobc_var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"));
+	cobc_var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"), 0);
 #endif
 #ifdef	WITH_VBISAM
-	cobc_var_print (_("ISAM handler"),		_("VBISAM (Experimental)"));
+	cobc_var_print (_("ISAM handler"),		_("VBISAM (Experimental)"), 0);
 #endif
 }
 
@@ -1706,7 +1743,7 @@ cobc_print_usage (void)
 	puts (_("Options:"));
 	puts (_("  -help                 Display this message"));
 	puts (_("  -version, -V          Display compiler version"));
-	puts (_("  -info, -i             Display compiler build information"));
+	puts (_("  -info, -i             Display compiler information (build/environment)"));
 	puts (_("  -v                    Display the commands invoked by the compiler"));
 	puts (_("  -x                    Build an executable program"));
 	puts (_("  -m                    Build a dynamically loadable module (default)"));
@@ -2868,7 +2905,6 @@ process (const char *cmd)
 	size_t	clen;
 	int	ret;
 
-#ifndef _MSC_VER
 	if (likely(strchr (cmd, '$') == NULL)) {
 		buffptr = (char *)cmd;
 	} else {
@@ -2886,39 +2922,6 @@ process (const char *cmd)
 		}
 		*p = 0;
 	}
-#else
-	/* Silence MSC output "Creating xyz..."
-      Fixme: should only be done when used to process cl.exe
-   */
-	clen = strlen (cmd);
-	if (!verbose_output) {
-		clen += 7U;
-	}
-	if (likely(strchr (cmd, '$') == NULL)) {
-		buffptr = (char *)cobc_malloc (clen);
-		p = buffptr;
-		/* Quote '$' */
-		for (; *cmd; ++cmd) {
-			*p++ = *cmd;
-		}
-	} else {
-		clen += 64U;
-		buffptr = (char *)cobc_malloc (clen);
-		p = buffptr;
-		/* Quote '$' */
-		for (; *cmd; ++cmd) {
-			if (*cmd == '$') {
-				p += sprintf (p, "\\$");
-			} else {
-				*p++ = *cmd;
-			}
-		}
-	}
-	if (!verbose_output) {
-		p += sprintf (p, " 1>NUL");
-	}
-	*p = 0;
-#endif
 
 	if (verbose_output) {
 		cobc_cmd_print (buffptr);
@@ -3249,6 +3252,9 @@ process_compile (struct filename *fn)
 	size = strlen (name);
 #ifdef	_MSC_VER
 	size *= 2U;
+	if (!verbose_output) {
+		size += 6U;
+	}
 #endif
 
 	bufflen = cobc_cc_len + cobc_cflags_len
@@ -3259,10 +3265,14 @@ process_compile (struct filename *fn)
 
 #ifdef	_MSC_VER
 	sprintf (cobc_buffer, gflag_set ?
-		"%s /c %s %s /Od /MDd /Zi /FR /c /Fa\"%s\" /Fo\"%s\" \"%s\"" :
+		"%s /c %s %s /Od /MDd /Zi /FR /c /Fa\"%s\" /Fo\"%s\" \"%s\"%s" :
 		"%s /c %s %s /MD /c /Fa\"%s\" /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include, name,
 			name, fn->translate);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 #elif defined(__WATCOMC__)
 	sprintf (cobc_buffer, "%s -fe=\"%s\" -s %s %s %s", cobc_cc, name,
 			cobc_cflags, cobc_include, fn->translate);
@@ -3286,6 +3296,11 @@ process_assemble (struct filename *fn)
 	bufflen = cobc_cc_len + cobc_cflags_len + fn->object_len
 			+ fn->translate_len + cobc_include_len
 			+ cobc_pic_flags_len + 64U;
+#ifdef	_MSC_VER
+	if (!verbose_output) {
+		bufflen += 6U;
+	}
+#endif
 
 	cobc_chk_buff_size (bufflen);
 
@@ -3295,6 +3310,10 @@ process_assemble (struct filename *fn)
 		"%s /c %s %s /MD /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include,
 			fn->object, fn->translate);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 #elif defined(__OS400__)
 	name = (char *) fn->translate;
 	if (name[0] != '/') {
@@ -3368,6 +3387,9 @@ process_module_direct (struct filename *fn)
 	size = strlen (name);
 #ifdef	_MSC_VER
 	size *= 2U;
+	if (!verbose_output) {
+		size += 6U;
+	}
 #endif
 
 	bufflen = cobc_cc_len + cobc_cflags_len
@@ -3388,6 +3410,10 @@ process_module_direct (struct filename *fn)
 			cobc_cc, cobc_cflags, cobc_include, name, name,
 			fn->translate, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	ret = process (cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3469,6 +3495,11 @@ process_module (struct filename *fn)
 	}
 
 	size = strlen (name);
+#ifdef	_MSC_VER
+	if (!verbose_output) {
+		size += 6U;
+	}
+#endif
 	bufflen = cobc_cc_len + cobc_ldflags_len
 			+ cobc_export_dyn_len + cobc_shared_opt_len
 			+ size + fn->object_len + cobc_libs_len
@@ -3485,6 +3516,10 @@ process_module (struct filename *fn)
 		"%s /MD /LD /Fe\"%s\" \"%s\" %s %s %s %s",
 		cobc_cc, name, fn->object, cobc_libs,
 		manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	ret = process (cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3559,6 +3594,11 @@ process_library (struct filename *l)
 	}
 
 	size = strlen (name);
+#ifdef	_MSC_VER
+	if (!verbose_output) {
+		size += 6U;
+	}
+#endif
 	bufflen = cobc_cc_len + cobc_ldflags_len
 			+ cobc_export_dyn_len + cobc_shared_opt_len
 			+ size + cobc_objects_len + cobc_libs_len
@@ -3566,6 +3606,7 @@ process_library (struct filename *l)
 			+ manilink_len
 #endif
 			+ cobc_lib_paths_len + cobc_pic_flags_len + 64U;
+
 	cobc_chk_buff_size (bufflen);
 
 #ifdef	_MSC_VER
@@ -3574,6 +3615,10 @@ process_library (struct filename *l)
 		"%s /MD /LD /Fe\"%s\" %s %s %s %s %s",
 		cobc_cc, name, cobc_objects_buffer, cobc_libs,
 		manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	ret = process (cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3648,6 +3693,11 @@ process_link (struct filename *l)
 	}
 
 	size = strlen (name);
+#ifdef	_MSC_VER
+	if (!verbose_output) {
+		size += 6U;
+	}
+#endif
 	bufflen = cobc_cc_len + cobc_ldflags_len
 			+ cobc_export_dyn_len + size
 			+ cobc_objects_len + cobc_libs_len
@@ -3664,6 +3714,10 @@ process_link (struct filename *l)
 		"%s /MD /Fe\"%s\" %s %s %s %s %s",
 		cobc_cc, name, cobc_objects_buffer, cobc_libs,
 		manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	ret = process (cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */

@@ -1,13 +1,23 @@
+2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+
+	* cobcrun.c : Tweaked --info for showing current settings (environment) along
+		with settings hard-wired during build (COB_xyz),
+		removed entries in output that belongs to cobc only
+
+2012-05-09  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobcrun.c : Added conversion for enabling options in WIN style;
+		Use getopt for option parsing;
+		Set LC_ALL "" for native messages
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
-2012-05-09  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+2010-??-??  Roger While <simrw@sim-basis.de>
 
-	* cobcrun.c : Added conversion for enabling options in WIN style;
-	  Use getopt for option parsing;
-	  Set LC_ALL "" for native messages
+	* Added --info
 
 2008-10-20  Roger While <simrw@sim-basis.de>
 
