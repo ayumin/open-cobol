@@ -5495,7 +5495,7 @@ cb_emit_initialize (cb_tree vars, cb_tree fillinit, cb_tree value,
 /* INSPECT statement */
 
 static void
-validate_inspect (cb_tree x, cb_tree y)
+validate_inspect (cb_tree x, cb_tree y, const unsigned int replconv)
 {
 	cb_tree			l;
 	struct cb_reference	*r;
@@ -5575,8 +5575,13 @@ validate_inspect (cb_tree x, cb_tree y)
 		break;
 	}
 	if (size1 && size2 && size1 != size2) {
-		cb_error_x (CB_TREE (current_statement),
-			    _("REPLACING operands differ in size"));
+		if (replconv == 1) {
+			cb_error_x (CB_TREE (current_statement),
+					_("%s operands differ in size"), "REPLACING");
+		} else {
+			cb_error_x (CB_TREE (current_statement),
+					_("%s operands differ in size"), "CONVERTING");
+		}
 	}
 }
 
@@ -5615,8 +5620,13 @@ cb_emit_inspect (cb_tree var, cb_tree body, cb_tree replacing,
 	cb_emit (CB_BUILD_FUNCALL_0 ("cob_inspect_finish"));
 	return;
 rep_error:
-	cb_error_x (CB_TREE (current_statement),
-		    _("Invalid target for REPLACING/CONVERTING"));
+	if (replconv == 1) {
+		cb_error_x (CB_TREE (current_statement),
+				_("Invalid target for %s"), "REPLACING");
+	} else {
+		cb_error_x (CB_TREE (current_statement),
+				_("Invalid target for %s"), "CONVERTING");
+	}
 }
 
 void
@@ -5699,35 +5709,35 @@ cb_build_replacing_characters (cb_tree x, cb_tree l)
 cb_tree
 cb_build_replacing_all (cb_tree x, cb_tree y, cb_tree l)
 {
-	validate_inspect (x, y);
+	validate_inspect (x, y, 1);
 	return cb_list_add (l, CB_BUILD_FUNCALL_2 ("cob_inspect_all", y, x));
 }
 
 cb_tree
 cb_build_replacing_leading (cb_tree x, cb_tree y, cb_tree l)
 {
-	validate_inspect (x, y);
+	validate_inspect (x, y, 1);
 	return cb_list_add (l, CB_BUILD_FUNCALL_2 ("cob_inspect_leading", y, x));
 }
 
 cb_tree
 cb_build_replacing_first (cb_tree x, cb_tree y, cb_tree l)
 {
-	validate_inspect (x, y);
+	validate_inspect (x, y, 1);
 	return cb_list_add (l, CB_BUILD_FUNCALL_2 ("cob_inspect_first", y, x));
 }
 
 cb_tree
 cb_build_replacing_trailing (cb_tree x, cb_tree y, cb_tree l)
 {
-	validate_inspect (x, y);
+	validate_inspect (x, y, 1);
 	return cb_list_add (l, CB_BUILD_FUNCALL_2 ("cob_inspect_trailing", y, x));
 }
 
 cb_tree
 cb_build_converting (cb_tree x, cb_tree y, cb_tree l)
 {
-	validate_inspect (x, y);
+	validate_inspect (x, y, 2);
 	return cb_list_add (l, CB_BUILD_FUNCALL_2 ("cob_inspect_converting", x, y));
 }
 
