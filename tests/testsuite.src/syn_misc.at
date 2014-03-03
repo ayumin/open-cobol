@@ -100,14 +100,42 @@ AT_DATA([prog.cob], [
        WORKING-STORAGE  SECTION.
        01 X             PIC X(8).
        PROCEDURE        DIVISION.
-           INSPECT X REPLACING ALL SPACE BY "AA".
-           INSPECT X REPLACING ALL "ABC" BY "AA".
+           INSPECT X REPLACING ALL SPACES BY "AA".
+           INSPECT X REPLACING ALL "ABC"  BY "AA".
+           INSPECT X REPLACING ALL "DEF"  BY SPACES.
+           INSPECT X CONVERTING SPACES TO "AA".
+           INSPECT X CONVERTING "ABC"  TO "AA".
+           INSPECT X CONVERTING "DEF"  TO SPACES.
            STOP RUN.
 ])
 
 AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
 [prog.cob: 8: Error: REPLACING operands differ in size
 prog.cob: 9: Error: REPLACING operands differ in size
+prog.cob: 11: Error: CONVERTING operands differ in size
+prog.cob: 12: Error: CONVERTING operands differ in size
+])
+
+AT_CLEANUP
+
+AT_SETUP([INSPECT invalid target])
+AT_KEYWORDS([misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(8).
+       PROCEDURE        DIVISION.
+           INSPECT FUNCTION TRIM(X) REPLACING ALL "ABC" BY "DEF".
+           INSPECT FUNCTION TRIM(X) CONVERTING "ABC" TO "AAA".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 8: Error: Invalid target for REPLACING
+prog.cob: 9: Error: Invalid target for CONVERTING
 ])
 
 AT_CLEANUP
