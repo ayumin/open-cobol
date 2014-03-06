@@ -231,10 +231,12 @@ process_command_line (int argc, char *argv[])
 		return 1;
 	}
 
+#ifdef _WIN32
 	/* Translate first command line argument from WIN to UNIX style */
-	if (argv[1][0] == '/') {
+	if (strrchr(argv[1], '/') == argv[1]) {
 		argv[1][0] = '-';
 	}
+#endif
 
 	/* Process first command line argument only if not a module */
 	if (argv[1][0] != '-') {

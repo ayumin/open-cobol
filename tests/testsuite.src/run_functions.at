@@ -1437,17 +1437,25 @@ AT_DATA([prog.cob], [
        PROGRAM-ID.      prog.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       01  X   PIC   X(12) VALUE " -9876.1234 ".
+       01  X1  PIC   X(12) VALUE " -9876.1234 ".
+       01  X2  PIC   X(18) VALUE " 19876.1234 CR".
+       01  N   PIC   s9(5)v9(5).
        PROCEDURE        DIVISION.
-           DISPLAY FUNCTION NUMVAL ( X )
-           END-DISPLAY.
+           MOVE FUNCTION NUMVAL ( X1 ) TO N
+           IF N NOT = -9876.1234
+              DISPLAY N
+              END-DISPLAY
+           END-IF
+           MOVE FUNCTION NUMVAL ( X2 ) TO N
+           IF N NOT = -19876.1234
+              DISPLAY N
+              END-DISPLAY
+           END-IF
            STOP RUN.
 ])
 
 AT_CHECK([$COMPILE -o prog prog.cob])
-AT_CHECK([./prog], [0],
-[-09876.1234
-])
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
@@ -1459,17 +1467,25 @@ AT_DATA([prog.cob], [
        PROGRAM-ID.      prog.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       01  X   PIC   X(14) VALUE " % -9876.1234 ".
+       01  X1  PIC   X(14) VALUE " % -9876.1234 ".
+       01  X2  PIC   X(20) VALUE " % 19876.1234 DB".
+       01  N   PIC   s9(5)v9(5).
        PROCEDURE        DIVISION.
-           DISPLAY FUNCTION NUMVAL-C ( X , "%" )
-           END-DISPLAY.
+           MOVE FUNCTION NUMVAL-C ( X1 , "%" ) TO N
+           IF N NOT = -9876.1234
+              DISPLAY N
+              END-DISPLAY
+           END-IF
+           MOVE FUNCTION NUMVAL-C ( X2 , "%" ) TO N
+           IF N NOT = -19876.1234
+              DISPLAY N
+              END-DISPLAY
+           END-IF
            STOP RUN.
 ])
 
 AT_CHECK([$COMPILE -o prog prog.cob])
-AT_CHECK([./prog], [0],
-[-09876.1234
-])
+AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 

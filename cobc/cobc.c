@@ -1867,13 +1867,15 @@ process_command_line (const int argc, char **argv)
 	struct stat		st;
 	char			ext[COB_MINI_BUFF];
 
+#ifdef _WIN32
 	/* Translate command line arguments from WIN to UNIX style */
 	argnum = 1;
 	while (++argnum <= argc) {
-		if (argv[argnum - 1][0] == '/') {
+		if (strrchr(argv[argnum - 1], '/') == argv[argnum - 1]) {
 			argv[argnum - 1][0] = '-';
 		}
 	}
+#endif
 
 	while ((c = cob_getopt_long_long (argc, argv, short_options,
 					  long_options, &idx, 1)) >= 0) {

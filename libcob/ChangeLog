@@ -1,19 +1,60 @@
 2014-01-17 Ron Norman <rjn@inglenet.com>
-   * intrinsic.c  - Change cob_intr_random to correctly compute RANDOM number
+
+	* intrinsic.c  - Change cob_intr_random to correctly compute RANDOM number
 
 2013-12-26  Luke Bryan <cobcoder@users.sourceforge.net>
 
-        * strings.c : Fix Unstring delimited by all delimiter size > 1 issue, see bug #54.
+	* strings.c : Fix Unstring delimited by all delimiter size > 1 issue,
+		see bug #54.
+
+2010-09-03  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* screenio.c : Added cob_convert_key for converting keys according to used
+		libraries (especially fix for PDCurses + numpad support)
 
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
 
+2010-05-18  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* strings.c : fixing cob_unstring_into bug
+		www.opencobol.org/modules/newbb/viewtopic.php?topic_id=1003&forum=1
+
 20??-??-??  Roger While <simrw@sim-basis.de>
 
 	* fileio.c : Implement COB_VARSEQ_FORMAT to override default format
-		    for variable length sequential files.
+		for variable length sequential files.
+
+20??-??-??  Sergey Kashyrin <ska@kiska.net>
+
+	* common.c : nanosleep for 370
+
+2009-12-25  Roger While <simrw@sim-basis.de>
+
+	* strings.c : Added check for COB_EC_RANGE_INSPECT_SIZE and
+		NULL extension to cob_inspect_converting
+
+2009-10-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* common.[ch], system.def : Added new system routine C$GETPID
+
+2009-08-28  Roger While <simrw@sim-basis.de>
+
+	* strings.c : Fix for UNSTRING with multiple variable length fields
+
+2009-08-03  Sergey Kashyrin <ska@kiska.net>
+
+	* common.c : cob_accept_day_of_week corrected
+
+2009-08-03  Gary Cutler <CutlerGL@gmail.com>
+
+	* common.c : cob_accept_day_of_week corrected
+
+2009-07-25  Gary Cutler
+
+	* screenio.c : Fix PDCurses bug with COLOR_PAIRS
 
 2009-06-09  Roger While <simrw@sim-basis.de>
 
@@ -946,7 +987,7 @@
 2005-11-15  Roger While <simrw@sim-basis.de>
 
 	* common.c, fileio.h, fileio.c : Check open files
-	  at run-unit termination. Implement sync'ing 
+	  at run-unit termination. Implement sync'ing
 	  with enviroment variable COB_SYNC=Y.
 	  Catch signals QUIT, INT and HUP.
 
@@ -956,7 +997,7 @@
 
 2005-11-04  Roger While <simrw@sim-basis.de>
 
-	* call.c : Don't repeatedly call (lt_)dlopen on 
+	* call.c : Don't repeatedly call (lt_)dlopen on
 	  NULL (main program); Do it once at startup.
 
 2005-11-01  Roger While <simrw@sim-basis.de>
@@ -1079,7 +1120,7 @@
 	* Mak* :      Due to autoreconf
 	  common.c :  Slight restructure.
 		      cob_exp10 must be int not long.
-	  common.h :  extern definitions. 
+	  common.h :  extern definitions.
 	  fileio.c :  Force SORT to put duplicates in order.
 	  move.c :    Performance.
 	  numeric.c : Remove unused function.
@@ -1166,7 +1207,7 @@
 
 2004-10-30  Roger While <simrw@sim-basis.de>
 
-	* call.c, common.c, move.c : Replace back-tick "'" with 
+	* call.c, common.c, move.c : Replace back-tick "'" with
 	  quote "'"
 	* move.c : Fix to handle PIC ***B***B**9.
 	* byteswap.h : Always generate optimum code, not just with -O
@@ -1179,12 +1220,12 @@
 
 	* numeric.h (COB_STORE_TRUNC_ON_OVERFLOW): Define as 0x04, not 0x02.
 	(Thanks to Roger While)
-	
+
 2004-07-06  Keisuke Nishida  <knishida@opencobol.org>
 
-	* numeric.h (COB_STORE_ROUND, COB_STORE_KEEP_ON_OVERFLOW) 
+	* numeric.h (COB_STORE_ROUND, COB_STORE_KEEP_ON_OVERFLOW)
 	(COB_STORE_TRUNC_ON_OVERFLOW): New macros.
-	* numeric.h, numeric.c (cob_decimal_get_display) 
+	* numeric.h, numeric.c (cob_decimal_get_display)
 	(cob_decimal_get_binary, cob_decimal_get_field, cob_add, cob_sub)
 	(cob_div_quotient, cob_div_remainder): New arg 'opt'.
 	* numeric.c (cob_decimal_get_field_round): Removed.
@@ -1783,7 +1824,7 @@
 
 	* numeric.h (cob_decimal): Use exponent instead of decimals.
 	* numeric.c: Related functions updated.
-	
+
 2002-09-12  Keisuke Nishida  <knishida@netlab.jp>
 
 	* fileio.c (sequential_open): Set f->file.fd to 0 on error.
@@ -1837,7 +1878,7 @@
 	* fileio.h (cob_fileio_funcs): 'write' takes only one argument.
 	(sequential_write, lineseq_write, relative_write, indexed_write):Ditto.
 	(cob_write): Updated.
-	
+
 2002-07-30  Keisuke Nishida  <knishida@netlab.jp>
 
 	* screenio.c: Check configuration.
