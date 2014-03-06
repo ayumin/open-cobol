@@ -115,22 +115,6 @@ lt_dlerror (void)
 #include "libcob.h"
 #include "coblocal.h"
 
-#ifdef	_MSC_VER
-#define PATHSEPC ';'
-#define PATHSEPS ";"
-#else
-#define PATHSEPC ':'
-#define PATHSEPS ":"
-#endif
-
-#ifndef	_WIN32
-#define SLASH_INT	'/'
-#define SLASH_STR	"/"
-#else
-#define SLASH_INT	'\\'
-#define SLASH_STR	"\\"
-#endif
-
 #define	COB_MAX_COBCALL_PARMS	16
 #define	CALL_BUFF_SIZE		256U
 #define	CALL_BUFF_MAX		(CALL_BUFF_SIZE - 1U)
@@ -1335,8 +1319,8 @@ cob_init_call (cob_global *lptr)
 			for (i = 0; i < resolve_size; ++i) {
 				buff[COB_MEDIUM_MAX] = 0;
 				snprintf (buff, (size_t)COB_MEDIUM_MAX,
-					  "%s/%s.%s",
-					  resolve_path[i], s, COB_MODULE_EXT);
+					  "%s%s%s.%s",
+					  resolve_path[i], SLASH_STR, s, COB_MODULE_EXT);
 				if (cache_preload (buff)) {
 					break;
 				}

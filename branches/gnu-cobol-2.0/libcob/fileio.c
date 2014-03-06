@@ -535,22 +535,11 @@ cob_chk_file_mapping (void)
 	char		*dst;
 	char		*saveptr;
 	char		*orig;
-	const char	*slash_char;
 	unsigned int	dollar;
 
 	if (unlikely(!COB_MODULE_PTR->flag_filename_mapping)) {
 		return;
 	}
-
-#ifdef	_WIN32
-	if (cobglobptr->cob_unix_lf) {
-		slash_char = "/";
-	} else {
-		slash_char = "\\";
-	}
-#else
-	slash_char = "/";
-#endif
 
 	/* Misuse "dollar" here to indicate a separator */
 	dollar = 0;
@@ -575,7 +564,7 @@ cob_chk_file_mapping (void)
 			strncpy (file_open_name, p, (size_t)COB_FILE_MAX);
 		} else if (cob_file_path) {
 			snprintf (file_open_buff, (size_t)COB_FILE_MAX, "%s%s%s",
-				  cob_file_path, slash_char, file_open_name);
+				  cob_file_path, SLASH_STR, file_open_name);
 			strncpy (file_open_name, file_open_buff,
 				 (size_t)COB_FILE_MAX);
 		}
@@ -606,7 +595,7 @@ cob_chk_file_mapping (void)
 
 	/* strtok strips leading delimiters */
 	if (*src == '/' || *src == '\\') {
-		strcpy (file_open_buff, slash_char);
+		strcpy (file_open_buff, SLASH_STR);
 	} else {
 		file_open_buff[COB_FILE_MAX] = 0;
 		p = strtok (orig, "/\\");
@@ -630,7 +619,7 @@ cob_chk_file_mapping (void)
 			if (dollar) {
 				dollar = 0;
 			} else {
-				strcat (file_open_buff, slash_char);
+				strcat (file_open_buff, SLASH_STR);
 			}
 		} else {
 			orig = NULL;
@@ -2697,11 +2686,11 @@ bdb_nofile (const char *filename)
 	for (i = 0; bdb_data_dir && bdb_data_dir[i]; ++i) {
 		bdb_buff[COB_SMALL_MAX] = 0;
 		if (is_absolute (bdb_data_dir[i])) {
-			snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s/%s",
-				  bdb_data_dir[i], filename);
+			snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s%s%s",
+				  bdb_data_dir[i], SLASH_STR, filename);
 		} else {
-			snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s/%s/%s",
-				  bdb_home, bdb_data_dir[i], filename);
+			snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s%s%s%s%s",
+				  bdb_home, SLASH_STR, bdb_data_dir[i], SLASH_STR, filename);
 		}
 		errno = 0;
 		if (access (bdb_buff, F_OK) == 0 || errno != ENOENT) {
@@ -2710,8 +2699,8 @@ bdb_nofile (const char *filename)
 	}
 	if (i == 0) {
 		bdb_buff[COB_SMALL_MAX] = 0;
-		snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s/%s",
-			  bdb_home, filename);
+		snprintf (bdb_buff, (size_t)COB_SMALL_MAX, "%s%s%s",
+			  bdb_home, SLASH_STR, filename);
 		errno = 0;
 		if (access (bdb_buff, F_OK) == 0 || errno != ENOENT) {
 			return 0;

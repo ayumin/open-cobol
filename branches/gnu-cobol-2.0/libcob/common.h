@@ -459,6 +459,24 @@
 	#define __unaligned
 #endif
 
+
+
+#if	defined(_MSC_VER) || defined(__WATCOMC__) || defined(__BORLANDC__)
+#define PATHSEPC ';'
+#define PATHSEPS ";"
+#else
+#define PATHSEPC ':'
+#define PATHSEPS ":"
+#endif
+
+#ifndef	_WIN32
+#define SLASH_INT	'/'
+#define SLASH_STR	"/"
+#else
+#define SLASH_INT	'\\'
+#define SLASH_STR	"\\"
+#endif
+
 /* End compiler stuff */
 
 /* EBCDIC determination */
