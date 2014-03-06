@@ -51,6 +51,11 @@
 		path names, enable linking of already assembled modules for
 		different UNIXes
 
+2009-12-25  Roger While <simrw@sim-basis.de>
+
+	* typeck.c : Added validate_inspect for check of operands in
+		INSPECT REPLACING/CONVERTING
+
 2009-10-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
 	* cobc.c : Warn if -Debug is used (because likely -debug was intended)
@@ -59,6 +64,10 @@
 
 	* error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
 		in warning/error messages
+
+2009-08-06  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+
+	* parser.y : Add output of unreachable statement to -Wunreachable
 
 2009-06-19  Roger While <simrw@sim-basis.de>
 

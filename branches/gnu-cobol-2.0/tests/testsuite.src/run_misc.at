@@ -215,6 +215,26 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
+AT_SETUP([Using full path for cobc])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY "OK" NO ADVANCING
+           END-DISPLAY.
+           EXIT PROGRAM.
+])
+
+AT_CHECK([$COMPILE $(pwd)/prog.cob])
+AT_CHECK([./prog], [0], [OK])
+
+AT_CLEANUP
+
 AT_SETUP([cobcrun validation])
 AT_KEYWORDS([runmisc])
 
@@ -445,7 +465,7 @@ AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
 
-AT_SETUP([Floating continuation])
+AT_SETUP([Floating continuation indicator])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -456,6 +476,67 @@ AT_DATA([prog.cob], [
        PROCEDURE        DIVISION.
            DISPLAY "OK"-
             "OK"
+             NO ADVANCING
+           END-DISPLAY
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0], [OKOK])
+
+AT_CLEANUP
+
+AT_SETUP([Fixed continuation indicator])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X(333) VALUE
+           '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
+      -    'YZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV
+      -    'WXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRST
+      -    'UVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR
+      -    'STUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP
+      -             'QRSTUVWXYZ'.
+       PROCEDURE        DIVISION.
+           DISPLAY X NO ADVANCING
+           END-DISPLAY.
+           DISPLAY '_'
+           END-DISPLAY.
+           MOVE 
+           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
+      -    "89abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
+      -    "6789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123
+      -    "456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01
+      -    "23456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+      -             "0123456789" TO X.
+           DISPLAY X NO ADVANCING
+           END-DISPLAY.
+           DISPLAY '_'
+           END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0], [0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ                       _
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789                       _
+])
+
+AT_CLEANUP
+
+AT_SETUP([Concatenation operator])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY "OK"
+            & "OK"
              NO ADVANCING
            END-DISPLAY
            STOP RUN.
@@ -524,13 +605,14 @@ AT_DATA([prog.cob], [
          02 X           PIC X OCCURS 1 INDEXED BY I.
        PROCEDURE        DIVISION.
          IF I < (I + 2)
-           DISPLAY "OK"
+           DISPLAY "OK" NO ADVANCING
            END-DISPLAY
          END-IF.
          STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY -o prog prog.cob])
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
 
