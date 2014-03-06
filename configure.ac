@@ -450,7 +450,7 @@ AM_GNU_GETTEXT_VERSION([0.17])
 if test "x$LTLIBINTL" != "x"
 then
   COBC_LIBS="$COBC_LIBS $LTLIBINTL"
-#  LIBCOB_LIBS="$LIBCOB_LIBS $LTLIBINTL"
+  LIBCOB_LIBS="$LIBCOB_LIBS $LTLIBINTL"
 fi
 
 # Checks for internationalization stuff
