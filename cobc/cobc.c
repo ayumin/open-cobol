@@ -102,12 +102,6 @@ struct strcache {
 #define OC_C_VERSION	"unknown"
 #endif
 
-#if	defined(_MSC_VER) || defined(__WATCOMC__) || defined(__BORLANDC__)
-#define PATHSEPS ";"
-#else
-#define PATHSEPS ":"
-#endif
-
 #define	CB_TEXT_LIST_ADD(y,z)	y = cb_text_list_add (y, z)
 #define	CB_TEXT_LIST_CHK(y,z)	y = cb_text_list_chk (y, z)
 
@@ -1350,7 +1344,7 @@ cobc_check_action (const char *name)
 		char	temp_buff[COB_MEDIUM_BUFF];
 
 		snprintf (temp_buff, (size_t)COB_MEDIUM_MAX,
-			  "%s/%s", save_temps_dir, name);
+			  "%s%s%s", save_temps_dir, SLASH_STR, name);
 		/* Remove possible target file - ignore return */
 		(void)unlink (temp_buff);
 		if (rename (name, temp_buff)) {
@@ -2641,8 +2635,8 @@ process_filename (const char *filename)
 		} else if (cobc_list_dir) {
 			fsize = strlen (cobc_list_dir) + strlen (fbasename) + 8U;
 			listptr = cobc_main_malloc (fsize);
-			snprintf (listptr, fsize, "%s/%s.lst",
-				  cobc_list_dir, fbasename);
+			snprintf (listptr, fsize, "%s%s%s.lst",
+				  cobc_list_dir, SLASH_STR, fbasename);
 			fn->listing_file = listptr;
 		} else {
 			fn->listing_file = cobc_stradd_dup (fbasename, ".lst");

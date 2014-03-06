@@ -162,7 +162,7 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 
 	if (prefix_dir) {
 		snprintf (buff, (size_t)COB_SMALL_MAX,
-			  "%s/%s", cob_config_dir, fname);
+			  "%s%s%s", cob_config_dir, SLASH_STR, fname);
 		name = buff;
 	} else {
 		name = fname;
