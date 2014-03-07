@@ -521,6 +521,9 @@
 /* Max digits in binary field */
 #define	COB_MAX_BINARY		39
 
+/* Max digits in binary field */
+#define	COB_MAX_FIELD_SIZE	268435456
+
 /* Maximum number of cob_decimal structures */
 #define	COB_MAX_DEC_STRUCT	32
 
