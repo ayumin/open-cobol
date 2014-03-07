@@ -1184,8 +1184,8 @@ compute_size (struct cb_field *f)
 				}
 			}
 		}
-		if (f->occurs_max > 1 && (size % occur_align_size) != 0) {
-			pad = occur_align_size - (size % occur_align_size);
+		if (f->occurs_max > 1 && (size_check % occur_align_size) != 0) {
+			pad = occur_align_size - (size_check % occur_align_size);
 			size_check += pad;
 			f->offset += pad;
 		}
