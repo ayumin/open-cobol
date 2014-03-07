@@ -1856,7 +1856,9 @@ process_command_line (const int argc, char **argv)
 	int			c;
 	int			idx;
 	int			n;
+#ifdef _WIN32
 	int 			argnum;
+#endif
 	enum cob_exception_id	i;
 	struct stat		st;
 	char			ext[COB_MINI_BUFF];

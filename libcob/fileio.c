@@ -3826,6 +3826,7 @@ indexed_read_next (cob_file *f, const int read_opts)
 
 	p = f->file;
 	nextprev = DB_NEXT;
+	dupno = 0;
 	file_changed = 0;
 
 	bdb_opts = read_opts;
