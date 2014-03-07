@@ -26,6 +26,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include "cobc.h"
 #include "tree.h"
@@ -1087,6 +1088,7 @@ compute_size (struct cb_field *f)
 {
 	struct cb_field	*c;
 	int		size;
+	cob_u64_t	size_check;
 	int		align_size;
 	int		pad;
 
@@ -1107,7 +1109,7 @@ compute_size (struct cb_field *f)
 			cb_warning_x (CB_TREE(f), _("Ignoring SYNCHRONIZED for group item '%s'"),
 				    cb_name (CB_TREE (f)));
 		}
-		size = 0;
+		size_check = 0;
 		occur_align_size = 1;
 		for (c = f->children; c; c = c->sister) {
 			if (c->redefines) {
@@ -1121,7 +1123,7 @@ compute_size (struct cb_field *f)
 						cb_warning_x (CB_TREE (c),
 							      _("Size of '%s' larger than size of '%s'"),
 							      c->name, c->redefines->name);
-						size +=
+						size_check +=
 						    (c->size * c->occurs_max) -
 						    (c->redefines->size *
 						     c->redefines->occurs_max);
@@ -1132,8 +1134,8 @@ compute_size (struct cb_field *f)
 					}
 				}
 			} else {
-				c->offset = f->offset + size;
-				size += compute_size (c) * c->occurs_max;
+				c->offset = f->offset + size_check;
+				size_check += compute_size (c) * c->occurs_max;
 
 				/* Word alignment */
 				if (c->flag_synchronized &&
@@ -1174,7 +1176,7 @@ compute_size (struct cb_field *f)
 					if (c->offset % align_size != 0) {
 						pad = align_size - (c->offset % align_size);
 						c->offset += pad;
-						size += pad;
+						size_check += pad;
 					}
 					if (align_size > occur_align_size) {
 						occur_align_size = align_size;
@@ -1184,10 +1186,16 @@ compute_size (struct cb_field *f)
 		}
 		if (f->occurs_max > 1 && (size % occur_align_size) != 0) {
 			pad = occur_align_size - (size % occur_align_size);
-			size += pad;
+			size_check += pad;
 			f->offset += pad;
 		}
-		f->size = size;
+		/* size check for group items */
+		if (size_check > COB_MAX_FIELD_SIZE) {
+			cb_error_x (CB_TREE (f),
+					_("'%s' cannot be larger than %d bytes"),
+					f->name, COB_MAX_FIELD_SIZE);
+		}
+		f->size = (int) size_check;
 	} else {
 		/* Elementary item */
 		switch (f->usage) {
@@ -1229,6 +1237,12 @@ compute_size (struct cb_field *f)
 			break;
 		case CB_USAGE_DISPLAY:
 			f->size = f->pic->size;
+			/* size check for single items */
+			if (f->size > COB_MAX_FIELD_SIZE) {
+				cb_error_x (CB_TREE (f),
+						_("'%s' cannot be larger than %d bytes"),
+						f->name, COB_MAX_FIELD_SIZE);
+			}
 			if (f->pic->have_sign && f->flag_sign_separate) {
 				f->size++;
 			}
