@@ -212,3 +212,44 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE_ONLY prog.cob], [0])
 
 AT_CLEANUP
+
+AT_SETUP([CRT STATUS])
+AT_KEYWORDS([SPECIAL-NAMES, misc])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           CRT STATUS IS MY-CRT-STATUS.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X.
+       PROCEDURE        DIVISION.
+           ACCEPT X END-ACCEPT.
+           STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog2.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           CRT STATUS IS MY-CRT-STATUS.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X.
+       77 MY-CRT-STATUS PIC 9(04).
+       PROCEDURE        DIVISION.
+           ACCEPT X END-ACCEPT.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 7: Error: 'MY-CRT-STATUS' is not defined
+])   
+AT_CHECK([$COMPILE_ONLY prog2.cob], [0])
+
+AT_CLEANUP

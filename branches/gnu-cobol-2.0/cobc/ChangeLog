@@ -25,6 +25,7 @@
 
 	* parser.* : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE
 
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
@@ -68,6 +69,19 @@
 
 	* error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
 		in warning/error messages
+
+2009-08-18  Roger While <simrw@sim-basis.de>
+
+	* codegen.c : initialize_type corrected to handle occurs at 01 level,
+		output_initialize_compound corrected, output_perform_exit - OSVS corrected
+
+2009-??-??  Roger While <simrw@sim-basis.de>
+
+	* typeck.c : fix move to SIGN TRAILING SEPARATE field
+
+20??-??-??  ??
+
+	* parser.y : exclude level 77 from "Item requires a data name" check
 
 2009-08-06  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 

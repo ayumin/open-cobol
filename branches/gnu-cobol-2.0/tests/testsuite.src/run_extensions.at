@@ -517,6 +517,57 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+AT_SETUP([INITIALIZE level 01])
+AT_KEYWORDS([initialize])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 L1 OCCURS 1000 TIMES.
+           05 L2 PIC S9(9) COMP-5 VALUE 5.
+           05 L3 PIC S9(9)        VALUE 5.
+       PROCEDURE DIVISION.
+           IF L2(3) not = 5
+              DISPLAY '0 VALUE(3) = ' L2(3)
+              END-DISPLAY
+           END-IF.
+           INITIALIZE L1(1).
+           IF L2(1) not = 0
+              DISPLAY '1 VALUE(1) = ' L2(1)
+              END-DISPLAY
+           END-IF.
+           IF L2(3) not = 5
+              DISPLAY '1 VALUE(3) = ' L2(3)
+              END-DISPLAY
+           END-IF.
+           INITIALIZE L1(1)  DEFAULT.
+           IF L2(1) not = 0
+              DISPLAY '2 VALUE(1) = ' L2(1)
+              END-DISPLAY
+           END-IF.
+           IF L2(3) not = 5
+              DISPLAY '2 VALUE(3) = ' L2(3)
+              END-DISPLAY
+           END-IF.
+           INITIALIZE L1(1)  ALL VALUE.
+           IF L2(1) not = 5
+              DISPLAY '3 VALUE(1) = ' L2(1)
+              END-DISPLAY
+           END-IF.
+           IF L2(3) not = 5
+              DISPLAY '3 VALUE(3) = ' L2(3)
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -std=mf prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
 AT_SETUP([MOVE NON-INTEGER TO ALPHA-NUMERIC])
 AT_KEYWORDS([extensions])
 
