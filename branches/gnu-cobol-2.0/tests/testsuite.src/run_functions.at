@@ -701,8 +701,11 @@ AT_DATA([prog.cob], [
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
        01  X   PIC   S9(4)V9(4) VALUE -1.5.
+       01  Y   PIC   9(12)      VALUE 600851475143.
        PROCEDURE        DIVISION.
            DISPLAY FUNCTION INTEGER ( X )
+           END-DISPLAY.
+           DISPLAY FUNCTION INTEGER ( Y / 71 )
            END-DISPLAY.
            STOP RUN.
 ])
@@ -710,6 +713,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0],
 [-000000002
+00000000008462696833
 ])
 
 AT_CLEANUP
@@ -1159,8 +1163,11 @@ AT_DATA([prog.cob], [
        PROGRAM-ID.      prog.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
+       01  Y   PIC   9(12)      VALUE 600851475143.
        PROCEDURE        DIVISION.
            DISPLAY FUNCTION MOD ( -11 5 )
+           END-DISPLAY.
+           DISPLAY FUNCTION MOD ( Y, 71 )
            END-DISPLAY.
            STOP RUN.
 ])
@@ -1168,6 +1175,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE -o prog prog.cob])
 AT_CHECK([./prog], [0],
 [000000004
+000000000
 ])
 
 AT_CLEANUP
