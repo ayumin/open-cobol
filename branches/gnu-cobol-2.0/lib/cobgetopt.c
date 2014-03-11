@@ -586,7 +586,7 @@ cob_getopt_long_long (const int argc, char *const *argv, const char *optstring,
 
   {
     char c = *nextchar++;
-    char *temp = strchr (optstring, c);
+    char *temp = (char *)strchr (optstring, c);
 
     /* Increment `cob_optind' when we start to process its last character.  */
     if (*nextchar == '\0')
