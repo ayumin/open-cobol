@@ -4588,7 +4588,7 @@ cb_emit_alter (cb_tree source, cb_tree target)
 /* CALL statement */
 
 void
-cb_emit_call (cb_tree prog, cb_tree using, cb_tree returning,
+cb_emit_call (cb_tree prog, cb_tree par_using, cb_tree returning,
 	      cb_tree on_exception, cb_tree not_on_exception,
 	      cb_tree convention)
 {
@@ -4655,7 +4655,7 @@ cb_emit_call (cb_tree prog, cb_tree using, cb_tree returning,
 		error_ind = 1;
 	}
 
-	for (l = using; l; l = CB_CHAIN (l), numargs++) {
+	for (l = par_using; l; l = CB_CHAIN (l), numargs++) {
 		x = CB_VALUE (l);
 		if (x == cb_error_node) {
 			error_ind = 1;
@@ -4792,7 +4792,7 @@ cb_emit_call (cb_tree prog, cb_tree using, cb_tree returning,
 		is_sys_idx = 1;
 		for (psyst = system_tab; psyst->syst_name; psyst++, is_sys_idx++) {
 			if (!strcmp(entry, (const char *)psyst->syst_name)) {
-				if (psyst->syst_params > cb_list_length (using)) {
+				if (psyst->syst_params > cb_list_length (par_using)) {
 					cb_error_x (CB_TREE (current_statement),
 						    _("Wrong number of CALL parameters for '%s'"),
 						    (char *)psyst->syst_name);
@@ -4810,7 +4810,7 @@ cb_emit_call (cb_tree prog, cb_tree using, cb_tree returning,
 	if (numargs > current_program->max_call_param) {
 		current_program->max_call_param = numargs;
 	}
-	cb_emit (cb_build_call (prog, using, on_exception, not_on_exception,
+	cb_emit (cb_build_call (prog, par_using, on_exception, not_on_exception,
 		 returning, is_sys_call, call_conv));
 }
 
