@@ -121,8 +121,6 @@ static unsigned int		cob_line_trace;
 static volatile sig_atomic_t	sig_is_handled = 0;
 #endif
 
-static int	last_sig = 0;
-
 /* Function Pointer for external signal handling */
 static void		(*cob_ext_sighdl) (int) = NULL;
 
@@ -302,7 +300,6 @@ static void COB_A_NORETURN
 cob_sig_handler (int sig)
 {
 	const char *signal_name;
-	last_sig = sig;
 
 #if	defined(HAVE_SIGACTION) && !defined(SA_RESETHAND)
 	struct sigaction	sa;
