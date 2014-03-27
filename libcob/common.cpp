@@ -123,6 +123,9 @@ static unsigned int		cob_line_trace;
 static volatile sig_atomic_t	sig_is_handled = 0;
 #endif
 
+/* Function Pointer for external signal handling */
+static void		(*cob_ext_sighdl) (int) = NULL;
+
 #undef	COB_EXCEPTION
 #define COB_EXCEPTION(code,tag,name,critical)	name,
 static const char * const cob_exception_tab_name[] = {
@@ -269,23 +272,78 @@ cob_terminate_routines(void)
 
 #ifdef	HAVE_SIGNAL_H
 extern "C" void COB_A_NORETURN
-cob_sig_handler(int sig)
+cob_sig_handler_ex(int sig)
 {
-#if	defined(HAVE_SIGACTION) && !defined(SA_RESETHAND)
-	struct sigaction	sa;
+	/* call external signal handler if registered */
+	if (cob_ext_sighdl != NULL) {
+		(*cob_ext_sighdl) (sig);
+		cob_ext_sighdl = NULL;
+	}
+#ifdef	SIGSEGV
+	if (sig == SIGSEGV) {
+		exit (SIGSEGV);
+	}
 #endif
-
-#ifdef	HAVE_SIG_ATOMIC_T
-	if(sig_is_handled) {
 #ifdef	HAVE_RAISE
 		raise(sig);
 #else
 		kill(getpid(), sig);
 #endif
 		exit(sig);
+}
+
+extern "C" void COB_A_NORETURN
+cob_sig_handler(int sig)
+{
+	const char *signal_name;
+
+#if	defined(HAVE_SIGACTION) && !defined(SA_RESETHAND)
+	struct sigaction	sa;
+#endif
+
+#ifdef	HAVE_SIG_ATOMIC_T
+	if(sig_is_handled) {
+		cob_sig_handler_ex(sig);
 	}
 	sig_is_handled = 1;
 #endif
+
+	switch (sig) {
+#ifdef	SIGINT
+	case SIGINT:
+		signal_name = "SIGINT";
+		break;
+#endif
+#ifdef	SIGHUP
+	case SIGHUP:
+		signal_name = "SIGHUP";
+		break;
+#endif
+#ifdef	SIGQUIT
+	case SIGQUIT:
+		signal_name = "SIGQUIT";
+		break;
+#endif
+#ifdef	SIGTERM
+	case SIGTERM:
+		signal_name = "SIGTERM";
+		break;
+#endif
+#ifdef	SIGPIPE
+	case SIGPIPE:
+		signal_name = "SIGPIPE";
+		break;
+#endif
+#ifdef	SIGSEGV
+	case SIGSEGV:
+		signal_name = "SIGSEGV";
+		break;
+#endif
+	default:
+		signal_name = "unkown";
+		fprintf(stderr, "Caught wrong signal: %d\n", sig);
+		break;
+	}
 
 #ifdef	HAVE_SIGACTION
 #ifndef	SA_RESETHAND
@@ -297,34 +355,33 @@ cob_sig_handler(int sig)
 #else
 	(void)signal(sig, SIG_DFL);
 #endif
+	cob_exit_screen();
+	putc('\n', stderr);
+	if(cob_source_file) {
+		fprintf(stderr, "%s: %u: ", cob_source_file, cob_source_line);
+	}
 
 #ifdef	SIGSEGV
 	if(sig == SIGSEGV) {
-		cob_exit_screen();
-		putc('\n', stderr);
-		if(cob_source_file) {
-			fprintf(stderr, "%s: %u: ", cob_source_file, cob_source_line);
-		}
-		fprintf(stderr, _("Attempt to reference unallocated memory(Signal SIGSEGV)"));
-		putc('\n', stderr);
-		fprintf(stderr, _("Abnormal termination - File contents may be incorrect"));
-		putc('\n', stderr);
-		fflush(stderr);
-		exit(SIGSEGV);
+		fprintf(stderr, _("Attempt to reference unallocated memory"));
+	} else {
+		fprintf (stderr, _("Caught Signal"));
 	}
+#else
+	fprintf (stderr, _("Caught Signal"));
 #endif
+	putc(' ', stderr);
+	fprintf(stderr, _("(Signal %s)"), signal_name);
+	putc('\n', stderr);
+
 	if(cob_initialized) {
 		cob_terminate_routines();
 		fprintf(stderr, _("Abnormal termination - File contents may be incorrect"));
-		putc('\n', stderr);
-		fflush(stderr);
 	}
-#ifdef	HAVE_RAISE
-	raise(sig);
-#else
-	kill(getpid(), sig);
-#endif
-	exit(sig);
+	putc('\n', stderr);
+	fflush(stderr);
+
+	cob_sig_handler_ex(sig);
 }
 #endif
 
@@ -396,7 +453,7 @@ cob_set_signal(void)
 	}
 #endif
 #ifdef	SIGSEGV
-	/* Take direct control of segementation violation */
+	/* Take direct control of segmentation violation */
 	(void)sigemptyset(&sa.sa_mask);
 	(void)sigaction(SIGSEGV, &sa, NULL);
 #endif
@@ -428,8 +485,8 @@ cob_set_signal(void)
 		(void)signal(SIGPIPE, cob_sig_handler);
 	}
 #endif
-	/* Take direct control of segementation violation */
 #ifdef	SIGSEGV
+	/* Take direct control of segmentation violation */
 	(void)signal(SIGSEGV, cob_sig_handler);
 #endif
 
@@ -1824,6 +1881,13 @@ cob_real_put_sign(cob_field * f, const int sign)
 	}
 }
 
+/* Registration of external handlers */
+void
+cob_reg_sighnd(void (*sighnd) (int))
+{
+	cob_ext_sighdl = sighnd;
+};
+
 /* Switch */
 
 int
@@ -2878,13 +2942,13 @@ cob_sys_x91(void * p1, const void * p2, void * p3)
 	case 12:
 		/* Get switches */
 		for(size_t i = 0; i < 8; ++i, ++parm) {
-			*parm = cob_switch[i];
+			*parm = (unsigned char)cob_switch[i];
 		}
 		*result = 0;
 		break;
 	case 16:
 		/* Return number of call parameters */
-		*parm = COB_MODULE_PTR->module_num_params;
+		*parm = (unsigned char)COB_MODULE_PTR->module_num_params;
 		*result = 0;
 		break;
 	default:

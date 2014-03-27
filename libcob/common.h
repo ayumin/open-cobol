@@ -1276,6 +1276,10 @@ COB_EXPIMP void *	cob_get_prog_pointer(const void *);
 COB_EXPIMP void		cob_ready_trace(void);
 COB_EXPIMP void		cob_reset_trace(void);
 
+
+/* Registration of external handlers */
+COB_EXPIMP void	cob_reg_sighnd	(void (*sighnd) (int));
+
 /* Switch */
 
 COB_EXPIMP int	cob_get_switch(const int);
