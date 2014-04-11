@@ -1,4 +1,4 @@
-/* config.h	Win32 VS2005-2012  */
+/* config.h	Win32/x64 with VS2005-2013 */
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -106,6 +106,9 @@
 /* Define to 1 if you have the `fdatasync' function. */
 /* #undef HAVE_FDATASYNC */
 
+/* Declaration of finite function in ieeefp.h instead of math.h */
+/* #undef HAVE_FINITE_IEEEFP_H */
+
 /* Define to 1 if you have the `getexecname' function. */
 /* #undef HAVE_GETEXECNAME */
 
@@ -169,7 +172,7 @@
 /* Define to 1 if you have the `memset' function. */
 #define HAVE_MEMSET 1
 
-/* Has nanosleep */
+/* Has nanosleep function */
 /* #undef HAVE_NANO_SLEEP */
 
 /* Define to 1 if you have the <ncursesw/curses.h> header file. */

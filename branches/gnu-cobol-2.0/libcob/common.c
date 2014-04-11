@@ -30,7 +30,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
+
 #include <math.h>
+#ifdef HAVE_FINITE_IEEEFP_H
+#include <ieeefp.h>
+#endif
+
 #include <time.h>
 
 #ifdef	HAVE_UNISTD_H
