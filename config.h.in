@@ -106,6 +106,9 @@
 /* Define to 1 if you have the `fdatasync' function. */
 #undef HAVE_FDATASYNC
 
+/* Declaration of finite function in ieeefp.h instead of math.h */
+#undef HAVE_FINITE_IEEEFP_H
+
 /* Define to 1 if you have the `getexecname' function. */
 #undef HAVE_GETEXECNAME
 

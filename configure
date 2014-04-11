@@ -2904,6 +2904,7 @@ fi
 
 
 
+
 save_libs="$LIBS"
 
 # Basic capability tests
@@ -13649,30 +13650,6 @@ fi
 LIBS=$MYOLDLIBS
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for raise" >&5
-$as_echo_n "checking for raise... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <signal.h>
-int
-main ()
-{
-raise (SIGINT);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  $as_echo "#define HAVE_RAISE 1" >>confdefs.h
- { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
 # Solaris has nanosleep in other libraries
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nanosleep" >&5
 $as_echo_n "checking for nanosleep... " >&6; }
@@ -13805,6 +13782,69 @@ $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
+
+# Check for raise (optional)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for raise" >&5
+$as_echo_n "checking for raise... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <signal.h>
+int
+main ()
+{
+raise (SIGINT);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  $as_echo "#define HAVE_RAISE 1" >>confdefs.h
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+# Check prototype for finite in math.h (alternative ieeefp.h)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite in <math.h>" >&5
+$as_echo_n "checking prototype for finite in <math.h>... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <math.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "finite" >/dev/null 2>&1; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite in <ieeefp.h>" >&5
+$as_echo_n "checking prototype for finite in <ieeefp.h>... " >&6; }
+	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ieeefp.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "finite" >/dev/null 2>&1; then :
+  $as_echo "#define HAVE_FINITE_IEEEFP_H 1" >>confdefs.h
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  as_fn_error $? "
+		Declaration for finite function neither in math.h nor in ieeefp.h" "$LINENO" 5
+fi
+rm -f conftest*
+
+
+fi
+rm -f conftest*
+
 
 for ac_func in fdatasync sigaction
 do :

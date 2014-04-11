@@ -87,6 +87,8 @@ AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
 AH_TEMPLATE([HAVE_DESIGNATED_INITS], [Has designated initializers])
 AH_TEMPLATE([HAVE_NANO_SLEEP], [Has nanosleep function])
 AH_TEMPLATE([HAVE_RAISE], [Has raise function])
+AH_TEMPLATE([HAVE_FINITE_IEEEFP_H],
+	[Declaration of finite function in ieeefp.h instead of math.h])
 
 save_libs="$LIBS"
 
@@ -391,13 +393,6 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 LIBS=$MYOLDLIBS
 
 
-AC_MSG_CHECKING([for raise])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
-  [[raise (SIGINT);]])],
-  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
-  [AC_MSG_RESULT([no])],
-  [])
-
 # Solaris has nanosleep in other libraries
 AC_MSG_CHECKING([for nanosleep])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
@@ -420,6 +415,25 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
        AC_MSG_RESULT([no])
      fi
    fi])
+
+# Check for raise (optional)
+AC_MSG_CHECKING([for raise])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+  [[raise (SIGINT);]])],
+  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
+  [AC_MSG_RESULT([no])],
+  [])
+
+# Check prototype for finite in math.h (alternative ieeefp.h)
+AC_MSG_CHECKING([prototype for finite in <math.h>])
+AC_EGREP_HEADER(finite, math.h, AC_MSG_RESULT([yes]),
+	[AC_MSG_RESULT([no])
+	AC_MSG_CHECKING([prototype for finite in <ieeefp.h>])
+	AC_EGREP_HEADER(finite, ieeefp.h,
+	[AC_DEFINE([HAVE_FINITE_IEEEFP_H], [1]) AC_MSG_RESULT([yes])],
+	AC_MSG_ERROR([
+		Declaration for finite function neither in math.h nor in ieeefp.h]))
+	])
 
 AC_CHECK_FUNCS([fdatasync sigaction])
 
