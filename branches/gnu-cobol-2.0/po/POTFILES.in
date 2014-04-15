@@ -2,7 +2,6 @@
 
 # cobc
 cobc/cobc.c
-cobc/cobgetopt.c
 cobc/codegen.c
 cobc/codeoptim.c
 cobc/config.c
@@ -20,6 +19,7 @@ cobc/warning.def
 
 # libcob
 libcob/call.c
+libcob/cobgetopt.c
 libcob/common.c
 libcob/fileio.c
 libcob/move.c

@@ -20,8 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_HEADERS = gettext.h cobgetopt.h
+noinst_HEADERS = gettext.h
 
 noinst_LIBRARIES = libsupport.a
-libsupport_a_SOURCES = dummymac.c cobgetopt.c
+libsupport_a_SOURCES = dummymac.c
 libsupport_a_LIBADD = @LIBOBJS@

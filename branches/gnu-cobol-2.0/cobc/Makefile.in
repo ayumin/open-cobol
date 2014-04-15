@@ -86,6 +86,7 @@ am_cobc_OBJECTS = cobc-cobc.$(OBJEXT) cobc-config.$(OBJEXT) \
 cobc_OBJECTS = $(am_cobc_OBJECTS)
 am__DEPENDENCIES_1 =
 cobc_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(top_builddir)/libcob/libcob.la \
 	$(top_builddir)/lib/libsupport.a
 cobc_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(cobc_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -266,7 +267,7 @@ cobc_SOURCES = cobc.c cobc.h config.c tree.c tree.h reserved.c error.c \
 	ppparse.def codeoptim.c
 
 cobc_CFLAGS = -I$(top_srcdir)
-cobc_LDADD = $(COBC_LIBS) $(top_builddir)/lib/libsupport.a
+cobc_LDADD = $(COBC_LIBS) $(top_builddir)/libcob/libcob.la $(top_builddir)/lib/libsupport.a
 BUILT_SOURCES = parser.c parser.h scanner.c ppparse.c ppparse.h pplex.c
 EXTRA_DIST = ppparse.y pplex.l parser.y scanner.l
 CLEANFILES = parser.output ppparse.output

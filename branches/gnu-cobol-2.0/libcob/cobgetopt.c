@@ -38,8 +38,6 @@
 #include <unistd.h>
 #endif
 
-#include "config.h"
-
 #ifdef	ENABLE_NLS
 #include "lib/gettext.h"
 #define _(s)		gettext(s)
@@ -48,6 +46,10 @@
 #define _(s)		s
 #define N_(s)		s
 #endif
+
+/* Force symbol exports */
+#define	COB_LIB_EXPIMP
+#include "libcob.h"
 
 #include "cobgetopt.h"
 
@@ -586,7 +588,7 @@ cob_getopt_long_long (const int argc, char *const *argv, const char *optstring,
 
   {
     char c = *nextchar++;
-    char *temp = (char *)strchr (optstring, c);
+    char *temp = strchr (optstring, c);
 
     /* Increment `cob_optind' when we start to process its last character.  */
     if (*nextchar == '\0')
