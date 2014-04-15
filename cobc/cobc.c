@@ -55,7 +55,9 @@
 #include "cobc.h"
 #include "tree.h"
 
-#include "lib/cobgetopt.h"
+#include "libcob.h"
+
+#include "libcob/cobgetopt.h"
 
 struct strcache {
 	struct strcache	*next;

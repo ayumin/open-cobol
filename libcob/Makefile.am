@@ -21,7 +21,7 @@
 
 lib_LTLIBRARIES = libcob.la
 libcob_la_SOURCES = common.c move.c numeric.c strings.c \
-	fileio.c call.c intrinsic.c termio.c screenio.c
+	fileio.c call.c intrinsic.c termio.c screenio.c cobgetopt.c
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
 libcob_la_LIBADD = $(LIBCOB_LIBS)
@@ -30,7 +30,7 @@ AM_LDFLAGS = $(COB_FIX_LIB)
 
 EXTRA_DIST = coblocal.h system.def
 pkgincludedir = $(includedir)/libcob
-pkginclude_HEADERS = common.h exception.def
+pkginclude_HEADERS = common.h cobgetopt.h exception.def
 
 install-data-hook:
 	rm -f $(includedir)/libcob/byteswap.h

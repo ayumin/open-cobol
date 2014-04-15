@@ -26,7 +26,7 @@ cobc_SOURCES = cobc.c cobc.h config.c tree.c tree.h reserved.c error.c \
 	ppparse.def codeoptim.c
 
 cobc_CFLAGS = -I$(top_srcdir)
-cobc_LDADD = $(COBC_LIBS) $(top_builddir)/lib/libsupport.a
+cobc_LDADD = $(COBC_LIBS) $(top_builddir)/libcob/libcob.la $(top_builddir)/lib/libsupport.a
 
 BUILT_SOURCES = parser.c parser.h scanner.c ppparse.c ppparse.h pplex.c
 EXTRA_DIST = ppparse.y pplex.l parser.y scanner.l

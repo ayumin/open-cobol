@@ -80,7 +80,7 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libsupport_a_AR = $(AR) $(ARFLAGS)
 libsupport_a_DEPENDENCIES = @LIBOBJS@
-am_libsupport_a_OBJECTS = dummymac.$(OBJEXT) cobgetopt.$(OBJEXT)
+am_libsupport_a_OBJECTS = dummymac.$(OBJEXT)
 libsupport_a_OBJECTS = $(am_libsupport_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -253,9 +253,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_HEADERS = gettext.h cobgetopt.h
+noinst_HEADERS = gettext.h
 noinst_LIBRARIES = libsupport.a
-libsupport_a_SOURCES = dummymac.c cobgetopt.c
+libsupport_a_SOURCES = dummymac.c
 libsupport_a_LIBADD = @LIBOBJS@
 all: all-am
 
@@ -305,7 +305,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cobgetopt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dummymac.Po@am__quote@
 
 .c.o:

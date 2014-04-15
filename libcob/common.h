@@ -1284,6 +1284,19 @@ COB_EXPIMP int	cob_sys_oc_nanosleep	(const void *);
 COB_EXPIMP int	cob_sys_getpid		(void);
 COB_EXPIMP int	cob_sys_return_args	(void *);
 COB_EXPIMP int	cob_sys_parameter_size	(void *);
+
+/*
+ * cob_sys_getopt_long_long
+ */
+COB_EXPIMP int	cob_sys_getopt_long_long	(void*, void*, void*, const int, void*, void*);
+typedef struct longoption_def{
+	char name[25];
+	char has_option;
+	char return_value_pointer[sizeof(char*)];
+	char return_value;
+} longoption_def;
+
+
 COB_EXPIMP int	cob_sys_sleep		(const void *);
 COB_EXPIMP int	cob_sys_calledby	(void *);
 COB_EXPIMP int	cob_sys_justify		(void *, ...);

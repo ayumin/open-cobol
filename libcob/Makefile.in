@@ -102,7 +102,7 @@ libcob_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libcob_la_OBJECTS = libcob_la-common.lo libcob_la-move.lo \
 	libcob_la-numeric.lo libcob_la-strings.lo libcob_la-fileio.lo \
 	libcob_la-call.lo libcob_la-intrinsic.lo libcob_la-termio.lo \
-	libcob_la-screenio.lo
+	libcob_la-screenio.lo libcob_la-cobgetopt.lo
 libcob_la_OBJECTS = $(am_libcob_la_OBJECTS)
 libcob_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libcob_la_CFLAGS) \
@@ -281,14 +281,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libcob.la
 libcob_la_SOURCES = common.c move.c numeric.c strings.c \
-	fileio.c call.c intrinsic.c termio.c screenio.c
+	fileio.c call.c intrinsic.c termio.c screenio.c cobgetopt.c
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
 libcob_la_LIBADD = $(LIBCOB_LIBS)
 libcob_la_LDFLAGS = $(COB_FIX_LIBTOOL) -version-info 4:0:0 -no-undefined
 AM_LDFLAGS = $(COB_FIX_LIB)
 EXTRA_DIST = coblocal.h system.def
-pkginclude_HEADERS = common.h exception.def
+pkginclude_HEADERS = common.h cobgetopt.h exception.def
 all: all-am
 
 .SUFFIXES:
@@ -364,6 +364,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-call.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-cobgetopt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-intrinsic.Plo@am__quote@
@@ -456,6 +457,13 @@ libcob_la-screenio.lo: screenio.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='screenio.c' object='libcob_la-screenio.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-screenio.lo `test -f 'screenio.c' || echo '$(srcdir)/'`screenio.c
+
+libcob_la-cobgetopt.lo: cobgetopt.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-cobgetopt.lo -MD -MP -MF $(DEPDIR)/libcob_la-cobgetopt.Tpo -c -o libcob_la-cobgetopt.lo `test -f 'cobgetopt.c' || echo '$(srcdir)/'`cobgetopt.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-cobgetopt.Tpo $(DEPDIR)/libcob_la-cobgetopt.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cobgetopt.c' object='libcob_la-cobgetopt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-cobgetopt.lo `test -f 'cobgetopt.c' || echo '$(srcdir)/'`cobgetopt.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

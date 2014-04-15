@@ -22,6 +22,7 @@
 
 COB_SYSTEM_GEN ("SYSTEM",		1, cob_sys_system)
 
+
 COB_SYSTEM_GEN ("CBL_AND",		3, cob_sys_and)
 COB_SYSTEM_GEN ("CBL_CHANGE_DIR",	1, cob_sys_change_dir)
 COB_SYSTEM_GEN ("CBL_CHECK_FILE_EXIST",	2, cob_sys_check_file_exist)
@@ -42,6 +43,7 @@ COB_SYSTEM_GEN ("CBL_IMP",		3, cob_sys_imp)
 COB_SYSTEM_GEN ("CBL_NIMP",		3, cob_sys_nimp)
 COB_SYSTEM_GEN ("CBL_NOR",		3, cob_sys_nor)
 COB_SYSTEM_GEN ("CBL_NOT",		2, cob_sys_not)
+COB_SYSTEM_GEN ("CBL_OC_GETOPT",	6, cob_sys_getopt_long_long)
 COB_SYSTEM_GEN ("CBL_OC_NANOSLEEP",	1, cob_sys_oc_nanosleep)
 COB_SYSTEM_GEN ("CBL_OPEN_FILE",	5, cob_sys_open_file)
 COB_SYSTEM_GEN ("CBL_OR",		3, cob_sys_or)
@@ -51,6 +53,7 @@ COB_SYSTEM_GEN ("CBL_TOLOWER",		2, cob_sys_tolower)
 COB_SYSTEM_GEN ("CBL_TOUPPER",		2, cob_sys_toupper)
 COB_SYSTEM_GEN ("CBL_WRITE_FILE",	5, cob_sys_write_file)
 COB_SYSTEM_GEN ("CBL_XOR",		3, cob_sys_xor)
+
 
 COB_SYSTEM_GEN ("C$CALLEDBY",		1, cob_sys_calledby)
 COB_SYSTEM_GEN ("C$CHDIR",		2, cob_sys_chdir)
@@ -66,6 +69,7 @@ COB_SYSTEM_GEN ("C$PRINTABLE",		1, cob_sys_printable)
 COB_SYSTEM_GEN ("C$SLEEP",		1, cob_sys_sleep)
 COB_SYSTEM_GEN ("C$TOLOWER",		2, cob_sys_tolower)
 COB_SYSTEM_GEN ("C$TOUPPER",		2, cob_sys_toupper)
+
 
 COB_SYSTEM_GEN ("\221",			2, cob_sys_x91)
 COB_SYSTEM_GEN ("\344",			0, cob_sys_clear_screen)

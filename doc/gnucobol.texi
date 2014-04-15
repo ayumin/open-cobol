@@ -84,6 +84,7 @@ approved by the Free Software Foundation.
 * Customize::                   Customizing the compiler
 * Optimize::                    Optimizing your program
 * Debug::                       Debugging your program
+* System routines::				Additional routines 
 * Appendix A::                  @code{cobc --help}
 * Appendix B::                  @code{cobc --info}
 * Appendix C::                  @code{cobc --list-reserved}
@@ -144,6 +145,10 @@ Optimize
 Debug
 
 * Debug Options::               Debug options
+
+System routines
+
+* CBL_OC_GETOPT					GETOPT for Cobol
 
 Appendix A
 
@@ -1061,7 +1066,7 @@ machine.  Set the config option @code{binary-byteorder} to
 In addition, setting the option @code{binary-size} to @code{2-4-8} or
 @code{1-2-4-8} is more efficient than others.
 
-@node Debug, Appendix A, Optimize, Top
+@node Debug, System routines, Optimize, Top
 @chapter Debug
 
 @menu
@@ -1078,7 +1083,118 @@ run-time errors with source locations.
 
 @exampleindent 0
 
-@node Appendix A, Appendix B, Debug, Top
+@node System routines, Appendix A, Debug, Top
+@chapter System routines
+
+@menu
+* CBL_OC_GETOPT::				CBL_OC_GETOPT
+@end menu
+
+@node CBL_OC_GETOPT, , System routines, System routines
+@section CBL_OC_GETOPT
+
+CBL_OC_GETOPT realises the quite well-known option parser getopt for 
+GNU Cobol. The usage of this system routine is described by the 
+following example.@*@*
+
+@example
+        identification division.
+        program-id. prog.
+        
+        data division.
+        working-storage section.
+            78 shortoptions value "jkl".
+        
+            01 longoptions.
+                05 optionrecord occurs 2 times.
+                    10 optionname   pic x(25).
+                    10 has-value    pic 9.
+                    10 valpoint     pointer value NULL.
+                    10 return-value pic x.
+        
+            01 longind     pic 99.
+            01 long-only   pic 9 value 1.
+        
+            01 return-char pic x.
+            01 opt-val     pic x(10).
+            
+            01 counter     pic 9 value 0.
+@end example
+
+@*@*
+We first need to define the necessary fields for getopt's shortoptions (so), 
+longoptions (lo), longoption index (longind), long-only-option (long-only) 
+and also the fields for return values return-char and opt-val (arbitrary size with trimming, see return codes). @*
+The shortoptions are written down as an alphanumeric field (string with arbitrary size) as follows: 
+@*@*
+
+@example
+"ab:c::d"
+@end example
+
+@*@*
+This means we want getopt to look for shortoptions named a, b, c or d and we demand an option 
+value for b and we are accepting an optional one for c. @*@*
+The longoptions are defined as a table of records with oname, has-value, valpoint and val. 
+The field oname defines the name of a longoption, has-value defines if an option value is 
+demanded(has-val = 1), optional(2) or not required(0). @*
+The longoption structure is immutable! You can vary the amount of records only.
+The pointer valpoint is used to specify an address to save getopt's return value to. The pointer 
+is optional. If it is NULL, getopt returns a value as usual. @*
+The field val is a single character which is returned if the longoption was recognized.@*@*
+Now we have the tools to run CBL_OC_GETOPT within the procedure division.@*
+
+@example
+        procedure division.
+            move "version" to optionname(1).
+            move 0 to has-value(1).
+            move "v" to return-value(1).
+            
+            move "verbose" to optionname(2).
+            move 0 to has-value(2).
+            move "V" to return-value(2).
+        
+            perform with test before until counter > 5
+                call 'CBL_OC_GETOPT' using 
+                by reference shortoptions longoptions longind
+                by value long-only
+                by reference return-char opt-val
+                end-call
+            
+                display return-char end-display
+                display opt-val end-display
+                
+                add 1 to counter end-add
+            end-perform
+            stop run.
+
+@end example
+
+@*@*
+The example shows how we initialize all parameters and call the routine. We call 
+getopt 6 times as we have 5 options to recognize and one additional call just to 
+see that getopt returns '-1' in this case.@*@*
+The return-char might contain the following:
+@itemize @bullet
+@item regular character if an option was recognized
+@item '?' @ @ if we have got an undefined option 
+@item '1' @ @ if got a non-option
+@item '0' @ @ if valpoint != NULL and we are writing the return value to the specified address
+@item '-1' @ if we don't have any more options
+@end itemize
+@*@*
+The return-codes of CBL_OC_GETOPT are: 
+@itemize @bullet
+@item '1' @ @ if we've got a non-option
+@item '0' @ @ if valpoint != NULL and we are writing the return value to the specified address
+@item '-1' @ if we don't have any more options
+@item '2' @ @ if we have got an truncated option value in opt-val (because opt-val was too small)
+@item '3' @ @ if we got a regular answer from getopt
+@end itemize
+@*@*
+
+
+@node Appendix A, Appendix B, System routines, Top
 @appendix @code{cobc --help}
 
 @include cbhelp.tex
