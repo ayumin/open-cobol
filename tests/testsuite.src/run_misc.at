@@ -2634,6 +2634,1017 @@ AT_CHECK([./prog], [0])
 AT_CLEANUP
 
 
+AT_SETUP([Computing of different USAGEs w/o decimal point])
+AT_KEYWORDS([runmisc
+BINARY-C-LONG BINARY-CHAR BINARY-DOUBLE BINARY-LONG
+COMP COMP-1 COMP-2 COMP-3 COMP-5 COMP-6
+FLOAT-DECIMAL-16 FLOAT-DECIMAL-34 FLOAT-LONG FLOAT-SHORT])
+
+# 2.x version currently has a bug here:
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. 'prog'.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      *        
+       77  BCL-A           BINARY-C-LONG    VALUE 1.
+       77  BCL-B           BINARY-C-LONG    VALUE 10.
+       77  BCL-RES         BINARY-C-LONG.
+      *        
+       77  BC-A            BINARY-CHAR      VALUE 1.
+       77  BC-B            BINARY-CHAR      VALUE 10.
+       77  BC-RES          BINARY-CHAR.
+      *        
+       77  BD-A            BINARY-DOUBLE    VALUE 1.
+       77  BD-B            BINARY-DOUBLE    VALUE 10.
+       77  BD-RES          BINARY-DOUBLE.
+      *        
+       77  BL-A            BINARY-LONG      VALUE 1.
+       77  BL-B            BINARY-LONG      VALUE 10.
+       77  BL-RES          BINARY-LONG.
+      *
+       77  C-A     PIC S99 COMP             VALUE 1.
+       77  C-B     PIC S99 COMP             VALUE 10.
+       77  C-RES   PIC S99 COMP.
+      *
+       77  C1-A            COMP-1           VALUE 1.
+       77  C1-B            COMP-1           VALUE 10.
+       77  C1-RES          COMP-1.
+      *        
+       77  C2-A            COMP-2           VALUE 1.
+       77  C2-B            COMP-2           VALUE 10.
+       77  C2-RES          COMP-2.
+      *
+       77  C3-A    PIC S99 COMP-3           VALUE 1.
+       77  C3-B    PIC S99 COMP-3           VALUE 10.
+       77  C3-RES  PIC S99 COMP-3.
+      *
+       77  C5-A    PIC S99 COMP-5           VALUE 1.
+       77  C5-B    PIC S99 COMP-5           VALUE 10.
+       77  C5-RES  PIC S99 COMP-5.
+      *
+       77  C6-A    PIC  99 COMP-6           VALUE 1.
+       77  C6-B    PIC  99 COMP-6           VALUE 10.
+       77  C6-RES  PIC  99 COMP-6.
+      *
+       77  D-A     PIC  S99                 VALUE 1.
+       77  D-B     PIC  S99                 VALUE 10.
+       77  D-RES   PIC  S99.
+      *        
+       77  FD16-A          FLOAT-DECIMAL-16 VALUE 1.
+       77  FD16-B          FLOAT-DECIMAL-16 VALUE 10.
+       77  FD16-RES        FLOAT-DECIMAL-16.
+      *        
+       77  FD34-A          FLOAT-DECIMAL-34 VALUE 1.
+       77  FD34-B          FLOAT-DECIMAL-34 VALUE 10.
+       77  FD34-RES        FLOAT-DECIMAL-34.
+      *        
+       77  FL-A            FLOAT-LONG       VALUE 1.
+       77  FL-B            FLOAT-LONG       VALUE 10.
+       77  FL-RES          FLOAT-LONG.
+      *        
+       77  FS-A            FLOAT-SHORT      VALUE 1.
+       77  FS-B            FLOAT-SHORT      VALUE 10.
+       77  FS-RES          FLOAT-SHORT.
+      *
+       PROCEDURE DIVISION.
+      *
+           ADD  BCL-B  TO BCL-A END-ADD.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 11
+              DISPLAY 'ERROR BINARY-C-LONG + BINARY-C-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO BCL-A.
+           ADD  10    TO BCL-A END-ADD.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 11
+              DISPLAY 'ERROR BINARY-C-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BCL-A.
+           SUBTRACT BCL-B FROM BCL-A END-SUBTRACT.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 1
+              DISPLAY 'ERROR BINARY-C-LONG - BINARY-C-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BCL-A.
+           SUBTRACT 10   FROM BCL-A END-SUBTRACT.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 1
+              DISPLAY 'ERROR BINARY-C-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BC-B  TO BC-A END-ADD.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 11
+              DISPLAY 'ERROR BINARY-CHAR + BINARY-CHAR'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO BC-A.
+           ADD  10    TO BC-A END-ADD.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 11
+              DISPLAY 'ERROR BINARY-CHAR + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BC-A.
+           SUBTRACT BC-B FROM BC-A END-SUBTRACT.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 1
+              DISPLAY 'ERROR BINARY-CHAR - BINARY-CHAR'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BC-A.
+           SUBTRACT 10   FROM BC-A END-SUBTRACT.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 1
+              DISPLAY 'ERROR BINARY-CHAR - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BD-B  TO BD-A END-ADD.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 11
+              DISPLAY 'ERROR BINARY-DOUBLE + BINARY-DOUBLE'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO BD-A.
+           ADD  10    TO BD-A END-ADD.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 11
+              DISPLAY 'ERROR BINARY-DOUBLE + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BD-A.
+           SUBTRACT BD-B FROM BD-A END-SUBTRACT.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 1
+              DISPLAY 'ERROR BINARY-DOUBLE - BINARY-DOUBLE'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BD-A.
+           SUBTRACT 10   FROM BD-A END-SUBTRACT.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 1
+              DISPLAY 'ERROR BINARY-DOUBLE - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BL-B  TO BL-A END-ADD.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 11
+              DISPLAY 'ERROR BINARY-LONG + BINARY-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO BL-A.
+           ADD  10    TO BL-A END-ADD.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 11
+              DISPLAY 'ERROR BINARY-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BL-A.
+           SUBTRACT BL-B FROM BL-A END-SUBTRACT.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 1
+              DISPLAY 'ERROR BINARY-LONG - BINARY-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO BL-A.
+           SUBTRACT 10   FROM BL-A END-SUBTRACT.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 1
+              DISPLAY 'ERROR BINARY-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C-B  TO C-A END-ADD.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 11
+              DISPLAY 'ERROR COMP + COMP'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C-A.
+           ADD  10    TO C-A END-ADD.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 11
+              DISPLAY 'ERROR COMP + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C-A.
+           SUBTRACT C-B FROM C-A END-SUBTRACT.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 1
+              DISPLAY 'ERROR COMP - COMP'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C-A.
+           SUBTRACT 10   FROM C-A END-SUBTRACT.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 1
+              DISPLAY 'ERROR COMP - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C1-B  TO C1-A END-ADD.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 11
+              DISPLAY 'ERROR COMP-1 + COMP-1'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C1-A.
+           ADD  10    TO C1-A END-ADD.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 11
+              DISPLAY 'ERROR COMP-1 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C1-A.
+           SUBTRACT C1-B FROM C1-A END-SUBTRACT.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 1
+              DISPLAY 'ERROR COMP-1 - COMP-1'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C1-A.
+           SUBTRACT 10   FROM C1-A END-SUBTRACT.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 1
+              DISPLAY 'ERROR COMP-1 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C2-B  TO C2-A END-ADD.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 11
+              DISPLAY 'ERROR COMP-2 + COMP-2'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C2-A.
+           ADD  10    TO C2-A END-ADD.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 11
+              DISPLAY 'ERROR COMP-2 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C2-A.
+           SUBTRACT C2-B FROM C2-A END-SUBTRACT.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 1
+              DISPLAY 'ERROR COMP-2 - COMP-2'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C2-A.
+           SUBTRACT 10   FROM C2-A END-SUBTRACT.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 1
+              DISPLAY 'ERROR COMP-2 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C3-B  TO C3-A END-ADD.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 11
+              DISPLAY 'ERROR COMP-3 + COMP-3'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C3-A.
+           ADD  10    TO C3-A END-ADD.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 11
+              DISPLAY 'ERROR COMP-3 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C3-A.
+           SUBTRACT C3-B FROM C3-A END-SUBTRACT.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 1
+              DISPLAY 'ERROR COMP-3 - COMP-3'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C3-A.
+           SUBTRACT 10   FROM C3-A END-SUBTRACT.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 1
+              DISPLAY 'ERROR COMP-3 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C5-B  TO C5-A END-ADD.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 11
+              DISPLAY 'ERROR COMP-5 + COMP-5'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C5-A.
+           ADD  10    TO C5-A END-ADD.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 11
+              DISPLAY 'ERROR COMP-5 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C5-A.
+           SUBTRACT C5-B FROM C5-A END-SUBTRACT.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 1
+              DISPLAY 'ERROR COMP-5 - COMP-5'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C5-A.
+           SUBTRACT 10   FROM C5-A END-SUBTRACT.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 1
+              DISPLAY 'ERROR COMP-5 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C6-B  TO C6-A END-ADD.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 11
+              DISPLAY 'ERROR COMP-6 + COMP-6'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO C6-A.
+           ADD  10    TO C6-A END-ADD.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 11
+              DISPLAY 'ERROR COMP-6 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C6-A.
+           SUBTRACT C6-B FROM C6-A END-SUBTRACT.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 1
+              DISPLAY 'ERROR COMP-6 - COMP-6'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO C6-A.
+           SUBTRACT 10   FROM C6-A END-SUBTRACT.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 1
+              DISPLAY 'ERROR COMP-6 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  D-B  TO D-A END-ADD.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 11
+              DISPLAY 'ERROR DISPLAY + DISPLAY'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO D-A.
+           ADD  10    TO D-A END-ADD.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 11
+              DISPLAY 'ERROR DISPLAY + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO D-A.
+           SUBTRACT D-B FROM D-A END-SUBTRACT.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 1
+              DISPLAY 'ERROR DISPLAY - DISPLAY'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO D-A.
+           SUBTRACT 10   FROM D-A END-SUBTRACT.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 1
+              DISPLAY 'ERROR DISPLAY - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FD16-B  TO FD16-A END-ADD.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 + FLOAT-DECIMAL-16'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO FD16-A.
+           ADD  10    TO FD16-A END-ADD.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FD16-A.
+           SUBTRACT FD16-B FROM FD16-A END-SUBTRACT.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 - FLOAT-DECIMAL-16'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FD16-A.
+           SUBTRACT 10   FROM FD16-A END-SUBTRACT.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FD34-B  TO FD34-A END-ADD.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 + FLOAT-DECIMAL-34'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO FD34-A.
+           ADD  10    TO FD34-A END-ADD.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FD34-A.
+           SUBTRACT FD34-B FROM FD34-A END-SUBTRACT.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 - FLOAT-DECIMAL-34'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FD34-A.
+           SUBTRACT 10   FROM FD34-A END-SUBTRACT.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FL-B  TO FL-A END-ADD.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-LONG + FLOAT-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO FL-A.
+           ADD  10    TO FL-A END-ADD.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FL-A.
+           SUBTRACT FL-B FROM FL-A END-SUBTRACT.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-LONG - FLOAT-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FL-A.
+           SUBTRACT 10   FROM FL-A END-SUBTRACT.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FS-B  TO FS-A END-ADD.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-SHORT + FLOAT-SHORT'
+              END-DISPLAY
+           END-IF.
+           MOVE 1     TO FS-A.
+           ADD  10    TO FS-A END-ADD.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 11
+              DISPLAY 'ERROR FLOAT-SHORT + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FS-A.
+           SUBTRACT FS-B FROM FS-A END-SUBTRACT.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-SHORT - FLOAT-SHORT'
+              END-DISPLAY
+           END-IF.
+           MOVE 11    TO FS-A.
+           SUBTRACT 10   FROM FS-A END-SUBTRACT.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 1
+              DISPLAY 'ERROR FLOAT-SHORT - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+AT_SETUP([Computing of different USAGEs w/- decimal point])
+AT_KEYWORDS([runmisc
+BINARY-C-LONG BINARY-CHAR BINARY-DOUBLE BINARY-LONG
+COMP COMP-1 COMP-2 COMP-3 COMP-5 COMP-6
+FLOAT-DECIMAL-16 FLOAT-DECIMAL-34 FLOAT-LONG FLOAT-SHORT])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. 'prog'.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      *        
+       77  BCL-A           BINARY-C-LONG    VALUE 1.0.
+       77  BCL-B           BINARY-C-LONG    VALUE 10.0.
+       77  BCL-RES         BINARY-C-LONG.
+      *        
+       77  BC-A            BINARY-CHAR      VALUE 1.0.
+       77  BC-B            BINARY-CHAR      VALUE 10.0.
+       77  BC-RES          BINARY-CHAR.
+      *        
+       77  BD-A            BINARY-DOUBLE    VALUE 1.0.
+       77  BD-B            BINARY-DOUBLE    VALUE 10.0.
+       77  BD-RES          BINARY-DOUBLE.
+      *        
+       77  BL-A            BINARY-LONG      VALUE 1.0.
+       77  BL-B            BINARY-LONG      VALUE 10.0.
+       77  BL-RES          BINARY-LONG.
+      *
+       77  C-A     PIC S99 COMP             VALUE 1.0.
+       77  C-B     PIC S99 COMP             VALUE 10.0.
+       77  C-RES   PIC S99 COMP.
+      *
+       77  C1-A            COMP-1           VALUE 1.0.
+       77  C1-B            COMP-1           VALUE 10.0.
+       77  C1-RES          COMP-1.
+      *        
+       77  C2-A            COMP-2           VALUE 1.0.
+       77  C2-B            COMP-2           VALUE 10.0.
+       77  C2-RES          COMP-2.
+      *
+       77  C3-A    PIC S99 COMP-3           VALUE 1.0.
+       77  C3-B    PIC S99 COMP-3           VALUE 10.0.
+       77  C3-RES  PIC S99 COMP-3.
+      *
+       77  C5-A    PIC S99 COMP-5           VALUE 1.0.
+       77  C5-B    PIC S99 COMP-5           VALUE 10.0.
+       77  C5-RES  PIC S99 COMP-5.
+      *
+       77  C6-A    PIC  99 COMP-6           VALUE 1.0.
+       77  C6-B    PIC  99 COMP-6           VALUE 10.0.
+       77  C6-RES  PIC  99 COMP-6.
+      *
+       77  D-A     PIC  S99                 VALUE 1.0.
+       77  D-B     PIC  S99                 VALUE 10.0.
+       77  D-RES   PIC  S99.
+      *        
+       77  FD16-A          FLOAT-DECIMAL-16 VALUE 1.0.
+       77  FD16-B          FLOAT-DECIMAL-16 VALUE 10.0.
+       77  FD16-RES        FLOAT-DECIMAL-16.
+      *        
+       77  FD34-A          FLOAT-DECIMAL-34 VALUE 1.0.
+       77  FD34-B          FLOAT-DECIMAL-34 VALUE 10.0.
+       77  FD34-RES        FLOAT-DECIMAL-34.
+      *        
+       77  FL-A            FLOAT-LONG       VALUE 1.0.
+       77  FL-B            FLOAT-LONG       VALUE 10.0.
+       77  FL-RES          FLOAT-LONG.
+      *        
+       77  FS-A            FLOAT-SHORT      VALUE 1.0.
+       77  FS-B            FLOAT-SHORT      VALUE 10.0.
+       77  FS-RES          FLOAT-SHORT.
+      *
+       PROCEDURE DIVISION.
+      *
+           ADD  BCL-B  TO BCL-A END-ADD.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-C-LONG + BINARY-C-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO BCL-A.
+           ADD  10.0  TO BCL-A END-ADD.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-C-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BCL-A.
+           SUBTRACT BCL-B FROM BCL-A END-SUBTRACT.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-C-LONG - BINARY-C-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BCL-A.
+           SUBTRACT 10.0 FROM BCL-A END-SUBTRACT.
+           MOVE BCL-A  TO BCL-RES.
+           IF BCL-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-C-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BC-B  TO BC-A END-ADD.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-CHAR + BINARY-CHAR'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO BC-A.
+           ADD  10.0  TO BC-A END-ADD.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-CHAR + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BC-A.
+           SUBTRACT BC-B FROM BC-A END-SUBTRACT.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-CHAR - BINARY-CHAR'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BC-A.
+           SUBTRACT 10.0 FROM BC-A END-SUBTRACT.
+           MOVE BC-A  TO BC-RES.
+           IF BC-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-CHAR - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BD-B  TO BD-A END-ADD.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-DOUBLE + BINARY-DOUBLE'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO BD-A.
+           ADD  10.0  TO BD-A END-ADD.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-DOUBLE + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BD-A.
+           SUBTRACT BD-B FROM BD-A END-SUBTRACT.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-DOUBLE - BINARY-DOUBLE'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BD-A.
+           SUBTRACT 10.0 FROM BD-A END-SUBTRACT.
+           MOVE BD-A  TO BD-RES.
+           IF BD-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-DOUBLE - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  BL-B  TO BL-A END-ADD.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-LONG + BINARY-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO BL-A.
+           ADD  10.0  TO BL-A END-ADD.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 11.0
+              DISPLAY 'ERROR BINARY-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BL-A.
+           SUBTRACT BL-B FROM BL-A END-SUBTRACT.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-LONG - BINARY-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO BL-A.
+           SUBTRACT 10.0 FROM BL-A END-SUBTRACT.
+           MOVE BL-A  TO BL-RES.
+           IF BL-RES NOT = 1.0
+              DISPLAY 'ERROR BINARY-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C-B  TO C-A END-ADD.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 11.0
+              DISPLAY 'ERROR COMP + COMP'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C-A.
+           ADD  10.0  TO C-A END-ADD.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 11.0
+              DISPLAY 'ERROR COMP + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C-A.
+           SUBTRACT C-B FROM C-A END-SUBTRACT.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 1.0
+              DISPLAY 'ERROR COMP - COMP'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C-A.
+           SUBTRACT 10.0 FROM C-A END-SUBTRACT.
+           MOVE C-A  TO C-RES.
+           IF C-RES NOT = 1.0
+              DISPLAY 'ERROR COMP - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C1-B  TO C1-A END-ADD.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-1 + COMP-1'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C1-A.
+           ADD  10.0  TO C1-A END-ADD.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-1 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C1-A.
+           SUBTRACT C1-B FROM C1-A END-SUBTRACT.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-1 - COMP-1'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C1-A.
+           SUBTRACT 10.0 FROM C1-A END-SUBTRACT.
+           MOVE C1-A  TO C1-RES.
+           IF C1-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-1 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C2-B  TO C2-A END-ADD.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-2 + COMP-2'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C2-A.
+           ADD  10.0  TO C2-A END-ADD.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-2 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C2-A.
+           SUBTRACT C2-B FROM C2-A END-SUBTRACT.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-2 - COMP-2'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C2-A.
+           SUBTRACT 10.0 FROM C2-A END-SUBTRACT.
+           MOVE C2-A  TO C2-RES.
+           IF C2-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-2 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C3-B  TO C3-A END-ADD.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-3 + COMP-3'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C3-A.
+           ADD  10.0  TO C3-A END-ADD.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-3 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C3-A.
+           SUBTRACT C3-B FROM C3-A END-SUBTRACT.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-3 - COMP-3'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C3-A.
+           SUBTRACT 10.0 FROM C3-A END-SUBTRACT.
+           MOVE C3-A  TO C3-RES.
+           IF C3-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-3 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C5-B  TO C5-A END-ADD.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-5 + COMP-5'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C5-A.
+           ADD  10.0  TO C5-A END-ADD.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-5 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C5-A.
+           SUBTRACT C5-B FROM C5-A END-SUBTRACT.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-5 - COMP-5'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C5-A.
+           SUBTRACT 10.0 FROM C5-A END-SUBTRACT.
+           MOVE C5-A  TO C5-RES.
+           IF C5-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-5 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  C6-B  TO C6-A END-ADD.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-6 + COMP-6'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO C6-A.
+           ADD  10.0  TO C6-A END-ADD.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 11.0
+              DISPLAY 'ERROR COMP-6 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C6-A.
+           SUBTRACT C6-B FROM C6-A END-SUBTRACT.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-6 - COMP-6'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO C6-A.
+           SUBTRACT 10.0 FROM C6-A END-SUBTRACT.
+           MOVE C6-A  TO C6-RES.
+           IF C6-RES NOT = 1.0
+              DISPLAY 'ERROR COMP-6 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  D-B  TO D-A END-ADD.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 11.0
+              DISPLAY 'ERROR DISPLAY + DISPLAY'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO D-A.
+           ADD  10.0  TO D-A END-ADD.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 11.0
+              DISPLAY 'ERROR DISPLAY + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO D-A.
+           SUBTRACT D-B FROM D-A END-SUBTRACT.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 1.0
+              DISPLAY 'ERROR DISPLAY - DISPLAY'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO D-A.
+           SUBTRACT 10.0 FROM D-A END-SUBTRACT.
+           MOVE D-A  TO D-RES.
+           IF D-RES NOT = 1.0
+              DISPLAY 'ERROR DISPLAY - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FD16-B  TO FD16-A END-ADD.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 + FLOAT-DECIMAL-16'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO FD16-A.
+           ADD  10.0  TO FD16-A END-ADD.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FD16-A.
+           SUBTRACT FD16-B FROM FD16-A END-SUBTRACT.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 - FLOAT-DECIMAL-16'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FD16-A.
+           SUBTRACT 10.0 FROM FD16-A END-SUBTRACT.
+           MOVE FD16-A  TO FD16-RES.
+           IF FD16-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-16 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FD34-B  TO FD34-A END-ADD.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 + FLOAT-DECIMAL-34'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO FD34-A.
+           ADD  10.0  TO FD34-A END-ADD.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FD34-A.
+           SUBTRACT FD34-B FROM FD34-A END-SUBTRACT.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 - FLOAT-DECIMAL-34'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FD34-A.
+           SUBTRACT 10.0 FROM FD34-A END-SUBTRACT.
+           MOVE FD34-A  TO FD34-RES.
+           IF FD34-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-DECIMAL-34 - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FL-B  TO FL-A END-ADD.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-LONG + FLOAT-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO FL-A.
+           ADD  10.0  TO FL-A END-ADD.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-LONG + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FL-A.
+           SUBTRACT FL-B FROM FL-A END-SUBTRACT.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-LONG - FLOAT-LONG'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FL-A.
+           SUBTRACT 10.0 FROM FL-A END-SUBTRACT.
+           MOVE FL-A  TO FL-RES.
+           IF FL-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-LONG - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           ADD  FS-B  TO FS-A END-ADD.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-SHORT + FLOAT-SHORT'
+              END-DISPLAY
+           END-IF.
+           MOVE 1.0   TO FS-A.
+           ADD  10.0  TO FS-A END-ADD.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 11.0
+              DISPLAY 'ERROR FLOAT-SHORT + NUM'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FS-A.
+           SUBTRACT FS-B FROM FS-A END-SUBTRACT.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-SHORT - FLOAT-SHORT'
+              END-DISPLAY
+           END-IF.
+           MOVE 11.0  TO FS-A.
+           SUBTRACT 10.0 FROM FS-A END-SUBTRACT.
+           MOVE FS-A  TO FS-RES.
+           IF FS-RES NOT = 1.0
+              DISPLAY 'ERROR FLOAT-SHORT - NUM'
+              END-DISPLAY
+           END-IF.
+      *
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
 AT_SETUP([C/C++ reserved words/predefined identifiers])
 AT_KEYWORDS([runmisc])
 
