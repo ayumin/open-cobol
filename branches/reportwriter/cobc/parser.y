@@ -7913,7 +7913,36 @@ perform_varying_list:
 perform_varying:
   identifier FROM x BY x UNTIL condition
   {
-	$$ = cb_build_perform_varying ($1, $3, $5, $7);
+	cb_tree		x;
+	int		dataTypeOk = 1;
+
+	if (cb_tree_category ($1) != CB_CATEGORY_NUMERIC) {
+		x = cb_ref ($1);
+		cb_error_x (CB_TREE (current_statement),
+			_("PERFORM VARYING '%s' (Line %d of %s) is not a numeric field"), 
+					cb_name (x),x->source_line, x->source_file);
+		$$ = cb_int1;
+		dataTypeOk = 0;
+	} 
+	if (cb_tree_category ($3) != CB_CATEGORY_NUMERIC) {
+		x = cb_ref ($3);
+		cb_error_x (CB_TREE (current_statement),
+			_("PERFORM VARYING '%s' (Line %d of %s) is not a numeric field"), 
+					cb_name (x),x->source_line, x->source_file);
+		$$ = cb_int1;
+		dataTypeOk = 0;
+	} 
+	if (cb_tree_category ($5) != CB_CATEGORY_NUMERIC) {
+		x = cb_ref ($5);
+		cb_error_x (CB_TREE (current_statement),
+			_("PERFORM VARYING '%s' (Line %d of %s) is not a numeric field"), 
+					cb_name (x),x->source_line, x->source_file);
+		$$ = cb_int1;
+		dataTypeOk = 0;
+	} 
+	if(dataTypeOk) {
+		$$ = cb_build_perform_varying ($1, $3, $5, $7);
+	}
   }
 ;
 
