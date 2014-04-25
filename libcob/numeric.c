@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol runtime library is free software: you can redistribute it
+   The OpenCOBOL runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -2176,10 +2176,10 @@ cob_add_int (cob_field *f, const int n, const int opt)
 	int	scale;
 	int	val;
 
+#if	0	/* RXWRXW - Buggy */
 	if (unlikely(n == 0)) {
 		return 0;
 	}
-#if	0	/* RXWRXW - Buggy */
 	if (COB_FIELD_TYPE (f) == COB_TYPE_NUMERIC_PACKED) {
 		return cob_add_packed (f, n, opt);
 	} else if (COB_FIELD_TYPE (f) == COB_TYPE_NUMERIC_DISPLAY) {
@@ -2188,7 +2188,28 @@ cob_add_int (cob_field *f, const int n, const int opt)
 #endif
 	/* Not optimized */
 	cob_decimal_set_field (&cob_d1, f);
-	scale = COB_FIELD_SCALE (f);
+#if 0	
+	mpz_set_si (cob_d2.value, n);
+	cob_d2.scale = 0;
+	if (cob_d1.scale) {
+		mpz_ui_pow_ui (cob_mexp, 10, (unsigned int)cob_d1.scale);
+		mpz_mul (cob_d2.value, cob_d2.value, cob_mexp);
+		cob_d2.scale = cob_d1.scale;
+	}
+	mpz_add (cob_d1.value, cob_d1.value, cob_d2.value);
+	return cob_decimal_get_field (&cob_d1, f, opt);
+#else
+	/* RJN: April 2014; I am not sure why the code 
+		   was scaling the 'integer' as that resulted in
+		   and incorrect value
+	   The above code is from OpenCOBOL 1.1 and does work
+	   This following code is removed...
+	*/
+	if (COB_FIELD_TYPE (f) >= COB_TYPE_NUMERIC_FLOAT
+	&&  COB_FIELD_TYPE (f) <= COB_TYPE_NUMERIC_FP_BIN128)
+		scale = 0;
+	else
+		scale = COB_FIELD_SCALE (f);
 	val = n;
 	if (unlikely(scale < 0)) {
 		/* PIC 9(n)P(m) */
@@ -2213,6 +2234,7 @@ cob_add_int (cob_field *f, const int n, const int opt)
 	}
 	mpz_add (cob_d1.value, cob_d1.value, cob_d2.value);
 	return cob_decimal_get_field (&cob_d1, f, opt);
+#endif
 }
 
 int

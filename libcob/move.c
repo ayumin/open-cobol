@@ -2,20 +2,20 @@
    Copyright (C) 2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol runtime library is free software: you can redistribute it
+   The OpenCOBOL runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -537,22 +537,22 @@ cob_move_packed_to_display (cob_field *f1, cob_field *f2)
 /* Floating point */
 
 static void
-cob_move_fp_to_fp (cob_field *f1, cob_field *f2)
+cob_move_fp_to_fp (cob_field *src, cob_field *dst)
 {
 	double	dfp;
 	float	ffp;
 
-	if (COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy ((void *)&ffp, f2->data, sizeof(float));
+	if (COB_FIELD_TYPE (src) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy ((void *)&ffp, src->data, sizeof(float));
 		dfp = ffp;
 	} else {
-		memcpy ((void *)&dfp, f2->data, sizeof(double));
+		memcpy ((void *)&dfp, src->data, sizeof(double));
 		ffp = (float)dfp;
 	}
-	if (COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy (f2->data, (void *)&ffp, sizeof(float));
+	if (COB_FIELD_TYPE (dst) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy (dst->data, (void *)&ffp, sizeof(float));
 	} else {
-		memcpy (f2->data, (void *)&dfp, sizeof(double));
+		memcpy (dst->data, (void *)&dfp, sizeof(double));
 	}
 }
 
