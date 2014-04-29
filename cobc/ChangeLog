@@ -1,3 +1,9 @@
+2014-04-29  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* codeoptim.c : Fixed bug in COB_ADD_PACKED_INT. 
+		Computing COMP-3 failed in MSVC-build versions, 
+		in output_storage() calls '%' should be '%%'.
+
 2014-03-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* field.c : Added check for maximum size of group/alphanumeric items

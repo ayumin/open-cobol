@@ -2190,33 +2190,44 @@ cob_add_int (cob_field *f, const int n, const int opt)
 		return cob_display_add_int (f, n, opt);
 	}
 #endif
+
 	/* Not optimized */
 	cob_decimal_set_field (&cob_d1, f);
-	scale = COB_FIELD_SCALE (f);
-	val = n;
-	if (unlikely(scale < 0)) {
-		/* PIC 9(n)P(m) */
-		if (-scale < 10) {
-			while (scale++) {
-				val /= 10;
+
+	if (COB_FIELD_TYPE (f) >= COB_TYPE_NUMERIC_FLOAT
+	&&  COB_FIELD_TYPE (f) <= COB_TYPE_NUMERIC_FP_BIN128) {
+		mpz_set_si (cob_d2.value, (cob_sli_t) n);
+		cob_d2.scale = 0;
+		mpz_add (cob_d1.value, cob_d1.value, cob_d2.value);
+		return cob_decimal_get_field (&cob_d1, f, opt);
+	}
+	else {
+		scale = COB_FIELD_SCALE (f);
+		val = n;
+		if (unlikely(scale < 0)) {
+			/* PIC 9(n)P(m) */
+			if (-scale < 10) {
+				while (scale++) {
+					val /= 10;
+				}
+			} else {
+				val = 0;
 			}
-		} else {
-			val = 0;
+			scale = 0;
+			if (!val) {
+				return 0;
+			}
 		}
-		scale = 0;
-		if (!val) {
-			return 0;
+		mpz_set_si (cob_d2.value, (cob_sli_t)val);
+		cob_d2.scale = 0;
+		if (scale > 0) {
+			mpz_ui_pow_ui (cob_mexp, 10UL, (cob_uli_t)scale);
+			mpz_mul (cob_d2.value, cob_d2.value, cob_mexp);
+			cob_d2.scale = cob_d1.scale;
 		}
+		mpz_add (cob_d1.value, cob_d1.value, cob_d2.value);
+		return cob_decimal_get_field (&cob_d1, f, opt);
 	}
-	mpz_set_si (cob_d2.value, (cob_sli_t)val);
-	cob_d2.scale = 0;
-	if (scale > 0) {
-		mpz_ui_pow_ui (cob_mexp, 10UL, (cob_uli_t)scale);
-		mpz_mul (cob_d2.value, cob_d2.value, cob_mexp);
-		cob_d2.scale = cob_d1.scale;
-	}
-	mpz_add (cob_d1.value, cob_d1.value, cob_d2.value);
-	return cob_decimal_get_field (&cob_d1, f, opt);
 }
 
 int
