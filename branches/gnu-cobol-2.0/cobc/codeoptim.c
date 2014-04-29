@@ -178,21 +178,21 @@ cob_gen_optim (const enum cb_optim val)
 		output_storage ("		}");
 		output_storage ("		n = val;");
 		output_storage ("	}");
-		output_storage ("	inc = (*p >> 4) + (n % 10);");
+		output_storage ("	inc = (*p >> 4) + (n %% 10);");
 		output_storage ("	n /= 10;");
 		output_storage ("	carry = inc / 10;");
-		output_storage ("	*p = ((inc % 10) << 4) | (*p & 0x0f);");
+		output_storage ("	*p = ((inc %% 10) << 4) | (*p & 0x0f);");
 		output_storage ("	p--;");
 
 		output_storage ("	for (size = 0; size < f->size - 1; ++size, --p) {");
 		output_storage ("		if (!carry && !n) {");
 		output_storage ("			break;");
 		output_storage ("		}");
-		output_storage ("		inc = ((*p >> 4) * 10) + (*p & 0x0f) + carry + (n % 100);");
+		output_storage ("		inc = ((*p >> 4) * 10) + (*p & 0x0f) + carry + (n %% 100);");
 		output_storage ("		carry = inc / 100;");
 		output_storage ("		n /= 100;");
-		output_storage ("		inc %= 100;");
-		output_storage ("		*p = ((inc / 10) << 4) | (inc % 10);");
+		output_storage ("		inc %%= 100;");
+		output_storage ("		*p = ((inc / 10) << 4) | (inc %% 10);");
 		output_storage ("	}");
 		output_storage ("	return 0;");
 		output_storage ("}");

@@ -19,8 +19,6 @@
 ### GNU Cobol Test Suite
 
 AT_SETUP([Source file not found])
-AT_KEYWORDS([runmisc])
-
 AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
 [cobc: prog.cob: No such file or directory
 ])
@@ -505,7 +503,7 @@ AT_DATA([prog.cob], [
            END-DISPLAY.
            DISPLAY '_'
            END-DISPLAY.
-           MOVE 
+           MOVE
            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
       -    "89abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
       -    "6789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123
@@ -2640,28 +2638,26 @@ BINARY-C-LONG BINARY-CHAR BINARY-DOUBLE BINARY-LONG
 COMP COMP-1 COMP-2 COMP-3 COMP-5 COMP-6
 FLOAT-DECIMAL-16 FLOAT-DECIMAL-34 FLOAT-LONG FLOAT-SHORT])
 
-# 2.x version currently has a bug here:
-AT_XFAIL_IF(true)
-
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
        PROGRAM-ID. 'prog'.
        ENVIRONMENT DIVISION.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-      *        
+
+      *
        77  BCL-A           BINARY-C-LONG    VALUE 1.
        77  BCL-B           BINARY-C-LONG    VALUE 10.
        77  BCL-RES         BINARY-C-LONG.
-      *        
+      *
        77  BC-A            BINARY-CHAR      VALUE 1.
        77  BC-B            BINARY-CHAR      VALUE 10.
        77  BC-RES          BINARY-CHAR.
-      *        
+      *
        77  BD-A            BINARY-DOUBLE    VALUE 1.
        77  BD-B            BINARY-DOUBLE    VALUE 10.
        77  BD-RES          BINARY-DOUBLE.
-      *        
+      *
        77  BL-A            BINARY-LONG      VALUE 1.
        77  BL-B            BINARY-LONG      VALUE 10.
        77  BL-RES          BINARY-LONG.
@@ -2673,7 +2669,7 @@ AT_DATA([prog.cob], [
        77  C1-A            COMP-1           VALUE 1.
        77  C1-B            COMP-1           VALUE 10.
        77  C1-RES          COMP-1.
-      *        
+      *
        77  C2-A            COMP-2           VALUE 1.
        77  C2-B            COMP-2           VALUE 10.
        77  C2-RES          COMP-2.
@@ -2693,19 +2689,19 @@ AT_DATA([prog.cob], [
        77  D-A     PIC  S99                 VALUE 1.
        77  D-B     PIC  S99                 VALUE 10.
        77  D-RES   PIC  S99.
-      *        
+      *
        77  FD16-A          FLOAT-DECIMAL-16 VALUE 1.
        77  FD16-B          FLOAT-DECIMAL-16 VALUE 10.
        77  FD16-RES        FLOAT-DECIMAL-16.
-      *        
+      *
        77  FD34-A          FLOAT-DECIMAL-34 VALUE 1.
        77  FD34-B          FLOAT-DECIMAL-34 VALUE 10.
        77  FD34-RES        FLOAT-DECIMAL-34.
-      *        
+      *
        77  FL-A            FLOAT-LONG       VALUE 1.
        77  FL-B            FLOAT-LONG       VALUE 10.
        77  FL-RES          FLOAT-LONG.
-      *        
+      *
        77  FS-A            FLOAT-SHORT      VALUE 1.
        77  FS-B            FLOAT-SHORT      VALUE 10.
        77  FS-RES          FLOAT-SHORT.
@@ -3153,19 +3149,20 @@ AT_DATA([prog.cob], [
        ENVIRONMENT DIVISION.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-      *        
+
+      *
        77  BCL-A           BINARY-C-LONG    VALUE 1.0.
        77  BCL-B           BINARY-C-LONG    VALUE 10.0.
        77  BCL-RES         BINARY-C-LONG.
-      *        
+      *
        77  BC-A            BINARY-CHAR      VALUE 1.0.
        77  BC-B            BINARY-CHAR      VALUE 10.0.
        77  BC-RES          BINARY-CHAR.
-      *        
+      *
        77  BD-A            BINARY-DOUBLE    VALUE 1.0.
        77  BD-B            BINARY-DOUBLE    VALUE 10.0.
        77  BD-RES          BINARY-DOUBLE.
-      *        
+      *
        77  BL-A            BINARY-LONG      VALUE 1.0.
        77  BL-B            BINARY-LONG      VALUE 10.0.
        77  BL-RES          BINARY-LONG.
@@ -3177,7 +3174,7 @@ AT_DATA([prog.cob], [
        77  C1-A            COMP-1           VALUE 1.0.
        77  C1-B            COMP-1           VALUE 10.0.
        77  C1-RES          COMP-1.
-      *        
+      *
        77  C2-A            COMP-2           VALUE 1.0.
        77  C2-B            COMP-2           VALUE 10.0.
        77  C2-RES          COMP-2.
@@ -3197,19 +3194,19 @@ AT_DATA([prog.cob], [
        77  D-A     PIC  S99                 VALUE 1.0.
        77  D-B     PIC  S99                 VALUE 10.0.
        77  D-RES   PIC  S99.
-      *        
+      *
        77  FD16-A          FLOAT-DECIMAL-16 VALUE 1.0.
        77  FD16-B          FLOAT-DECIMAL-16 VALUE 10.0.
        77  FD16-RES        FLOAT-DECIMAL-16.
-      *        
+      *
        77  FD34-A          FLOAT-DECIMAL-34 VALUE 1.0.
        77  FD34-B          FLOAT-DECIMAL-34 VALUE 10.0.
        77  FD34-RES        FLOAT-DECIMAL-34.
-      *        
+      *
        77  FL-A            FLOAT-LONG       VALUE 1.0.
        77  FL-B            FLOAT-LONG       VALUE 10.0.
        77  FL-RES          FLOAT-LONG.
-      *        
+      *
        77  FS-A            FLOAT-SHORT      VALUE 1.0.
        77  FS-B            FLOAT-SHORT      VALUE 10.0.
        77  FS-RES          FLOAT-SHORT.
