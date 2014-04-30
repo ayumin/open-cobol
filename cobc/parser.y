@@ -7091,10 +7091,13 @@ goto_depending:
 /* GOBACK statement */
 
 goback_statement:
-  GOBACK
+  GOBACK exit_program_returning
   {
 	begin_statement ("GOBACK", 0);
 	check_unreached = 1;
+	if ($2 != NULL) {
+		cb_emit_move ($2, CB_LIST_INIT (current_program->cb_return_code));
+	}
 	cb_emit_exit (1U);
   }
 ;

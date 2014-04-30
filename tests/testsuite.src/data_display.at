@@ -60,7 +60,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -fsign=ascii -o prog prog.cob])
+AT_CHECK([$COMPILE -fsign=ascii -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0],
 [12340
 12340
@@ -117,7 +117,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -fsign=ascii  -o prog prog.cob])
+AT_CHECK([$COMPILE -fsign=ascii  -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [0123456789pqrstuvwxy])
 
 AT_CLEANUP
@@ -163,7 +163,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -fsign=ebcdic -o prog prog.cob])
+AT_CHECK([$COMPILE -fsign=ebcdic -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [{ABCDEFGHI}JKLMNOPQR])
 
 AT_CLEANUP

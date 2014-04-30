@@ -41,7 +41,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [1])
 
 AT_CLEANUP
@@ -91,9 +91,9 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_MODULE mod1.cob])
-AT_CHECK([$COMPILE_MODULE mod2.cob])
-AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([$COMPILE_MODULE mod1.cob], [0], , [])
+AT_CHECK([$COMPILE_MODULE mod2.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -130,7 +130,7 @@ AT_DATA([prog.cob], [
        END PROGRAM prog.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob])
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP

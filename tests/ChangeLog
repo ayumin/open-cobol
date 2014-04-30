@@ -1,3 +1,8 @@
+2014-04-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* testsuite.src/*.at : Added check for cobc's exit code and stderr
+		where missing
+
 2014-14-04  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* testsuite.src/run_extensions.at : Added tests for getopt.
