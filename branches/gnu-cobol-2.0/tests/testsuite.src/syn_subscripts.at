@@ -18,7 +18,120 @@
 
 ### GNU Cobol Test Suite
 
-### ISO+IEC+1989-2002 8.4.1.2 Subscripts
+### ISO+IEC+1989-2002 8.4.1.2 Subscripts## 8.4.1.2.3 General rules
+
+AT_SETUP([Non-numeric subscript])
+AT_KEYWORDS([subscripts])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 G1.
+         02 X           PIC X OCCURS 10.
+       01 I             PIC X.
+       PROCEDURE        DIVISION.
+           DISPLAY X(I)
+           END-DISPLAY.
+           DISPLAY X(I + 1)
+           END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 10: Error: 'I' is not an integer value
+prog.cob: 12: Error: 'I' is not a numeric value
+])
+
+AT_CLEANUP
+
+AT_SETUP([Subscript range check])
+AT_KEYWORDS([subscripts])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 G1.
+         02 X           OCCURS 2.
+           03 Y         PIC X OCCURS 3.
+       PROCEDURE        DIVISION.
+           DISPLAY X(0)
+           END-DISPLAY.
+           DISPLAY X(1)
+           END-DISPLAY.
+           DISPLAY X(2)
+           END-DISPLAY.
+           DISPLAY X(3)
+           END-DISPLAY.
+           DISPLAY Y(1, 0)
+           END-DISPLAY.
+           DISPLAY Y(1, 1)
+           END-DISPLAY.
+           DISPLAY Y(1, 3)
+           END-DISPLAY.
+           DISPLAY Y(1, 4)
+           END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 10: Error: Subscript of 'X' out of bounds: 0
+prog.cob: 16: Error: Subscript of 'X' out of bounds: 3
+prog.cob: 18: Error: Subscript of 'Y' out of bounds: 0
+prog.cob: 24: Error: Subscript of 'Y' out of bounds: 4
+])
+
+AT_CLEANUP
+
+AT_SETUP([Subscript bounds with ODO (lower)])
+AT_KEYWORDS([runsubscripts subscripts])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 G.
+         02 X           PIC X OCCURS 4 TO 6 DEPENDING ON N.
+       01 N             PIC 9 VALUE 4.
+       PROCEDURE        DIVISION.
+           DISPLAY X(0)
+           END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 10: Error: Subscript of 'X' out of bounds: 0
+])
+
+AT_CLEANUP
+
+AT_SETUP([Subscript bounds with ODO (upper)])
+AT_KEYWORDS([runsubscripts subscripts])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 G.
+         02 X           PIC X OCCURS 4 TO 6 DEPENDING ON N.
+       01 N             PIC 9 VALUE 4.
+       PROCEDURE        DIVISION.
+           DISPLAY X(7)
+           END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 10: Error: Subscript of 'X' out of bounds: 7
+])
+
+AT_CLEANUP
+
 
 ## 8.4.1.2.2 Syntax rules
 

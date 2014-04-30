@@ -1,6 +1,6 @@
 2014-04-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* parser.* : Added extension "EXIT PROGRAM RETURNING/GIVING x"
+	* parser.* : Added extension "GOBACK/EXIT PROGRAM RETURNING/GIVING x"
 
 2014-04-29  Philipp Böhme <phi.boehme@googlemail.com>
 
