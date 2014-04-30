@@ -6890,7 +6890,7 @@ exit_statement:
 
 exit_body:
   /* empty */	%prec SHIFT_PREFER
-| PROGRAM
+| PROGRAM exit_program_returning
   {
 	if (in_declaratives && use_global_ind) {
 		cb_error_x (CB_TREE (current_statement),
@@ -6904,6 +6904,9 @@ exit_body:
 		check_unreached = 0;
 	} else {
 		check_unreached = 1;
+	}
+	if ($2 != NULL) {
+		cb_emit_move ($2, CB_LIST_INIT (current_program->cb_return_code));
 	}
 	current_statement->name = (const char *)"EXIT PROGRAM";
 	cb_emit_exit (0);
@@ -7007,6 +7010,12 @@ exit_body:
 	}
   }
 ;
+
+exit_program_returning:
+  /* empty */			{ $$ = NULL; }
+| return_give x		{ $$ = $2; }
+;
+
 
 /* FREE statement */
 
@@ -8390,11 +8399,7 @@ stop_returning:
   {
 	$$ = current_program->cb_return_code;
   }
-| RETURNING x
-  {
-	$$ = $2;
-  }
-| GIVING x
+| return_give x
   {
 	$$ = $2;
   }
