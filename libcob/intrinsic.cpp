@@ -466,29 +466,20 @@ calc_ref_mod(cob_field * f, const int offset, const int length)
 	}
 }
 
-/* Decimal <-> Decimal */
-
-static COB_INLINE COB_A_INLINE void
-cob_decimal_set(cob_decimal * dst, const cob_decimal * src)
-{
-	mpz_set(dst->value, src->value);
-	dst->scale = src->scale;
-}
-
 /* Trim trailing zeros in decimal places */
 static void
 cob_trim_decimal(cob_decimal * d)
 {
-	if(!mpz_sgn(d->value)) {
+	if(!sgn(d->value)) {
 		/* Value is zero */
 		d->scale = 0;
 		return;
 	}
 	for(; d->scale > 0; d->scale--) {
-		if(!mpz_divisible_ui_p(d->value, 10UL)) {
+		if(!mpz_divisible_ui_p(d->value.get_mpz_t(), 10UL)) {
 			break;
 		}
-		mpz_tdiv_q_ui(d->value, d->value, 10UL);
+		mpz_tdiv_q_ui(d->value.get_mpz_t(), d->value.get_mpz_t(), 10UL);
 	}
 }
 
@@ -525,7 +516,7 @@ cob_alloc_field(cob_decimal * d)
 
 	size_t sign;
 	size_t attrsign;
-	if(mpz_sgn(d->value) < 0) {
+	if(sgn(d->value) < 0) {
 		attrsign = COB_FLAG_HAVE_SIGN;
 		sign = 1;
 	} else {
@@ -535,7 +526,7 @@ cob_alloc_field(cob_decimal * d)
 
 	cob_trim_decimal(d);
 
-	size_t bitnum = mpz_sizeinbase(d->value, 2);
+	size_t bitnum = mpz_sizeinbase(d->value.get_mpz_t(), 2);
 	if(bitnum < (33 - sign) && d->scale < 10) {
 		/* 4 bytes binary */
 		cob_field_attr attr(COB_TYPE_NUMERIC_BINARY, 9, d->scale, (unsigned int) attrsign, NULL);
@@ -548,7 +539,7 @@ cob_alloc_field(cob_decimal * d)
 		make_field_entry(&field);
 	} else {
 		/* Display decimal */
-		int size = (int)mpz_sizeinbase(d->value, 10);
+		int size = (int)mpz_sizeinbase(d->value.get_mpz_t(), 10);
 		if(d->scale > size) {
 			size = d->scale;
 		}
@@ -568,7 +559,7 @@ cob_mod_or_rem(cob_field * f1, cob_field * f2, const int func_is_rem)
 	cob_decimal_set_field(&d2, f1);
 	cob_decimal_set_field(&d3, f2);
 
-	if(!mpz_sgn(d3.value)) {
+	if(!sgn(d3.value)) {
 		/* Divide by zero */
 		cob_set_exception(COB_EC_SIZE_ZERO_DIVIDE);
 		cob_alloc_set_field_uint(0);
@@ -580,19 +571,19 @@ cob_mod_or_rem(cob_field * f1, cob_field * f2, const int func_is_rem)
 	/* Caclulate integer / integer-part */
 	if(d2.scale < 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)-d2.scale);
-		mpz_mul(d2.value, d2.value, cob_mexp);
+		mpz_mul(d2.value.get_mpz_t(), d2.value.get_mpz_t(), cob_mexp);
 	} else if(d2.scale > 0) {
-		int sign = mpz_sgn(d2.value);
+		int sign = sgn(d2.value);
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)d2.scale);
 		if(func_is_rem) {
 			/* REMAINDER function - INTEGER-PART */
-			mpz_tdiv_q(d2.value, d2.value, cob_mexp);
+			mpz_tdiv_q(d2.value.get_mpz_t(), d2.value.get_mpz_t(), cob_mexp);
 		} else {
 			/* MOD function - INTEGER */
-			mpz_tdiv_qr(d2.value, cob_mpzt, d2.value, cob_mexp);
+			mpz_tdiv_qr(d2.value.get_mpz_t(), cob_mpzt, d2.value.get_mpz_t(), cob_mexp);
 			/* Check negative and has decimal places */
 			if(sign < 0 && mpz_sgn(cob_mpzt)) {
-				mpz_sub_ui(d2.value, d2.value, 1UL);
+				mpz_sub_ui(d2.value.get_mpz_t(), d2.value.get_mpz_t(), 1UL);
 			}
 		}
 	}
@@ -955,14 +946,13 @@ static void
 cob_decimal_set_mpf(cob_decimal * d, const mpf_t src)
 {
 	if(!mpf_sgn(src)) {
-		mpz_set_ui(d->value, 0UL);
-		d->scale = 0;
+		*d = 0;
 		return;
 	}
 	char str[98];
 	cob_sli_t scale;
 	char * p = mpf_get_str(str, &scale, 10, 96, src);
-	mpz_set_str(d->value, p, 10);
+	d->value.set_str(p, 10);
 	if(*p == '-') {
 		++p;
 	}
@@ -972,7 +962,7 @@ cob_decimal_set_mpf(cob_decimal * d, const mpf_t src)
 		d->scale = len;
 	} else {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)-len);
-		mpz_mul(d->value, d->value, cob_mexp);
+		mpz_mul(d->value.get_mpz_t(), d->value.get_mpz_t(), cob_mexp);
 		d->scale = 0;
 	}
 }
@@ -980,7 +970,7 @@ cob_decimal_set_mpf(cob_decimal * d, const mpf_t src)
 static void
 cob_decimal_get_mpf(mpf_t dst, const cob_decimal * d)
 {
-	mpf_set_z(dst, d->value);
+	mpf_set_z(dst, d->value.get_mpz_t());
 	cob_sli_t scale = d->scale;
 	if(scale < 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)-scale);
@@ -1022,7 +1012,11 @@ cob_mpf_exp(mpf_t dst_val, const mpf_t src_val)
 		is_negative = false;
 	}
 
+#if defined(_WIN64)
+	cob_s64_t expon;
+#else
 	cob_sli_t expon;
+#endif
 	mpf_get_d_2exp(&expon, vf1);
 	if(expon > 0) {
 		mpf_div_2exp(vf1, vf1, (cob_uli_t)expon);
@@ -1076,7 +1070,11 @@ cob_mpf_log(mpf_t dst_val, const mpf_t src_val)
 	mpf_init2(vf4, COB_MPF_PREC);
 
 	mpf_set_ui(dst_temp, 0UL);
+#if defined(_WIN64)
+	cob_s64_t expon;
+#else
 	cob_sli_t expon;
+#endif
 	mpf_get_d_2exp(&expon, vf1);
 	if(expon != 0) {
 		mpf_set(dst_temp, cob_log_half);
@@ -1165,7 +1163,7 @@ cob_mpf_sin(mpf_t dst_val, const mpf_t src_val)
 		mpf_set(vf2, vf4);
 	}
 
-	cob_uli_t arcquad = mpf_get_ui(vf2);
+	cob_uli_t arcquad = (cob_uli_t) mpf_get_ui(vf2);
 	mpf_sub(vf2, vf1, vf4);
 	mpf_mul(vf4, vf3, vf2);
 
@@ -1424,16 +1422,15 @@ cob_decimal_pow(cob_decimal * pd1, cob_decimal * pd2)
 		return;
 	}
 
-	int sign = mpz_sgn(pd1->value);
+	int sign = sgn(pd1->value);
 
-	if(!mpz_sgn(pd2->value)) {
+	if(!sgn(pd2->value)) {
 		/* Exponent is zero */
 		if(!sign) {
 			/* 0 ^ 0 */
 			cob_set_exception(COB_EC_SIZE_EXPONENTIATION);
 		}
-		mpz_set_ui(pd1->value, 1UL);
-		pd1->scale = 0;
+		*pd1 = 1;
 		return;
 	}
 	if(!sign) {
@@ -1455,30 +1452,29 @@ cob_decimal_pow(cob_decimal * pd1, cob_decimal * pd2)
 
 	if(!pd2->scale) {
 		/* Integer power */
-		if(!mpz_cmp_ui(pd2->value, 1UL)) {
+		if(pd2->value == 1) {
 			/* Power is 1 */
 			return;
 		}
-		if(mpz_sgn(pd2->value) < 0 && mpz_fits_slong_p(pd2->value)) {
+		if(sgn(pd2->value) < 0 && mpz_fits_slong_p(pd2->value.get_mpz_t())) {
 			/* Negative power */
-			mpz_abs(pd2->value, pd2->value);
-			cob_uli_t n = mpz_get_ui(pd2->value);
-			mpz_pow_ui(pd1->value, pd1->value, n);
+			mpz_abs(pd2->value.get_mpz_t(), pd2->value.get_mpz_t());
+			cob_uli_t n = (cob_uli_t) pd2->value.get_ui();
+			mpz_pow_ui(pd1->value.get_mpz_t(), pd1->value.get_mpz_t(), n);
 			if(pd1->scale) {
 				pd1->scale *= n;
 				cob_trim_decimal(pd1);
 			}
-			cob_decimal_set(pd2, pd1);
-			mpz_set_ui(pd1->value, 1UL);
-			pd1->scale = 0;
+			*pd2 = *pd1;
+			*pd1 = 1;
 			cob_decimal_div(pd1, pd2);
 			cob_trim_decimal(pd1);
 			return;
 		}
-		if(mpz_fits_ulong_p(pd2->value)) {
+		if(mpz_fits_ulong_p(pd2->value.get_mpz_t())) {
 			/* Positive power */
-			cob_uli_t n = mpz_get_ui(pd2->value);
-			mpz_pow_ui(pd1->value, pd1->value, n);
+			cob_uli_t n = (cob_uli_t) pd2->value.get_ui();
+			mpz_pow_ui(pd1->value.get_mpz_t(), pd1->value.get_mpz_t(), n);
 			if(pd1->scale) {
 				pd1->scale *= n;
 				cob_trim_decimal(pd1);
@@ -1488,10 +1484,10 @@ cob_decimal_pow(cob_decimal * pd1, cob_decimal * pd2)
 	}
 
 	if(sign < 0) {
-		mpz_abs(pd1->value, pd1->value);
+		mpz_abs(pd1->value.get_mpz_t(), pd1->value.get_mpz_t());
 	}
 	cob_decimal_get_mpf(cob_mpft, pd1);
-	if(pd2->scale == 1 && !mpz_cmp_ui(pd2->value, 5UL)) {
+	if(pd2->scale == 1 && pd2->value == 5) {
 		/* Square root short cut */
 		mpf_sqrt(cob_mpft2, cob_mpft);
 	} else {
@@ -1502,7 +1498,7 @@ cob_decimal_pow(cob_decimal * pd1, cob_decimal * pd2)
 	}
 	cob_decimal_set_mpf(pd1, cob_mpft2);
 	if(sign < 0) {
-		mpz_neg(pd1->value, pd1->value);
+		mpz_neg(pd1->value.get_mpz_t(), pd1->value.get_mpz_t());
 	}
 }
 
@@ -1530,7 +1526,7 @@ cob_decimal_move_temp(cob_field * src, cob_field * dst)
 	cob_decimal_set_field(&d1, src);
 	cob_trim_decimal(&d1);
 
-	int size = (int)mpz_sizeinbase(d1.value, 10);
+	int size = (int)mpz_sizeinbase(d1.value.get_mpz_t(), 10);
 	if(d1.scale > size) {
 		size = d1.scale;
 	}
@@ -1561,11 +1557,10 @@ cob_intr_binop(cob_field * f1, const int op, cob_field * f2)
 		break;
 	case '/':
 		cob_set_exception(0);
-		if(!mpz_sgn(d2.value)) {
+		if(!sgn(d2.value)) {
 			/* Divide by zero */
 			cob_set_exception(COB_EC_SIZE_ZERO_DIVIDE);
-			mpz_set_ui(d1.value, 0UL);
-			d1.scale = 0;
+			d1 = 0;
 		} else {
 			cob_decimal_div(&d1, &d2);
 		}
@@ -1609,14 +1604,14 @@ cob_intr_integer(cob_field * srcfield)
 	/* Check scale */
 	if(d1.scale < 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)-d1.scale);
-		mpz_mul(d1.value, d1.value, cob_mexp);
+		mpz_mul(d1.value.get_mpz_t(), d1.value.get_mpz_t(), cob_mexp);
 	} else if(d1.scale > 0) {
-		int sign = mpz_sgn(d1.value);
+		int sign = sgn(d1.value);
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)d1.scale);
-		mpz_tdiv_qr(d1.value, cob_mpzt, d1.value, cob_mexp);
+		mpz_tdiv_qr(d1.value.get_mpz_t(), cob_mpzt, d1.value.get_mpz_t(), cob_mexp);
 		/* Check negative and has decimal places */
 		if(sign < 0 && mpz_sgn(cob_mpzt)) {
-			mpz_sub_ui(d1.value, d1.value, 1UL);
+			d1.value -= 1;
 		}
 	}
 	d1.scale = 0;
@@ -1633,10 +1628,10 @@ cob_intr_integer_part(cob_field * srcfield)
 	/* Check scale */
 	if(d1.scale < 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)-d1.scale);
-		mpz_mul(d1.value, d1.value, cob_mexp);
+		mpz_mul(d1.value.get_mpz_t(), d1.value.get_mpz_t(), cob_mexp);
 	} else if(d1.scale > 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)d1.scale);
-		mpz_tdiv_q(d1.value, d1.value, cob_mexp);
+		mpz_tdiv_q(d1.value.get_mpz_t(), d1.value.get_mpz_t(), cob_mexp);
 	}
 	d1.scale = 0;
 
@@ -1652,11 +1647,10 @@ cob_intr_fraction_part(cob_field * srcfield)
 	/* Check scale */
 	if(d1.scale > 0) {
 		mpz_ui_pow_ui(cob_mexp, 10UL, (cob_uli_t)d1.scale);
-		mpz_tdiv_r(d1.value, d1.value, cob_mexp);
+		mpz_tdiv_r(d1.value.get_mpz_t(), d1.value.get_mpz_t(), cob_mexp);
 	} else {
 		/* No decimals */
-		mpz_set_ui(d1.value, 0UL);
-		d1.scale = 0;
+		d1 = 0;
 	}
 
 	cob_alloc_field(&d1);
@@ -1668,7 +1662,7 @@ cob_field *
 cob_intr_sign(cob_field * srcfield)
 {
 	cob_decimal_set_field(&d1, srcfield);
-	cob_alloc_set_field_int(mpz_sgn(d1.value));
+	cob_alloc_set_field_int(sgn(d1.value));
 	return curr_field;
 }
 
@@ -2540,7 +2534,7 @@ cob_intr_factorial(cob_field * srcfield)
 		cob_alloc_set_field_uint(0);
 		return curr_field;
 	} else {
-		mpz_fac_ui(d1.value, (cob_uli_t)srcval);
+		mpz_fac_ui(d1.value.get_mpz_t(), (cob_uli_t)srcval);
 	}
 
 	cob_alloc_field(&d1);
@@ -2578,7 +2572,7 @@ cob_intr_exp(cob_field * srcfield)
 
 	cob_set_exception(0);
 
-	if(!mpz_sgn(d1.value)) {
+	if(!sgn(d1.value)) {
 		/* Power is zero */
 		cob_alloc_set_field_uint(1);
 		return curr_field;
@@ -2600,7 +2594,7 @@ cob_intr_exp10(cob_field * srcfield)
 
 	cob_set_exception(0);
 
-	int sign = mpz_sgn(d1.value);
+	int sign = sgn(d1.value);
 	if(!sign) {
 		/* Power is zero */
 		cob_alloc_set_field_uint(1);
@@ -2611,24 +2605,23 @@ cob_intr_exp10(cob_field * srcfield)
 
 	if(!d1.scale) {
 		/* Integer positive/negative powers */
-		if(sign < 0 && mpz_fits_sint_p(d1.value)) {
-			mpz_abs(d1.value, d1.value);
-			d1.scale = mpz_get_si(d1.value);
-			mpz_set_ui(d1.value, 1UL);
+		if(sign < 0 && mpz_fits_sint_p(d1.value.get_mpz_t())) {
+			mpz_abs(d1.value.get_mpz_t(), d1.value.get_mpz_t());
+			d1.scale = (int) d1.value.get_si();
+			d1.value = 1;
 			cob_alloc_field(&d1);
 			(void)cob_decimal_get_field(&d1, curr_field, 0);
 			return curr_field;
 		}
-		if(sign > 0 && mpz_fits_ulong_p(d1.value)) {
-			mpz_ui_pow_ui(d1.value, 10UL, mpz_get_ui(d1.value));
+		if(sign > 0 && mpz_fits_ulong_p(d1.value.get_mpz_t())) {
+			mpz_ui_pow_ui(d1.value.get_mpz_t(), 10UL, mpz_get_ui(d1.value.get_mpz_t()));
 			cob_alloc_field(&d1);
 			(void)cob_decimal_get_field(&d1, curr_field, 0);
 			return curr_field;
 		}
 	}
 
-	mpz_set_ui(d2.value, 10UL);
-	d2.scale = 0;
+	d2 = 10;
 	cob_decimal_pow(&d2, &d1);
 	cob_alloc_field(&d2);
 	(void)cob_decimal_get_field(&d2, curr_field, 0);
@@ -2642,7 +2635,7 @@ cob_intr_log(cob_field * srcfield)
 	cob_decimal_set_field(&d1, srcfield);
 
 	cob_set_exception(0);
-	if(mpz_sgn(d1.value) <= 0) {
+	if(sgn(d1.value) <= 0) {
 		cob_set_exception(COB_EC_ARGUMENT_FUNCTION);
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2652,7 +2645,7 @@ cob_intr_log(cob_field * srcfield)
 		cob_trim_decimal(&d1);
 	}
 
-	if(!d1.scale && !mpz_cmp_ui(d1.value, 1UL)) {
+	if(!d1.scale && d1.value == 1) {
 		/* Log(1) = 0 */
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2673,7 +2666,7 @@ cob_intr_log10(cob_field * srcfield)
 	cob_decimal_set_field(&d1, srcfield);
 
 	cob_set_exception(0);
-	if(mpz_sgn(d1.value) <= 0) {
+	if(sgn(d1.value) <= 0) {
 		cob_set_exception(COB_EC_ARGUMENT_FUNCTION);
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2683,7 +2676,7 @@ cob_intr_log10(cob_field * srcfield)
 		cob_trim_decimal(&d1);
 	}
 
-	if(!d1.scale && !mpz_cmp_ui(d1.value, 1UL)) {
+	if(!d1.scale && d1.value == 1) {
 		/* Log10(1) = 0 */
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2702,7 +2695,7 @@ cob_field *
 cob_intr_abs(cob_field * srcfield)
 {
 	cob_decimal_set_field(&d1, srcfield);
-	mpz_abs(d1.value, d1.value);
+	mpz_abs(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 
 	make_field_entry(srcfield);
 	(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -2714,14 +2707,10 @@ cob_intr_acos(cob_field * srcfield)
 {
 	cob_decimal_set_field(&d1, srcfield);
 
-	mpz_set(d4.value, d1.value);
-	mpz_set(d5.value, d1.value);
-	d4.scale = d1.scale;
-	d5.scale = d1.scale;
-	mpz_set_si(d2.value, -1L);
-	d2.scale = 0;
-	mpz_set_ui(d3.value, 1UL);
-	d3.scale = 0;
+	d4 = d1;
+	d5 = d1;
+	d2 = -1;
+	d3 = 1;
 
 	cob_set_exception(0);
 	if(cob_decimal_cmp(&d4, &d2) < 0 || cob_decimal_cmp(&d5, &d3) > 0) {
@@ -2744,14 +2733,10 @@ cob_intr_asin(cob_field * srcfield)
 {
 	cob_decimal_set_field(&d1, srcfield);
 
-	mpz_set(d4.value, d1.value);
-	mpz_set(d5.value, d1.value);
-	d4.scale = d1.scale;
-	d5.scale = d1.scale;
-	mpz_set_si(d2.value, -1L);
-	d2.scale = 0;
-	mpz_set_ui(d3.value, 1UL);
-	d3.scale = 0;
+	d4 = d1;
+	d5 = d1;
+	d2 = -1;
+	d3 = 1;
 
 	cob_set_exception(0);
 	if(cob_decimal_cmp(&d4, &d2) < 0 || cob_decimal_cmp(&d5, &d3) > 0) {
@@ -2760,7 +2745,7 @@ cob_intr_asin(cob_field * srcfield)
 		return curr_field;
 	}
 
-	if(!mpz_sgn(d1.value)) {
+	if(!sgn(d1.value)) {
 		/* Asin(0) = 0 */
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2782,7 +2767,7 @@ cob_intr_atan(cob_field * srcfield)
 
 	cob_set_exception(0);
 
-	if(!mpz_sgn(d1.value)) {
+	if(!sgn(d1.value)) {
 		/* Atan(0) = 0 */
 		cob_alloc_set_field_uint(0);
 		return curr_field;
@@ -2851,13 +2836,13 @@ cob_intr_sqrt(cob_field * srcfield)
 	cob_decimal_set_field(&d1, srcfield);
 
 	cob_set_exception(0);
-	if(mpz_sgn(d1.value) < 0) {
+	if(sgn(d1.value) < 0) {
 		cob_set_exception(COB_EC_ARGUMENT_FUNCTION);
 		cob_alloc_set_field_uint(0);
 		return curr_field;
 	}
 
-	mpz_set_ui(d2.value, 5UL);
+	d2.value = 5;
 	d2.scale = 1;
 	cob_trim_decimal(&d1);
 	cob_decimal_pow(&d1, &d2);
@@ -2925,10 +2910,10 @@ cob_intr_numval(cob_field * srcfield)
 		final_digits = 1;
 	}
 	final_buff[final_digits] = 0;
-	mpz_set_str(d1.value, (char *)final_buff, 10);
+	d1.value.set_str((char *)final_buff, 10);
 	delete [] final_buff;
-	if(sign && mpz_sgn(d1.value)) {
-		mpz_neg(d1.value, d1.value);
+	if(sign && sgn(d1.value)) {
+		mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 	}
 	d1.scale = decimal_digits;
 	cob_alloc_field(&d1);
@@ -3012,10 +2997,10 @@ cob_intr_numval_c(cob_field * srcfield, cob_field * currency)
 		final_digits = 1;
 	}
 	final_buff[final_digits] = 0;
-	mpz_set_str(d1.value, (char *)final_buff, 10);
+	d1.value.set_str((char *)final_buff, 10);
 	delete [] final_buff;
-	if(sign && mpz_sgn(d1.value)) {
-		mpz_neg(d1.value, d1.value);
+	if(sign && sgn(d1.value)) {
+		mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 	}
 	d1.scale = decimal_digits;
 	cob_alloc_field(&d1);
@@ -3091,9 +3076,9 @@ cob_intr_numval_f(cob_field * srcfield)
 	}
 	final_buff[digits] = 0;
 
-	mpz_set_str(d1.value, (char *)final_buff, 10);
+	d1.value.set_str((char *)final_buff, 10);
 	delete [] final_buff;
-	if(!mpz_sgn(d1.value)) {
+	if(!sgn(d1.value)) {
 		/* Value is zero ; sign and exponent irrelevant */
 		d1.scale = 0;
 		cob_alloc_field(&d1);
@@ -3101,7 +3086,7 @@ cob_intr_numval_f(cob_field * srcfield)
 		return curr_field;
 	}
 	if(plus_minus) {
-		mpz_neg(d1.value, d1.value);
+		mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 	}
 	if(exponent) {
 		if(e_plus_minus) {
@@ -3115,7 +3100,7 @@ cob_intr_numval_f(cob_field * srcfield)
 				exponent -= decimal_digits;
 				mpz_ui_pow_ui(cob_mexp, 10UL,
 							  (cob_uli_t)exponent);
-				mpz_mul(d1.value, d1.value, cob_mexp);
+				mpz_mul(d1.value.get_mpz_t(), d1.value.get_mpz_t(), cob_mexp);
 				d1.scale = 0;
 			}
 		}
@@ -3137,16 +3122,15 @@ cob_intr_annuity(cob_field * srcfield1, cob_field * srcfield2)
 	cob_decimal_set_field(&d2, srcfield2);
 
 	/* P1 >= 0, P2 > 0 and integer */
-	int sign = mpz_sgn(d1.value);
-	if(sign < 0 || mpz_sgn(d2.value) <= 0 || d2.scale != 0) {
+	int sign = sgn(d1.value);
+	if(sign < 0 || sgn(d2.value) <= 0 || d2.scale != 0) {
 		cob_set_exception(COB_EC_ARGUMENT_FUNCTION);
 		cob_alloc_set_field_uint(0);
 		return curr_field;
 	}
 
 	if(!sign) {
-		mpz_set_ui(d1.value, 1UL);
-		d1.scale = 0;
+		d1 = 1;
 		cob_decimal_div(&d1, &d2);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -3154,18 +3138,15 @@ cob_intr_annuity(cob_field * srcfield1, cob_field * srcfield2)
 	}
 
 	/* x = P1 /(1 -(1 + P1) ^(-P2)) */
-	mpz_neg(d2.value, d2.value);
+	mpz_neg(d2.value.get_mpz_t(), d2.value.get_mpz_t());
 
-	mpz_set(d3.value, d1.value);
-	d3.scale = d1.scale;
-	mpz_set_ui(d4.value, 1UL);
-	d4.scale = 0;
+	d3 = d1;
+	d4 = 1;
 	cob_decimal_add(&d3, &d4);
 	cob_trim_decimal(&d3);
 	cob_trim_decimal(&d2);
 	cob_decimal_pow(&d3, &d2);
-	mpz_set_ui(d4.value, 1UL);
-	d4.scale = 0;
+	d4 = 1;
 	cob_decimal_sub(&d4, &d3);
 	cob_trim_decimal(&d4);
 	cob_trim_decimal(&d1);
@@ -3180,8 +3161,7 @@ cob_intr_sum(const int params, ...)
 {
 	va_list		args;
 
-	mpz_set_ui(d1.value, 0UL);
-	d1.scale = 0;
+	d1 = 0;
 
 	va_start(args, params);
 
@@ -3306,8 +3286,7 @@ cob_intr_midrange(const int params, ...)
 	cob_decimal_set_field(&d1, basemin);
 	cob_decimal_set_field(&d2, basemax);
 	cob_decimal_add(&d1, &d2);
-	mpz_set_ui(d2.value, 2UL);
-	d2.scale = 0;
+	d2 = 2;
 	cob_decimal_div(&d1, &d2);
 
 	cob_alloc_field(&d1);
@@ -3338,8 +3317,7 @@ cob_intr_median(const int params, ...)
 	}
 	va_end(args);
 
-	qsort(field_alloc, (size_t)params, (size_t)sizeof(cob_field *),
-		  comp_field);
+	qsort(field_alloc, (size_t)params, (size_t)sizeof(cob_field *), comp_field);
 
 	int i = params / 2;
 	if(params % 2) {
@@ -3350,8 +3328,7 @@ cob_intr_median(const int params, ...)
 		cob_decimal_set_field(&d1, field_alloc[i-1]);
 		cob_decimal_set_field(&d2, field_alloc[i]);
 		cob_decimal_add(&d1, &d2);
-		mpz_set_ui(d2.value, 2UL);
-		d2.scale = 0;
+		d2 = 2;
 		cob_decimal_div(&d1, &d2);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -3375,8 +3352,7 @@ cob_intr_mean(const int params, ...)
 		return curr_field;
 	}
 
-	mpz_set_ui(d1.value, 0UL);
-	d1.scale = 0;
+	d1 = 0;
 
 	for(int i = 0; i < params; ++i) {
 		cob_field * f = va_arg(args, cob_field *);
@@ -3385,8 +3361,7 @@ cob_intr_mean(const int params, ...)
 	}
 	va_end(args);
 
-	mpz_set_ui(d2.value, (cob_uli_t)params);
-	d2.scale = 0;
+	d2 = params;
 	cob_decimal_div(&d1, &d2);
 
 	cob_alloc_field(&d1);
@@ -3441,9 +3416,9 @@ cob_intr_random(const int params, ...)
 {
 	va_list		args;
 
-	va_start (args, params);
+	va_start(args, params);
 
-	if (params) {
+	if(params) {
 		cob_field * f = va_arg(args, cob_field *);
 		int seed = cob_get_int(f);
 		if(seed < 0) {
@@ -3484,8 +3459,7 @@ cob_intr_variance(const int params, ...)
 	}
 
 	/* MEAN for all params */
-	mpz_set_ui(d1.value, 0UL);
-	d1.scale = 0;
+	d1 = 0;
 
 	for(int i = 0; i < params; ++i) {
 		cob_field * f = va_arg(args, cob_field *);
@@ -3494,14 +3468,12 @@ cob_intr_variance(const int params, ...)
 	}
 	va_end(args);
 
-	mpz_set_ui(d2.value, (cob_uli_t)params);
-	d2.scale = 0;
+	d2 = params;
 	cob_decimal_div(&d1, &d2);
 
 	/* Got the MEAN in d1, iterate again */
 
-	mpz_set_ui(d4.value, 0UL);
-	d4.scale = 0;
+	d4 = 0;
 
 	va_start(args, params);
 
@@ -3514,8 +3486,7 @@ cob_intr_variance(const int params, ...)
 	}
 	va_end(args);
 
-	mpz_set_ui(d3.value, (cob_uli_t)params);
-	d3.scale = 0;
+	d3 = params;
 	cob_decimal_div(&d4, &d3);
 
 	cob_alloc_field(&d4);
@@ -3537,8 +3508,7 @@ cob_intr_standard_deviation(const int params, ...)
 	}
 
 	/* MEAN for all params */
-	mpz_set_ui(d1.value, 0UL);
-	d1.scale = 0;
+	d1 = 0;
 
 	for(int i = 0; i < params; ++i) {
 		cob_field * f = va_arg(args, cob_field *);
@@ -3547,14 +3517,12 @@ cob_intr_standard_deviation(const int params, ...)
 	}
 	va_end(args);
 
-	mpz_set_ui(d2.value, (cob_uli_t)params);
-	d2.scale = 0;
+	d2 = params;
 	cob_decimal_div(&d1, &d2);
 
 	/* Got the MEAN in d1, iterate again */
 
-	mpz_set_ui(d4.value, 0UL);
-	d4.scale = 0;
+	d4 = 0;
 
 	va_start(args, params);
 
@@ -3567,8 +3535,7 @@ cob_intr_standard_deviation(const int params, ...)
 	}
 	va_end(args);
 
-	mpz_set_ui(d3.value, (cob_uli_t)params);
-	d3.scale = 0;
+	d3 = params;
 	cob_decimal_div(&d4, &d3);
 
 	/* We have the VARIANCE in d4, sqrt = STANDARD-DEVIATION */
@@ -3577,7 +3544,7 @@ cob_intr_standard_deviation(const int params, ...)
 
 	cob_set_exception(0);
 
-	mpz_set_ui(d3.value, 5UL);
+	d3.value = 5;
 	d3.scale = 1;
 
 	cob_trim_decimal(&d4);
@@ -3599,20 +3566,17 @@ cob_intr_present_value(const int params, ...)
 	cob_field * f = va_arg(args, cob_field *);
 
 	cob_decimal_set_field(&d1, f);
-	mpz_set_ui(d2.value, 1UL);
-	d2.scale = 0;
+	d2 = 1;
 	cob_decimal_add(&d1, &d2);
 
-	mpz_set_ui(d4.value, 0UL);
-	d4.scale = 0;
+	d4 = 0;
 
 	for(int i = 1; i < params; ++i) {
 		f = va_arg(args, cob_field *);
 		cob_decimal_set_field(&d2, f);
-		mpz_set(d3.value, d1.value);
-		d3.scale = d1.scale;
+		d3 = d1;
 		if(i > 1) {
-			mpz_pow_ui(d3.value, d3.value, (cob_uli_t)i);
+			mpz_pow_ui(d3.value.get_mpz_t(), d3.value.get_mpz_t(), (cob_uli_t)i);
 			d3.scale *= i;
 		}
 		cob_decimal_div(&d2, &d3);
@@ -4399,17 +4363,17 @@ cob_intr_lowest_algebraic(cob_field * srcfield)
 				!COB_FIELD_BINARY_TRUNC(srcfield))
 		{
 			expo = (cob_uli_t)((COB_FIELD_SIZE(srcfield) * 8U) - 1U);
-			mpz_ui_pow_ui(d1.value, 2UL, expo);
-			mpz_neg(d1.value, d1.value);
+			mpz_ui_pow_ui(d1.value.get_mpz_t(), 2UL, expo);
+			mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 			d1.scale = COB_FIELD_SCALE(srcfield);
 			cob_alloc_field(&d1);
 			(void)cob_decimal_get_field(&d1, curr_field, 0);
 			break;
 		}
 		expo = (cob_uli_t)COB_FIELD_DIGITS(srcfield);
-		mpz_ui_pow_ui(d1.value, 10UL, expo);
-		mpz_sub_ui(d1.value, d1.value, 1UL);
-		mpz_neg(d1.value, d1.value);
+		mpz_ui_pow_ui(d1.value.get_mpz_t(), 10UL, expo);
+		mpz_sub_ui(d1.value.get_mpz_t(), d1.value.get_mpz_t(), 1UL);
+		mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 		d1.scale = COB_FIELD_SCALE(srcfield);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -4429,9 +4393,9 @@ cob_intr_lowest_algebraic(cob_field * srcfield)
 			break;
 		}
 		expo = (cob_uli_t)COB_FIELD_DIGITS(srcfield);
-		mpz_ui_pow_ui(d1.value, 10UL, expo);
-		mpz_sub_ui(d1.value, d1.value, 1UL);
-		mpz_neg(d1.value, d1.value);
+		mpz_ui_pow_ui(d1.value.get_mpz_t(), 10UL, expo);
+		mpz_sub_ui(d1.value.get_mpz_t(), d1.value.get_mpz_t(), 1UL);
+		mpz_neg(d1.value.get_mpz_t(), d1.value.get_mpz_t());
 		d1.scale = COB_FIELD_SCALE(srcfield);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -4477,16 +4441,16 @@ cob_intr_highest_algebraic(cob_field * srcfield)
 			} else {
 				expo = (unsigned int)((COB_FIELD_SIZE(srcfield) * 8U) - 1U);
 			}
-			mpz_ui_pow_ui(d1.value, 2UL, expo);
-			mpz_sub_ui(d1.value, d1.value, 1UL);
+			mpz_ui_pow_ui(d1.value.get_mpz_t(), 2UL, expo);
+			mpz_sub_ui(d1.value.get_mpz_t(), d1.value.get_mpz_t(), 1UL);
 			d1.scale = COB_FIELD_SCALE(srcfield);
 			cob_alloc_field(&d1);
 			(void)cob_decimal_get_field(&d1, curr_field, 0);
 			break;
 		}
 		expo = (cob_uli_t)COB_FIELD_DIGITS(srcfield);
-		mpz_ui_pow_ui(d1.value, 10UL, expo);
-		mpz_sub_ui(d1.value, d1.value, 1UL);
+		mpz_ui_pow_ui(d1.value.get_mpz_t(), 10UL, expo);
+		mpz_sub_ui(d1.value.get_mpz_t(), d1.value.get_mpz_t(), 1UL);
 		d1.scale = COB_FIELD_SCALE(srcfield);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -4502,8 +4466,8 @@ cob_intr_highest_algebraic(cob_field * srcfield)
 	case COB_TYPE_NUMERIC_PACKED:
 	case COB_TYPE_NUMERIC_EDITED:
 		expo = (cob_uli_t)COB_FIELD_DIGITS(srcfield);
-		mpz_ui_pow_ui(d1.value, 10UL, expo);
-		mpz_sub_ui(d1.value, d1.value, 1UL);
+		mpz_ui_pow_ui(d1.value.get_mpz_t(), 10UL, expo);
+		mpz_sub_ui(d1.value.get_mpz_t(), d1.value.get_mpz_t(), 1UL);
 		d1.scale = COB_FIELD_SCALE(srcfield);
 		cob_alloc_field(&d1);
 		(void)cob_decimal_get_field(&d1, curr_field, 0);
@@ -4757,12 +4721,6 @@ cob_exit_intrinsic(void)
 	mpf_clear(cob_mpft2);
 	mpf_clear(cob_mpft);
 
-	mpz_clear(d5.value);
-	mpz_clear(d4.value);
-	mpz_clear(d3.value);
-	mpz_clear(d2.value);
-	mpz_clear(d1.value);
-
 	mpz_clear(cob_mpzt);
 	mpz_clear(cob_mexp);
 
@@ -4787,16 +4745,11 @@ cob_init_intrinsic(cob_global * lptr)
 
 	mpz_init2(cob_mexp, COB_MPZ_DEF);
 	mpz_init2(cob_mpzt, COB_MPZ_DEF);
-	mpz_init2(d1.value, 1536UL);
-	d1.scale = 0;
-	mpz_init2(d2.value, 1536UL);
-	d2.scale = 0;
-	mpz_init2(d3.value, 1536UL);
-	d3.scale = 0;
-	mpz_init2(d4.value, 1536UL);
-	d4.scale = 0;
-	mpz_init2(d5.value, 1536UL);
-	d5.scale = 0;
+	d1 = 0;
+	d2 = 0;
+	d3 = 0;
+	d4 = 0;
+	d5 = 0;
 
 	mpf_init2(cob_mpft, COB_MPF_PREC);
 	mpf_init2(cob_mpft2, COB_MPF_PREC);

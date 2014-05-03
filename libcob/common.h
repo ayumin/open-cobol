@@ -49,8 +49,13 @@
 
 #else
 
+#if defined(LLONG_MAX) && (LLONG_MAX == LONG_MAX)
+#define	cob_s64_t		long int
+#define	cob_u64_t		unsigned long int
+#else
 #define	cob_s64_t		long long
 #define	cob_u64_t		unsigned long long
+#endif
 
 #define	COB_S64_C(x)	x ## LL
 #define	COB_U64_C(x)	x ## ULL
@@ -891,11 +896,13 @@ struct cob_fp_128 {
 /* n = value / 10 ^ scale */
 /* Decimal structure */
 
+#ifdef __cplusplus
+#include <libcob/cobdecimal.h>
+#else
 struct cob_decimal {
 	mpz_t	value;			/* GMP value definition */
 	int		scale;			/* Decimal scale */
 };
-#ifndef __cplusplus
 typedef struct cob_decimal cob_decimal;
 #endif
 
@@ -1352,7 +1359,6 @@ COB_EXPIMP cob_s64_t	cob_get_llint(cob_field *);
 /*******************************/
 /* Functions in numeric.c */
 
-COB_EXPIMP void	cob_decimal_init(cob_decimal *);
 COB_EXPIMP void cob_decimal_set_llint(cob_decimal *, const cob_s64_t);
 COB_EXPIMP void	cob_decimal_set_field(cob_decimal *, cob_field *);
 COB_EXPIMP int	cob_decimal_get_field(cob_decimal *, cob_field *, const int);
