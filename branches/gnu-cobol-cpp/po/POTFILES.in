@@ -2,7 +2,6 @@
 
 # cobc
 cobc/cobc.cpp
-cobc/cobgetopt.cpp
 cobc/codegen.cpp
 cobc/codeoptim.cpp
 cobc/config.cpp
@@ -26,6 +25,9 @@ libcob/fileio.cpp
 libcob/move.cpp
 libcob/screenio.cpp
 libcob/termio.cpp
+
+#lib
+lib/cobgetopt.cpp
 
 # bin
 bin/cobcrun.cpp

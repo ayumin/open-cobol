@@ -21,7 +21,7 @@
 # along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 
 lib_LTLIBRARIES = libcob.la
-libcob_la_SOURCES = common.cpp move.cpp numeric.cpp strings.cpp \
+libcob_la_SOURCES = common.cpp move.cpp numeric.cpp strings.cpp cobdecimal.cpp \
 	fileio.cpp call.cpp intrinsic.cpp termio.cpp screenio.cpp btmsadd.cpp
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
@@ -31,17 +31,5 @@ AM_LDFLAGS = $(COB_FIX_LIB)
 
 EXTRA_DIST = coblocal.h system.def
 pkgincludedir = $(includedir)/libcob
-pkginclude_HEADERS = common.h exception.def
+pkginclude_HEADERS = common.h cobdecimal.h exception.def
 
-install-data-hook:
-	rm -f $(includedir)/libcob/byteswap.h
-	rm -f $(includedir)/libcob/call.h
-	rm -f $(includedir)/libcob/fileio.h
-	rm -f $(includedir)/libcob/termio.h
-	rm -f $(includedir)/libcob/screenio.h
-	rm -f $(includedir)/libcob/move.h
-	rm -f $(includedir)/libcob/numeric.h
-	rm -f $(includedir)/libcob/strings.h
-	rm -f $(includedir)/libcob/intrinsic.h
-	rm -f $(includedir)/libcob/codegen.h
-	rm -f $(includedir)/libcob/system.def
