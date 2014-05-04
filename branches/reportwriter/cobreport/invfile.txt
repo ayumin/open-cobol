@@ -1,4 +1,0 @@
-01Data Processing   02000500012388
-02Cow Milking       02000600054398
-03Grass Cutting     03000600054397
-03Lawn mowing       03000600054397
