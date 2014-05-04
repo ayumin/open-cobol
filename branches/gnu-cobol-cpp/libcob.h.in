@@ -23,7 +23,16 @@
 #ifndef COB_LIBCOB_H
 #define COB_LIBCOB_H
 
+#ifdef	_MSC_VER
+#pragma warning(disable: 4800)
+#endif
+
+#if defined (__cplusplus)
+#include <gmpxx.h>
+#else
 #include <gmp.h>
+#endif
+
 #include <libcob/common.h>
 
 #endif /* COB_LIBCOB_H_ */

@@ -341,8 +341,8 @@ AC_ARG_WITH([mpir],
   [  --with-mpir             (GNU Cobol C++) Use MPIR instead of GMP],
   [ if test "$with_mpir" = "yes"
     then
-	AC_CHECK_HEADERS([mpir.h], [],
-		AC_MSG_ERROR([mpir.h is required for MPIR]))
+	AC_CHECK_HEADERS([mpirxx.h], [],
+		AC_MSG_ERROR([mpirxx.h is required for MPIR]))
 	AC_CHECK_LIB([mpir], [__gmpz_init],
 		[AC_DEFINE([WITH_MPIR], [1])
 		LIBCOB_LIBS="$LIBCOB_LIBS -lmpir"],
@@ -357,7 +357,7 @@ MYOLDLIBS=$LIBS
 LIBS="$MYOLDLIBS -lmpir"
 AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 	#include <string.h>
-	#include <mpir.h>]], [[
+	#include <mpirxx.h>]], [[
 	char	dbver[16];
 	printf("checking matching MPIR version ... ");
 	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
@@ -381,7 +381,7 @@ LIBS=$MYOLDLIBS
 else
 
 # Checks for gmp.
-AC_CHECK_HEADERS([gmp.h], [], AC_MSG_ERROR([gmp.h (GMP) is required]), [])
+AC_CHECK_HEADERS([gmpxx.h], [], AC_MSG_ERROR([gmpxx.h (GMP) is required]), [])
 
 AC_CHECK_LIB([gmp], [__gmpz_init],
 	[LIBCOB_LIBS="$LIBCOB_LIBS -lgmp"],
@@ -392,7 +392,7 @@ MYOLDLIBS=$LIBS
 LIBS="$MYOLDLIBS -lgmp"
 AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 	#include <string.h>
-	#include <gmp.h>]], [[
+	#include <gmpxx.h>]], [[
 	char	dbver[16];
 	printf("checking matching GMP version ... ");
 	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
