@@ -700,6 +700,7 @@ MAINTAINER_MODE_TRUE
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
 CXXDEPMODE
+am__nodep
 AMDEPBACKSLASH
 AMDEP_FALSE
 AMDEP_TRUE
@@ -3587,6 +3588,7 @@ fi
 if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
+  am__nodep='_no'
 fi
  if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
@@ -3649,11 +3651,11 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
-AMTAR=${AMTAR-"${am_missing_run}tar"}
-
-am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
+am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
@@ -3671,6 +3673,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -3730,7 +3733,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -4727,6 +4730,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -4786,7 +4790,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -18022,16 +18026,16 @@ _ACEOF
 if test "${with_mpir+set}" = set; then :
   withval=$with_mpir;  if test "$with_mpir" = "yes"
     then
-	for ac_header in mpir.h
+	for ac_header in mpirxx.h
 do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "mpir.h" "ac_cv_header_mpir_h" "$ac_includes_default"
-if test "x$ac_cv_header_mpir_h" = xyes; then :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "mpirxx.h" "ac_cv_header_mpirxx_h" "$ac_includes_default"
+if test "x$ac_cv_header_mpirxx_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_MPIR_H 1
+#define HAVE_MPIRXX_H 1
 _ACEOF
 
 else
-  as_fn_error $? "mpir.h is required for MPIR" "$LINENO" 5
+  as_fn_error $? "mpirxx.h is required for MPIR" "$LINENO" 5
 fi
 
 done
@@ -18099,7 +18103,7 @@ else
 /* end confdefs.h.  */
 #include <stdio.h>
 	#include <string.h>
-	#include <mpir.h>
+	#include <mpirxx.h>
 int
 main ()
 {
@@ -18137,16 +18141,16 @@ LIBS=$MYOLDLIBS
 else
 
 # Checks for gmp.
-for ac_header in gmp.h
+for ac_header in gmpxx.h
 do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
-if test "x$ac_cv_header_gmp_h" = xyes; then :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "gmpxx.h" "ac_cv_header_gmpxx_h" "$ac_includes_default"
+if test "x$ac_cv_header_gmpxx_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_GMP_H 1
+#define HAVE_GMPXX_H 1
 _ACEOF
 
 else
-  as_fn_error $? "gmp.h (GMP) is required" "$LINENO" 5
+  as_fn_error $? "gmpxx.h (GMP) is required" "$LINENO" 5
 fi
 
 done
@@ -18208,7 +18212,7 @@ else
 /* end confdefs.h.  */
 #include <stdio.h>
 	#include <string.h>
-	#include <gmp.h>
+	#include <gmpxx.h>
 int
 main ()
 {
