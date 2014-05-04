@@ -1,5 +1,4 @@
-## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
-## Copyright (C) 2007-2012 Roger While
+## Copyright (C) 2014 Simon Sobisch
 ## 
 ## This file is part of GNU Cobol.
 ## 
@@ -21,7 +20,7 @@
 ### ISO+IEC+1989-2002 REPORT WRITER module
 
 
-AT_SETUP([stuff])
+AT_SETUP([Check REPORT error/warning])
 AT_KEYWORDS([report])
 
 AT_DATA([prog.cob], [
