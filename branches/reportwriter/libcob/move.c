@@ -388,14 +388,14 @@ cob_move_display_to_alphanum (cob_field *f1, cob_field *f2)
 				data2 += diff;
 				size2 -= diff;
 			}
-			memcpy (data2, data1 + size1 - size2, size2);
+			memmove (data2, data1 + size1 - size2, size2);
 		}
 	} else {
 		diff = (int)(size2 - size1);
 		if (diff < 0) {
-			memcpy (data2, data1, size2);
+			memmove (data2, data1, size2);
 		} else {
-			memcpy (data2, data1, size1);
+			memmove (data2, data1, size1);
 			if (zero_size) {
 				/* Implied 0 ('P's) */
 				zero_size = cob_min_int (zero_size, diff);
@@ -428,17 +428,17 @@ cob_move_alphanum_to_alphanum (cob_field *f1, cob_field *f2)
 	if (size1 >= size2) {
 		/* Move string with truncation */
 		if (COB_FIELD_JUSTIFIED (f2)) {
-			memcpy (data2, data1 + size1 - size2, size2);
+			memmove (data2, data1 + size1 - size2, size2);
 		} else {
-			memcpy (data2, data1, size2);
+			memmove (data2, data1, size2);
 		}
 	} else {
 		/* Move string with padding */
 		if (COB_FIELD_JUSTIFIED (f2)) {
 			memset (data2, ' ', size2 - size1);
-			memcpy (data2 + size2 - size1, data1, size1);
+			memmove (data2 + size2 - size1, data1, size1);
 		} else {
-			memcpy (data2, data1, size1);
+			memmove (data2, data1, size1);
 			memset (data2 + size1, ' ', size2 - size1);
 		}
 	}
@@ -543,16 +543,16 @@ cob_move_fp_to_fp (cob_field *src, cob_field *dst)
 	float	ffp;
 
 	if (COB_FIELD_TYPE (src) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy ((void *)&ffp, src->data, sizeof(float));
+		memmove ((void *)&ffp, src->data, sizeof(float));
 		dfp = ffp;
 	} else {
-		memcpy ((void *)&dfp, src->data, sizeof(double));
+		memmove ((void *)&dfp, src->data, sizeof(double));
 		ffp = (float)dfp;
 	}
 	if (COB_FIELD_TYPE (dst) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy (dst->data, (void *)&ffp, sizeof(float));
+		memmove (dst->data, (void *)&ffp, sizeof(float));
 	} else {
-		memcpy (dst->data, (void *)&dfp, sizeof(double));
+		memmove (dst->data, (void *)&dfp, sizeof(double));
 	}
 }
 
@@ -729,7 +729,7 @@ cob_move_display_to_edited (cob_field *f1, cob_field *f2)
 	/* Count the number of digit places before decimal point */
 	for (p = COB_FIELD_PIC (f2); *p; p += 5) {
 		c = p[0];
-		memcpy ((unsigned char *)&repeat, p + 1, sizeof(int));
+		memmove ((unsigned char *)&repeat, p + 1, sizeof(int));
 		if (c == '9' || c == 'Z' || c == '*') {
 			count += repeat;
 			count_sign = 0;
@@ -759,7 +759,7 @@ cob_move_display_to_edited (cob_field *f1, cob_field *f2)
 	end = f2->data + f2->size;
 	for (p = COB_FIELD_PIC (f2); *p;) {
 		c = *p++;	/* PIC char */
-		memcpy ((void *)&n, p, sizeof(int));	/* PIC char count */
+		memmove ((void *)&n, p, sizeof(int));	/* PIC char count */
 		p += sizeof(int);
 		for (; n > 0; n--, ++dst) {
 			switch (c) {
@@ -1033,7 +1033,7 @@ cob_move_edited_to_display (cob_field *f1, cob_field *f2)
 	if (scale == 0) {
 		for (p1 = COB_FIELD_PIC (f1); *p1; p1 += 5) {
 			c = p1[0];
-			memcpy ((void *)&n, p1 + 1, sizeof(int));
+			memmove ((void *)&n, p1 + 1, sizeof(int));
 			if (c == '9' || c == '0' || c == 'Z' || c == '*') {
 				if (have_point) {
 					scale += n;
@@ -1341,7 +1341,7 @@ cob_move (cob_field *src, cob_field *dst)
 	case COB_TYPE_NUMERIC_DOUBLE:
 		switch (COB_FIELD_TYPE (dst)) {
 		case COB_TYPE_NUMERIC_DOUBLE:
-			memcpy (dst->data, src->data, sizeof(double));
+			memmove (dst->data, src->data, sizeof(double));
 			return;
 		case COB_TYPE_NUMERIC_FLOAT:
 			cob_move_fp_to_fp (src, dst);
@@ -1367,7 +1367,7 @@ cob_move (cob_field *src, cob_field *dst)
 	case COB_TYPE_NUMERIC_FLOAT:
 		switch (COB_FIELD_TYPE (dst)) {
 		case COB_TYPE_NUMERIC_FLOAT:
-			memcpy (dst->data, src->data, sizeof(float));
+			memmove (dst->data, src->data, sizeof(float));
 			return;
 		case COB_TYPE_NUMERIC_DOUBLE:
 			cob_move_fp_to_fp (src, dst);
@@ -1396,7 +1396,7 @@ cob_move (cob_field *src, cob_field *dst)
 			cob_decimal_setget_fld (src, dst, opt);
 			return;
 		case COB_TYPE_NUMERIC_FP_DEC64:
-			memcpy (dst->data, src->data, (size_t)8);
+			memmove (dst->data, src->data, (size_t)8);
 			return;
 		case COB_TYPE_NUMERIC_FLOAT:
 		case COB_TYPE_NUMERIC_DOUBLE:
@@ -1418,7 +1418,7 @@ cob_move (cob_field *src, cob_field *dst)
 			cob_decimal_setget_fld (src, dst, opt);
 			return;
 		case COB_TYPE_NUMERIC_FP_DEC128:
-			memcpy (dst->data, src->data, (size_t)16);
+			memmove (dst->data, src->data, (size_t)16);
 			return;
 		case COB_TYPE_NUMERIC_FLOAT:
 		case COB_TYPE_NUMERIC_DOUBLE:
