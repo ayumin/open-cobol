@@ -6522,6 +6522,9 @@ cb_build_move_copy (cb_tree src, cb_tree dst)
 	if (size == 1) {
 		return CB_BUILD_FUNCALL_2 ("$F", dst, src);
 	}
+	if(CB_FIELD_PTR (src)->storage == CB_STORAGE_LINKAGE
+	|| CB_FIELD_PTR (dst)->storage == CB_STORAGE_LINKAGE)
+		overlapping = 1;
 	if (overlapping) {
 		overlapping = 0;
 		return CB_BUILD_FUNCALL_3 ("memmove",
