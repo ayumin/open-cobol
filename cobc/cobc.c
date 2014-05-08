@@ -1648,12 +1648,15 @@ cobc_print_info (void)
 	if ((s = getenv ("COBCPY")) != NULL) {
 		cobc_var_print ("COBCPY",	s, 1);
 	}
+#if 0 /* Simon: only relevant for libcob */
 	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
 		cobc_var_print ("COB_LIBRARY_PATH",	s, 1);
 	}
+#endif
 	cobc_var_print ("COB_MODULE_EXT",	COB_MODULE_EXT, 0);
 	cobc_var_print ("COB_EXEEXT",		COB_EXEEXT, 0);
 
+#if 0 /* Simon: only relevant for libcob */
 #if	defined(USE_LIBDL) || defined(_WIN32)
 	cobc_var_print (_("Dynamic loading"),	_("System"), 0);
 #else
@@ -1664,6 +1667,7 @@ cobc_print_info (void)
 	cobc_var_print ("\"CBL_\" param check",	_("Enabled"), 0);
 #else
 	cobc_var_print ("\"CBL_\" param check",	_("Disabled"), 0);
+#endif
 #endif
 
 	snprintf (buff, sizeof(buff), "%d", WITH_VARSEQ);

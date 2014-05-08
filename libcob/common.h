@@ -527,6 +527,10 @@
 /* Maximum number of cob_decimal structures */
 #define	COB_MAX_DEC_STRUCT	32
 
+/* Memory size for sorting */
+#define COB_SORT_MEMORY		128 * 1024 * 1024
+#define	COB_SORT_CHUNK		256 * 1024
+
 /* Program return types */
 #define	COB_RET_TYPE_INT	0
 #define	COB_RET_TYPE_PTR	1
@@ -1172,6 +1176,7 @@ typedef struct __cob_global {
 
 } cob_global;
 
+
 /* File I/O function pointer structure */
 struct cob_fileio_funcs {
 	int	(*open)		(cob_file *, char *, const int, const int);
@@ -1198,6 +1203,13 @@ struct cobjmp_buf {
 
 /*******************************/
 /* Functions in common.c */
+COB_EXPIMP void print_runtime_env(void);
+COB_EXPIMP void print_info(void);
+COB_EXPIMP void print_version(void);
+char* cob_int_to_string(int, char*);
+char* cob_int_to_formatted_bytestring(int, char*);
+char* cob_strcat(char*, char*);
+char* cob_strjoin(char**, int, char*);
 
 /* General functions */
 

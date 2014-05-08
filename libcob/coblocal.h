@@ -191,14 +191,65 @@
 extern "C" {
 #endif
 
+/* Structure with pointers to the current runtime variables. */
+typedef struct runtime_env {
+	/* call.c */
+	unsigned int* physical_cancel;
+	char* physical_cancel_env;
+	unsigned int* name_convert;
+	char* name_convert_env;
+	char** resolve_path;	/* COB_LIBRARY_PATH */
+	char* cob_library_path_env;
+	size_t* resolve_size;	/* Array size of resolve_path*/
+	char* cob_preload_resolved;
+	char* cob_preload_env;
+
+	/* fileio.c */
+	unsigned int* cob_do_sync;
+	char* cob_do_sync_env;
+	unsigned int* cob_ls_uses_cr;
+	char* cob_ls_uses_cr_env;
+	size_t* cob_sort_memory;
+	char* cob_sort_memory_env;
+	size_t* cob_sort_chunk;
+	char* cob_sort_chunk_env;
+	char* cob_file_path;
+	char* cob_file_path_env;
+	unsigned int* cob_ls_nulls;
+	char* cob_ls_nulls_env;
+	unsigned int* cob_ls_fixed;
+	char* cob_ls_fixed_env;
+	size_t* cob_varseq_type;
+	char* cob_varseq_type_env;
+	char* cob_unix_lf_env;
+
+	/* move.c */
+	unsigned int* cob_local_edit;
+	char* cob_local_edit_env;
+
+	/* others */
+	char *cob_line_trace_env;
+	char* cob_display_warn_env;
+	char* cob_env_mangle_env;
+
+    /* others rescanned on SET ENVIRONMENT */
+	char* cob_disp_to_stderr_env;
+	char* cob_beep_str_env;
+	char* cob_timeout_scale_env;
+	char* cob_accept_status_env;
+	char* cob_extended_status_env;
+	char* cob_use_esc_env;
+
+} runtime_env;
+
 /* Local function prototypes */
 COB_HIDDEN void		cob_init_numeric	(cob_global *);
 COB_HIDDEN void		cob_init_termio		(cob_global *);
-COB_HIDDEN void		cob_init_fileio		(cob_global *);
-COB_HIDDEN void		cob_init_call		(cob_global *);
+COB_HIDDEN void		cob_init_fileio		(cob_global *, runtime_env* runtimeptr);
+COB_HIDDEN void		cob_init_call		(cob_global *, runtime_env* runtimeptr);
 COB_HIDDEN void		cob_init_intrinsic	(cob_global *);
 COB_HIDDEN void		cob_init_strings	(void);
-COB_HIDDEN void		cob_init_move		(cob_global *);
+COB_HIDDEN void		cob_init_move		(cob_global *, runtime_env* runtimeptr);
 COB_HIDDEN void		cob_init_screenio	(cob_global *);
 
 COB_HIDDEN void		cob_exit_screen		(void);
@@ -209,7 +260,7 @@ COB_HIDDEN void		cob_exit_call		(void);
 COB_HIDDEN void		cob_exit_intrinsic	(void);
 COB_HIDDEN void		cob_exit_strings	(void);
 
-COB_HIDDEN void		*cob_strdup		(const void *);
+COB_HIDDEN char		*cob_strdup		(const char *);
 
 COB_HIDDEN int		cob_real_get_sign	(cob_field *);
 COB_HIDDEN void		cob_real_put_sign	(cob_field *, const int);
@@ -229,6 +280,8 @@ COB_HIDDEN void		cob_field_to_string	(const cob_field *, void *,
 						 const size_t);
 COB_HIDDEN void		cob_parameter_check	(const char *, const int);
 COB_HIDDEN void		cob_runtime_error	(const char *, ...) COB_A_FORMAT12;
+
+COB_HIDDEN char*	cob_save_env_value	(char*, char*);
 
 #ifdef __cplusplus
 }
