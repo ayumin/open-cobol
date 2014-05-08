@@ -1679,7 +1679,7 @@ cob_get_llint (cob_field *f)
 }
 
 void
-cob_init_move (cob_global *lptr)
+cob_init_move (cob_global *lptr, runtime_env* runtimeptr)
 {
 #if	0	/* RXWRXW - Local edit sym */
 #ifdef	HAVE_LOCALECONV
@@ -1705,9 +1705,14 @@ cob_init_move (cob_global *lptr)
 			return;
 		}
 		cob_locale_edit = 1;
+		runtimeptr->cob_local_edit = &cob_local_edit;
 		cob_lc_dec = *((unsigned char *)(p->mon_decimal_point));
 		cob_lc_thou = *((unsigned char *)(p->mon_thousands_sep));
 	}
+#else
+	COB_UNUSED(runtimeptr);
 #endif
+#else
+	COB_UNUSED(runtimeptr);
 #endif
 }

@@ -18,7 +18,6 @@
    along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "config.h"
 #include "defaults.h"
 #include "tarstamp.h"
@@ -69,6 +68,36 @@
 
 #include "libcob/cobgetopt.h"
 
+#define	CB_IMSG_SIZE	24
+#define	CB_IVAL_SIZE	(80 - CB_IMSG_SIZE - 4)
+
+/* Stringify macros */
+#define CB_STRINGIFY(s)			#s
+#define CB_XSTRINGIFY(s)		CB_STRINGIFY(s)
+
+/* C version info */
+#ifdef	__VERSION__
+#define OC_C_VERSION_PRF	""
+#define OC_C_VERSION	CB_XSTRINGIFY(__VERSION__)
+#elif	defined(__xlc__)
+#define OC_C_VERSION_PRF	"(IBM) "
+#define OC_C_VERSION	CB_XSTRINGIFY(__xlc__)
+#elif	defined(_MSC_VER)
+#define OC_C_VERSION_PRF	"(Microsoft) "
+#define OC_C_VERSION	CB_XSTRINGIFY(_MSC_VER)
+#elif	defined(__BORLANDC__)
+#define OC_C_VERSION_PRF	"(Borland) "
+#define OC_C_VERSION	CB_XSTRINGIFY(__BORLANDC__)
+#elif	defined(__WATCOMC__)
+#define OC_C_VERSION_PRF	"(Watcom) "
+#define OC_C_VERSION	CB_XSTRINGIFY(__WATCOMC__)
+#elif	defined(__INTEL_COMPILER)
+#define OC_C_VERSION_PRF	"(Intel) "
+#define OC_C_VERSION	CB_XSTRINGIFY(__INTEL_COMPILER)
+#else
+#define OC_C_VERSION_PRF	""
+#define OC_C_VERSION	"unknown"
+#endif
 
 struct cob_alloc_cache {
 	struct cob_alloc_cache	*next;		/* Pointer to next */
@@ -96,6 +125,7 @@ static struct cob_alloc_cache	*cob_alloc_base;
 static const char		*cob_last_sfile;
 
 static cob_global		*cobglobptr;
+static runtime_env		*runtimeptr;
 
 static char			*runtime_err_str;
 
@@ -124,6 +154,8 @@ static const char		*cob_trace_env;
 static FILE			*cob_trace_file;
 static unsigned int		cob_source_line;
 static unsigned int		cob_line_trace;
+
+static char				*strbuff = NULL;
 
 #if	defined(HAVE_SIGNAL_H) && defined(HAVE_SIG_ATOMIC_T)
 static volatile sig_atomic_t	sig_is_handled = 0;
@@ -927,11 +959,15 @@ cob_rescan_env_vals (void)
 	char	*s;
 
 	/* termio */
-	s = getenv ("COB_REDIRECT_DISPLAY");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
+	s = getenv("COB_REDIRECT_DISPLAY");
+	if (s) {
+		runtimeptr->cob_disp_to_stderr_env = cob_save_env_value(runtimeptr->cob_disp_to_stderr_env, s);
+
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
 		cobglobptr->cob_disp_to_stderr = 1;
 	} else {
 		cobglobptr->cob_disp_to_stderr = 0;
+	}
 	}
 
 	/* screenio */
@@ -939,11 +975,14 @@ cob_rescan_env_vals (void)
 	/* BELL disposition */
 	/* Default to BEEP */
 	cobglobptr->cob_beep_value = 0;
-	s = getenv ("COB_BELL");
+	s = getenv("COB_BELL");
 	if (s) {
-		if (!strcasecmp (s, "FLASH")) {
+		runtimeptr->cob_beep_str_env = cob_save_env_value(
+				runtimeptr->cob_beep_str_env, s);
+
+		if (!strcasecmp(s, "FLASH")) {
 			cobglobptr->cob_beep_value = 1;
-		} else if (!strcasecmp (s, "SPEAKER")) {
+		} else if (!strcasecmp(s, "SPEAKER")) {
 			cobglobptr->cob_beep_value = 2;
 		} else {
 			/* NO/NONE/OFF/0 */
@@ -965,6 +1004,9 @@ cob_rescan_env_vals (void)
 	cobglobptr->cob_timeout_scale = 1000;
 	s = getenv ("COB_TIMEOUT_SCALE");
 	if (s) {
+		runtimeptr->cob_timeout_scale_env = cob_save_env_value(
+				runtimeptr->cob_timeout_scale_env, s);
+
 		if (*s == '1') {
 			cobglobptr->cob_timeout_scale = 100;
 		} else if (*s == '2') {
@@ -979,10 +1021,16 @@ cob_rescan_env_vals (void)
 	cobglobptr->cob_use_esc = 0;
 	s = getenv ("COB_SCREEN_EXCEPTIONS");
 	if (s) {
+		runtimeptr->cob_extended_status_env = cob_save_env_value(
+				runtimeptr->cob_extended_status_env, s);
+
 		if (*s == 'Y' || *s == 'y' || *s == '1') {
 			cobglobptr->cob_extended_status = 1;
 			s = getenv ("COB_SCREEN_ESC");
 			if (s) {
+				runtimeptr->cob_use_esc_env = cob_save_env_value(
+						runtimeptr->cob_use_esc_env, s);
+
 				if (*s == 'Y' || *s == 'y' || *s == '1') {
 					cobglobptr->cob_use_esc = 1;
 				}
@@ -1067,14 +1115,14 @@ cob_fast_malloc (const size_t size)
 	return mptr;
 }
 
-void *
-cob_strdup (const void *p)
+char *
+cob_strdup (const char *p)
 {
-	void	*mptr;
+	char	*mptr;
 	size_t	len;
 
 	len = strlen (p);
-	mptr = cob_malloc (len + 1U);
+	mptr = (char *) cob_malloc (len + 1U);
 	memcpy (mptr, p, len);
 	return mptr;
 }
@@ -3349,6 +3397,9 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	unsigned int optlen;
 	unsigned int c;
 
+	COB_UNUSED (idx);
+	COB_UNUSED (lo);
+	COB_UNUSED (so);
 
 	COB_CHK_PARMS (CBL_OC_GETOPT, 6);
 
@@ -3647,6 +3698,397 @@ cob_set_locale (cob_field *locale, const int category)
 #endif
 }
 
+char*
+cob_int_to_string(int i, char* number) {
+	if(!number) return NULL;
+	sprintf(number, "%i", i);
+	return number;
+}
+
+char*
+cob_int_to_formatted_bytestring(int i, char* number) {
+
+	double d;
+	char* strB;
+
+	if(!number) return NULL;
+
+	strB = (char*) cob_fast_malloc(3);
+
+	if (i > (1024 * 1024)) {
+		d = i / 1024.0 / 1024.0;
+		strB = (char*) "MB";
+	} else if (i > 1024) {
+		d = i / 1024.0;
+		strB = (char*) "kB";
+	} else {
+		d = 0;
+		strB = (char*) "B";
+	}
+	sprintf(number, "%3.2f %s", d, strB);
+	return number;
+}
+
+char*
+cob_strcat(char* str1, char* str2) {
+	size_t l = strlen(str1) + strlen(str2) + 1;
+
+	if(!strbuff || strlen(strbuff) != l) {
+		free(strbuff);
+		strbuff = (char*) cob_fast_malloc(l);
+	}
+
+	sprintf(strbuff, "%s%s", str1, str2);
+	return strbuff;
+}
+
+char*
+cob_strjoin(char** strarray, int size, char* separator) {
+
+	char* result;
+	int i;
+
+	if(!strarray || size <= 0 || !separator) return NULL;
+
+	result = strarray[0];
+	for (i = 1; i < size; i++) {
+		result = cob_strcat(cob_strdup(result), separator);
+		result = cob_strcat(cob_strdup(result), strarray[i]);
+	}
+
+	return result;
+}
+
+char* cob_save_env_value(char* env_var, char* env_val) {
+	if (!env_val) return NULL;
+
+	if (env_var) free(env_var);
+	env_var = (char*) cob_fast_malloc(strlen(env_val) + 1);
+	strcpy(env_var, env_val);
+
+	return env_var;
+}
+
+static void var_print(const char *msg, const char *val, const char *default_val,
+		const unsigned int format) {
+	char	*p;
+	char	*token;
+	size_t	n;
+	size_t	lablen;
+	size_t	toklen;
+
+	switch (format) {
+	case 0:
+		printf("%-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+		break;
+		case 1: {
+		printf("  %s: ", _("env"));
+		lablen = CB_IMSG_SIZE - 2 - strlen(_("env")) - 2;
+		printf("%-*.*s : ", lablen, lablen, msg);
+			break;
+		}
+	case 2:
+		printf("    %-*.*s     : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+		break;
+	case 3:
+		printf("        %-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+		break;
+	default:
+		printf("%-*.*s : ", CB_IMSG_SIZE, CB_IMSG_SIZE, msg);
+		break;
+	}
+
+	if (!val && !default_val) {
+		putchar('\n');
+		return;
+	} else if (val && default_val && ((format != 2 && val[0] == 0x30) || strcmp(val, default_val) == 0)) {
+		val = cob_strcat((char*) default_val, (char*) _(" (default)"));
+	} else if (!val && default_val) {
+		val = default_val;
+	}
+
+	if (val && strlen(val) <= CB_IVAL_SIZE) {
+		printf("%s", val);
+		putchar ('\n');
+
+		return;
+	}
+
+	p = strdup (val);
+	if (!p) {
+		fputs (_("Memory allocation failure"), stderr);
+		putc ('\n', stderr);
+		return;
+	}
+	n = 0;
+	token = strtok (p, " ");
+	for (; token; token = strtok (NULL, " ")) {
+		toklen = strlen (token) + 1;
+		if ((n + toklen) > CB_IVAL_SIZE) {
+			if (n) {
+				if (format == 2 || format == 3)
+					printf("\n        %*.*s", CB_IMSG_SIZE + 3,
+					CB_IMSG_SIZE + 3, " ");
+				else
+					printf("\n%*.*s", CB_IMSG_SIZE + 3, CB_IMSG_SIZE + 3, " ");
+			}
+			n = 0;
+		}
+		printf ("%s%s", (n ? " " : ""), token);
+		n += toklen;
+	}
+	putchar ('\n');
+	free (p);
+
+}
+
+
+void
+print_runtime_env(void) {
+	char* no_default;
+	char* not_set;
+	char* intstring;
+	char* intstring2;
+
+	printf("GNU Cobol runtime environment\n\n");
+	printf("All values were resolved from current environment. \n\n");
+	/* Alles aus common.c --> cob_init und cob_init_... - einigermaßen sinnvoll sortiert (ggf. Zwischenüberschriften ...*/
+
+	if(!cob_initialized) {
+		cob_init(cob_argc, cob_argv);
+	}
+
+	no_default = (char*) _("No");
+	not_set = (char*) _("not set");
+	intstring = (char*) cob_fast_malloc(10);
+	intstring2 = (char*) cob_fast_malloc(10);
+
+	printf(_("Call environment\n"));
+
+	var_print("COB_LIBRARY_PATH", runtimeptr->cob_library_path_env, not_set,
+			2);
+	var_print("resolve_path",
+			cob_strjoin(runtimeptr->resolve_path, *(runtimeptr->resolve_size),
+					(char*) PATHSEPS), not_set, 3);
+	var_print("COB_PRE_LOAD", runtimeptr->cob_preload_env, not_set, 2);
+	var_print("base_preload_ptr",
+			runtimeptr->cob_preload_resolved, not_set, 3);
+	var_print("COB_LOAD_CASE", runtimeptr->name_convert_env, not_set, 2);
+	var_print("name_convert",
+			cob_int_to_string(*(runtimeptr->name_convert), intstring),
+			no_default, 3);
+	var_print("COB_PHYSICAL_CANCEL", runtimeptr->physical_cancel_env,
+			not_set, 2);
+	var_print("physical_cancel",
+			cob_int_to_string(*(runtimeptr->physical_cancel), intstring),
+			no_default, 3);
+
+	printf(_("\n\nFile I/O\n"));
+	var_print("COB_SYNC", runtimeptr->cob_do_sync_env, not_set, 2);
+	var_print("cob_do_sync",
+			cob_int_to_string(*(runtimeptr->cob_do_sync), intstring),
+			no_default, 3);
+	var_print("COB_LS_USES_CR", runtimeptr->cob_ls_uses_cr_env, not_set, 2);
+	var_print("cob_ls_uses_cr",
+			cob_int_to_string(*(runtimeptr->cob_ls_uses_cr), intstring),
+			no_default, 3);
+
+	var_print("COB_SORT_MEMORY", runtimeptr->cob_sort_memory_env, not_set,
+			2);
+	var_print("cob_sort_memory",
+			cob_int_to_formatted_bytestring(*(runtimeptr->cob_sort_memory),
+					intstring),
+			cob_int_to_formatted_bytestring(COB_SORT_MEMORY, intstring2), 3);
+	var_print("COB_SORT_CHUNK", runtimeptr->cob_sort_chunk_env, not_set, 2);
+	var_print("cob_sort_chunk",
+			cob_int_to_formatted_bytestring(*(runtimeptr->cob_sort_chunk),
+					intstring),
+			cob_int_to_formatted_bytestring(COB_SORT_CHUNK, intstring2), 3);
+	var_print("COB_FILE_PATH", runtimeptr->cob_file_path_env, not_set, 2);
+	var_print("cob_file_path", runtimeptr->cob_file_path, not_set, 3);
+	var_print("COB_LS_NULLS", runtimeptr->cob_ls_nulls_env, not_set, 2);
+	var_print("cob_ls_nulls",
+			cob_int_to_string(*(runtimeptr->cob_ls_nulls), intstring),
+			no_default, 3);
+	var_print("COB_LS_FIXED", runtimeptr->cob_ls_fixed_env, not_set, 2);
+	var_print("cob_ls_fixed",
+			cob_int_to_string(*(runtimeptr->cob_ls_fixed), intstring),
+			no_default, 3);
+	var_print("COB_VARSEQ_FORMAT", runtimeptr->cob_varseq_type_env,
+			_("0 (default), [2-byte record-length] [0000] [record-data]"), 2);
+	var_print("cob_varseq_type",
+			cob_int_to_string(*(runtimeptr->cob_varseq_type), intstring),
+			_("0 (default), [2-byte record-length] [0000] [record-data]"), 3);
+	var_print("COB_UNIX_LF", runtimeptr->cob_unix_lf_env, not_set,
+			2);
+	var_print("cob_unix_lf",
+			cob_int_to_string(cobglobptr->cob_unix_lf, intstring),
+			no_default, 3);
+
+	if (runtimeptr->cob_local_edit) {
+		printf(_("\n\nLocale Properties\n"));
+		var_print("COB_LOCALE_NUMERIC_EDITED", runtimeptr->cob_local_edit_env,
+				not_set, 2);
+		var_print("cob_local_edit",
+				cob_int_to_string(*(runtimeptr->cob_local_edit), intstring),
+				no_default, 3);
+	}
+
+	printf(_("\n\nScreen I/O\n"));
+	var_print("COB_REDIRECT_DISPLAY",
+			runtimeptr->cob_disp_to_stderr_env, not_set, 2);
+	var_print("cob_disp_to_stderr",
+			cob_int_to_string(cobglobptr->cob_disp_to_stderr,
+					intstring), no_default, 3);
+	var_print("COB_BELL", runtimeptr->cob_beep_str_env, not_set, 2);
+	var_print("cob_beep_value", cob_int_to_string(cobglobptr->cob_beep_value, intstring), (char*) "0", 3);
+	var_print("COB_TIMEOUT_SCALE", runtimeptr->cob_timeout_scale_env,
+			not_set, 2);
+	var_print("cob_timeout_scale",
+			cob_int_to_string(cobglobptr->cob_timeout_scale,
+					intstring), _("1000"), 3);
+	var_print("COB_SCREEN_EXCEPTIONS",
+			runtimeptr->cob_extended_status_env, not_set, 2);
+	var_print("cob_extended_status",
+			cob_int_to_string(cobglobptr->cob_extended_status,
+					intstring), no_default, 3);
+	var_print("COB_SCREEN_ESC", runtimeptr->cob_use_esc_env,
+			not_set, 2);
+	var_print("cob_screen_esc",
+			cob_int_to_string(cobglobptr->cob_use_esc, intstring),
+			no_default, 3);
+	
+	printf(_("\n\nMiscellaneous\n"));
+	var_print("COB_SET_TRACE", runtimeptr->cob_line_trace_env, not_set, 2);
+	var_print("cob_line_trace", cob_int_to_string(cob_line_trace, intstring), no_default, 3);
+	cob_check_trace_file();
+	var_print("COB_TRACE_FILE", cob_trace_env, not_set, 2);
+	if(cob_trace_file != stderr) {
+		var_print("cob_trace_file", cob_trace_env, NULL, 3);
+	}
+	else {
+		var_print("cob_trace_file", _("stderr (default)"), NULL, 3);
+	}
+	var_print("COB_DISABLE_WARNINGS",
+			runtimeptr->cob_display_warn_env, not_set, 2);
+	var_print("cob_display_warn",
+			cob_int_to_string(cobglobptr->cob_display_warn,
+					intstring), no_default, 3);
+	var_print("COB_ENV_MANGLE", runtimeptr->cob_env_mangle_env,
+			not_set, 2);
+	var_print("cob_env_mangle",
+			cob_int_to_string(cobglobptr->cob_env_mangle, intstring),
+			no_default, 3);
+}
+
+void
+print_version(void) {
+	char* cobc_buffer;
+	char month[32];
+	int day, year;
+
+	cobc_buffer = cob_fast_malloc((size_t) COB_MINI_MAX);
+
+	/* Set up build time stamp */
+	memset (month, 0, sizeof(month));
+	day = 0;
+	year = 0;
+	sscanf (__DATE__, "%s %d %d", month, &day, &year);
+
+	if (day && year) {
+		snprintf (cobc_buffer, (size_t)COB_MINI_MAX,
+			  "%s %2.2d %4.4d %s", month, day, year, __TIME__);
+	} else {
+		snprintf (cobc_buffer, (size_t)COB_MINI_MAX,
+			  "%s %s", __DATE__, __TIME__);
+	}
+
+	printf ("libcob (%s) %s.%d\n",
+		PACKAGE_NAME, PACKAGE_VERSION, PATCH_LEVEL);
+	puts ("Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida");
+	puts ("Copyright (C) 2006-2012 Roger While");
+	puts ("Copyright (C) 2009,2010,2012,2014 Simon Sobisch");
+	puts (_("This is free software; see the source for copying conditions.  There is NO\n\
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
+	printf (_("Built     %s"), cobc_buffer);
+	putchar ('\n');
+	printf (_("Packaged  %s"), COB_TAR_DATE);
+	putchar ('\n');
+
+}
+
+void
+print_info(void) {
+	char	buff[16];
+	char	*s;
+
+	print_version ();
+	putchar ('\n');
+	puts (_("Build information"));
+	var_print (_("Build environment"),	COB_BLD_BUILD, "", 0);
+	var_print("CC", COB_BLD_CC, "", 0);
+	var_print("CPPFLAGS", COB_BLD_CPPFLAGS, "", 0);
+	var_print("CFLAGS", COB_BLD_CFLAGS, "", 0);
+	var_print("LD", COB_BLD_LD, "", 0);
+	var_print("LDFLAGS", COB_BLD_LDFLAGS, "", 0);
+	putchar ('\n');
+	printf(_("C version %s%s"), OC_C_VERSION_PRF, OC_C_VERSION);
+	putchar ('\n');
+	puts (_("GNU Cobol information"));
+
+//	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
+//		var_print ("COB_LIBRARY_PATH",	s, "", 1);
+//	}
+	var_print("COB_MODULE_EXT", COB_MODULE_EXT, "", 0);
+	var_print("COB_EXEEXT", COB_EXEEXT, "", 0);
+
+#if	defined(USE_LIBDL) || defined(_WIN32)
+	var_print(_("Dynamic loading"), _("System"), "", 0);
+#else
+	var_print (_("Dynamic loading"),	_("Libtool"), "", 0);
+#endif
+
+#ifdef	COB_PARAM_CHECK
+	var_print ("\"CBL_\" param check",	_("Enabled"), "", 0);
+#else
+	var_print("\"CBL_\" param check", _("Disabled"), "", 0);
+#endif
+
+	snprintf (buff, sizeof(buff), "%d", WITH_VARSEQ);
+	var_print(_("Variable format"), buff, "", 0);
+	if ((s = getenv ("COB_VARSEQ_FORMAT")) != NULL) {
+		var_print("COB_VARSEQ_FORMAT", s, "", 1);
+	}
+
+#ifdef	COB_LI_IS_LL
+	var_print ("BINARY-C-LONG",	_("8 bytes"), "", 0);
+#else
+	var_print("BINARY-C-LONG", _("4 bytes"), "", 0);
+#endif
+
+#ifdef	WITH_SEQRA_EXTFH
+	var_print (_("Sequential handler"),	_("External"), "", 0);
+#else
+	var_print(_("Sequential handler"), _("Internal"), "", 0);
+#endif
+#ifdef	WITH_INDEX_EXTFH
+	var_print (_("ISAM handler"),		_("External"), "", 0);
+#endif
+#ifdef	WITH_DB
+	var_print (_("ISAM handler"),		_("BDB"), "", 0);
+#endif
+#ifdef	WITH_CISAM
+	var_print (_("ISAM handler"),		_("C-ISAM (Experimental)"), "", 0);
+#endif
+#ifdef	WITH_DISAM
+	var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"), "", 0);
+#endif
+#ifdef	WITH_VBISAM
+	var_print(_("ISAM handler"), _("VBISAM (Experimental)"), "", 0);
+#endif
+}
+
+
 void
 cob_init (const int argc, char **argv)
 {
@@ -3661,6 +4103,7 @@ cob_init (const int argc, char **argv)
 	}
 
 	cobglobptr = NULL;
+	runtimeptr = (struct runtime_env*) cob_malloc(sizeof(struct runtime_env));
 
 	cob_set_signal ();
 
@@ -3748,25 +4191,30 @@ cob_init (const int argc, char **argv)
 #ifdef	_WIN32
 	/* Allows running of tests under Win */
 	s = getenv ("COB_UNIX_LF");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
+	if (s) {
+		runtimeptr->cob_unix_lf_env = cob_save_env_value(runtimeptr->cob_unix_lf_env, s);
+
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
+
 		cobglobptr->cob_unix_lf = 1;
 		_setmode (_fileno (stdin), _O_BINARY);
 		_setmode (_fileno (stdout), _O_BINARY);
 		_setmode (_fileno (stderr), _O_BINARY);
 	}
+	}
 #endif
 
-	cob_init_numeric (cobglobptr);
-	cob_init_strings ();
-	cob_init_move (cobglobptr);
-	cob_init_intrinsic (cobglobptr);
-	cob_init_fileio (cobglobptr);
-	cob_init_call (cobglobptr);
-	cob_init_screenio (cobglobptr);
-	cob_init_termio (cobglobptr);
+	/* Call inits with runtimeptr to get the adresses of all */
+	cob_init_numeric(cobglobptr);
+	cob_init_strings();
+	cob_init_move(cobglobptr, runtimeptr);
+	cob_init_intrinsic(cobglobptr);
+	cob_init_fileio(cobglobptr, runtimeptr);
+	cob_init_call(cobglobptr, runtimeptr);
+	cob_init_screenio(cobglobptr);
+	cob_init_termio(cobglobptr);
 
 	/* Set up library routine stuff */
-
 	cobglobptr->cob_term_buff = cob_malloc ((size_t)COB_MEDIUM_BUFF);
 	cob_rescan_env_vals ();
 
@@ -3783,14 +4231,18 @@ cob_init (const int argc, char **argv)
 
 	/* Trace enable */
 	s = getenv ("COB_SET_TRACE");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
+	if (s) {
+		runtimeptr->cob_line_trace_env = cob_save_env_value(runtimeptr->cob_line_trace_env, s);
+
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
 		cob_line_trace = 1;
+	}
 	}
 
 	/* Trace file */
 	s = getenv ("COB_TRACE_FILE");
 	if (s) {
-		cob_trace_env = cob_strdup (s);
+		cob_trace_env = (const char*) cob_save_env_value((char*) cob_trace_env, s);
 		cob_trace_file = NULL;
 	} else {
 		cob_trace_env = NULL;
@@ -3799,16 +4251,24 @@ cob_init (const int argc, char **argv)
 
 	/* Disable runtime warnings */
 	s = getenv ("COB_DISABLE_WARNINGS");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
-		cobglobptr->cob_display_warn = 0;
-	} else {
-		cobglobptr->cob_display_warn = 1;
+	if (s) {
+		runtimeptr->cob_display_warn_env = cob_save_env_value(runtimeptr->cob_display_warn_env, s);
+
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
+			cobglobptr->cob_display_warn = 0;
+		} else {
+			cobglobptr->cob_display_warn = 1;
+		}
 	}
 
 	/* Mangle environment names */
 	s = getenv ("COB_ENV_MANGLE");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
-		cobglobptr->cob_env_mangle = 1;
+	if (s) {
+		runtimeptr->cob_env_mangle_env = cob_save_env_value(runtimeptr->cob_env_mangle_env, s);
+
+		if (*s == 'Y' || *s == 'y' || *s == '1') {
+			cobglobptr->cob_env_mangle = 1;
+		}
 	}
 
 	/* Get user name */

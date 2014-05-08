@@ -1,3 +1,11 @@
+2014-05-06  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* common.[ch] : Added print_runtime_env showing all environment values along with
+		resolved variables used in libcob
+		New string helper functions: cob_int_to_string, cob_strcat, cob_strjoin, 
+		cob_int_to_formatted_bytestring
+	* call.c : Remove duplicates when resolving COB_LIBRARY_PATH
+
 2014-04-28  Ron Norman <rjn@inglenet.com>
 
 	* numeric.c : Fixed errors in cob_add_int() when computing with floats.

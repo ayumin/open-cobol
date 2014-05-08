@@ -170,7 +170,6 @@ struct file_list {
 #define COBSORTFILEERR		3
 #define COBSORTNOTOPEN		4
 
-#define	COB_SORT_CHUNK		256 * 1024
 
 /* Sort item */
 struct cobitem {
@@ -240,18 +239,26 @@ static pid_t		cob_process_id;
 static unsigned int	eop_status;
 static unsigned int	check_eop_status;
 static unsigned int	cob_ls_uses_cr;
+static char*		cob_ls_uses_cr_env;
 static unsigned int	cob_ls_nulls;
+static char*		cob_ls_nulls_env;
 static unsigned int	cob_ls_fixed;
+static char*		cob_ls_fixed_env;
 static unsigned int	cob_do_sync;
+static char*		cob_do_sync_env;
 static size_t		cob_vsq_len;
 static unsigned int	cob_varseq_type;
+static char*		cob_varseq_type_env;
 
 static size_t		cob_sort_memory;
+static char*		cob_sort_memory_env;
 static size_t		cob_sort_chunk;
+static char*		cob_sort_chunk_env;
 
 static struct file_list	*file_cache;
 
 static char		*cob_file_path;
+static char*	cob_file_path_env;
 static char		*file_open_env;
 static char		*file_open_name;
 static char		*file_open_buff;
@@ -6363,7 +6370,7 @@ cob_exit_fileio (void)
 }
 
 void
-cob_init_fileio (cob_global *lptr)
+cob_init_fileio (cob_global *lptr, runtime_env* runtimeptr)
 {
 	char		*s;
 	cob_sli_t	memsiz;
@@ -6384,6 +6391,8 @@ cob_init_fileio (cob_global *lptr)
 	cob_ls_nulls = 0;
 	cob_ls_fixed = 0;
 	if ((s = getenv ("COB_SYNC")) != NULL) {
+		cob_do_sync_env = cob_save_env_value(cob_do_sync_env, s);
+
 		switch (*s) {
 		case 'Y':
 		case 'y':
@@ -6395,12 +6404,16 @@ cob_init_fileio (cob_global *lptr)
 		}
 	}
 	if ((s = getenv ("COB_LS_USES_CR")) != NULL) {
+		cob_ls_uses_cr_env = cob_save_env_value(cob_ls_uses_cr_env, s);
+
 		if (*s == 'Y' || *s == 'y' || *s == '1') {
 			cob_ls_uses_cr = 1;
 		}
 	}
-	cob_sort_memory = 128 * 1024 * 1024;
+	cob_sort_memory = COB_SORT_MEMORY;
 	if ((s = getenv ("COB_SORT_MEMORY")) != NULL) {
+		cob_sort_memory_env = cob_save_env_value(cob_sort_memory_env, s);
+
 		errno = 0;
 		memsiz = strtol (s, NULL, 10);
 		if (!errno && memsiz >= 1024 * 1024) {
@@ -6409,6 +6422,8 @@ cob_init_fileio (cob_global *lptr)
 	}
 	cob_sort_chunk = COB_SORT_CHUNK;
 	if ((s = getenv ("COB_SORT_CHUNK")) != NULL) {
+		cob_sort_chunk_env = cob_save_env_value(cob_sort_chunk_env, s);
+
 		n = atoi (s);
 		if (n >= (128 * 1024) && n <= (16 * 1024 * 1024)) {
 			cob_sort_chunk = (size_t)n;
@@ -6422,6 +6437,7 @@ cob_init_fileio (cob_global *lptr)
 		cob_sort_chunk = cob_sort_memory / 2;
 	}
 	cob_file_path = cob_fileio_getenv ("COB_FILE_PATH");
+	cob_file_path_env = cob_save_env_value(cob_file_path_env, cob_file_path);
 	if (cob_file_path) {
 		if (stat (cob_file_path, &st) || !(S_ISDIR (st.st_mode))) {
 			free (cob_file_path);
@@ -6429,11 +6445,15 @@ cob_init_fileio (cob_global *lptr)
 		}
 	}
 	if ((s = getenv ("COB_LS_NULLS")) != NULL) {
+		cob_ls_nulls_env = cob_save_env_value(cob_ls_nulls_env, s);
+
 		if (*s == 'Y' || *s == 'y' || *s == '1') {
 			cob_ls_nulls = 1;
 		}
 	}
 	if ((s = getenv ("COB_LS_FIXED")) != NULL) {
+		cob_ls_fixed_env = cob_save_env_value(cob_ls_fixed_env, s);
+
 		if (*s == 'Y' || *s == 'y' || *s == '1') {
 			cob_ls_fixed = 1;
 		}
@@ -6446,6 +6466,8 @@ cob_init_fileio (cob_global *lptr)
 #endif
 	cob_varseq_type = WITH_VARSEQ;
 	if ((s = getenv ("COB_VARSEQ_FORMAT")) != NULL) {
+		cob_varseq_type_env = cob_save_env_value(cob_varseq_type_env, s);
+
 		if (*s == '0') {
 			cob_varseq_type = 0;
 			cob_vsq_len = 4;
@@ -6480,4 +6502,22 @@ cob_init_fileio (cob_global *lptr)
 	extfh_cob_init_fileio (&sequential_funcs, &lineseq_funcs,
 			       &relative_funcs, &cob_file_write_opt);
 #endif
+
+
+	runtimeptr->cob_do_sync = &cob_do_sync;
+	runtimeptr->cob_do_sync_env = cob_do_sync_env;
+	runtimeptr->cob_ls_nulls = &cob_ls_nulls;
+	runtimeptr->cob_ls_nulls_env = cob_ls_nulls_env;
+	runtimeptr->cob_ls_fixed = &cob_ls_fixed;
+	runtimeptr->cob_ls_fixed_env = cob_ls_fixed_env;
+	runtimeptr->cob_ls_uses_cr = &cob_ls_uses_cr;
+	runtimeptr->cob_ls_uses_cr_env = cob_ls_uses_cr_env;
+	runtimeptr->cob_file_path = cob_file_path;
+	runtimeptr->cob_file_path_env = cob_file_path_env;
+	runtimeptr->cob_sort_memory = &cob_sort_memory;
+	runtimeptr->cob_sort_memory_env = cob_sort_memory_env;
+	runtimeptr->cob_sort_chunk = &cob_sort_chunk;
+	runtimeptr->cob_sort_chunk_env = cob_sort_chunk_env;
+	runtimeptr->cob_varseq_type = &cob_varseq_type;
+	runtimeptr->cob_varseq_type_env = cob_varseq_type_env;
 }

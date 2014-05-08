@@ -1,3 +1,9 @@
+2014-05-06  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* cobcrun.c : Added --runtime-env for displaying current runtime variables.;
+		--version shows both version numbers of cobcrun (new) and libcob.;
+		moved print_info (along with print_var) to libcob/common.c
+
 2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
 	* cobcrun.c : Tweaked --info for showing current settings (environment) along

@@ -156,11 +156,14 @@ static struct call_hash		**call_table;
 #endif
 
 static struct struct_handle	*base_preload_ptr;
+static char					*cob_preload_env;
+static char					*cob_preload_resolved;
 static struct struct_handle	*base_dynload_ptr;
 
 static cob_global		*cobglobptr;
 
 static char			**resolve_path;
+static char			*cob_library_path_env;
 static char			*resolve_error;
 static char			*resolve_alloc;
 static char			*resolve_error_buff;
@@ -174,8 +177,10 @@ static lt_dlhandle		mainhandle;
 static size_t			call_lastsize;
 static size_t			resolve_size;
 static unsigned int		name_convert;
+static char*			name_convert_env;
 static unsigned int		cob_jmp_primed;
 static unsigned int		physical_cancel;
+static char*			physical_cancel_env;
 
 #undef	COB_SYSTEM_GEN
 #if 0
@@ -286,6 +291,8 @@ cob_set_library_path (const char *path)
 	size_t		size;
 	struct stat	st;
 
+	int 		flag;
+
 	/* Clear the previous path */
 	if (resolve_path) {
 		free (resolve_path);
@@ -332,7 +339,21 @@ cob_set_library_path (const char *path)
 		if (stat (p, &st) || !(S_ISDIR (st.st_mode))) {
 			continue;
 		}
-		resolve_path[resolve_size++] = p;
+
+		/*
+		 * look if we already have this path
+		 */
+		flag = 0;
+		for (i = 0; i < resolve_size; i++) {
+			if(strcmp(resolve_path[i], p) == 0) {
+				flag = 1;
+				break;
+			}
+		}
+
+		if (!flag) {
+			resolve_path[resolve_size++] = p;
+        }
 	}
 }
 
@@ -453,6 +474,16 @@ cache_preload (const char *path)
 	preptr->handle = libhandle;
 	preptr->next = base_preload_ptr;
 	base_preload_ptr = preptr;
+
+
+	if(!cob_preload_resolved) {
+		cob_preload_resolved = cob_strdup(path);
+	}
+	else {
+		cob_preload_resolved = cob_strcat((char*) PATHSEPS, cob_strdup(cob_preload_resolved));
+		cob_preload_resolved = cob_strcat((char*) path, cob_strdup(cob_preload_resolved));
+	}
+
 	return 1;
 }
 
@@ -1215,7 +1246,7 @@ cob_exit_call (void)
 }
 
 void
-cob_init_call (cob_global *lptr)
+cob_init_call (cob_global *lptr, runtime_env* runtimeptr)
 {
 	char				*buff;
 	char				*s;
@@ -1267,6 +1298,8 @@ cob_init_call (cob_global *lptr)
 
 	s = getenv ("COB_PHYSICAL_CANCEL");
 	if (s) {
+		physical_cancel_env = cob_save_env_value(physical_cancel_env, s);
+
 		if (*s == 'Y' || *s == 'y' || *s == '1') {
 			physical_cancel = 1;
 		}
@@ -1281,6 +1314,8 @@ cob_init_call (cob_global *lptr)
 
 	s = getenv ("COB_LOAD_CASE");
 	if (s != NULL) {
+		name_convert_env = cob_save_env_value(name_convert_env, s);
+
 		if (strcasecmp (s, "LOWER") == 0) {
 			name_convert = 1;
 		} else if (strcasecmp (s, "UPPER") == 0) {
@@ -1294,6 +1329,8 @@ cob_init_call (cob_global *lptr)
 		snprintf (buff, (size_t)COB_MEDIUM_MAX, ".%s%s",
 			  PATHSEPS, COB_LIBRARY_PATH);
 	} else {
+		cob_library_path_env = cob_save_env_value(cob_library_path_env, s);
+
 		snprintf (buff, (size_t)COB_MEDIUM_MAX, "%s%s.%s%s",
 			  s, PATHSEPS, PATHSEPS, COB_LIBRARY_PATH);
 	}
@@ -1307,6 +1344,8 @@ cob_init_call (cob_global *lptr)
 
 	s = getenv ("COB_PRE_LOAD");
 	if (s != NULL) {
+		cob_preload_env = cob_save_env_value(cob_preload_env, s);
+
 		p = cob_strdup (s);
 		s = strtok (p, PATHSEPS);
 		for (; s; s = strtok (NULL, PATHSEPS)) {
@@ -1336,4 +1375,14 @@ cob_init_call (cob_global *lptr)
 	free (buff);
 	call_buffer = cob_fast_malloc ((size_t)CALL_BUFF_SIZE);
 	call_lastsize = CALL_BUFF_SIZE;
+
+	runtimeptr->physical_cancel = &physical_cancel;
+	runtimeptr->physical_cancel_env = physical_cancel_env;
+	runtimeptr->name_convert = &name_convert;
+	runtimeptr->name_convert_env = name_convert_env;
+	runtimeptr->resolve_path = resolve_path;
+	runtimeptr->resolve_size = &resolve_size;
+	runtimeptr->cob_library_path_env = cob_library_path_env;
+	if(cob_preload_resolved) runtimeptr->cob_preload_resolved = cob_strdup(cob_preload_resolved);
+	runtimeptr->cob_preload_env = cob_preload_env;
 }
