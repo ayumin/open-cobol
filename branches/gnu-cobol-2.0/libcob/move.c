@@ -537,22 +537,22 @@ cob_move_packed_to_display (cob_field *f1, cob_field *f2)
 /* Floating point */
 
 static void
-cob_move_fp_to_fp (cob_field *f1, cob_field *f2)
+cob_move_fp_to_fp (cob_field *src, cob_field *dst)
 {
 	double	dfp;
 	float	ffp;
 
-	if (COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy ((void *)&ffp, f2->data, sizeof(float));
-		dfp = ffp;
+	if (COB_FIELD_TYPE (src) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy ((void *)&ffp, src->data, sizeof(float));
+		dfp = (double)ffp;
 	} else {
-		memcpy ((void *)&dfp, f2->data, sizeof(double));
+		memcpy ((void *)&dfp, src->data, sizeof(double));
 		ffp = (float)dfp;
 	}
-	if (COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_FLOAT) {
-		memcpy (f2->data, (void *)&ffp, sizeof(float));
+	if (COB_FIELD_TYPE (dst) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy (dst->data, (void *)&ffp, sizeof(float));
 	} else {
-		memcpy (f2->data, (void *)&dfp, sizeof(double));
+		memcpy (dst->data, (void *)&dfp, sizeof(double));
 	}
 }
 

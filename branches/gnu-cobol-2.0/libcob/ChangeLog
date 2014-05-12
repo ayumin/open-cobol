@@ -1,3 +1,7 @@
+2014-05-12  Ron Norman <rjn@inglenet.com>
+
+	* move.c : fixed bug in cob_move_fp_to_fp()	
+
 2014-05-06  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* common.[ch] : Added print_runtime_env showing all environment values along with
