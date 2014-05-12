@@ -393,6 +393,64 @@ AT_CHECK([./prog], [0], [0   ])
 
 AT_CLEANUP
 
+
+AT_SETUP([COMPARE FLOAT-SHORT/FLOAT-LONG])
+AT_KEYWORDS([fundamental])
+
+# bug when comparing float and double for equality
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01  SRC1          FLOAT-LONG VALUE 11.55.
+       01  DST1          FLOAT-SHORT.
+       01  SRC2          FLOAT-SHORT VALUE 11.55.
+       01  DST2          FLOAT-LONG.
+
+       PROCEDURE        DIVISION.
+           MOVE SRC1 TO DST1.
+           IF DST1 not = 11.55
+               DISPLAY "Error: move/compare FLOAT-LONG to FLOAT-SHORT fa
+      -                "iled " DST1
+               END-DISPLAY
+           END-IF
+           
+           MOVE SRC1 TO DST2.
+           IF DST1 not = 11.55
+               DISPLAY "Error: move/compare FLOAT-LONG to FLOAT-LONG fai
+      -                "led " DST2
+               END-DISPLAY
+           END-IF
+           
+           MOVE ZERO TO DST1.
+           MOVE ZERO TO DST2.
+
+           MOVE SRC2 TO DST1.
+           IF DST1 not = 11.55
+               DISPLAY "Error: move/compare FLOAT-SHORT to FLOAT-SHORT f
+      -                "ailed " DST1
+               END-DISPLAY
+           END-IF
+           
+           MOVE SRC2 TO DST2.
+           IF DST2 not = 11.55
+               DISPLAY "Error: move/compare FLOAT-SHORT to FLOAT-LONG fa
+      -                "iled " DST2
+               END-DISPLAY
+           END-IF
+           
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0])
+AT_CHECK([./prog], [0], [], [])
+
+AT_CLEANUP
+
+
 AT_SETUP([ALPHABETIC test])
 AT_KEYWORDS([fundamental])
 
@@ -3084,3 +3142,69 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
+
+AT_SETUP([Numeric operations (6)])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([dump.c], [
+#include <stdio.h>
+int dump (char *p)
+{
+  printf ("%c%c", p[[0]], p[[1]]);
+  return 0;
+}
+])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+
+        01 P-FIELD1 PIC 99PPP.
+        01 P-FIELD2 PIC PPP99.
+
+        PROCEDURE DIVISION.
+
+        MOVE 5000 TO P-FIELD1.
+        ADD 5 TO P-FIELD1 END-ADD
+        IF P-FIELD1 NOT = 5000
+            DISPLAY "Error: Add 5 to PIC 99PPP."
+            END-DISPLAY
+        END-IF
+        CALL "dump" USING P-FIELD1 END-CALL        
+
+        ADD 5000 TO P-FIELD1 END-ADD
+        IF P-FIELD1 NOT = 10000
+            DISPLAY "Error: Add 5000 to PIC 99PPP."
+            END-DISPLAY
+        END-IF
+        CALL "dump" USING P-FIELD1 END-CALL        
+
+        MOVE 0.00055 TO P-FIELD2.
+        ADD 0.00033 TO P-FIELD2 END-ADD
+        IF P-FIELD2 NOT = 0.00088
+            DISPLAY "Error: Add 0.00033 to PIC PPP99."
+            END-DISPLAY
+        END-IF
+        CALL "dump" USING P-FIELD2 END-CALL
+        
+        MOVE 0.00055 TO P-FIELD2.
+        ADD 0.00300 TO P-FIELD2 END-ADD
+        IF P-FIELD2 NOT = 0.00055
+            DISPLAY "Error: Add 0.00300 to PIC PPP99."
+            END-DISPLAY
+        END-IF
+        CALL "dump" USING P-FIELD2 END-CALL        
+
+        STOP RUN.
+
+])
+
+AT_CHECK([$COMPILE_MODULE dump.c])
+AT_CHECK([$COMPILE prog.cob], [0], [])
+AT_CHECK([./prog], [0], [05108855], [])
+
+AT_CLEANUP
