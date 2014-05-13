@@ -1,3 +1,6 @@
+2014-05-13 Ron Norman <rjn@inglenet.com>
+   * numeric.c  - Added cob_cmp_float to do float compares
+
 2014-01-17 Ron Norman <rjn@inglenet.com>
    * intrinsic.c  - Change cob_intr_random to correctly compute RANDOM number
 
