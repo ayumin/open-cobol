@@ -2290,9 +2290,52 @@ cob_cmp_llint (cob_field *f1, const cob_s64_t n)
 	return cob_decimal_cmp (&cob_d1, &cob_d2);
 }
 
+#ifdef COB_FLOAT_DELTA
+#define TOLERANCE (double)COB_FLOAT_DELTA
+#else
+#define TOLERANCE (double)0.00001
+#endif
+#define FLOAT_EQ(x,y,t) (fabs((fabs(x-y)/x)) < t)
+
+int
+cob_cmp_float (cob_field *f1, cob_field *f2)
+{
+	double	d1,d2;
+	float	flt;
+	if(COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy(&flt,f1->data,sizeof(float));
+		d1 = flt;
+	} else if(COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_DOUBLE) {
+		memcpy(&d1,f1->data,sizeof(double));
+	} else {
+		cob_decimal_set_field (&cob_d1, f1);
+		d1 = cob_decimal_get_double(&cob_d1);
+	}
+	if(COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_FLOAT) {
+		memcpy(&flt,f2->data,sizeof(float));
+		d2 = flt;
+	} else if(COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_DOUBLE) {
+		memcpy(&d2,f2->data,sizeof(double));
+	} else {
+		cob_decimal_set_field (&cob_d1, f2);
+		d2 = cob_decimal_get_double(&cob_d1);
+	}
+	if(FLOAT_EQ(d1,d2,TOLERANCE))
+		return 0;
+	if(d1 < d2)
+		return -1;
+	return 1;
+}
+
 int
 cob_numeric_cmp (cob_field *f1, cob_field *f2)
 {
+	if(COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_FLOAT
+	|| COB_FIELD_TYPE (f1) == COB_TYPE_NUMERIC_DOUBLE
+	|| COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_FLOAT
+	|| COB_FIELD_TYPE (f2) == COB_TYPE_NUMERIC_DOUBLE) {
+		return cob_cmp_float(f1,f2);
+	}
 	cob_decimal_set_field (&cob_d1, f1);
 	cob_decimal_set_field (&cob_d2, f2);
 	return cob_decimal_cmp (&cob_d1, &cob_d2);

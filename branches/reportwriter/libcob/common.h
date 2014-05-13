@@ -1414,6 +1414,7 @@ COB_EXPIMP void	cob_set_switch		(const int, const int);
 /* Comparison */
 
 COB_EXPIMP int	cob_cmp			(cob_field *, cob_field *);
+COB_EXPIMP int	cob_cmp_float		(cob_field *, cob_field *);
 
 /* Class check */
 
