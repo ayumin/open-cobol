@@ -2320,7 +2320,10 @@ cob_cmp_float (cob_field *f1, cob_field *f2)
 		cob_decimal_set_field (&cob_d1, f2);
 		d2 = cob_decimal_get_double(&cob_d1);
 	}
-	if(FLOAT_EQ(d1,d2,TOLERANCE))
+	if(d1 == d2)
+		return 0;
+	if(d1 != 0.0
+	&& FLOAT_EQ(d1,d2,TOLERANCE))
 		return 0;
 	if(d1 < d2)
 		return -1;
