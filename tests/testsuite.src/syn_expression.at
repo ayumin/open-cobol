@@ -1,0 +1,190 @@
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2012 Roger While
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite
+
+AT_SETUP([Ambiguous AND/OR])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       PROCEDURE        DIVISION.
+           IF 3 = 1 AND 2 OR 3
+               DISPLAY "OK"
+               END-DISPLAY
+           END-IF.
+           IF 3 = 1 OR 2 AND 3
+               DISPLAY "NO"
+               END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], ,
+[prog.cob: 6: Warning: Suggest parentheses around AND within OR
+prog.cob: 10: Warning: Suggest parentheses around AND within OR
+])
+
+AT_CLEANUP
+
+AT_SETUP([START on SEQUENTIAL file])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           START TEST-FILE KEY EQUAL TEST-REC
+           END-START.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 15: Error: START not allowed on SEQUENTIAL files
+])
+
+AT_CLEANUP
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (1)])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+           GO TO PP02.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'P01':
+prog.cob: In paragraph 'P02':
+prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
+])
+
+AT_CLEANUP
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (2)])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+           PERFORM PP02.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'P01':
+prog.cob: In paragraph 'P02':
+prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
+])
+
+AT_CLEANUP
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (3)])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           GO TO P02.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'PP01':
+prog.cob: In paragraph 'PP02':
+prog.cob: 25: Error: Invalid reference to 'P02' (In DECLARATIVES)
+])
+
+AT_CLEANUP

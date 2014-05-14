@@ -9,21 +9,21 @@
       *>            (architecture   and endian-order plus above)
       *>----------------------------------------------------------------
       *>
-      *>  This file is part of OpenCOBOL.
+      *>  This file is part of GNU Cobol.
       *>
-      *>  The OpenCOBOL compiler is free software: you can redistribute
+      *>  The GNU Cobol compiler is free software: you can redistribute
       *>  it and/or modify it under the terms of the GNU General Public
       *>  License as published by the Free Software Foundation, either
-      *>  version 2 of the License, or (at your option) any later
+      *>  version 3 of the License, or (at your option) any later
       *>  version.
       *>
-      *>  OpenCOBOL is distributed in the hope that it will be useful,
+      *>  GNU Cobol is distributed in the hope that it will be useful,
       *>  but WITHOUT ANY WARRANTY; without even the implied warranty of
       *>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       *>  GNU General Public License for more details.
       *>
       *>  You should have received a copy of the GNU General Public
-      *>  License along with OpenCOBOL.
+      *>  License along with GNU Cobol.
       *>  If not, see <http://www.gnu.org/licenses/>.
 
        IDENTIFICATION   DIVISION.
@@ -32,25 +32,13 @@
        CONFIGURATION    SECTION.
        DATA             DIVISION.
        WORKING-STORAGE  SECTION.
-       77  addr                             usage pointer.
-       77  addr2addr                        usage pointer.
-       77  counter               pic 999999 usage comp-5.
-       77  byline                pic 999    usage comp-5.
+       01  addr                  usage pointer.
+       01  counter               usage binary-long unsigned.
+       01  byline                usage binary-long unsigned.
+       01  len                   usage binary-long unsigned.
        01  was-called-before     usage binary-long unsigned value 0.
            88  called-before     value 1.
-      *
-       01  some                  pic 999    usage comp-5.
-           88 some-is-printable-iso88591
-              values 32 thru 126, 160 thru 255.
-           88 some-is-printable-ebcdic
-              values 64, 65, 74 thru 80, 90 thru 97,
-                     106 thru 111, 121 thru 127, 129 thru 137, 143,
-                     145 thru 153, 159, 161 thru 169, 176,
-                     186 thru 188, 192 thru 201, 208 thru 217, 224,
-                     226 thru 233, 240 thru 249.
-       77  high-var              pic 99     usage comp-5.
-       77  low-var               pic 99     usage comp-5.
-      *
+
        01  char-set              pic x(06).
            88 is-ascii           value 'ASCII'.
            88 is-ebdic           value 'EBCDIC'.
@@ -64,28 +52,49 @@
        01  dots                  pic x value '.'.
        01  dump-dots             pic x.
 
-       77  hex-line-pointer      pic 9(02) value 1.
        01  disp-line.
            03  offset            pic 999999.
            03                    pic xx     value space.
            03  hex-line          pic x(48).
+           03  hex-line-red redefines hex-line.
+               05  occurs 16.
+                   07  hex-disp-val  pic xx.
+                   07                pic x.
            03                    pic xx     value space.
            03  show              pic x(16).
-       77  hex-digit             pic x(16)  value '0123456789abcdef'.
 
        01  extended-infos        pic x.
            88 show-extended-infos      values '1', '2', 'Y', 'y'.
            88 show-very-extended-infos values '2', 'Y', 'y'.
 
-       77  len                   pic 999999 usage comp-5.
-       77  len-display           pic ZZZZZ9.
+       01  len-display           pic ZZZZZ9.
 
-       LINKAGE SECTION.
-       01  buffer                pic x any length.
-       01  valuelen              pic 9 any length.
-      *
        01  byte                  pic x.
        01  byte-redef redefines  byte  usage binary-char unsigned.
+
+       01  hex-tab               pic x(512) value
+           "000102030405060708090a0b0c0d0e0f" &
+           "101112131415161718191a1b1c1d1e1f" &
+           "202122232425262728292a2b2c2d2e2f" &
+           "303132333435363738393a3b3c3d3e3f" &
+           "404142434445464748494a4b4c4d4e4f" &
+           "505152535455565758595a5b5c5d5e5f" &
+           "606162636465666768696a6b6c6d6e6f" &
+           "707172737475767778797a7b7c7d7e7f" &
+           "808182838485868788898a8b8c8d8e8f" &
+           "909192939495969798999a9b9c9d9e9f" &
+           "a0a1a2a3a4a5a6a7a8a9aaabacadaeaf" &
+           "b0b1b2b3b4b5b6b7b8b9babbbcbdbebf" &
+           "c0c1c2c3c4c5c6c7c8c9cacbcccdcecf" &
+           "d0d1d2d3d4d5d6d7d8d9dadbdcdddedf" &
+           "e0e1e2e3e4e5e6e7e8e9eaebecedeeef" &
+           "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff".
+       01  hex-tab-red redefines hex-tab.
+           03  hex-vals          pic xx     occurs 256.
+
+       LINKAGE SECTION.
+       01  buffer                any length.
+       01  valuelen              any numeric.
       *>----------------------------------------------------------------
        PROCEDURE DIVISION USING buffer valuelen.
        MAIN SECTION.
@@ -106,9 +115,19 @@
                          move dump-dots to dots
               end-accept
               *> Discover if running ASCII or EBCDIC
-              perform TEST-ASCII
+       >>IF   CHARSET = 'ASCII'
+              set  is-ascii   to true
+       >>ELIF CHARSET = 'EBCDIC'
+              set  is-ebdic   to true
+       >>ELSE
+              set  is-unknown to true
+       >>END-IF
               *> Discover endianness
-              perform TEST-ENDIAN
+       >>IF ENDIAN = "BIG"
+              set  is-big-endian-yes to true
+       >>ELSE
+              set  is-big-endian-no  to true
+       >>END-IF
 
               *> Get and display characteristics and headline
               accept extended-infos from environment 'OC_DUMP_EXT'
@@ -117,7 +136,11 @@
               if show-very-extended-infos
                  *> Stuff that we only need to display once
                  *> Longer pointers in 64-bit architecture
-                 perform TEST-64BIT
+       >>IF P64 SET
+                 set  is-64-bit to true
+       >>ELSE
+                 set  is-32-bit to true
+       >>END-IF
 
                  display 'Program runs on '
                          architecture ' architecture. '
@@ -158,36 +181,15 @@
                  move valuelen to len
               end-if
            end-if
-      *
-           set addr      to address of buffer
-           set addr2addr to address of addr
-      *
-           if len > 0
-      * To show hex-address, reverse if Big-Little Endian
-              if is-big-endian-yes
-                 set addr2addr up   by LENGTH OF addr
-                 set addr2addr down by 1
-              end-if
-              move 1 to hex-line-pointer
-              perform varying byline from 1 by 1
-                      until byline > LENGTH OF addr
-                 set address of byte to addr2addr
-                 perform calc-hex-value
-                 if is-big-endian-yes
-                    set addr2addr down by 1
-                 else
-                    set addr2addr up   by 1
-                 end-if
-              end-perform
-           end-if
 
            if show-extended-infos
               display ' '
                       upon SYSERR
               end-display
               if len > 0
+                 set addr      to address of buffer
                  display 'Dump of memory beginning at address: '
-                          hex-line (1 : 3 * (byline - 1) )
+                          addr
                           upon SYSERR
                  end-display
               end-if
@@ -230,28 +232,20 @@
            *> Main loop
            perform varying counter from 0 by 16
                    until   counter  >=   len
-              move counter to offset
-              move spaces  to hex-line, show
-              move '-'     to hex-line (24:01)
-              move 1       to hex-line-pointer
+              move spaces  to hex-line show
               perform varying byline from 1 by 1
                       until   byline  >  16
                  if (counter + byline) > len
-                    if byline < 9
-                       move space to hex-line (24:01)
-                    end-if
-                    inspect show (byline:) replacing all spaces by dots
                     exit perform
                  end-if
                  move buffer (counter + byline : 1) to byte
-                 perform CALC-HEX-VALUE
-                 if ((some-is-printable-iso88591 and is-ascii) or
-                     (some-is-printable-ebcdic   and is-ebdic)   )
-                    move byte to show (byline:1)
-                 else
-                    move dots to show (byline:1)
-                 end-if
+                 move hex-vals (byte-redef + 1) to
+                      hex-disp-val (byline)
+                 move byte to show (byline:1)
               end-perform
+              *> Check printable characters
+              call "C$PRINTABLE" using show dots
+              end-call
               move counter to offset
               display disp-line
                       upon SYSERR
@@ -264,60 +258,4 @@
 
            goback
            .
-      *-----------------------------------------------------------------
-       TEST-ASCII SECTION.
-      *Function: Discover if running Ascii or Ebcdic
-      *00.
-           evaluate space
-              when x'20'
-                 set  is-ascii   to true
-              when x'40'
-                 set  is-ebdic   to true
-              when other
-                 set  is-unknown to true
-           end-evaluate
-      *
-           continue.
-      *-----------------------------------------------------------------
-       TEST-64BIT SECTION.
-      *Function: Discover if running 32/64 bit
-      *00.
-      *    Longer pointers in 64-bit architecture
-           if function length (addr) <= 4
-              set  is-32-bit to true
-           else
-              set  is-64-bit to true
-           end-if
-      *
-           continue.
-      *-----------------------------------------------------------------
-       TEST-ENDIAN SECTION.
-      *00.
-      *    Number-bytes are shuffled in Big-Little endian
-           move 128 to byline
-           set  address of byte to address of byline
-           if function ord(byte) > 0
-              set  is-big-endian-yes to true
-           else
-              set  is-big-endian-no  to true
-           end-if
-      *
-           continue.
-      *-----------------------------------------------------------------
-       CALC-HEX-VALUE SECTION.
-      *00.
-           subtract 1 from function ord(byte) giving some
-           end-subtract
-           divide   some by 16 giving high-var remainder low-var
-           end-divide
-           string hex-digit (high-var + 1:1)
-                  hex-digit (low-var  + 1:1)
-                  space
-                  delimited by size
-                  into hex-line
-                  with pointer hex-line-pointer
-           end-string
-      *
-           continue.
-      *-----------------------------------------------------------------
        end program CBL_OC_DUMP.

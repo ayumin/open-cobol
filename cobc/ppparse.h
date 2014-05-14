@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.6.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Bison interface for Yacc-like parsers in C
    
-      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,15 +30,6 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef PP_PPPARSE_H
-# define PP_PPPARSE_H
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int ppdebug;
-#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -47,36 +38,87 @@ extern int ppdebug;
       know about them.  */
    enum yytokentype {
      TOKEN_EOF = 0,
-     COPY = 258,
-     REPLACE = 259,
-     SUPPRESS = 260,
-     PRINTING = 261,
-     REPLACING = 262,
-     OFF = 263,
-     IN = 264,
+     ALSO = 258,
+     BY = 259,
+     COPY = 260,
+     EQEQ = 261,
+     IN = 262,
+     LAST = 263,
+     LEADING = 264,
      OF = 265,
-     BY = 266,
-     EQEQ = 267,
-     TOKEN = 268
+     OFF = 266,
+     PRINTING = 267,
+     REPLACE = 268,
+     REPLACING = 269,
+     SUPPRESS = 270,
+     TRAILING = 271,
+     DOT = 272,
+     GARBAGE = 273,
+     SOURCE_DIRECTIVE = 274,
+     FORMAT = 275,
+     IS = 276,
+     FIXED = 277,
+     FREE = 278,
+     DEFINE_DIRECTIVE = 279,
+     AS = 280,
+     PARAMETER = 281,
+     OVERRIDE = 282,
+     SET_DIRECTIVE = 283,
+     CONSTANT = 284,
+     SOURCEFORMAT = 285,
+     FOLDCOPYNAME = 286,
+     NOFOLDCOPYNAME = 287,
+     IF_DIRECTIVE = 288,
+     ELSE_DIRECTIVE = 289,
+     ENDIF_DIRECTIVE = 290,
+     ELIF_DIRECTIVE = 291,
+     GE = 292,
+     LE = 293,
+     LT = 294,
+     GT = 295,
+     EQ = 296,
+     NE = 297,
+     NOT = 298,
+     THAN = 299,
+     TO = 300,
+     OR = 301,
+     EQUAL = 302,
+     GREATER = 303,
+     LESS = 304,
+     SET = 305,
+     DEFINED = 306,
+     TURN_DIRECTIVE = 307,
+     ON = 308,
+     CHECKING = 309,
+     WITH = 310,
+     LOCATION = 311,
+     TERMINATOR = 312,
+     TOKEN = 313,
+     VARIABLE = 314,
+     LITERAL = 315
    };
 #endif
+
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
 
-/* Line 2050 of yacc.c  */
-#line 48 "ppparse.y"
+/* Line 2066 of yacc.c  */
+#line 501 "ppparse.y"
 
 	char			*s;
 	struct cb_text_list	*l;
 	struct cb_replace_list	*r;
+	struct cb_define_struct	*ds;
+	unsigned int		ui;
+	int			si;
 
 
 
-/* Line 2050 of yacc.c  */
-#line 80 "ppparse.h"
+/* Line 2066 of yacc.c  */
+#line 122 "ppparse.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -85,18 +127,4 @@ typedef union YYSTYPE
 
 extern YYSTYPE pplval;
 
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int ppparse (void *YYPARSE_PARAM);
-#else
-int ppparse ();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
-int ppparse (void);
-#else
-int ppparse ();
-#endif
-#endif /* ! YYPARSE_PARAM */
 
-#endif /* !PP_PPPARSE_H  */

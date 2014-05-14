@@ -1,84 +1,102 @@
 /*
- * Copyright (C) 2003-2009 Keisuke Nishida
- * Copyright (C) 2007-2009 Roger While
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, 51 Franklin Street, Fifth Floor
- * Boston, MA 02110-1301 USA
- */
+   Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+   Copyright (C) 2007-2012 Roger While
+
+   This file is part of GNU Cobol.
+
+   The GNU Cobol compiler is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   GNU Cobol is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 #include "config.h"
 #include "defaults.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <ctype.h>
 
 #include "cobc.h"
 
-#undef CB_CONFIG_ANY
-#undef CB_CONFIG_INT
-#undef CB_CONFIG_STRING
-#undef CB_CONFIG_BOOLEAN
-#undef CB_CONFIG_SUPPORT
-#define CB_CONFIG_ANY(type,var,name)	type var;
-#define CB_CONFIG_INT(var,name)		int var;
-#define CB_CONFIG_STRING(var,name)	const char *var;
-#define CB_CONFIG_BOOLEAN(var,name)	int var;
-#define CB_CONFIG_SUPPORT(var,name)	enum cb_support var;
-#include "config.def"
-
 enum cb_config_type {
-	ANY,
-	INT,			/* integer */
-	STRING,			/* "..." */
-	BOOLEAN,		/* 'yes', 'no' */
-	SUPPORT			/* 'ok', 'archaic', 'obsolete',
+	CB_ANY = 0,
+	CB_INT,			/* integer */
+	CB_STRING,		/* "..." */
+	CB_BOOLEAN,		/* 'yes', 'no' */
+	CB_SUPPORT		/* 'ok', 'archaic', 'obsolete',
 				   'skip', 'ignore', 'unconformable' */
 };
 
-struct noreserve	*norestab = NULL;
+/* Global variables */
 
-static struct {
+#undef	CB_CONFIG_ANY
+#undef	CB_CONFIG_INT
+#undef	CB_CONFIG_STRING
+#undef	CB_CONFIG_BOOLEAN
+#undef	CB_CONFIG_SUPPORT
+
+#define CB_CONFIG_ANY(type,var,name)	type		var = (type)0;
+#define CB_CONFIG_INT(var,name)		int		var = 0;
+#define CB_CONFIG_STRING(var,name)	const char	*var = NULL;
+#define CB_CONFIG_BOOLEAN(var,name)	int		var = 0;
+#define CB_CONFIG_SUPPORT(var,name)	enum cb_support	var = CB_OK;
+
+#include "config.def"
+
+#undef	CB_CONFIG_ANY
+#undef	CB_CONFIG_INT
+#undef	CB_CONFIG_STRING
+#undef	CB_CONFIG_BOOLEAN
+#undef	CB_CONFIG_SUPPORT
+
+#define CB_CONFIG_ANY(type,var,name)	, {CB_ANY, name, (void *)&var, NULL}
+#define CB_CONFIG_INT(var,name)		, {CB_INT, name, (void *)&var, NULL}
+#define CB_CONFIG_STRING(var,name)	, {CB_STRING, name, (void *)&var, NULL}
+#define CB_CONFIG_BOOLEAN(var,name)	, {CB_BOOLEAN, name, (void *)&var, NULL}
+#define CB_CONFIG_SUPPORT(var,name)	, {CB_SUPPORT, name, (void *)&var, NULL}
+
+/* Local variables */
+
+static struct config_struct {
 	const enum cb_config_type	type;
 	const char			*name;
 	void				*var;
 	char				*val;
 } config_table[] = {
-	{STRING, "include", NULL, NULL},
-	{STRING, "not-reserved", NULL, NULL},
-#undef CB_CONFIG_ANY
-#undef CB_CONFIG_INT
-#undef CB_CONFIG_STRING
-#undef CB_CONFIG_BOOLEAN
-#undef CB_CONFIG_SUPPORT
-#define CB_CONFIG_ANY(type,var,name)	{ANY, name, &var, NULL},
-#define CB_CONFIG_INT(var,name)		{INT, name, &var, NULL},
-#define CB_CONFIG_STRING(var,name)	{STRING, name, &var, NULL},
-#define CB_CONFIG_BOOLEAN(var,name)	{BOOLEAN, name, &var, NULL},
-#define CB_CONFIG_SUPPORT(var,name)	{SUPPORT, name, &var, NULL},
+	{CB_STRING, "include", NULL, NULL}
+	, {CB_STRING, "not-reserved", NULL, NULL}
 #include "config.def"
-	{0, NULL, NULL, NULL}
 };
+
+#undef	CB_CONFIG_ANY
+#undef	CB_CONFIG_INT
+#undef	CB_CONFIG_STRING
+#undef	CB_CONFIG_BOOLEAN
+#undef	CB_CONFIG_SUPPORT
+
+#define	CB_CONFIG_SIZE	sizeof(config_table) / sizeof(struct config_struct)
+
+/* Local functions */
 
 static char *
 read_string (const char *text)
 {
-	char	*p;
-	char	*s = strdup (text);
+	char			*p;
+	char			*s;
 
+	s = cobc_main_strdup (text);
 	if (*s == '\"') {
 		s++;
 	}
@@ -93,14 +111,22 @@ read_string (const char *text)
 static void
 invalid_value (const char *fname, const int line, const char *name)
 {
-	fprintf (stderr, _("%s:%d: invalid value for '%s'\n"), fname, line, name);
+	fprintf (stderr, "%s:%d: ", fname, line);
+	fprintf (stderr, _("Invalid value for '%s'"), name);
+	putc ('\n', stderr);
+	fflush (stderr);
 }
 
 static void
 unsupported_value (const char *fname, const int line, const char *val)
 {
-	fprintf (stderr, _("%s:%d: '%s' not supported\n"), fname, line, val);
+	fprintf (stderr, "%s:%d: ", fname, line);
+	fprintf (stderr, _("'%s' not supported"), val);
+	putc ('\n', stderr);
+	fflush (stderr);
 }
+
+/* Global functions */
 
 int
 cb_load_std (const char *name)
@@ -112,83 +138,94 @@ int
 cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 {
 	char			*s;
+	const unsigned char	*x;
 	char			*e;
 	const char		*name;
 	const char		*val;
 	void			*var;
 	FILE			*fp;
-	char			*nores;
 	struct noreserve	*noresptr;
-	int			i;
-	int			j;
+	size_t			size;
+	size_t			i;
+	size_t			j;
 	int			ret;
 	int			saveret;
 	int			line;
 	char			buff[COB_SMALL_BUFF];
 
-	/* initialize the config table */
+	/* Initialize the config table */
 	if (check_nodef) {
-		for (i = 0; config_table[i].name; i++) {
+		for (i = 0; i < CB_CONFIG_SIZE; i++) {
 			config_table[i].val = NULL;
 		}
 	}
 
 	if (prefix_dir) {
-		snprintf (buff, COB_SMALL_MAX, "%s/%s", cob_config_dir, fname);
+		snprintf (buff, (size_t)COB_SMALL_MAX,
+			  "%s%s%s", cob_config_dir, SLASH_STR, fname);
 		name = buff;
 	} else {
 		name = fname;
 	}
-	/* open the config file */
+	/* Open the config file */
 	fp = fopen (name, "r");
 	if (fp == NULL) {
-		perror (name);
+		fflush (stderr);
+		fprintf (stderr, "%s: %s", name,
+			 _("No such file or directory"));
+		fflush (stderr);
 		return -1;
 	}
 
-	/* read the config file */
+	/* Read the config file */
 	ret = 0;
 	line = 0;
 	while (fgets (buff, COB_SMALL_BUFF, fp)) {
 		line++;
 
-		/* skip comments */
-		if (buff[0] == '#') {
+		/* Skip comments */
+		if (buff[0] == '#' || buff[0] == '\n') {
 			continue;
 		}
 
-		/* skip blank lines */
-		for (s = buff; *s; s++) {
-			if (isgraph (*s)) {
+		/* Skip blank lines */
+		for (x = (const unsigned char *)buff; *x; x++) {
+			if (isgraph (*x)) {
 				break;
 			}
 		}
-		if (!*s) {
+		if (!*x) {
 			continue;
 		}
 
-		/* get the tag */
+		/* Get tag */
 		s = strpbrk (buff, " \t:=");
 		if (!s) {
-			fprintf (stderr, "%s:%d: invalid line\n", fname, line);
+			fprintf (stderr, "%s:%d: ", fname, line);
+			fputs (_("Invalid line"), stderr);
+			putc ('\n', stderr);
+			fflush (stderr);
 			ret = -1;
 			continue;
 		}
 		*s = 0;
 
-		/* find the entry */
-		for (i = 0; config_table[i].name; i++) {
+		/* Find entry */
+		for (i = 0; i < CB_CONFIG_SIZE; i++) {
 			if (strcmp (buff, config_table[i].name) == 0) {
 				break;
 			}
 		}
-		if (!config_table[i].name) {
-			fprintf (stderr, "%s:%d: unknown tag '%s'\n", fname, line, buff);
+		if (i == CB_CONFIG_SIZE) {
+			fprintf (stderr, "%s:%d: ", fname, line);
+			fprintf (stderr, _("Unknown tag '%s'"), buff);
+			putc ('\n', stderr);
+			fflush (stderr);
 			ret = -1;
 			continue;
 		}
 
-		/* get the value */
+		/* Get value */
 		for (s++; *s && strchr (" \t:=", *s); s++) {
 			;
 		}
@@ -199,12 +236,12 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 		e[1] = 0;
 		config_table[i].val = s;
 
-		/* set the value */
+		/* Set value */
 		name = config_table[i].name;
 		var = config_table[i].var;
 		val = config_table[i].val;
 		switch (config_table[i].type) {
-		case ANY:
+		case CB_ANY:
 			if (strcmp (name, "assign-clause") == 0) {
 				if (strcmp (val, "cobol2002") == 0) {
 					unsupported_value (fname, line, val);
@@ -237,20 +274,11 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 					invalid_value (fname, line, name);
 					ret = -1;
 				}
-			} else if (strcmp (name, "default-organization") == 0) {
-				if (strcmp (val, "record-sequential") == 0) {
-					cb_default_organization = CB_ORG_RECORD_SEQUENTIAL;
-				} else if (strcmp (val, "line-sequential") == 0) {
-					cb_default_organization = CB_ORG_LINE_SEQUENTIAL;
-				} else {
-					invalid_value (fname, line, name);
-					ret = -1;
-				}
 			}
 			break;
-		case INT:
+		case CB_INT:
 			for (j = 0; val[j]; j++) {
-				if (!isdigit (val[j])) {
+				if (val[j] < '0' || val[j] > '9') {
 					invalid_value (fname, line, name);
 					ret = -1;
 					break;
@@ -258,28 +286,29 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 			}
 			*((int *)var) = atoi (val);
 			break;
-		case STRING:
+		case CB_STRING:
 			val = read_string (val);
 
 			if (strcmp (name, "include") == 0) {
-				/* include another conf file */
+				/* Include another conf file */
 				saveret = ret;
 				if (cb_load_conf (val, 0, 1) != 0) {
+					fclose (fp);
 					return -1;
 				}
 				ret = saveret;
 			} else if (strcmp (name, "not-reserved") == 0) {
-				nores = read_string (val);
-				noresptr = cobc_malloc (sizeof (struct noreserve));
-				noresptr->noresword = cobc_malloc (strlen (nores) + 1);
-				strcpy (noresptr->noresword, nores);
-				noresptr->next = norestab;
-				norestab = noresptr;
+				size = strlen (val);
+				noresptr = cobc_main_malloc (sizeof (struct noreserve) + size + 1U);
+				noresptr->noresword = (char *)noresptr + sizeof (struct noreserve);
+				memcpy (noresptr->noresword, val, size);
+				noresptr->next = cobc_nores_base;
+				cobc_nores_base = noresptr;
 			} else {
 				*((const char **)var) = val;
 			}
 			break;
-		case BOOLEAN:
+		case CB_BOOLEAN:
 			if (strcmp (val, "yes") == 0) {
 				*((int *)var) = 1;
 			} else if (strcmp (val, "no") == 0) {
@@ -289,7 +318,7 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 				ret = -1;
 			}
 			break;
-		case SUPPORT:
+		case CB_SUPPORT:
 			if (strcmp (val, "ok") == 0) {
 				*((enum cb_support *)var) = CB_OK;
 			} else if (strcmp (val, "warning") == 0) {
@@ -312,20 +341,24 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 			}
 			break;
 		default:
-			fprintf (stderr, _("%s:%d: invalid type for '%s'\n"),
-				 fname, line, name);
+			fprintf (stderr, "%s:%d: ", fname, line);
+			fprintf (stderr, _("Invalid type for '%s'"), name);
+			putc ('\n', stderr);
+			fflush (stderr);
 			ret = -1;
 			break;
 		}
 	}
 	fclose (fp);
 
-	/* checks for no definition */
+	/* Checks for no definition */
 	if (check_nodef) {
-		for (i = 2; config_table[i].name; i++) {
+		for (i = 2U; i < CB_CONFIG_SIZE; i++) {
 			if (config_table[i].val == NULL) {
-				fprintf (stderr, "%s: no definition of '%s'\n",
+				fprintf (stderr, _("%s: No definition of '%s'"),
 					 fname, config_table[i].name);
+				putc ('\n', stderr);
+				fflush (stderr);
 				ret = -1;
 			}
 		}

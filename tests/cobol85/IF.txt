@@ -42,14 +42,13 @@ IF139A.CBL     30   30    0       0       0 OK
 IF140A.CBL     13   13    0       0       0 OK
 IF141A.CBL     16   16    0       0       0 OK
 IF142A.CBL      2    2    0       0       0 OK
-IF401M.CBL    ----- test skipped -----
-IF402M.CBL    ----- test skipped -----
-IF403M.CBL    ----- test skipped -----
+IF401M.CBL      1    1    0       0       0 OK
+IF402M.CBL      1    1    0       0       0 OK
+IF403M.CBL      1    1    0       0       0 OK
 --------    ----- ---- ---- ------- -------
-Total         732  732    0       0       0
-%           100.0 100.0  0.0     0.0     0.0
+Total         735  735    0       0       0
 
-Number of programs:    42
-Successfully executed: 42 (100.00%)
-Compile error:          0 ( 0.00%)
-Execute error:          0 ( 0.00%)
+Number of programs:    45
+Successfully executed: 45
+Compile error:          0
+Execute error:          0

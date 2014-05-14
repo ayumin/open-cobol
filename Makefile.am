@@ -1,52 +1,56 @@
 #
-# Makefile opencobol
-# Process this file with automake to produce Makefile.in
+# Makefile gnucobol
 #
-# Copyright (C) 2003-2009 Keisuke Nishida
-# Copyright (C) 2008-2011 Roger While
+# Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+# Copyright (C) 2008-2012 Roger While
 #
-# This file is part of OpenCOBOL.
+# This file is part of GNU Cobol.
 #
-# The OpenCOBOL compiler is free software: you can redistribute it
+# The GNU Cobol compiler is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation, either version 2 of the
+# as published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
 #
-# OpenCOBOL is distributed in the hope that it will be useful,
+# GNU Cobol is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
-
-
-bin_SCRIPTS=cob-config
+# along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 include_HEADERS = libcob.h
 
-SUBDIRS = lib libcob cobc bin config copy po texi tests extras
+SUBDIRS = libcob lib cobc bin config copy po doc tests extras
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 --install
 BUILT_SOURCES = defaults.h
-DISTCLEANFILES = $(BUILT_SOURCES) cpucheck
-EXTRA_DIST = cpucheck.c COPYING.DOC
+DISTCLEANFILES = $(BUILT_SOURCES)
+# CLEANFILES = $(bin_SCRIPTS)
+
+EXTRA_DIST = gnu-cobol.spec config.h.bdb.win config.h.vb.win \
+	lib/Makefile.am lib/ChangeLog lib/dummymac.c lib/gettext.h \
+	po/en.translate
 
 dist-hook:
-	echo "static char octardate[] = \"`date +'%b %d %Y %T %Z'`\";" > $(distdir)/tarstamp.h
+	echo "#define COB_TAR_DATE \"`date -u +'%b %d %Y %T'` UTC\"" > $(distdir)/tarstamp.h
+	echo "#define COB_NUM_TAR_DATE `date -u +'%Y%m%d'`" >> $(distdir)/tarstamp.h
+	echo "#define COB_NUM_TAR_TIME `date -u +'%H%M%S'`" >> $(distdir)/tarstamp.h
 	find $(distdir) -type d -print | xargs chmod 777
-	chmod 644 $(distdir)/cpucheck.c
 	chmod 644 $(distdir)/bin/cob-config.in
 	chmod 644 $(distdir)/ABOUT-NLS
 	chmod 644 $(distdir)/AUTHORS
 	chmod 644 $(distdir)/COPYING
 	chmod 644 $(distdir)/COPYING.DOC
-	chmod 644 $(distdir)/COPYING.LIB
+	chmod 644 $(distdir)/COPYING.LESSER
 	chmod 644 $(distdir)/INSTALL
 	chmod 644 $(distdir)/NEWS
 	chmod 644 $(distdir)/README
 	chmod 644 $(distdir)/THANKS
 	chmod 644 $(distdir)/TODO
+	chmod 644 $(distdir)/gnu-cobol.spec
+	chmod 644 $(distdir)/config.h.bdb.win
+	chmod 644 $(distdir)/config.h.vb.win
 	chmod 755 $(distdir)/ltmain.sh
 	chmod 755 $(distdir)/missing
 	chmod 755 $(distdir)/install-sh
@@ -55,9 +59,14 @@ dist-hook:
 	chmod 755 $(distdir)/config.rpath
 	chmod 755 $(distdir)/depcomp
 	chmod 755 $(distdir)/mkinstalldirs
-	touch $(distdir)/tests/run
-	touch $(distdir)/tests/syntax
-	touch $(distdir)/tests/data-rep
+	chmod 755 $(distdir)/doc/cobcinfo.sh
+	touch $(distdir)/cobc/ppparse.c
+	touch $(distdir)/cobc/parser.c
+	touch $(distdir)/cobc/pplex.c
+	touch $(distdir)/cobc/scanner.c
+	touch $(distdir)/tests/testsuite
+	touch $(distdir)/doc/gnucobol.info
+	touch $(distdir)/doc/gnucobol.pdf
 
 defaults.h: Makefile.am $(top_builddir)/config.status
 	@echo "Creating defaults.h..."
@@ -71,5 +80,11 @@ defaults.h: Makefile.am $(top_builddir)/config.status
 	  echo "#define COB_COPY_DIR     \"$(COB_COPY_DIR)\"";		\
 	  echo "#define COB_LIBRARY_PATH \"$(COB_LIBRARY_PATH)\"";	\
 	  echo "#define COB_MODULE_EXT   \"$(COB_MODULE_EXT)\"";	\
+	  echo "#define COB_BLD_CC       \"$(CC)\"";			\
+	  echo "#define COB_BLD_CPPFLAGS \"$(CPPFLAGS)\"";		\
+	  echo "#define COB_BLD_CFLAGS   \"$(CFLAGS)\"";		\
+	  echo "#define COB_BLD_LD       \"$(LD)\"";			\
+	  echo "#define COB_BLD_LDFLAGS  \"$(LDFLAGS)\"";		\
+	  echo "#define COB_BLD_BUILD    \"$(build)\"";			\
 	  echo "#define LOCALEDIR        \"$(datadir)/locale\"";	\
 	} > defaults.h

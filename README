@@ -1,19 +1,26 @@
-			       OpenCOBOL
-		       http://www.opencobol.org/
+		                 GNU Cobol
 		http://sourceforge.net/projects/open-cobol/
 
-OpenCOBOL is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC.
+		http://opencobol.add1tocobol.com/gnucobol
+		         http://www.opencobol.org/
+
+GNU Cobol is a free and open-source COBOL compiler, which translates
+COBOL programs to C code and compiles it using a native C compiler.
+
+Although many have participated, most development thanks go to
+
+    Roger While
+    Keisuke Nishida
 
 This package contains the following subdirectories:
 
     cobc        COBOL compiler
     libcob      COBOL run-time library
     bin         COBOL driver program
-    lib         static library and common headers
-    config      configuration files
-    po          international messages
-    texi        Texinfo files
+    lib         Helper routines for missing OS functionality
+    config      Configuration files
+    po          International messages
+    doc         'info' and 'pdf' files
     tests       Test suite
     extras      useful COBOL programs 
 
@@ -21,7 +28,7 @@ All programs except those in lib and libcob are distributed under
 the GNU General Public License.  See COPYING for details.
 
 Programs in lib and libcob are distributed under the GNU Lesser
-General Public License.  See COPYING.LIB for details.
+General Public License.  See COPYING.LESSER for details.
 
 See AUTHORS for the author of each file.
 
@@ -30,18 +37,20 @@ Requirements
 ============
 
   ***
-     NOTE
-	For all the following packages (required or optional),
-	BOTH runtime AND development components are necessary.
+    NOTE
+    For all the following packages (required or optional),
+    BOTH runtime AND development components are necessary.
   ***
   ***
-     NOTE
-	All the following packages are normally part of a Linux
-	distribution. Cygwin also has these as installable packages
-	ALWAYS install the distro packages when available !!
+    NOTE
+    All the following packages are normally part of a Linux
+    distribution. Cygwin distribution also has these as installable packages.
+    Other operating systems also may have repositories for these.
+    eg. MAC OS, CentOS and others all have package repositories.
+    ALWAYS install the distribution packages when available !!
   ***
 
-OpenCOBOL requires the following external libraries to be installed:
+GNU Cobol REQUIRES the following external library to be installed:
 
   o GNU MP (libgmp) 4.1.2 or later
     http://gmplib.org
@@ -52,72 +61,61 @@ OpenCOBOL requires the following external libraries to be installed:
 
     GNU MP is distributed under GNU Lesser General Public License.
 
+    NOTE
+    Please ALWAYS use the distro package whenever possible !!
+    See NOTE above.
+       
+
+GNU Cobol MAY require the following external library to be installed:
+
+    ***
+    NOTE - libltdl is NOT needed when installing on Linux,
+    SUN Solaris, MAC OS, CentOS or Windows
+        (including Cygwin, MingW and native windows).
+    It is also NOT needed with later versions of AIX and HP-UX.
+    (AIX >= 5.1 and HP-UX >= 11.1 are known to NOT require this).
+    (Check if you have the "dlopen" function).
+    ***
 
   o GNU Libtool (libltdl)
     http://www.gnu.org/software/libtool/libtool.html
-
-    ***
-	NOTE - libltdl is NOT needed when installing on Linux
-	or Windows (including Cygwin and MingW).
-    ***
 
     libltdl is used to implement dynamic CALL statements.
 
     GNU Libtool is distributed under GNU Lesser General Public License.
 
-  **
 
 The following libraries ARE required WHEN :
 
-1) Indexed-Sequential file I/O is used
+1) Indexed-Sequential file I/O (ISAM) is used
 
-  o Berkeley DB (libdb) 1.85 or later
+  o Berkeley DB (libdb) 4.1 or later
     http://www.oracle.com/
+    http://www.oracle.com/technology/products/berkeley-db/db/index.html
 
     BOTH runtime AND development components required.
 
-    Recommended is version 4.x as 1.85 is known to have problems.
+    libdb is used to implement indexed file I/O.
 
-    * NOTE *
-
-     The following NOTE(S) ONLY apply to DB <= 4.1
-
-	    * NOTE *
-	     The BDB version 4.0 was never officially supported from
-	     sleepycat but, unfortunately, found it's way into Linux
-	     releases. Install a newer version.
-
-	    * NOTE *
-	     If you are generating BDB yourself and the BDB 
-	     version is <= 4 (and version < 1), you need to specify
-	     --enable-compat185 as a minimum to the BDB configure.
-	     BDB does NOT have the usual install path of either
-	     /usr or /usr/local. Therefore, it is recommended to
-	     specify --prefix=/usr/local to the configure.
-
-    libdb is used to implement indexed file I/O and SORT/MERGE.
-
-    Berkeley DB is distributed under the original BSD License (1.85)
-    or their own open-source license (2.x or later).  Note that, as
-    of 2.x, if you linked your software with Berkeley DB, you must
-    distribute the source code of your software along with your
+    Berkeley DB is distributed under Oracles own open-source license.
+    Note that if you linked your software with Berkeley DB,
+    you must distribute the source code of your software along with your
     software, or you have to pay royalty to Oracle.
 
 2) SCREEN I/O is used or extended ACCEPT/DISPLAY is used
 
     BOTH runtime AND development components required.
 
+    One of the following:
+
   o Ncurses (ncurses) 5.2 or later
     http://www.gnu.org/software/ncurses/ncurses.html
-
-    libncurses is used to implement SCREEN SECTION and extended
-    ACCEPT/DISPLAY.
 
     Ncurses is distributed under a BSD style license.
 
   o Unix curses
 
-  o PDCurses (pdcurses) for MinGW ports
+  o PDCurses (pdcurses) for MinGW/native windows ports
     http://pdcurses.sourceforge.net
 
 ============
@@ -126,15 +124,21 @@ The following libraries ARE required WHEN :
 Installation
 ============
 
-  **
-	NOTE
-	Due to deficiencies in the tools used to prepare
-	OpenCOBOL (autoconf/automake/libtool), it is
-	NOT generally possible to use path names with
-	spaces embedded within them (Mainly Cygwin/MingW/Windows ports).
-  **
+** NOTE **
+   Due to deficiencies in the tools used to prepare GNU Cobol
+   (autoconf/automake/libtool), it is NOT generally possible
+   to use path names with spaces embedded within them
+   (Mainly Cygwin/MingW/Windows ports).
  
-To generate/install OpenCOBOL :
+** NOTE **
+   The default installation path for GNU Cobol is /usr/local.
+   The installation path may be changed by specifying --prefix=<dir>
+   as a parameter to the configure.
+   Further parameters may be specified to affect
+   include/library search paths.
+   Execute ./configure --help for further details.
+
+To generate/install GNU Cobol :
 
 **************************************
 
@@ -143,10 +147,13 @@ To generate/install OpenCOBOL :
 
  Here you may run
     make check
- to run a series of OpenCOBOL test programs (must do!)
+ to run a series of GNU Cobol test programs (must do!)
  This MUST succeed - If not, please report.
 
     make install
+
+** NOTE **
+   You generally need super-user privileges to execute "make install".
 
 ** NOTE **
    On Linux systems, if you are installing for the
@@ -157,7 +164,8 @@ To generate/install OpenCOBOL :
    On some Red Hat (Fedora) installations and
    possibly other Linux distros, /usr/local/lib
    is NOT automatically searched at runtime. 
-   Edit /etc/ld.so.conf and add /usr/local/lib to the file.
+   Edit /etc/ld.so.conf (or the equivalent file) and add
+   /usr/local/lib to the file.
    Rerun "ldconfig".
 
 You may optionally perform a series of COBOL85 tests.
@@ -178,12 +186,6 @@ You can get back to a clean installation status by running :
 
 **************************************
 
-The "make install" will default to "/usr/local" as
-the install path. You may override this by specifying
-"--prefix=<your install path>" to the "./configure"
-command.
-
-***********************************************************
 
 ============
 
@@ -193,30 +195,28 @@ options.
 
 There are the following configure options:
 
-  --with-cc=<cc>		Specify C compiler command used by cobc
-				Do not specify this unless you know what
-				you are doing!
-
-  --with-db1			Use Berkeley DB 1.85 (libdb1/libdb-1.85)
-				This overrides --with-db/--without-db
-
-  --with-db			Use Berkeley DB 3.0 or later (libdb)
+  --with-db			Use Berkeley DB >= 4.1 (libdb) (ISAM handler)
 				This is the default
 
-  --without-db			Do not use Berkeley DB
-				You will not be able to use SORT/indexed I/O
+  --without-db			Do not use Berkeley DB / any other ISAM handler
+				You will not be able to use indexed I/O
 
-  --with-dl			Use the system dynamic linker instead of ltdl
+  --with-dl			Use the system dynamic linker
 				This is the default
-				(Note on Windows, native loading is used)
 
   --without-dl			Use ltdl for dynamic program loading
 
   --with-patch-level=<n>	Set internal patch level to n (default 0)
 
-  --with-varseq=<n>		Define the format for variable length sequential
-				files. For values of 0, 1 and 2, four bytes are
-				written preceeding each record. The format of
+  --with-varseq=<n>		Define the default format for variable
+				length sequential files.
+
+				The default may be overridden at run time by
+				setting the environment variable
+				COB_VARSEQ_FORMAT to 0, 1, 2, or 3.
+
+				For values of 0, 1 and 2, four bytes are
+				written preceding each record. The format of
 				these four bytes for values of 0, 1, 2 is
 				as follows :
 				n = 0 (default)
@@ -233,7 +233,7 @@ There are the following configure options:
 					(This was previously the default)
 
 				For the value of 3, two bytes are written
-				preceeding each record :
+				preceding each record :
 				n = 3
 					The first 2 bytes are the record length
 					in big-endian order. The record follows
@@ -247,23 +247,24 @@ There are the following configure options:
 Development
 ============
 
-If you wish to hack the OpenCOBOL source code, proceed
+If you wish to hack the GNU Cobol source code, proceed
 as follows.
 
-You need to install the following extra packages with specified
-minimum version before changing/building OpenCOBOL:
+Before changing/building GNU Cobol, you need to install the
+following extra packages with versions equal or greater :
 
-For compiling :
-  o Bison 1.875
-  o Flex 2.5.4
+For compiling (when changing flex/bison sources) :
+  o Bison 2.3
+  o Flex 2.5.35
 
 If you reconfigure and/or prepare a distribution
-  o Autoconf 2.59
-  o Automake 1.9.6
-  o Libtool 1.5.24
-  o m4 1.4.2
-  o Gettext 0.14.1
-  o Texinfo 4.6 (For makeinfo)
+  o autoconf 2.64
+  o automake 1.10.1
+  o libtool 2.2.6
+  o m4 1.4.12
+  o gettext 0.17
+  o texinfo 4.12
+  o texlive (latest)
 
 If you modify top-level configure.ac, Makefile.am in any directory,
 or any of the standard OC tests then you will need to

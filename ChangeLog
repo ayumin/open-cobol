@@ -1,11 +1,56 @@
-2012-09-05  Simon 'human' Sobisch
+2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* Change package name to OpenCOBOL CE
+	* moved cobgetopt.c from lib to libcob
+	* link cobc to libcob
+
+2014-04-11  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* configure.ac : bugfix for systems with prototype for finite function
+		in ieeefp.h instead of math.h
+
+2013-09-29  Brian Tiffin & Simon Sobisch <sf-mensch@users.sf.net>
+
+	* Change package name, and project to GNU Cobol
+	* GNU-ification of source code commencing
+
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* General : Affects most directories - use a modified
+	  version of getopt_long_long (placed in lib)
 
 2011-??-??  Roger While <simrw@sim-basis.de>
 
 	* General : Affects most directories - Let make check
 	  skip ISAM tests if not configured with ISAM
+
+20??-??-??  Roger While <simrw@sim-basis.de>
+
+	* General : Affecting directories bin and cobc - use a 
+	  modified version of getopt_long_long (placed in lib)
+
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
+2009-04-11  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Changes for BDB support, support icc
+	* General : Affects all directories - Rebase to latest stable
+		    autoxxxx tools
+
+2009-03-12  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Fix for newest development tools
+
+2009-03-09  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Fix up m4 quoting
+
+2009-03-02  Roger While <simrw@sim-basis.de>
+
+	* configure.ac : Correctly test for gcc and icc
+	* cpucheck.c : Remove
 
 2008-11-17  Roger While <simrw@sim-basis.de>
 
@@ -348,11 +393,11 @@
 	  configure.ac, configure, Mak** : Fix missing variables.
 	  Run autoreconf
 
-2005-04-15  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-15  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (WORDS_BIGENDIAN): New variable.
 
-2005-04-13  Keisuke Nishida  <knishida@open-cobol.org>
+2005-04-13  Keisuke Nishida  <knishida@opencobol.org>
 
 	* configure.ac (LIBCOB_CFLAGS): Set -fPIC when necessary.
 
@@ -393,7 +438,7 @@
 	  to __db_open. This fixes configuring against
 	  the NPTL versions of DB (eg. Red Hat, Suse).
 
-2004-08-02  Keisuke Nishida  <knishida@open-cobol.org>
+2004-08-02  Keisuke Nishida  <knishida@opencobol.org>
 
 	* Version 0.30 released.
 

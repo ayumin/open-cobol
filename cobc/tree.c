@@ -1,27 +1,29 @@
 /*
- * Copyright (C) 2001-2009 Keisuke Nishida
- * Copyright (C) 2007-2009 Roger While
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, 51 Franklin Street, Fifth Floor
- * Boston, MA 02110-1301 USA
- */
+   Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
+   Copyright (C) 2007-2012 Roger While
+
+   This file is part of GNU Cobol.
+
+   The GNU Cobol compiler is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   GNU Cobol is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 #include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -53,23 +55,66 @@ static const enum cb_class category_to_class_table[] = {
 	CB_CLASS_ALPHANUMERIC,	/* CB_CATEGORY_NUMERIC_EDITED */
 	CB_CLASS_OBJECT,	/* CB_CATEGORY_OBJECT_REFERENCE */
 	CB_CLASS_POINTER,	/* CB_CATEGORY_DATA_POINTER */
-	CB_CLASS_POINTER,	/* CB_CATEGORY_PROGRAM_POINTER */
+	CB_CLASS_POINTER	/* CB_CATEGORY_PROGRAM_POINTER */
 };
 
-static struct int_node {
-	struct int_node *next;
+static int category_is_alphanumeric[] = {
+	0,	/* CB_CATEGORY_UNKNOWN */
+	1,	/* CB_CATEGORY_ALPHABETIC */
+	1,	/* CB_CATEGORY_ALPHANUMERIC */
+	1,	/* CB_CATEGORY_ALPHANUMERIC_EDITED */
+	0,	/* CB_CATEGORY_BOOLEAN */
+	0,	/* CB_CATEGORY_INDEX */
+	1,	/* CB_CATEGORY_NATIONAL */
+	1,	/* CB_CATEGORY_NATIONAL_EDITED */
+	0,	/* CB_CATEGORY_NUMERIC */
+	1,	/* CB_CATEGORY_NUMERIC_EDITED */
+	0,	/* CB_CATEGORY_OBJECT_REFERENCE */
+	0,	/* CB_CATEGORY_DATA_POINTER */
+	0	/* CB_CATEGORY_PROGRAM_POINTER */
+};
+
+struct int_node {
+	struct int_node	*next;
 	cb_tree		node;
 	int		n;
-} *int_node_table = NULL;
+};
 
-static char	*treenamebuff = NULL;
-static int	filler_id = 1;
+static struct int_node		*int_node_table = NULL;
+static char			*scratch_buff = NULL;
+static char			*pic_buff = NULL;
+static int			filler_id = 1;
+static int			class_id = 0;
+static int			toplev_count;
+static struct cb_program	*container_progs[64];
+static const char		* const cb_const_subs[] = {
+	"i0",
+	"i1",
+	"i2",
+	"i3",
+	"i4",
+	"i5",
+	"i6",
+	"i7",
+	"i8",
+	"i9",
+	"i10",
+	"i11",
+	"i12",
+	"i13",
+	"i14",
+	"i15",
+	NULL
+};
+
+static struct cb_intrinsic_table	userbp =
+	{ "USER FUNCTION", "cob_user_function", -1, 1,
+	  CB_INTR_USER_FUNCTION, CB_CATEGORY_NUMERIC,
+	  0, 0, 0 };
 
 /* Global variables */
 
-/*
- * Constants
- */
+/* Constants */
 
 cb_tree cb_any;
 cb_tree cb_true;
@@ -89,70 +134,66 @@ cb_tree cb_int2;
 cb_tree cb_int3;
 cb_tree cb_int4;
 cb_tree cb_int5;
-cb_tree cb_i[8];
+cb_tree cb_i[COB_MAX_SUBSCRIPTS];
 cb_tree cb_error_node;
 
-cb_tree cb_intr_whencomp;
-cb_tree cb_intr_pi;
-cb_tree cb_intr_e;
+cb_tree cb_intr_whencomp = NULL;
 
-cb_tree cb_standard_error_handler;
+cb_tree cb_standard_error_handler = NULL;
 
-size_t	gen_screen_ptr = 0;
+unsigned int	gen_screen_ptr = 0;
 
 /* Local functions */
-
-static char *
-to_cname (const char *s)
-{
-	char		*copy;
-	unsigned char	*p;
-
-	copy = strdup (s);
-	for (p = (unsigned char *)copy; *p; p++) {
-		*p = (*p == '-') ? '_' : (unsigned char)toupper (*p);
-	}
-	return copy;
-}
 
 static size_t
 hash (const unsigned char *s)
 {
-	size_t val = 0;
+	size_t	val;
+	size_t	pos;
 
-	for (; *s; s++) {
-		val += toupper (*s);
+	/* Hash a name */
+	/* We multiply by position to get a better distribution */
+	val = 0;
+	pos = 1;
+	for (; *s; s++, pos++) {
+		val += pos * toupper (*s);
 	}
+#if	0	/* RXWRXW - Hash remainder */
 	return val % CB_WORD_HASH_SIZE;
+#endif
+	return val & CB_WORD_HASH_MASK;
 }
 
-static struct cb_word *
-lookup_word (const char *name)
+static void
+lookup_word (struct cb_reference *p, const char *name)
 {
-	struct cb_word	*p;
+	struct cb_word	*w;
 	size_t		val;
 
 	val = hash ((const unsigned char *)name);
-	/* find the existing word */
-	if (current_program) {
-		for (p = current_program->word_table[val]; p; p = p->next) {
-			if (strcasecmp (p->name, name) == 0) {
-				return p;
+	/* Find an existing word */
+	if (likely(current_program)) {
+		for (w = current_program->word_table[val]; w; w = w->next) {
+			if (strcasecmp (w->name, name) == 0) {
+				p->word = w;
+				p->hashval = val;
+				p->flag_duped = 1;
+				return;
 			}
 		}
 	}
 
-	/* create new word */
-	p = cobc_malloc (sizeof (struct cb_word));
-	p->name = strdup (name);
+	/* Create new word */
+	w = cobc_parse_malloc (sizeof (struct cb_word));
+	w->name = cobc_parse_strdup (name);
 
-	/* insert it into the table */
-	if (current_program) {
-		p->next = current_program->word_table[val];
-		current_program->word_table[val] = p;
+	/* Insert it into the table */
+	if (likely(current_program)) {
+		w->next = current_program->word_table[val];
+		current_program->word_table[val] = w;
 	}
-
-	return p;
+	p->word = w;
+	p->hashval = val;
 }
 
 static void
@@ -162,23 +203,22 @@ file_error (cb_tree name, const char *clause)
 		    CB_NAME (name));
 }
 
-/*
- * Tree
- */
+/* Tree */
 
 static void *
-make_tree (int tag, enum cb_category category, size_t size)
+make_tree (const enum cb_tag tag, const enum cb_category category,
+	   const size_t size)
 {
 	cb_tree x;
 
-	x = cobc_malloc (size);
+	x = cobc_parse_malloc (size);
 	x->tag = tag;
 	x->category = category;
 	return x;
 }
 
 static cb_tree
-make_constant (enum cb_category category, const char *val)
+make_constant (const enum cb_category category, const char *val)
 {
 	struct cb_const *p;
 
@@ -193,22 +233,27 @@ make_constant_label (const char *name)
 	struct cb_label *p;
 
 	p = CB_LABEL (cb_build_label (cb_build_reference (name), NULL));
-	p->need_begin = 1;
+	p->flag_begin = 1;
 	return CB_TREE (p);
 }
 
-static int
+static size_t
 cb_name_1 (char *s, cb_tree x)
 {
 	char			*orig;
 	struct cb_funcall	*cbip;
 	struct cb_binary_op	*cbop;
 	struct cb_reference	*p;
+	struct cb_field		*f;
 	struct cb_intrinsic	*cbit;
 	cb_tree			l;
 	int			i;
 
 	orig = s;
+	if (!x) {
+		strcpy (s, "(void pointer)");
+		return strlen (orig);
+	}
 	switch (CB_TREE_TAG (x)) {
 	case CB_TAG_CONST:
 		if (x == cb_any) {
@@ -230,9 +275,9 @@ cb_name_1 (char *s, cb_tree x)
 		} else if (x == cb_quote) {
 			strcpy (s, "QUOTE");
 		} else if (x == cb_error_node) {
-			strcpy (s, "Internal error node");
+			strcpy (s, _("Internal error node"));
 		} else {
-			strcpy (s, "#<unknown constant>");
+			strcpy (s, _("Unknown constant"));
 		}
 		break;
 
@@ -240,21 +285,30 @@ cb_name_1 (char *s, cb_tree x)
 		if (CB_TREE_CLASS (x) == CB_CLASS_NUMERIC) {
 			strcpy (s, (char *)CB_LITERAL (x)->data);
 		} else {
-			sprintf (s, "\"%s\"", CB_LITERAL (x)->data);
+			sprintf (s, "\"%s\"", (char *)CB_LITERAL (x)->data);
 		}
 		break;
 
 	case CB_TAG_FIELD:
-		strcpy (s, CB_FIELD (x)->name);
+		f = CB_FIELD (x);
+		if (f->flag_filler) {
+			strcpy (s, "FILLER");
+		} else {
+			strcpy (s, f->name);
+		}
 		break;
 
 	case CB_TAG_REFERENCE:
 		p = CB_REFERENCE (x);
-		s += sprintf (s, "%s", p->word->name);
+		if (p->flag_filler_ref) {
+			s += sprintf (s, "FILLER");
+		} else {
+			s += sprintf (s, "%s", p->word->name);
+		}
 		if (p->subs) {
-			l = p->subs = cb_list_reverse (p->subs);
 			s += sprintf (s, " (");
-			for (; l; l = CB_CHAIN (l)) {
+			p->subs = cb_list_reverse (p->subs);
+			for (l = p->subs; l; l = CB_CHAIN (l)) {
 				s += cb_name_1 (s, CB_VALUE (l));
 				s += sprintf (s, CB_CHAIN (l) ? ", " : ")");
 			}
@@ -276,7 +330,7 @@ cb_name_1 (char *s, cb_tree x)
 		break;
 
 	case CB_TAG_LABEL:
-		sprintf (s, "%s", CB_LABEL (x)->name);
+		sprintf (s, "%s", (char *)(CB_LABEL (x)->name));
 		break;
 
 	case CB_TAG_ALPHABET_NAME:
@@ -321,10 +375,17 @@ cb_name_1 (char *s, cb_tree x)
 
 	case CB_TAG_INTRINSIC:
 		cbit = CB_INTRINSIC (x);
-		sprintf (s, "FUNCTION %s", cbit->intr_tab->name);
+		if (cbit->isuser) {
+			sprintf (s, "USER FUNCTION");
+		} else {
+			sprintf (s, "FUNCTION %s", cbit->intr_tab->name);
+		}
+		break;
+	case CB_TAG_FILE:
+		sprintf (s, "FILE %s", CB_FILE (x)->name);
 		break;
 	default:
-		sprintf (s, "#<unknown %d %p>", CB_TREE_TAG (x), x);
+		sprintf (s, _("<Unexpected tree tag %d>"), (int)CB_TREE_TAG (x));
 	}
 
 	return strlen (orig);
@@ -332,11 +393,11 @@ cb_name_1 (char *s, cb_tree x)
 
 static cb_tree
 make_intrinsic (cb_tree name, struct cb_intrinsic_table *cbp, cb_tree args,
-		cb_tree field, cb_tree refmod)
+		cb_tree field, cb_tree refmod, const int isuser)
 {
 	struct cb_intrinsic *x;
 
-/* Leave in, we may need this
+#if	0	/* RXWRXW Leave in, we may need this */
 	cb_tree			l;
 	for (l = args; l; l = CB_CHAIN(l)) {
 		switch (CB_TREE_TAG (CB_VALUE(l))) {
@@ -355,12 +416,14 @@ make_intrinsic (cb_tree name, struct cb_intrinsic_table *cbp, cb_tree args,
 
 		}
 	}
-*/
+#endif
+
 	x = make_tree (CB_TAG_INTRINSIC, cbp->category, sizeof (struct cb_intrinsic));
 	x->name = name;
 	x->args = args;
 	x->intr_tab = cbp;
 	x->intr_field = field;
+	x->isuser = isuser;
 	if (refmod) {
 		x->offset = CB_PAIR_X (refmod);
 		x->length = CB_PAIR_Y (refmod);
@@ -371,48 +434,50 @@ make_intrinsic (cb_tree name, struct cb_intrinsic_table *cbp, cb_tree args,
 static cb_tree
 global_check (struct cb_reference *r, cb_tree items, size_t *ambiguous)
 {
-	cb_tree			candidate = NULL;
+	cb_tree			candidate;
 	struct cb_field		*p;
 	cb_tree			v;
 	cb_tree			c;
 
+	candidate = NULL;
 	for (; items; items = CB_CHAIN (items)) {
-		/* find a candidate value by resolving qualification */
+		/* Find a candidate value by resolving qualification */
 		v = CB_VALUE (items);
 		c = r->chain;
 		if (CB_FIELD_P (v)) {
 			if (!CB_FIELD (v)->flag_is_global) {
 				continue;
 			}
-			/* in case the value is a field, it might be qualified
+			/* In case the value is a field, it might be qualified
 			   by its parent names and a file name */
 			if (CB_FIELD (v)->flag_indexed_by) {
 				p = CB_FIELD (v)->index_qual;
 			} else {
 				p = CB_FIELD (v)->parent;
 			}
-			/* resolve by parents */
+			/* Resolve by parents */
 			for (; p; p = p->parent) {
 				if (c && strcasecmp (CB_NAME (c), p->name) == 0) {
 					c = CB_REFERENCE (c)->chain;
 				}
 			}
 
-			/* resolve by file */
+			/* Resolve by file */
 			if (c && CB_REFERENCE (c)->chain == NULL) {
-				if (CB_REFERENCE (c)->word->count == 1 && CB_FILE_P (cb_ref (c))
-				    && (CB_FILE (cb_ref (c)) == cb_field_founder (CB_FIELD (v))->file)) {
+				if (CB_WORD_COUNT (c) == 1 &&
+				    CB_FILE_P (cb_ref (c)) &&
+				    (CB_FILE (cb_ref (c)) == cb_field_founder (CB_FIELD (v))->file)) {
 					c = CB_REFERENCE (c)->chain;
 				}
 			}
 		}
-		/* a well qualified value is a good candidate */
+		/* A well qualified value is a good candidate */
 		if (c == NULL) {
 			if (candidate == NULL) {
-				/* keep the first candidate */
+				/* Keep the first candidate */
 				candidate = v;
 			} else {
-				/* multiple candidates and possibly ambiguous */
+				/* Multiple candidates and possibly ambiguous */
 				*ambiguous = 1;
 			}
 		}
@@ -422,36 +487,44 @@ global_check (struct cb_reference *r, cb_tree items, size_t *ambiguous)
 
 /* Global functions */
 
+char *
+cb_to_cname (const char *s)
+{
+	char		*copy;
+	unsigned char	*p;
+
+	copy = cobc_parse_strdup (s);
+	for (p = (unsigned char *)copy; *p; p++) {
+		if (*p == '-' || *p == ' ') {
+			*p = '_';
+		} else {
+			*p = (cob_u8_t)toupper (*p);
+		}
+	}
+	return copy;
+}
+
 struct cb_literal *
-build_literal (enum cb_category category, const unsigned char *data, size_t size)
+build_literal (const enum cb_category category, const void *data,
+	       const size_t size)
 {
 	struct cb_literal *p;
 
 	p = make_tree (CB_TAG_LITERAL, category, sizeof (struct cb_literal));
-	p->data = cobc_malloc ((size_t) (size + 1));
+	p->data = cobc_parse_malloc (size + 1U);
 	p->size = size;
-	memcpy (p->data, data, (size_t) size);
-	/* RXW - malloc zeroes
-	p->data[size] = 0;
-	*/
+	memcpy (p->data, data, size);
 	return p;
 }
 
 char *
 cb_name (cb_tree x)
 {
-	if (!treenamebuff) {
-		treenamebuff = cobc_malloc (COB_NORMAL_BUFF);
-	}
-	cb_name_1 (treenamebuff, x);
-	return treenamebuff;
-}
+	char	*s;
 
-enum cb_class
-cb_tree_class (cb_tree x)
-{
-
-	return category_to_class_table[CB_TREE_CATEGORY (x)];
+	s = cobc_parse_malloc ((size_t)COB_NORMAL_BUFF);
+	(void)cb_name_1 (s, x);
+	return s;
 }
 
 enum cb_category
@@ -462,7 +535,7 @@ cb_tree_category (cb_tree x)
 	struct cb_field		*f;
 
 	if (x == cb_error_node) {
-		return 0;
+		return (enum cb_category)0;
 	}
 	if (x->category != CB_CATEGORY_UNKNOWN) {
 		return x->category;
@@ -471,7 +544,7 @@ cb_tree_category (cb_tree x)
 	switch (CB_TREE_TAG (x)) {
 	case CB_TAG_CAST:
 		p = CB_CAST (x);
-		switch (p->type) {
+		switch (p->cast_type) {
 		case CB_CAST_ADDRESS:
 		case CB_CAST_ADDR_OF_ADDR:
 			x->category = CB_CATEGORY_DATA_POINTER;
@@ -480,8 +553,9 @@ cb_tree_category (cb_tree x)
 			x->category = CB_CATEGORY_PROGRAM_POINTER;
 			break;
 		default:
-			fprintf (stderr, "Unexpected cast type -> %d\n", p->type);
-			ABORT ();
+			cobc_abort_pr (_("Unexpected cast type -> %d"),
+					(int)(p->cast_type));
+			COBC_ABORT ();
 		}
 		break;
 	case CB_TAG_REFERENCE:
@@ -513,7 +587,11 @@ cb_tree_category (cb_tree x)
 				x->category = CB_CATEGORY_BOOLEAN;
 				break;
 			default:
-				x->category = f->pic->category;
+				if (f->pic) {
+					x->category = f->pic->category;
+				} else {
+					x->category = (enum cb_category)0;
+				}
 				break;
 			}
 		}
@@ -525,20 +603,37 @@ cb_tree_category (cb_tree x)
 	case CB_TAG_BINARY_OP:
 		x->category = CB_CATEGORY_BOOLEAN;
 		break;
+	case CB_TAG_INTRINSIC:
+		x->category = CB_INTRINSIC(x)->intr_tab->category;
+		break;
 	default:
-		fprintf (stderr, "Unknown tree tag %d Category %d\n", CB_TREE_TAG (x), x->category);
-		ABORT ();
+#if	0	/* RXWRXW - Tree tag */
+		cobc_abort_pr (_("Unknown tree tag %d Category %d"),
+				(int)CB_TREE_TAG (x), (int)x->category);
+		COBC_ABORT ();
+#endif
+		return CB_CATEGORY_UNKNOWN;
 	}
 
 	return x->category;
 }
 
-int
-cb_tree_type (cb_tree x)
+enum cb_class
+cb_tree_class (cb_tree x)
 {
-	struct cb_field *f;
 
-	f = cb_field (x);
+	return category_to_class_table[CB_TREE_CATEGORY (x)];
+}
+
+int
+cb_category_is_alpha (cb_tree x)
+{
+	return category_is_alphanumeric[CB_TREE_CATEGORY (x)];
+}
+
+int
+cb_tree_type (const cb_tree x, const struct cb_field *f)
+{
 	if (f->children) {
 		return COB_TYPE_GROUP;
 	}
@@ -564,10 +659,24 @@ cb_tree_type (cb_tree x)
 		case CB_USAGE_DOUBLE:
 			return COB_TYPE_NUMERIC_DOUBLE;
 		case CB_USAGE_PACKED:
+		case CB_USAGE_COMP_6:
 			return COB_TYPE_NUMERIC_PACKED;
+		case CB_USAGE_LONG_DOUBLE:
+			return COB_TYPE_NUMERIC_L_DOUBLE;
+		case CB_USAGE_FP_BIN32:
+			return COB_TYPE_NUMERIC_FP_BIN32;
+		case CB_USAGE_FP_BIN64:
+			return COB_TYPE_NUMERIC_FP_BIN64;
+		case CB_USAGE_FP_BIN128:
+			return COB_TYPE_NUMERIC_FP_BIN128;
+		case CB_USAGE_FP_DEC64:
+			return COB_TYPE_NUMERIC_FP_DEC64;
+		case CB_USAGE_FP_DEC128:
+			return COB_TYPE_NUMERIC_FP_DEC128;
 		default:
-			fprintf (stderr, "Unexpected numeric usage -> %d\n", f->usage);
-			ABORT ();
+			cobc_abort_pr (_("Unexpected numeric usage -> %d"),
+					(int)f->usage);
+			COBC_ABORT ();
 		}
 	case CB_CATEGORY_NUMERIC_EDITED:
 		return COB_TYPE_NUMERIC_EDITED;
@@ -576,30 +685,56 @@ cb_tree_type (cb_tree x)
 	case CB_CATEGORY_PROGRAM_POINTER:
 		return COB_TYPE_NUMERIC_BINARY;
 	default:
-		fprintf (stderr, "Unexpected category -> %d\n", CB_TREE_CATEGORY (x));
-		ABORT ();
+		cobc_abort_pr (_("Unexpected category -> %d"),
+				(int)CB_TREE_CATEGORY (x));
+		/* Use dumb variant */
+		COBC_DUMB_ABORT ();
 	}
 	/* NOT REACHED */
-#ifndef _MSC_VER
 	return 0;
-#endif
 }
 
 int
-cb_fits_int (cb_tree x)
+cb_fits_int (const cb_tree x)
 {
 	struct cb_literal	*l;
 	struct cb_field		*f;
+	const char		*s;
+	const unsigned char	*p;
+	size_t			size;
 
 	switch (CB_TREE_TAG (x)) {
 	case CB_TAG_LITERAL:
 		l = CB_LITERAL (x);
-		if (l->scale <= 0 && l->size < 10) {
+		if (l->scale > 0) {
+			return 0;
+		}
+		for (size = 0, p = l->data; size < l->size; ++size, ++p) {
+			if (*p != (unsigned char)'0') {
+				break;
+			}
+		}
+		size = l->size - size;
+		if (size < 10) {
 			return 1;
 		}
-		return 0;
+		if (size > 10) {
+			return 0;
+		}
+		if (l->sign < 0) {
+			s = "2147483648";
+		} else {
+			s = "2147483647";
+		}
+		if (memcmp (p, s, (size_t)10) > 0) {
+			return 0;
+		}
+		return 1;
 	case CB_TAG_FIELD:
 		f = CB_FIELD (x);
+		if (f->children) {
+			return 0;
+		}
 		switch (f->usage) {
 		case CB_USAGE_INDEX:
 		case CB_USAGE_LENGTH:
@@ -619,6 +754,7 @@ cb_fits_int (cb_tree x)
 			}
 			return 0;
 		case CB_USAGE_PACKED:
+		case CB_USAGE_COMP_6:
 			if (f->pic->scale <= 0 && f->pic->digits < 10) {
 				return 1;
 			}
@@ -628,26 +764,54 @@ cb_fits_int (cb_tree x)
 		}
 	case CB_TAG_REFERENCE:
 		return cb_fits_int (CB_REFERENCE (x)->value);
+	case CB_TAG_INTEGER:
+		return 1;
 	default:
 		return 0;
 	}
 }
 
 int
-cb_fits_long_long (cb_tree x)
+cb_fits_long_long (const cb_tree x)
 {
 	struct cb_literal	*l;
 	struct cb_field		*f;
+	const char		*s;
+	const unsigned char	*p;
+	size_t			size;
 
 	switch (CB_TREE_TAG (x)) {
 	case CB_TAG_LITERAL:
 		l = CB_LITERAL (x);
-		if (l->scale <= 0 && l->size < 19) {
+		if (l->scale > 0) {
+			return 0;
+		}
+		for (size = 0, p = l->data; size < l->size; ++size, ++p) {
+			if (*p != (unsigned char)'0') {
+				break;
+			}
+		}
+		size = l->size - size;
+		if (size < 19) {
 			return 1;
 		}
-		return 0;
+		if (size > 19) {
+			return 0;
+		}
+		if (l->sign < 0) {
+			s = "9223372036854775808";
+		} else {
+			s = "9223372036854775807";
+		}
+		if (memcmp (p, s, (size_t)19) > 0) {
+			return 0;
+		}
+		return 1;
 	case CB_TAG_FIELD:
 		f = CB_FIELD (x);
+		if (f->children) {
+			return 0;
+		}
 		switch (f->usage) {
 		case CB_USAGE_INDEX:
 		case CB_USAGE_LENGTH:
@@ -655,7 +819,8 @@ cb_fits_long_long (cb_tree x)
 		case CB_USAGE_BINARY:
 		case CB_USAGE_COMP_5:
 		case CB_USAGE_COMP_X:
-			if (f->pic->scale <= 0 && f->size <= (int)sizeof (long long)) {
+			if (f->pic->scale <= 0 &&
+			    f->size <= (int)sizeof (cob_s64_t)) {
 				return 1;
 			}
 			return 0;
@@ -664,23 +829,39 @@ cb_fits_long_long (cb_tree x)
 				return 1;
 			}
 			return 0;
+		case CB_USAGE_PACKED:
+		case CB_USAGE_COMP_6:
+			if (f->pic->scale <= 0 && f->pic->digits < 19) {
+				return 1;
+			}
+			return 0;
 		default:
 			return 0;
 		}
 	case CB_TAG_REFERENCE:
 		return cb_fits_long_long (CB_REFERENCE (x)->value);
+	case CB_TAG_INTEGER:
+		return 1;
 	default:
 		return 0;
 	}
 }
 
 int
-cb_get_int (cb_tree x)
+cb_get_int (const cb_tree x)
 {
 	struct cb_literal	*l;
+#if	0	/* RXWRXW Fixme SZ */
+	const char		*s;
+	size_t			size;
+#endif
 	size_t			i;
-	int			val = 0;
+	int			val;
 
+	if (!CB_LITERAL_P (x)) {
+		cobc_abort_pr (_("Invalid literal cast - Aborting"));
+		COBC_ABORT ();
+	}
 	l = CB_LITERAL (x);
 	for (i = 0; i < l->size; i++) {
 		if (l->data[i] != '0') {
@@ -688,27 +869,83 @@ cb_get_int (cb_tree x)
 		}
 	}
 
-/* RXWRXW
-	if (l->size - i >= 10) {
-		ABORT ();
+#if	0	/* RXWRXW Fixme SZ */
+	if (l->sign < 0) {
+		s = "2147483648";
+	} else {
+		s = "2147483647";
 	}
-*/
+	size = l->size - i;
+	if (size > 10U || (size == 10U && memcmp (&l->data[i], s, 10) > 0)) {
+		cobc_abort_pr (_("Numeric literal exceeds limit - Aborting"));
+		COBC_ABORT ();
+	}
+#endif
 
+	val = 0;
 	for (; i < l->size; i++) {
 		val = val * 10 + l->data[i] - '0';
 	}
-	if (l->sign < 0) {
+	if (val && l->sign < 0) {
 		val = -val;
 	}
 	return val;
 }
 
-long long
-cb_get_long_long (cb_tree x)
+cob_s64_t
+cb_get_long_long (const cb_tree x)
+{
+	struct cb_literal	*l;
+	const char		*s;
+	size_t			i;
+	size_t			size;
+	cob_s64_t		val;
+
+	if (!CB_LITERAL_P (x)) {
+		cobc_abort_pr (_("Invalid literal cast - Aborting"));
+		COBC_ABORT ();
+	}
+	l = CB_LITERAL (x);
+	for (i = 0; i < l->size; i++) {
+		if (l->data[i] != '0') {
+			break;
+		}
+	}
+
+	size = l->size - i;
+	if (size > 19U) {
+		cobc_abort_pr (_("Numeric literal exceeds limit - Aborting"));
+		COBC_ABORT ();
+	}
+	if (size == 19U) {
+		if (l->sign < 0) {
+			s = "9223372036854775808";
+		} else {
+			s = "9223372036854775807";
+		}
+		if (memcmp (&(l->data[i]), s, (size_t)19) > 0) {
+			cobc_abort_pr (_("Numeric literal exceeds limit - Aborting"));
+			COBC_ABORT ();
+		}
+	}
+
+	val = 0;
+	for (; i < l->size; i++) {
+		val = val * 10 + (l->data[i] & 0x0F);
+	}
+	if (val && l->sign < 0) {
+		val = -val;
+	}
+	return val;
+}
+
+cob_u64_t
+cb_get_u_long_long (const cb_tree x)
 {
 	struct cb_literal	*l;
 	size_t			i;
-	long long		val = 0;
+	size_t			size;
+	cob_u64_t		val;
 
 	l = CB_LITERAL (x);
 	for (i = 0; i < l->size; i++) {
@@ -717,15 +954,20 @@ cb_get_long_long (cb_tree x)
 		}
 	}
 
-	if (l->size - i >= 19) {
-		ABORT ();
+	size = l->size - i;
+	if (size > 20U) {
+		cobc_abort_pr (_("Numeric literal exceeds limit - Aborting"));
+		COBC_ABORT ();
 	}
-
+	if (size == 20U) {
+		if (memcmp (&(l->data[i]), "18446744073709551615", (size_t)20) > 0) {
+			cobc_abort_pr (_("Numeric literal exceeds limit - Aborting"));
+			COBC_ABORT ();
+		}
+	}
+	val = 0;
 	for (; i < l->size; i++) {
-		val = val * 10 + l->data[i] - '0';
-	}
-	if (l->sign < 0) {
-		val = -val;
+		val = val * 10 + (l->data[i] & 0x0F);
 	}
 	return val;
 }
@@ -733,7 +975,6 @@ cb_get_long_long (cb_tree x)
 void
 cb_init_constants (void)
 {
-	char	*s;
 	int	i;
 
 	cb_error_node = make_constant (CB_CATEGORY_UNKNOWN, NULL);
@@ -741,41 +982,39 @@ cb_init_constants (void)
 	cb_true = make_constant (CB_CATEGORY_BOOLEAN, "1");
 	cb_false = make_constant (CB_CATEGORY_BOOLEAN, "0");
 	cb_null = make_constant (CB_CATEGORY_DATA_POINTER, "0");
-	cb_zero = make_constant (CB_CATEGORY_NUMERIC, "&cob_zero");
-	cb_one = make_constant (CB_CATEGORY_NUMERIC, "&cob_one");
-	cb_space = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_space");
-	cb_low = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_low");
+	cb_zero = make_constant (CB_CATEGORY_NUMERIC, "&cob_all_zero");
+	cb_space = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_all_space");
+	cb_low = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_all_low");
 	cb_norm_low = cb_low;
-	cb_high = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_high");
+	cb_high = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_all_high");
 	cb_norm_high = cb_high;
-	cb_quote = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_quote");
+	cb_quote = make_constant (CB_CATEGORY_ALPHANUMERIC, "&cob_all_quote");
+	cb_one = cb_build_numeric_literal (0, "1", 0);
 	cb_int0 = cb_int (0);
 	cb_int1 = cb_int (1);
 	cb_int2 = cb_int (2);
 	cb_int3 = cb_int (3);
 	cb_int4 = cb_int (4);
 	cb_int5 = cb_int (5);
-	for (i = 1; i < 8; i++) {
-		s = cobc_malloc (4);
-		sprintf (s, "i%d", i);
-		cb_i[i] = make_constant (CB_CATEGORY_NUMERIC, s);
+	for (i = 0; i < COB_MAX_SUBSCRIPTS; i++) {
+		cb_i[i] = make_constant (CB_CATEGORY_NUMERIC, cb_const_subs[i]);
 	}
 	cb_standard_error_handler = make_constant_label ("Default Error Handler");
+	CB_LABEL (cb_standard_error_handler)->flag_default_handler = 1;
+	memset (container_progs, 0, sizeof(container_progs));
 }
 
-/*
- * List
- */
+/* List */
 
 cb_tree
-cb_build_list (cb_tree purpose, cb_tree value, cb_tree rest)
+cb_build_list (cb_tree purpose, cb_tree value, cb_tree chain)
 {
 	struct cb_list *p;
 
 	p = make_tree (CB_TAG_LIST, CB_CATEGORY_UNKNOWN, sizeof (struct cb_list));
-	p->purpose = purpose;
+	p->chain = chain;
 	p->value = value;
-	p->chain = rest;
+	p->purpose = purpose;
 	return CB_TREE (p);
 }
 
@@ -786,28 +1025,34 @@ cb_list_append (cb_tree l1, cb_tree l2)
 
 	if (l1 == NULL) {
 		return l2;
-	} else {
-		l = l1;
-		while (CB_CHAIN (l)) {
-			l = CB_CHAIN (l);
-		}
-		CB_CHAIN (l) = l2;
-		return l1;
 	}
+	l = l1;
+	while (CB_CHAIN (l)) {
+		l = CB_CHAIN (l);
+	}
+	CB_CHAIN (l) = l2;
+	return l1;
 }
 
 cb_tree
 cb_list_add (cb_tree l, cb_tree x)
 {
-	return cb_list_append (l, cb_list_init (x));
+	return cb_list_append (l, CB_LIST_INIT (x));
+}
+
+cb_tree
+cb_pair_add (cb_tree l, cb_tree x, cb_tree y)
+{
+	return cb_list_append (l, CB_BUILD_PAIR (x, y));
 }
 
 cb_tree
 cb_list_reverse (cb_tree l)
 {
 	cb_tree	next;
-	cb_tree	last = NULL;
+	cb_tree	last;
 
+	last = NULL;
 	for (; l; l = next) {
 		next = CB_CHAIN (l);
 		CB_CHAIN (l) = last;
@@ -819,8 +1064,12 @@ cb_list_reverse (cb_tree l)
 int
 cb_list_length (cb_tree l)
 {
-	int n = 0;
+	int	n;
 
+	if (l == cb_error_node) {
+		return 0;
+	}
+	n = 0;
 	for (; l; l = CB_CHAIN (l)) {
 		n++;
 	}
@@ -835,52 +1084,127 @@ cb_list_map (cb_tree (*func) (cb_tree x), cb_tree l)
 	}
 }
 
-/*
- * Program
- */
+/* Link value into the reference */
+
+const char *
+cb_define (cb_tree name, cb_tree val)
+{
+	struct cb_word *w;
+
+	w = CB_REFERENCE (name)->word;
+	w->items = cb_list_add (w->items, val);
+	w->count++;
+	val->source_file = name->source_file;
+	val->source_line = name->source_line;
+	CB_REFERENCE (name)->value = val;
+	return w->name;
+}
+
+/* Program */
+
+static struct nested_list *
+add_contained_prog (struct nested_list *parent_list, struct cb_program *child_prog)
+{
+	struct nested_list	*nlp;
+
+	/* Check for reuse */
+	for (nlp = parent_list; nlp; nlp = nlp->next) {
+		if (nlp->nested_prog == child_prog) {
+			return parent_list;
+		}
+	}
+	nlp = cobc_parse_malloc (sizeof (struct nested_list));
+	nlp->next = parent_list;
+	nlp->nested_prog = child_prog;
+	return nlp;
+}
 
 struct cb_program *
 cb_build_program (struct cb_program *last_program, const int nest_level)
 {
-	struct cb_program *p;
+	struct cb_program	*p;
+	struct cb_program	*q;
 
+	if (!last_program) {
+		toplev_count = 0;
+	}
 	cb_reset_78 ();
-	cb_reset_in_procedure ();
+	cobc_in_procedure = 0;
+	cobc_in_repository = 0;
+	cobc_cs_check = 0;
 	cb_clear_real_field ();
-	p = cobc_malloc (sizeof (struct cb_program));
+
+	p = cobc_parse_malloc (sizeof (struct cb_program));
+	p->word_table = cobc_parse_malloc (CB_WORD_TABLE_SIZE);
+
 	p->next_program = last_program;
 	p->nested_level = nest_level;
 	p->decimal_point = '.';
 	p->currency_symbol = '$';
 	p->numeric_separator = ',';
+	/* Save current program as actual at it's level */
+	container_progs[nest_level] = p;
 	if (nest_level) {
+		/* Contained program */
+		/* Inherit from upper level */
 		p->global_file_list = last_program->global_file_list;
 		p->collating_sequence = last_program->collating_sequence;
-		p->function_spec_list = last_program->function_spec_list;
+		p->classification = last_program->classification;
+		p->mnemonic_spec_list = last_program->mnemonic_spec_list;
 		p->class_spec_list = last_program->class_spec_list;
 		p->interface_spec_list = last_program->interface_spec_list;
+		p->function_spec_list = last_program->function_spec_list;
+		p->user_spec_list = last_program->user_spec_list;
 		p->program_spec_list = last_program->program_spec_list;
 		p->property_spec_list = last_program->property_spec_list;
 		p->alphabet_name_list = last_program->alphabet_name_list;
+		p->symbolic_char_list = last_program->symbolic_char_list;
 		p->class_name_list = last_program->class_name_list;
 		p->locale_list = last_program->locale_list;
-		p->symbolic_list = last_program->symbolic_list;
 		p->decimal_point = last_program->decimal_point;
 		p->numeric_separator = last_program->numeric_separator;
 		p->currency_symbol = last_program->currency_symbol;
+		p->flag_trailing_separate = last_program->flag_trailing_separate;
+		p->flag_console_is_crt = last_program->flag_console_is_crt;
+		/* RETURN-CODE is global for contained programs */
 		p->cb_return_code = last_program->cb_return_code;
+		CB_FIELD_PTR (last_program->cb_return_code)->flag_is_global = 1;
+		p->toplev_count = last_program->toplev_count;
+		/* Add program to itself for possible recursion */
+		p->nested_prog_list = add_contained_prog (p->nested_prog_list, p);
+		/* Add contained program to it's parent */
+		q = container_progs[nest_level - 1];
+		q->nested_prog_list = add_contained_prog (q->nested_prog_list, p);
 	} else {
+		/* Top level program */
+		p->toplev_count = toplev_count++;
 		functions_are_all = cb_flag_functions_all;
+		cb_reset_global_78 ();
 	}
 	return p;
 }
 
-/*
- * Integer
- */
+void
+cb_add_common_prog (struct cb_program *prog)
+{
+	struct cb_program	*q;
+
+	/* Here we are sure that nested >= 1 */
+	q = container_progs[prog->nested_level - 1];
+	q->common_prog_list = add_contained_prog (q->common_prog_list, prog);
+}
+
+void
+cb_insert_common_prog (struct cb_program *prog, struct cb_program *comprog)
+{
+	prog->nested_prog_list = add_contained_prog (prog->nested_prog_list,
+						     comprog);
+}
+
+/* Integer */
 
 cb_tree
-cb_int (int n)
+cb_int (const int n)
 {
 	struct cb_integer	*x;
 	struct int_node		*p;
@@ -891,125 +1215,221 @@ cb_int (int n)
 		}
 	}
 
-	x = make_tree (CB_TAG_INTEGER, CB_CATEGORY_NUMERIC, sizeof (struct cb_integer));
+	/* Do not use make_tree here */
+	x = cobc_main_malloc (sizeof (struct cb_integer));
+	x->common.tag = CB_TAG_INTEGER;
+	x->common.category = CB_CATEGORY_NUMERIC;
 	x->val = n;
 
-	p = cobc_malloc (sizeof (struct int_node));
+	p = cobc_main_malloc (sizeof (struct int_node));
 	p->n = n;
 	p->node = CB_TREE (x);
 	p->next = int_node_table;
 	int_node_table = p;
-	return p->node;
+	return CB_TREE (x);
 }
 
-/*
- * String
- */
+cb_tree
+cb_int_hex (const int n)
+{
+	cb_tree		x;
+
+	x = cb_int (n);
+	CB_INTEGER (x)->hexval = 1;
+	return x;
+}
+
+/* String */
 
 cb_tree
-cb_build_string (const unsigned char *data, size_t size)
+cb_build_string (const void *data, const size_t size)
 {
 	struct cb_string *p;
 
-	p = make_tree (CB_TAG_STRING, CB_CATEGORY_ALPHANUMERIC, sizeof (struct cb_string));
+	p = make_tree (CB_TAG_STRING, CB_CATEGORY_ALPHANUMERIC,
+		       sizeof (struct cb_string));
 	p->size = size;
 	p->data = data;
 	return CB_TREE (p);
 }
 
-/*
- * Alphabet-name
- */
+/* Code output and comment */
 
 cb_tree
-cb_build_alphabet_name (cb_tree name, enum cb_alphabet_name_type type)
+cb_build_comment (const char *str)
 {
-	struct cb_alphabet_name *p;
+	struct cb_direct *p;
 
-	p = make_tree (CB_TAG_ALPHABET_NAME, CB_CATEGORY_UNKNOWN, sizeof (struct cb_alphabet_name));
-	p->name = cb_define (name, CB_TREE (p));
-	p->cname = to_cname (p->name);
-	p->type = type;
+	p = make_tree (CB_TAG_DIRECT, CB_CATEGORY_ALPHANUMERIC,
+		       sizeof (struct cb_direct));
+	p->line = str;
+	CB_TREE (p)->source_file = cb_source_file;
+	CB_TREE (p)->source_line = cb_source_line;
 	return CB_TREE (p);
 }
 
-/*
- * Class-name
- */
+cb_tree
+cb_build_direct (const char *str, const unsigned int flagnl)
+{
+	cb_tree		x;
+
+	x = cb_build_comment (str);
+	CB_DIRECT (x)->flag_is_direct = 1;
+	CB_DIRECT (x)->flag_new_line = flagnl;
+	return x;
+}
+
+/* DEBUG */
+
+cb_tree
+cb_build_debug (const cb_tree target, const char *str, const cb_tree fld)
+{
+	struct cb_debug	*p;
+
+	p = make_tree (CB_TAG_DEBUG, CB_CATEGORY_ALPHANUMERIC,
+		       sizeof (struct cb_debug));
+	p->target = target;
+	if (str) {
+		p->value = cobc_parse_strdup (str);
+		p->fld = NULL;
+		p->size = strlen (str);
+	} else {
+		p->value = NULL;
+		p->fld = fld;
+		p->size = (size_t)CB_FIELD_PTR (fld)->size;
+	}
+	CB_TREE (p)->source_file = cb_source_file;
+	CB_TREE (p)->source_line = cb_source_line;
+	return CB_TREE (p);
+}
+
+/* DEBUG Callback */
+
+cb_tree
+cb_build_debug_call (struct cb_label *target)
+{
+	struct cb_debug_call	*p;
+
+	p = make_tree (CB_TAG_DEBUG_CALL, CB_CATEGORY_ALPHANUMERIC,
+		       sizeof (struct cb_debug_call));
+	p->target = target;
+	CB_TREE (p)->source_file = cb_source_file;
+	CB_TREE (p)->source_line = cb_source_line;
+	return CB_TREE (p);
+}
+
+/* Alphabet-name */
+
+cb_tree
+cb_build_alphabet_name (cb_tree name)
+{
+	struct cb_alphabet_name *p;
+
+	if (!name || name == cb_error_node) {
+		return NULL;
+	}
+	p = make_tree (CB_TAG_ALPHABET_NAME, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_alphabet_name));
+	p->name = cb_define (name, CB_TREE (p));
+	p->cname = cb_to_cname (p->name);
+	return CB_TREE (p);
+}
+
+/* Class-name */
 
 cb_tree
 cb_build_class_name (cb_tree name, cb_tree list)
 {
 	struct cb_class_name	*p;
-	char			buff[COB_MINI_BUFF];
 
-	p = make_tree (CB_TAG_CLASS_NAME, CB_CATEGORY_BOOLEAN, sizeof (struct cb_class_name));
+	if (!name || name == cb_error_node) {
+		return NULL;
+	}
+	p = make_tree (CB_TAG_CLASS_NAME, CB_CATEGORY_BOOLEAN,
+		       sizeof (struct cb_class_name));
 	p->name = cb_define (name, CB_TREE (p));
-	snprintf (buff, COB_MINI_MAX, "is_%s", to_cname (p->name));
-	p->cname = strdup (buff);
+	if (!scratch_buff) {
+		scratch_buff = cobc_main_malloc ((size_t)COB_MINI_BUFF);
+	}
+	snprintf (scratch_buff, (size_t)COB_MINI_MAX, "cob_is_%s_%d",
+		  cb_to_cname (p->name), class_id++);
+	p->cname = cobc_parse_strdup (scratch_buff);
 	p->list = list;
 	return CB_TREE (p);
 }
 
-/*
- * Locale-name
- */
+/* Locale-name */
 
 cb_tree
 cb_build_locale_name (cb_tree name, cb_tree list)
 {
 	struct cb_class_name	*p;
 
-	p = make_tree (CB_TAG_LOCALE_NAME, CB_CATEGORY_UNKNOWN, sizeof (struct cb_locale_name));
+	if (!name || name == cb_error_node) {
+		return NULL;
+	}
+	if (!CB_LITERAL_P (list) || CB_NUMERIC_LITERAL_P (list)) {
+		cb_error (_("Invalid LOCALE literal"));
+		return cb_error_node;
+	}
+	p = make_tree (CB_TAG_LOCALE_NAME, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_locale_name));
 	p->name = cb_define (name, CB_TREE (p));
-	p->cname = to_cname (p->name);
+	p->cname = cb_to_cname (p->name);
 	p->list = list;
 	return CB_TREE (p);
 }
 
-/*
- * System-name
- */
+/* System-name */
 
 cb_tree
-cb_build_system_name (enum cb_system_name_category category, int token)
+cb_build_system_name (const enum cb_system_name_category category, const int token)
 {
 	struct cb_system_name *p;
 
-	p = make_tree (CB_TAG_SYSTEM_NAME, CB_CATEGORY_UNKNOWN, sizeof (struct cb_system_name));
+	p = make_tree (CB_TAG_SYSTEM_NAME, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_system_name));
 	p->category = category;
 	p->token = token;
 	return CB_TREE (p);
 }
 
-/*
- * Literal
- */
+/* Literal */
 
 cb_tree
-cb_build_numeric_literal (int sign, const unsigned char *data, int scale)
+cb_build_numeric_literal (const int sign, const void *data,
+			  const int scale)
 {
 	struct cb_literal *p;
 
-	p = build_literal (CB_CATEGORY_NUMERIC, data, strlen ((char *)data));
-	p->sign = (char)sign;
-	p->scale = (char)scale;
+	p = build_literal (CB_CATEGORY_NUMERIC, data, strlen (data));
+	p->sign = (short)sign;
+	p->scale = scale;
 	return CB_TREE (p);
 }
 
 cb_tree
-cb_build_alphanumeric_literal (const unsigned char *data, size_t size)
+cb_build_numsize_literal (const void *data, const size_t size, const int sign)
+{
+	struct cb_literal *p;
+
+	p = build_literal (CB_CATEGORY_NUMERIC, data, size);
+	p->sign = (short)sign;
+	return CB_TREE (p);
+}
+
+cb_tree
+cb_build_alphanumeric_literal (const void *data, const size_t size)
 {
 	return CB_TREE (build_literal (CB_CATEGORY_ALPHANUMERIC, data, size));
 }
 
 cb_tree
-cb_concat_literals (cb_tree x1, cb_tree x2)
+cb_concat_literals (const cb_tree x1, const cb_tree x2)
 {
-	unsigned char		*buff;
-	cb_tree			x;
 	unsigned char		*data1;
 	unsigned char		*data2;
+	struct cb_literal	*p;
 	size_t			size1;
 	size_t			size2;
 
@@ -1026,7 +1446,11 @@ cb_concat_literals (cb_tree x1, cb_tree x2)
 		} else if (x1 == cb_zero) {
 			data1 = (unsigned char *)"0";
 		} else if (x1 == cb_quote) {
-			data1 = (unsigned char *)"\"";
+			if (cb_flag_apostrophe) {
+				data1 = (unsigned char *)"'";
+			} else {
+				data1 = (unsigned char *)"\"";
+			}
 		} else if (x1 == cb_norm_low) {
 			data1 = (unsigned char *)"\0";
 		} else if (x1 == cb_norm_high) {
@@ -1049,7 +1473,11 @@ cb_concat_literals (cb_tree x1, cb_tree x2)
 		} else if (x2 == cb_zero) {
 			data2 = (unsigned char *)"0";
 		} else if (x2 == cb_quote) {
-			data2 = (unsigned char *)"\"";
+			if (cb_flag_apostrophe) {
+				data2 = (unsigned char *)"'";
+			} else {
+				data2 = (unsigned char *)"\"";
+			}
 		} else if (x2 == cb_norm_low) {
 			data2 = (unsigned char *)"\0";
 		} else if (x2 == cb_norm_high) {
@@ -1062,73 +1490,110 @@ cb_concat_literals (cb_tree x1, cb_tree x2)
 	} else {
 		return cb_error_node;
 	}
-	buff = cobc_malloc (size1 + size2 + 3);
-	memcpy (buff, data1, size1);
-	memcpy (buff + size1, data2, size2);
-	x = cb_build_alphanumeric_literal (buff, size1 + size2);
-	free (buff);
-	return x;
+	p = make_tree (CB_TAG_LITERAL, CB_CATEGORY_ALPHANUMERIC,
+			sizeof (struct cb_literal));
+	p->data = cobc_parse_malloc (size1 + size2 + 1U);
+	p->size = size1 + size2;
+	memcpy (p->data, data1, size1);
+	memcpy (p->data + size1, data2, size2);
+	return CB_TREE (p);
 }
 
-/*
- * Decimal
- */
+/* Decimal */
 
 cb_tree
-cb_build_decimal (int id)
+cb_build_decimal (const int id)
 {
 	struct cb_decimal *p;
 
-	p = make_tree (CB_TAG_DECIMAL, CB_CATEGORY_NUMERIC, sizeof (struct cb_decimal));
+	p = make_tree (CB_TAG_DECIMAL, CB_CATEGORY_NUMERIC,
+		       sizeof (struct cb_decimal));
 	p->id = id;
 	return CB_TREE (p);
 }
 
-/*
- * Picture
- */
+/* Picture */
+
+struct cb_picture *
+cb_build_binary_picture (const char *str, const cob_u32_t size,
+			 const cob_u32_t sign)
+{
+	struct cb_picture	*pic;
+
+	pic = make_tree (CB_TAG_PICTURE, CB_CATEGORY_NUMERIC,
+			 sizeof (struct cb_picture));
+	pic->orig = cobc_check_string (str);
+	pic->size = size;
+	pic->digits = size;
+	pic->scale = 0;
+	pic->have_sign = sign;
+	pic->category = CB_CATEGORY_NUMERIC;
+	return pic;
+}
 
 cb_tree
 cb_build_picture (const char *str)
 {
 	struct cb_picture	*pic;
-	const char		*p;
-	size_t			idx = 0;
-	size_t			buffcnt = 0;
-	size_t			at_beginning;
-	size_t			at_end;
-	int			p_char_seen = 0;
-	int			s_char_seen = 0;
-	int			cur_char_seen = 0;
-	int			category = 0;
-	int			size = 0;
-	int			allocated = 0;
-	int			digits = 0;
-	int			scale = 0;
-	int			s_count = 0;
-	int			v_count = 0;
+	const unsigned char	*p;
+	size_t			idx;
+	size_t			buffcnt;
+	cob_u32_t		at_beginning;
+	cob_u32_t		at_end;
+	cob_u32_t		p_char_seen;
+	cob_u32_t		s_char_seen;
+	cob_u32_t		dp_char_seen;
+	cob_u32_t		real_digits;
+	cob_u32_t		s_count;
+	cob_u32_t		v_count;
+	cob_u32_t		allocated;
+	cob_u32_t		x_digits;
+	cob_u32_t		digits;
+	int			category;
+	int			size;
+	int			scale;
 	int			i;
 	int			n;
 	unsigned char		c;
-	unsigned char		lastonechar = 0;
-	unsigned char		lasttwochar = 0;
-	unsigned char		buff[COB_SMALL_BUFF];
+	unsigned char		lastonechar;
+	unsigned char		lasttwochar;
 
-	pic = make_tree (CB_TAG_PICTURE, CB_CATEGORY_UNKNOWN, sizeof (struct cb_picture));
+	pic = make_tree (CB_TAG_PICTURE, CB_CATEGORY_UNKNOWN,
+			 sizeof (struct cb_picture));
 	if (strlen (str) > 50) {
 		goto error;
 	}
-	memset (buff, 0, sizeof (buff));
-	for (p = str; *p; p++) {
+	if (!pic_buff) {
+		pic_buff = cobc_main_malloc ((size_t)COB_SMALL_BUFF);
+	}
+
+	idx = 0;
+	buffcnt = 0;
+	p_char_seen = 0;
+	s_char_seen = 0;
+	dp_char_seen = 0;
+	category = 0;
+	size = 0;
+	allocated = 0;
+	digits = 0;
+	x_digits = 0;
+	real_digits = 0;
+	scale = 0;
+	s_count = 0;
+	v_count = 0;
+	lastonechar = 0;
+	lasttwochar = 0;
+
+	for (p = (const unsigned char *)str; *p; p++) {
 		n = 1;
 		c = *p;
 repeat:
-		/* count the number of repeated chars */
+		/* Count the number of repeated chars */
 		while (p[1] == c) {
 			p++, n++;
 		}
 
-		/* add parenthesized numbers */
+		/* Add parenthesized numbers */
 		if (p[1] == '(') {
 			i = 0;
 			p += 2;
@@ -1153,14 +1618,15 @@ repeat:
 			goto repeat;
 		}
 
-		/* check grammar and category */
-		/* FIXME: need more error check */
+		/* Check grammar and category */
+		/* FIXME: need more error checks */
 		switch (c) {
 		case 'A':
 			if (s_char_seen || p_char_seen) {
 				goto error;
 			}
 			category |= PIC_ALPHABETIC;
+			x_digits += n;
 			break;
 
 		case 'X':
@@ -1168,11 +1634,13 @@ repeat:
 				goto error;
 			}
 			category |= PIC_ALPHANUMERIC;
+			x_digits += n;
 			break;
 
 		case '9':
 			category |= PIC_NUMERIC;
 			digits += n;
+			real_digits += n;
 			if (v_count) {
 				scale += n;
 			}
@@ -1183,6 +1651,7 @@ repeat:
 				goto error;
 			}
 			category |= PIC_NATIONAL;
+			x_digits += n;
 			break;
 
 		case 'S':
@@ -1190,7 +1659,7 @@ repeat:
 			if (category & PIC_ALPHABETIC) {
 				goto error;
 			}
-			s_count += n;
+			s_count++;
 			if (s_count > 1 || idx != 0) {
 				goto error;
 			}
@@ -1206,13 +1675,14 @@ repeat:
 			if (c != current_program->decimal_point) {
 				break;
 			}
+			dp_char_seen = 1;
 			/* fall through */
 		case 'V':
 			category |= PIC_NUMERIC;
 			if (category & PIC_ALPHABETIC) {
 				goto error;
 			}
-			v_count += n;
+			v_count++;
 			if (v_count > 1) {
 				goto error;
 			}
@@ -1223,7 +1693,7 @@ repeat:
 			if (category & PIC_ALPHABETIC) {
 				goto error;
 			}
-			if (p_char_seen) {
+			if (p_char_seen || dp_char_seen) {
 				goto error;
 			}
 			at_beginning = 0;
@@ -1246,6 +1716,8 @@ repeat:
 					at_beginning = 1;
 				}
 				break;
+			default:
+				break;
 			}
 			if (p[1] == 0 || (p[1] == 'V' && p[2] == 0)) {
 				/* .....P */
@@ -1257,7 +1729,8 @@ repeat:
 			}
 			p_char_seen = 1;
 			if (at_beginning) {
-				v_count++;	/* implicit V */
+				/* Implicit V */
+				v_count++;
 			}
 			digits += n;
 			if (v_count) {
@@ -1301,9 +1774,6 @@ repeat:
 				goto error;
 			}
 			digits += n - 1;
-			if(s_count > 0) {
-				++digits;
-			}
 			s_count++;
 			/* FIXME: need more check */
 			break;
@@ -1335,12 +1805,7 @@ repeat:
 		default:
 			if (c == current_program->currency_symbol) {
 				category |= PIC_NUMERIC_EDITED;
-				if(cur_char_seen == 0) {
-					digits += n - 1;
-					cur_char_seen = 1;
-				} else {
-					digits += n;
-				}
+				digits += n - 1;
 				/* FIXME: need more check */
 				break;
 			}
@@ -1348,43 +1813,47 @@ repeat:
 			goto error;
 		}
 
-		/* calculate size */
+		/* Calculate size */
 		if (c != 'V' && c != 'P') {
 			size += n;
 		}
-		if (c == 'C' || c == 'D' || c == 'N') {
+		if (c == 'C' || c == 'D') {
 			size += n;
 		}
+		if (c == 'N') {
+			size += n * (COB_NATIONAL_SIZE - 1);
+		}
 
-		/* store in the buffer */
-		buff[idx++] = c;
+		/* Store in the buffer */
+		pic_buff[idx++] = c;
 		lasttwochar = lastonechar;
 		lastonechar = c;
-		memcpy (&buff[idx], (unsigned char *)&n, sizeof(int));
+		memcpy (&pic_buff[idx], (void *)&n, sizeof(int));
 		idx += sizeof(int);
 		++buffcnt;
 	}
-	buff[idx] = 0;
+	pic_buff[idx] = 0;
 
 	if (size == 0 && v_count) {
 		goto error;
 	}
-	/* set picture */
-	pic->orig = strdup (str);
+	/* Set picture */
+	pic->orig = cobc_check_string (str);
 	pic->size = size;
-	pic->digits = (unsigned char)digits;
-	pic->scale = (signed char)scale;
-	pic->have_sign = (unsigned char)s_count;
+	pic->digits = digits;
+	pic->scale = scale;
+	pic->have_sign = s_count;
+	pic->real_digits = real_digits;
 
-	/* set picture category */
+	/* Set picture category */
 	switch (category) {
 	case PIC_ALPHABETIC:
 		pic->category = CB_CATEGORY_ALPHABETIC;
 		break;
 	case PIC_NUMERIC:
 		pic->category = CB_CATEGORY_NUMERIC;
-		if (digits > 36) {
-			cb_error (_("Numeric field cannot be larger than 36 digits"));
+		if (digits > COB_MAX_DIGITS) {
+			cb_error (_("Numeric field cannot be larger than %d digits"), COB_MAX_DIGITS);
 		}
 		break;
 	case PIC_ALPHANUMERIC:
@@ -1392,8 +1861,8 @@ repeat:
 		pic->category = CB_CATEGORY_ALPHANUMERIC;
 		break;
 	case PIC_NUMERIC_EDITED:
-		pic->str = cobc_malloc (idx + 1);
-		memcpy (pic->str, buff, idx);
+		pic->str = cobc_parse_malloc (idx + 1);
+		memcpy (pic->str, pic_buff, idx);
 		pic->category = CB_CATEGORY_NUMERIC_EDITED;
 		pic->lenstr = idx;
 		break;
@@ -1401,10 +1870,11 @@ repeat:
 	case PIC_ALPHABETIC_EDITED:
 	case PIC_ALPHANUMERIC_EDITED:
 	case PIC_NATIONAL_EDITED:
-		pic->str = cobc_malloc (idx + 1);
-		memcpy (pic->str, buff, idx);
+		pic->str = cobc_parse_malloc (idx + 1);
+		memcpy (pic->str, pic_buff, idx);
 		pic->category = CB_CATEGORY_ALPHANUMERIC_EDITED;
 		pic->lenstr = idx;
+		pic->digits = x_digits;
 		break;
 	default:
 		goto error;
@@ -1418,16 +1888,15 @@ end:
 	return CB_TREE (pic);
 }
 
-/*
- * Field
- */
+/* Field */
 
 cb_tree
 cb_build_field (cb_tree name)
 {
 	struct cb_field *p;
 
-	p = make_tree (CB_TAG_FIELD, CB_CATEGORY_UNKNOWN, sizeof (struct cb_field));
+	p = make_tree (CB_TAG_FIELD, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_field));
 	p->id = cb_field_id++;
 	p->name = cb_define (name, CB_TREE (p));
 	p->ename = NULL;
@@ -1438,14 +1907,14 @@ cb_build_field (cb_tree name)
 }
 
 cb_tree
-cb_build_implicit_field (cb_tree name, int len)
+cb_build_implicit_field (cb_tree name, const int len)
 {
 	cb_tree	x;
 	char	pic[32];
 
 	x = cb_build_field (name);
 	memset (pic, 0, sizeof(pic));
-	sprintf (pic, "X(%d)", len);
+	snprintf (pic, sizeof(pic), "X(%d)", len);
 	CB_FIELD (x)->pic = CB_PICTURE (cb_build_picture (pic));
 	cb_validate_field (CB_FIELD (x));
 	return x;
@@ -1459,19 +1928,20 @@ cb_build_constant (cb_tree name, cb_tree value)
 	x = cb_build_field (name);
 	x->category = cb_tree_category (value);
 	CB_FIELD (x)->storage = CB_STORAGE_CONSTANT;
-	CB_FIELD (x)->values = cb_list_init (value);
+	CB_FIELD (x)->values = CB_LIST_INIT (value);
 	return x;
 }
 
+#if	0	/* RXWRXW - Field */
 struct cb_field *
-cb_field (cb_tree x)
+CB_FIELD_PTR (cb_tree x)
 {
 	if (CB_REFERENCE_P (x)) {
 		return CB_FIELD (cb_ref (x));
-	} else {
-		return CB_FIELD (x);
 	}
+	return CB_FIELD (x);
 }
+#endif
 
 struct cb_field *
 cb_field_add (struct cb_field *f, struct cb_field *p)
@@ -1488,91 +1958,59 @@ cb_field_add (struct cb_field *f, struct cb_field *p)
 	return f;
 }
 
-int
-cb_field_size (cb_tree x)
+struct cb_field *
+cb_field_founder (const struct cb_field *f)
 {
-	struct cb_reference	*r;
-	struct cb_field		*f;
+	const struct cb_field	*ff;
 
-	switch (CB_TREE_TAG (x)) {
-	case CB_TAG_LITERAL:
-		return CB_LITERAL (x)->size;
-	case CB_TAG_FIELD:
-		return CB_FIELD (x)->size;
-	case CB_TAG_REFERENCE:
-		r = CB_REFERENCE (x);
-		f = CB_FIELD (r->value);
-
-		if (r->length) {
-			if (CB_LITERAL_P (r->length)) {
-				return cb_get_int (r->length);
-			} else {
-				return -1;
-			}
-		} else if (r->offset) {
-			if (CB_LITERAL_P (r->offset)) {
-				return f->size - cb_get_int (r->offset) + 1;
-			} else {
-				return -1;
-			}
-		} else {
-			return f->size;
-		}
-	default:
-		fprintf (stderr, "Unexpected tree tag %d\n", CB_TREE_TAG (x));
-		ABORT ();
+	ff = f;
+	while (ff->parent) {
+		ff = ff->parent;
 	}
-	/* NOT REACHED */
-#ifndef _MSC_VER
-	return 0;
-#endif
+	return (struct cb_field *)ff;
 }
 
 struct cb_field *
-cb_field_founder (struct cb_field *f)
+cb_field_variable_size (const struct cb_field *f)
 {
-	while (f->parent) {
-		f = f->parent;
-	}
-	return f;
-}
+	struct cb_field		*p;
+	struct cb_field		*fc;
 
-struct cb_field *
-cb_field_variable_size (struct cb_field *f)
-{
-	struct cb_field *p;
-
-	for (f = f->children; f; f = f->sister) {
-		if (f->occurs_depending) {
-			return f;
-		} else if ((p = cb_field_variable_size (f)) != NULL) {
+	for (fc = f->children; fc; fc = fc->sister) {
+		if (fc->depending) {
+			return fc;
+		} else if ((p = cb_field_variable_size (fc)) != NULL) {
 			return p;
 		}
 	}
 	return NULL;
 }
 
-struct cb_field *
-cb_field_variable_address (struct cb_field *f)
+unsigned int
+cb_field_variable_address (const struct cb_field *fld)
 {
-	struct cb_field *p;
+	const struct cb_field		*p;
+	const struct cb_field		*f;
 
+	f = fld;
 	for (p = f->parent; p; f = f->parent, p = f->parent) {
 		for (p = p->children; p != f; p = p->sister) {
-			if (p->occurs_depending || cb_field_variable_size (p)) {
-				return p;
+			if (p->depending || cb_field_variable_size (p)) {
+				return 1;
 			}
 		}
 	}
-	return NULL;
+	return 0;
 }
 
-/* Return 1 if P is subordinate to F */
+/* Check if field 'pfld' is subordinate to field 'f' */
 
 int
-cb_field_subordinate (struct cb_field *p, struct cb_field *f)
+cb_field_subordinate (const struct cb_field *pfld, const struct cb_field *f)
 {
-	for (p = p->parent; p; p = p->parent) {
+	struct cb_field		*p;
+
+	for (p = pfld->parent; p; p = p->parent) {
 		if (p == f) {
 			return 1;
 		}
@@ -1580,9 +2018,62 @@ cb_field_subordinate (struct cb_field *p, struct cb_field *f)
 	return 0;
 }
 
-/*
- * File
- */
+/* SYMBOLIC CHARACTERS */
+
+void
+cb_build_symbolic_chars (const cb_tree sym_list, const cb_tree alphabet)
+{
+	cb_tree			l;
+	cb_tree			x;
+	cb_tree			x2;
+	struct cb_alphabet_name	*ap;
+	int			n;
+	unsigned char		buff[4];
+
+	if (alphabet) {
+		ap = CB_ALPHABET_NAME (alphabet);
+	} else {
+		ap = NULL;
+	}
+	for (l = sym_list; l; l = CB_CHAIN (l)) {
+		n = cb_get_int (CB_PURPOSE (l)) - 1;
+		if (ap) {
+			buff[0] = (unsigned char)ap->alphachr[n];
+		} else {
+			buff[0] = (unsigned char)n;
+		}
+		buff[1] = 0;
+		x2 = cb_build_alphanumeric_literal (buff, (size_t)1);
+		CB_LITERAL (x2)->all = 1;
+		x = cb_build_constant (CB_VALUE (l), x2);
+		CB_FIELD (x)->flag_item_78 = 1;
+		CB_FIELD (x)->flag_is_global = 1;
+		CB_FIELD (x)->level = 1;
+		(void)cb_validate_78_item (CB_FIELD (x), 0);
+	}
+}
+
+/* Report */
+
+struct cb_report *
+build_report (cb_tree name)
+{
+	struct cb_report *p;
+
+	p = make_tree (CB_TAG_REPORT, CB_CATEGORY_UNKNOWN, sizeof (struct cb_report));
+	p->name = cb_define (name, CB_TREE (p));
+	p->cname = cb_to_cname (p->name);
+
+#if	0	/* RXWRXW RP */
+	p->organization = COB_ORG_SEQUENTIAL;
+	p->access_mode = COB_ACCESS_SEQUENTIAL;
+	p->handler = CB_LABEL (cb_standard_error_handler);
+	p->handler_prog = current_program;
+#endif
+	return p;
+}
+
+/* File */
 
 struct cb_file *
 build_file (cb_tree name)
@@ -1591,9 +2082,9 @@ build_file (cb_tree name)
 
 	p = make_tree (CB_TAG_FILE, CB_CATEGORY_UNKNOWN, sizeof (struct cb_file));
 	p->name = cb_define (name, CB_TREE (p));
-	p->cname = to_cname (p->name);
+	p->cname = cb_to_cname (p->name);
 
-	p->organization = cb_default_organization;;
+	p->organization = COB_ORG_SEQUENTIAL;
 	p->access_mode = COB_ACCESS_SEQUENTIAL;
 	p->handler = CB_LABEL (cb_standard_error_handler);
 	p->handler_prog = current_program;
@@ -1603,7 +2094,7 @@ build_file (cb_tree name)
 void
 validate_file (struct cb_file *f, cb_tree name)
 {
-	/* check RECORD/RELATIVE KEY clause */
+	/* Check RECORD/RELATIVE KEY clause */
 	switch (f->organization) {
 	case COB_ORG_INDEXED:
 		if (f->key == NULL) {
@@ -1614,6 +2105,24 @@ validate_file (struct cb_file *f, cb_tree name)
 		if (f->key == NULL && f->access_mode != COB_ACCESS_SEQUENTIAL) {
 			file_error (name, "RELATIVE KEY");
 		}
+		if (f->alt_key_list) {
+			cb_error_x (name, _("ALTERNATE clause invalid for this file type"));
+			f->alt_key_list = NULL;
+		}
+		break;
+	default:
+		if (f->key) {
+			cb_error_x (name, _("RECORD clause invalid for this file type"));
+			f->key = NULL;
+		}
+		if (f->alt_key_list) {
+			cb_error_x (name, _("ALTERNATE clause invalid for this file type"));
+			f->alt_key_list = NULL;
+		}
+		if (f->access_mode == COB_ACCESS_DYNAMIC ||
+		    f->access_mode == COB_ACCESS_RANDOM) {
+			cb_error_x (name, _("ORGANIZATION clause invalid"));
+		}
 		break;
 	}
 }
@@ -1621,25 +2130,59 @@ validate_file (struct cb_file *f, cb_tree name)
 void
 finalize_file (struct cb_file *f, struct cb_field *records)
 {
-	struct cb_field	*p;
-	struct cb_field	*v;
-	cb_tree		l;
-	cb_tree		x;
-	char		buff[COB_MINI_BUFF];
+	struct cb_field		*p;
+	struct cb_field		*v;
+	struct cb_alt_key	*cbak;
+	cb_tree			l;
+	cb_tree			x;
 
-	if (f->special) {
+	/* stdin/stderr and LINE ADVANCING are L/S */
+	if (f->special || f->flag_line_adv) {
 		f->organization = COB_ORG_LINE_SEQUENTIAL;
 	}
-	if (f->fileid_assign && !f->assign) {
-		f->assign = cb_build_alphanumeric_literal ((unsigned char *)f->name,
-							    strlen (f->name));
+	if (f->flag_fileid && !f->assign) {
+		f->assign = cb_build_alphanumeric_literal (f->name,
+							   strlen (f->name));
 	}
 
-	/* check the record size if it is limited */
+	if (f->key && f->organization == COB_ORG_INDEXED &&
+	    (l = cb_ref (f->key)) != cb_error_node) {
+		v = cb_field_founder (CB_FIELD_PTR (l));
+		for (p = records; p; p = p->sister) {
+			if (p == v) {
+				break;
+			}
+		}
+		if (!p) {
+			cb_error (_("Invalid KEY item '%s'"),
+				  CB_FIELD_PTR (l)->name);
+		}
+	}
+	if (f->alt_key_list) {
+		for (cbak = f->alt_key_list; cbak; cbak = cbak->next) {
+			l = cb_ref (cbak->key);
+			if (l == cb_error_node) {
+				continue;
+			}
+			v = cb_field_founder (CB_FIELD_PTR (l));
+			for (p = records; p; p = p->sister) {
+				if (p == v) {
+					break;
+				}
+			}
+			if (!p) {
+				cb_error (_("Invalid KEY item '%s'"),
+					    CB_FIELD_PTR (l)->name);
+			}
+		}
+	}
+
+	/* Check the record size if it is limited */
 	for (p = records; p; p = p->sister) {
 		if (f->record_min > 0) {
 			if (p->size < f->record_min) {
-				cb_error (_("Record size too small '%s'"), p->name);
+				cb_error (_("Record size too small '%s'"),
+					  p->name);
 			}
 		}
 		if (f->record_max > 0) {
@@ -1650,7 +2193,7 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 		}
 	}
 
-	/* compute the record size */
+	/* Compute the record size */
 	if (f->record_min == 0) {
 		if (records) {
 			f->record_min = records->size;
@@ -1671,10 +2214,15 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 		}
 	}
 
+	if (f->record_max > MAX_FD_RECORD) {
+		cb_error (_("Record size exceeds maximum allowed (%d) - File '%s'"),
+			  MAX_FD_RECORD, f->name);
+	}
+
 	if (f->same_clause) {
 		for (l = current_program->file_list; l; l = CB_CHAIN (l)) {
 			if (CB_FILE (CB_VALUE (l))->same_clause == f->same_clause) {
-				if (CB_FILE (CB_VALUE (l))->finalized) {
+				if (CB_FILE (CB_VALUE (l))->flag_finalized) {
 					if (f->record_max > CB_FILE (CB_VALUE (l))->record->memory_size) {
 						CB_FILE (CB_VALUE (l))->record->memory_size =
 						    f->record_max;
@@ -1690,14 +2238,13 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 							break;
 						}
 					}
-					f->finalized = 1;
+					f->flag_finalized = 1;
 					return;
 				}
 			}
 		}
 	}
-	/* create record */
-	snprintf (buff, COB_MINI_MAX, "%s_record", f->name);
+	/* Create record */
 	if (f->record_max == 0) {
 		f->record_max = 32;
 		f->record_min = 32;
@@ -1705,45 +2252,53 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 	if (f->organization == COB_ORG_LINE_SEQUENTIAL) {
 		f->record_min = 0;
 	}
-	f->record = CB_FIELD (cb_build_implicit_field (cb_build_reference (buff),
+	if (!scratch_buff) {
+		scratch_buff = cobc_main_malloc ((size_t)COB_MINI_BUFF);
+	}
+	snprintf (scratch_buff, (size_t)COB_MINI_MAX, "%s Record", f->name);
+	f->record = CB_FIELD (cb_build_implicit_field (cb_build_reference (scratch_buff),
 				f->record_max));
 	f->record->sister = records;
 	f->record->count++;
-	if (f->external) {
-		has_external = 1;
+	if (f->flag_external) {
+		current_program->flag_has_external = 1;
 		f->record->flag_external = 1;
 	}
 
 	for (p = records; p; p = p->sister) {
 		p->file = f;
 		p->redefines = f->record;
+#if	1	/* RXWRXW - Global/External */
+		if (p->flag_is_global) {
+			f->record->flag_is_global = 1;
+		}
+#endif
 	}
-	f->finalized = 1;
+	f->flag_finalized = 1;
 	if (f->linage) {
-		snprintf (buff, COB_MINI_MAX, "LC_%s", f->name);
-		x = cb_build_field (cb_build_reference (buff));
-		CB_FIELD (x)->pic = CB_PICTURE (cb_build_picture ("9(9)"));
-		CB_FIELD (x)->usage = CB_USAGE_COMP_5;
-		CB_FIELD (x)->values = cb_list_init (cb_zero);
+		snprintf (scratch_buff, (size_t)COB_MINI_MAX,
+			  "LINAGE-COUNTER %s", f->name);
+		x = cb_build_field (cb_build_reference (scratch_buff));
+		CB_FIELD (x)->usage = CB_USAGE_UNSIGNED_INT;
+		CB_FIELD (x)->values = CB_LIST_INIT (cb_zero);
 		CB_FIELD (x)->count++;
 		cb_validate_field (CB_FIELD (x));
 		f->linage_ctr = cb_build_field_reference (CB_FIELD (x), NULL);
-		current_program->working_storage =
-		    cb_field_add (current_program->working_storage, CB_FIELD (x));
+		CB_FIELD_ADD (current_program->working_storage, CB_FIELD (x));
 	}
 }
 
-/*
- * Reference
- */
+/* Reference */
 
 cb_tree
 cb_build_reference (const char *name)
 {
 	struct cb_reference *p;
 
-	p = make_tree (CB_TAG_REFERENCE, CB_CATEGORY_UNKNOWN, sizeof (struct cb_reference));
-	p->word = lookup_word (name);
+	p = make_tree (CB_TAG_REFERENCE, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_reference));
+	/* Look up / insert word into hash list */
+	lookup_word (p, name);
 	return CB_TREE (p);
 }
 
@@ -1751,11 +2306,12 @@ cb_tree
 cb_build_filler (void)
 {
 	cb_tree		x;
-	char		name[16];
+	char		name[20];
 
-	sprintf (name, "WORK$%d", filler_id++);
+	sprintf (name, "FILLER %d", filler_id++);
 	x = cb_build_reference (name);
 	x->source_line = cb_source_line;
+	CB_REFERENCE (x)->flag_filler_ref = 1;
 	return x;
 }
 
@@ -1776,29 +2332,36 @@ cb_build_field_reference (struct cb_field *f, cb_tree ref)
 	return x;
 }
 
-const char *
-cb_define (cb_tree name, cb_tree val)
-{
-	struct cb_word *w;
-
-	w = CB_REFERENCE (name)->word;
-	w->items = cb_list_add (w->items, val);
-	w->count++;
-	val->source_file = name->source_file;
-	val->source_line = name->source_line;
-	CB_REFERENCE (name)->value = val;
-	return w->name;
-}
-
-void
+static void
 cb_define_system_name (const char *name)
 {
 	cb_tree x;
+	cb_tree y;
 
 	x = cb_build_reference (name);
-	if (CB_REFERENCE (x)->word->count == 0) {
-		cb_define (x, lookup_system_name (name));
+	if (CB_WORD_COUNT (x) == 0) {
+		y = lookup_system_name (name);
+		/* Paranoid */
+		if (y) {
+			cb_define (x, y);
+		}
 	}
+}
+
+void
+cb_set_system_names (void)
+{
+	cb_define_system_name ("CONSOLE");
+	cb_define_system_name ("SYSIN");
+	cb_define_system_name ("SYSIPT");
+	cb_define_system_name ("STDIN");
+	cb_define_system_name ("SYSOUT");
+	cb_define_system_name ("STDOUT");
+	cb_define_system_name ("SYSERR");
+	cb_define_system_name ("STDERR");
+	cb_define_system_name ("SYSLST");
+	cb_define_system_name ("SYSLIST");
+	cb_define_system_name ("FORMFEED");
 }
 
 cb_tree
@@ -1807,7 +2370,7 @@ cb_ref (cb_tree x)
 	struct cb_reference	*r;
 	struct cb_field		*p;
 	struct cb_label		*s;
-	cb_tree			candidate = NULL;
+	cb_tree			candidate;
 	cb_tree			items;
 	cb_tree			cb1;
 	cb_tree			cb2;
@@ -1816,52 +2379,59 @@ cb_ref (cb_tree x)
 	struct cb_program	*prog;
 	struct cb_word		*w;
 	size_t			val;
-	size_t			ambiguous = 0;
+	size_t			ambiguous;
 
+	if (CB_INVALID_TREE (x)) {
+		return cb_error_node;
+	}
 	r = CB_REFERENCE (x);
-	/* if this reference has already been resolved (and the value
+	/* If this reference has already been resolved (and the value
 	   has been cached), then just return the value */
 	if (r->value) {
 		return r->value;
 	}
-	/* resolve the value */
 
+	/* Resolve the value */
+
+	candidate = NULL;
+	ambiguous = 0;
 	items = r->word->items;
 	for (; items; items = CB_CHAIN (items)) {
-		/* find a candidate value by resolving qualification */
+		/* Find a candidate value by resolving qualification */
 		v = CB_VALUE (items);
 		c = r->chain;
 		switch (CB_TREE_TAG (v)) {
 		case CB_TAG_FIELD:
-			/* in case the value is a field, it might be qualified
+			/* In case the value is a field, it might be qualified
 			   by its parent names and a file name */
 			if (CB_FIELD (v)->flag_indexed_by) {
 				p = CB_FIELD (v)->index_qual;
 			} else {
 				p = CB_FIELD (v)->parent;
 			}
-			/* resolve by parents */
+			/* Resolve by parents */
 			for (; p; p = p->parent) {
 				if (c && strcasecmp (CB_NAME (c), p->name) == 0) {
 					c = CB_REFERENCE (c)->chain;
 				}
 			}
 
-			/* resolve by file */
+			/* Resolve by file */
 			if (c && CB_REFERENCE (c)->chain == NULL) {
-				if (CB_REFERENCE (c)->word->count == 1 && CB_FILE_P (cb_ref (c))
-				    && (CB_FILE (cb_ref (c)) == cb_field_founder (CB_FIELD (v))->file)) {
+				if (CB_WORD_COUNT (c) == 1 &&
+				    CB_FILE_P (cb_ref (c)) &&
+				    (CB_FILE (cb_ref (c)) == cb_field_founder (CB_FIELD (v))->file)) {
 					c = CB_REFERENCE (c)->chain;
 				}
 			}
 
 			break;
 		case CB_TAG_LABEL:
-			/* in case the value is a label, it might be qualified
+			/* In case the value is a label, it might be qualified
 			   by its section name */
 			s = CB_LABEL (v)->section;
 
-			/* unqualified paragraph name referenced within the section
+			/* Unqualified paragraph name referenced within the section
 			   is resolved without ambiguity check if not duplicated */
 			if (c == NULL && r->offset && s == CB_LABEL (r->offset)) {
 				for (cb1 = CB_CHAIN (items); cb1; cb1 = CB_CHAIN (cb1)) {
@@ -1875,67 +2445,70 @@ cb_ref (cb_tree x)
 				goto end;
 			}
 
-			/* resolve by section name */
+			/* Resolve by section name */
 			if (c && s && strcasecmp (CB_NAME (c), (char *)s->name) == 0) {
 				c = CB_REFERENCE (c)->chain;
 			}
 
 			break;
 		default:
-			/* other values cannot be qualified */
+			/* Other values cannot be qualified */
 			break;
 		}
 
-		/* a well qualified value is a good candidate */
+		/* A well qualified value is a good candidate */
 		if (c == NULL) {
 			if (candidate == NULL) {
-				/* keep the first candidate */
+				/* Keep the first candidate */
 				candidate = v;
 			} else {
-				/* multiple candidates and possibly ambiguous */
+				/* Multiple candidates and possibly ambiguous */
 				ambiguous = 1;
-				/* continue search because the reference might not
+				/* Continue search because the reference might not
 				   be ambiguous and exit loop by "goto end" later */
 			}
 		}
 	}
 
-	/* there is no candidate */
+	/* There is no candidate */
 	if (candidate == NULL) {
-		if (current_program->nested_level > 0) {
-			/* Nested program - check parents for GLOBAL candidate */
-			ambiguous = 0;
-			val = hash ((const unsigned char *)r->word->name);
-			prog = current_program->next_program;
-			for (; prog; prog = prog->next_program) {
-				if (prog->nested_level >= current_program->nested_level) {
-					continue;
-				}
-				for (w = prog->word_table[val]; w; w = w->next) {
-					if (strcasecmp (r->word->name, w->name) == 0) {
-						candidate = global_check (r, w->items, &ambiguous);
-						if (candidate) {
-							if (ambiguous) {
-								ambiguous_error (x);
-								goto error;
-							}
-							if (CB_FILE_P(candidate)) {
-								current_program->gen_file_error = 1;
-							}
-							goto end;
+		if (likely(current_program->nested_level <= 0)) {
+			goto undef_error;
+		}
+		/* Nested program - check parents for GLOBAL candidate */
+		ambiguous = 0;
+/* RXWRXW
+		val = hash ((const unsigned char *)r->word->name);
+*/
+		val = r->hashval;
+		prog = current_program->next_program;
+		for (; prog; prog = prog->next_program) {
+			if (prog->nested_level >= current_program->nested_level) {
+				continue;
+			}
+			for (w = prog->word_table[val]; w; w = w->next) {
+				if (strcasecmp (r->word->name, w->name) == 0) {
+					candidate = global_check (r, w->items, &ambiguous);
+					if (candidate) {
+						if (ambiguous) {
+							ambiguous_error (x);
+							goto error;
 						}
+						if (CB_FILE_P(candidate)) {
+							current_program->flag_gen_error = 1;
+						}
+						goto end;
 					}
 				}
-				if (prog->nested_level == 0) {
-					break;
-				}
+			}
+			if (prog->nested_level == 0) {
+				break;
 			}
 		}
-		undefined_error (x);
-		goto error;
+		goto undef_error;
 	}
 
-	/* the reference is ambiguous */
+	/* Reference is ambiguous */
 	if (ambiguous) {
 		ambiguous_error (x);
 		goto error;
@@ -1947,22 +2520,26 @@ end:
 		if (CB_FIELD (candidate)->flag_invalid) {
 			goto error;
 		}
+	} else if (CB_LABEL_P (candidate) && r->flag_alter_code) {
+		CB_LABEL (candidate)->flag_alter = 1;
 	}
 
 	r->value = candidate;
 	return r->value;
+
+undef_error:
+	undefined_error (x);
+	/* Fall through */
 
 error:
 	r->value = cb_error_node;
 	return cb_error_node;
 }
 
-/*
- * Expression
- */
+/* Expression */
 
 cb_tree
-cb_build_binary_op (cb_tree x, int op, cb_tree y)
+cb_build_binary_op (cb_tree x, const int op, cb_tree y)
 {
 	struct cb_binary_op	*p;
 	enum cb_category	category = CB_CATEGORY_UNKNOWN;
@@ -1973,7 +2550,7 @@ cb_build_binary_op (cb_tree x, int op, cb_tree y)
 	case '*':
 	case '/':
 	case '^':
-		/* arithmetic operators */
+		/* Arithmetic operators */
 		if (CB_TREE_CLASS (x) == CB_CLASS_POINTER ||
 		    CB_TREE_CLASS (y) == CB_CLASS_POINTER) {
 			category = CB_CATEGORY_DATA_POINTER;
@@ -1993,30 +2570,40 @@ cb_build_binary_op (cb_tree x, int op, cb_tree y)
 	case '>':
 	case '[':
 	case ']':
-		/* relational operators */
+		/* Relational operators */
+		if ((CB_REF_OR_FIELD_P (x)) &&
+		    CB_FIELD (cb_ref (x))->level == 88) {
+			cb_error_x (x, _("Invalid expression"));
+			return cb_error_node;
+		}
+		if ((CB_REF_OR_FIELD_P (y)) &&
+		    CB_FIELD (cb_ref (y))->level == 88) {
+			cb_error_x (y, _("Invalid expression"));
+			return cb_error_node;
+		}
 		category = CB_CATEGORY_BOOLEAN;
 		break;
 
 	case '!':
 	case '&':
 	case '|':
-		/* logical operators */
+		/* Logical operators */
 		if (CB_TREE_CLASS (x) != CB_CLASS_BOOLEAN ||
 		    (y && CB_TREE_CLASS (y) != CB_CLASS_BOOLEAN)) {
-			cb_error (_("Invalid expression"));
+			cb_error_x (x, _("Invalid expression"));
 			return cb_error_node;
 		}
 		category = CB_CATEGORY_BOOLEAN;
 		break;
 
 	case '@':
-		/* parentheses */
+		/* Parentheses */
 		category = CB_TREE_CATEGORY (x);
 		break;
 
 	default:
-		fprintf (stderr, "Unexpected operator -> %d\n", op);
-		ABORT ();
+		cobc_abort_pr (_("Unexpected operator -> %d"), op);
+		COBC_ABORT ();
 	}
 
 	p = make_tree (CB_TAG_BINARY_OP, category, sizeof (struct cb_binary_op));
@@ -2027,7 +2614,7 @@ cb_build_binary_op (cb_tree x, int op, cb_tree y)
 }
 
 cb_tree
-cb_build_binary_list (cb_tree l, int op)
+cb_build_binary_list (cb_tree l, const int op)
 {
 	cb_tree e;
 
@@ -2038,17 +2625,19 @@ cb_build_binary_list (cb_tree l, int op)
 	return e;
 }
 
-/*
- * Function call
- */
+/* Function call */
 
 cb_tree
-cb_build_funcall (const char *name, int argc, cb_tree a1, cb_tree a2, cb_tree a3,
-		  cb_tree a4, cb_tree a5, cb_tree a6, cb_tree a7)
+cb_build_funcall (const char *name, const int argc,
+		  const cb_tree a1, const cb_tree a2, const cb_tree a3,
+		  const cb_tree a4, const cb_tree a5, const cb_tree a6,
+		  const cb_tree a7, const cb_tree a8, const cb_tree a9,
+		  const cb_tree a10)
 {
 	struct cb_funcall *p;
 
-	p = make_tree (CB_TAG_FUNCALL, CB_CATEGORY_BOOLEAN, sizeof (struct cb_funcall));
+	p = make_tree (CB_TAG_FUNCALL, CB_CATEGORY_BOOLEAN,
+		       sizeof (struct cb_funcall));
 	p->name = name;
 	p->argc = argc;
 	p->varcnt = 0;
@@ -2060,15 +2649,16 @@ cb_build_funcall (const char *name, int argc, cb_tree a1, cb_tree a2, cb_tree a3
 	p->argv[4] = a5;
 	p->argv[5] = a6;
 	p->argv[6] = a7;
+	p->argv[7] = a8;
+	p->argv[8] = a9;
+	p->argv[9] = a10;
 	return CB_TREE (p);
 }
 
-/*
- * Type cast
- */
+/* Type cast */
 
 cb_tree
-cb_build_cast (enum cb_cast_type type, cb_tree val)
+cb_build_cast (const enum cb_cast_type type, const cb_tree val)
 {
 	struct cb_cast		*p;
 	enum cb_category	category;
@@ -2079,71 +2669,104 @@ cb_build_cast (enum cb_cast_type type, cb_tree val)
 		category = CB_CATEGORY_UNKNOWN;
 	}
 	p = make_tree (CB_TAG_CAST, category, sizeof (struct cb_cast));
-	p->type = type;
+	p->cast_type = type;
 	p->val = val;
 	return CB_TREE (p);
 }
 
-/*
- * Label
- */
+cb_tree
+cb_build_cast_int (const cb_tree val)
+{
+	struct cb_cast		*p;
+
+	p = make_tree (CB_TAG_CAST, CB_CATEGORY_NUMERIC, sizeof (struct cb_cast));
+	p->cast_type = CB_CAST_INTEGER;
+	p->val = val;
+	return CB_TREE (p);
+}
+
+cb_tree
+cb_build_cast_llint (const cb_tree val)
+{
+	struct cb_cast		*p;
+
+	p = make_tree (CB_TAG_CAST, CB_CATEGORY_NUMERIC, sizeof (struct cb_cast));
+	p->cast_type = CB_CAST_LONG_INT;
+	p->val = val;
+	return CB_TREE (p);
+}
+
+/* Label */
 
 cb_tree
 cb_build_label (cb_tree name, struct cb_label *section)
 {
-	struct cb_label *p;
+	struct cb_label		*p;
+	struct cb_para_label	*l;
 
-	p = make_tree (CB_TAG_LABEL, CB_CATEGORY_UNKNOWN, sizeof (struct cb_label));
+	p = make_tree (CB_TAG_LABEL, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_label));
 	p->id = cb_id++;
-	p->name = (const unsigned char *)cb_define (name, CB_TREE (p));
+	p->name = cb_define (name, CB_TREE (p));
 	p->orig_name = p->name;
 	p->section = section;
+	if (section) {
+		l = cobc_parse_malloc (sizeof(struct cb_para_label));
+		l->next = section->para_label;
+		l->para= p;
+		section->para_label = l;
+		p->section_id = p->section->id;
+	} else {
+		p->section_id = p->id;
+	}
 	return CB_TREE (p);
 }
 
-/*
- * Assign
- */
+/* Assign */
 
 cb_tree
-cb_build_assign (cb_tree var, cb_tree val)
+cb_build_assign (const cb_tree var, const cb_tree val)
 {
 	struct cb_assign *p;
 
-	p = make_tree (CB_TAG_ASSIGN, CB_CATEGORY_UNKNOWN, sizeof (struct cb_assign));
+	p = make_tree (CB_TAG_ASSIGN, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_assign));
 	p->var = var;
 	p->val = val;
 	return CB_TREE (p);
 }
 
-/*
- * INITIALIZE
- */
+/* INITIALIZE */
 
 cb_tree
-cb_build_initialize (cb_tree var, cb_tree val, cb_tree rep, cb_tree def, int flag)
+cb_build_initialize (const cb_tree var, const cb_tree val, const cb_tree rep,
+		     const unsigned int def,
+		     const unsigned int is_statement,
+		     const unsigned int no_filler_init)
 {
 	struct cb_initialize *p;
 
-	p = make_tree (CB_TAG_INITIALIZE, CB_CATEGORY_UNKNOWN, sizeof (struct cb_initialize));
+	p = make_tree (CB_TAG_INITIALIZE, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_initialize));
 	p->var = var;
 	p->val = val;
 	p->rep = rep;
-	p->def = def;
-	p->flag_statement = flag;
+	p->flag_default = (cob_u8_t)def;
+	p->flag_init_statement = (cob_u8_t)is_statement;
+	p->flag_no_filler_init = (cob_u8_t)no_filler_init;
 	return CB_TREE (p);
 }
 
-/*
- * SEARCH
- */
+/* SEARCH */
 
 cb_tree
-cb_build_search (int flag_all, cb_tree table, cb_tree var, cb_tree end_stmt, cb_tree whens)
+cb_build_search (const int flag_all, const cb_tree table, const cb_tree var,
+		 const cb_tree end_stmt, const cb_tree whens)
 {
 	struct cb_search *p;
 
-	p = make_tree (CB_TAG_SEARCH, CB_CATEGORY_UNKNOWN, sizeof (struct cb_search));
+	p = make_tree (CB_TAG_SEARCH, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_search));
 	p->flag_all = flag_all;
 	p->table = table;
 	p->var = var;
@@ -2152,269 +2775,414 @@ cb_build_search (int flag_all, cb_tree table, cb_tree var, cb_tree end_stmt, cb_
 	return CB_TREE (p);
 }
 
-/*
- * CALL
- */
+/* CALL */
 
 cb_tree
-cb_build_call (cb_tree name, cb_tree args, cb_tree stmt1, cb_tree stmt2, cb_tree returning, int is_system_call)
+cb_build_call (const cb_tree name, const cb_tree args, const cb_tree stmt1,
+	       const cb_tree stmt2, const cb_tree returning,
+	       const cob_u32_t is_system_call, const int convention)
 {
 	struct cb_call *p;
 
-	p = make_tree (CB_TAG_CALL, CB_CATEGORY_UNKNOWN, sizeof (struct cb_call));
+	p = make_tree (CB_TAG_CALL, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_call));
 	p->name = name;
 	p->args = args;
 	p->stmt1 = stmt1;
 	p->stmt2 = stmt2;
-	p->returning = returning;
+	p->call_returning = returning;
 	p->is_system = is_system_call;
+	p->convention = convention;
 	return CB_TREE (p);
 }
 
-/*
- * GO TO
- */
+/* CANCEL */
 
 cb_tree
-cb_build_goto (cb_tree target, cb_tree depending)
+cb_build_cancel (const cb_tree target)
+{
+	struct cb_cancel *p;
+
+	p = make_tree (CB_TAG_CANCEL, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_cancel));
+	p->target = target;
+	return CB_TREE (p);
+}
+
+/* ALTER */
+
+cb_tree
+cb_build_alter (const cb_tree source, const cb_tree target)
+{
+	struct cb_alter *p;
+
+	p = make_tree (CB_TAG_ALTER, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_alter));
+	p->source = source;
+	p->target = target;
+	current_program->alter_list =
+		cb_list_append (current_program->alter_list,
+				CB_BUILD_PAIR (source, target));
+	return CB_TREE (p);
+}
+
+/* GO TO */
+
+cb_tree
+cb_build_goto (const cb_tree target, const cb_tree depending)
 {
 	struct cb_goto *p;
 
-	p = make_tree (CB_TAG_GOTO, CB_CATEGORY_UNKNOWN, sizeof (struct cb_goto));
+	p = make_tree (CB_TAG_GOTO, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_goto));
 	p->target = target;
 	p->depending = depending;
 	return CB_TREE (p);
 }
 
-/*
- * IF
- */
+/* IF */
 
 cb_tree
-cb_build_if (cb_tree test, cb_tree stmt1, cb_tree stmt2)
+cb_build_if (const cb_tree test, const cb_tree stmt1, const cb_tree stmt2,
+	     const unsigned int is_if)
 {
 	struct cb_if *p;
 
-	p = make_tree (CB_TAG_IF, CB_CATEGORY_UNKNOWN, sizeof (struct cb_if));
+	p = make_tree (CB_TAG_IF, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_if));
 	p->test = test;
 	p->stmt1 = stmt1;
 	p->stmt2 = stmt2;
+	p->is_if = is_if;
 	return CB_TREE (p);
 }
 
-/*
- * PERFORM
- */
+/* PERFORM */
 
 cb_tree
-cb_build_perform (int type)
+cb_build_perform (const enum cb_perform_type type)
 {
 	struct cb_perform *p;
 
-	p = make_tree (CB_TAG_PERFORM, CB_CATEGORY_UNKNOWN, sizeof (struct cb_perform));
-	p->type = type;
+	p = make_tree (CB_TAG_PERFORM, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_perform));
+	p->perform_type = type;
 	return CB_TREE (p);
 }
 
 cb_tree
 cb_build_perform_varying (cb_tree name, cb_tree from, cb_tree by, cb_tree until)
 {
-	struct cb_perform_varying *p;
+	struct cb_perform_varying	*p;
+	cb_tree				x;
+	cb_tree				l;
 
-	p = make_tree (CB_TAG_PERFORM_VARYING, CB_CATEGORY_UNKNOWN, sizeof (struct cb_perform_varying));
+	p = make_tree (CB_TAG_PERFORM_VARYING, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_perform_varying));
 	p->name = name;
 	p->from = from;
-	p->step = name ? cb_build_add (name, by, cb_high) : NULL;
 	p->until = until;
+	if (name) {
+		if (name == cb_error_node) {
+			p->step = NULL;
+			return CB_TREE (p);
+		}
+		l = cb_ref (name);
+		x = cb_build_add (name, by, cb_high);
+		if (current_program->flag_debugging &&
+		    !current_statement->flag_in_debug &&
+		    CB_FIELD_P (l) && CB_FIELD (l)->flag_field_debug) {
+			p->step = CB_LIST_INIT (x);
+			x = cb_build_debug (cb_debug_name, CB_FIELD_PTR (name)->name,
+					    NULL);
+			p->step = cb_list_add (p->step, x);
+			x = cb_build_debug (cb_debug_contents, NULL, name);
+			p->step = cb_list_add (p->step, x);
+			x = cb_build_debug_call (CB_FIELD_PTR (name)->debug_section);
+			p->step = cb_list_add (p->step, x);
+		} else {
+			p->step = x;
+		}
+	} else {
+		p->step = NULL;
+	}
 	return CB_TREE (p);
 }
 
-/*
- * Statement
- */
+/* Statement */
 
 struct cb_statement *
 cb_build_statement (const char *name)
 {
 	struct cb_statement *p;
 
-	p = make_tree (CB_TAG_STATEMENT, CB_CATEGORY_UNKNOWN, sizeof (struct cb_statement));
+	p = make_tree (CB_TAG_STATEMENT, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_statement));
 	p->name = name;
 	return p;
 }
 
-/*
- * CONTINUE
- */
+/* CONTINUE */
 
 cb_tree
 cb_build_continue (void)
 {
 	struct cb_continue *p;
 
-	p = make_tree (CB_TAG_CONTINUE, CB_CATEGORY_UNKNOWN, sizeof (struct cb_continue));
+	p = make_tree (CB_TAG_CONTINUE, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_continue));
 	return CB_TREE (p);
 }
 
-/*
- * FUNCTION
- */
+/* SET ATTRIBUTE */
+
+cb_tree
+cb_build_set_attribute (const struct cb_field *fld,
+			const int val_on, const int val_off)
+{
+	struct cb_set_attr *p;
+
+	p = make_tree (CB_TAG_SET_ATTR, CB_CATEGORY_UNKNOWN,
+		       sizeof (struct cb_set_attr));
+	p->fld = (struct cb_field *)fld;
+	p->val_on = val_on;
+	p->val_off = val_off;
+	return CB_TREE (p);
+}
+
+/* FUNCTION */
 
 cb_tree
 cb_build_any_intrinsic (cb_tree args)
 {
 	struct cb_intrinsic_table	*cbp;
 
-	cbp = lookup_intrinsic ("LENGTH", 0);
-	return make_intrinsic (NULL, cbp, args, NULL, NULL);
+	cbp = lookup_intrinsic ("LENGTH", 0, 0);
+	return make_intrinsic (NULL, cbp, args, NULL, NULL, 0);
 }
 
 cb_tree
-cb_build_intrinsic (cb_tree name, cb_tree args, cb_tree refmod)
+cb_build_intrinsic (cb_tree name, cb_tree args, cb_tree refmod,
+		    const int isuser)
 {
 	struct cb_intrinsic_table	*cbp;
 	cb_tree				x;
 	int				numargs;
+	enum cb_category		catg;
 
 	numargs = cb_list_length (args);
 
-	cbp = lookup_intrinsic (CB_NAME (name), 0);
-	if (cbp) {
-		if ((cbp->args != -1 && numargs != cbp->args) ||
-		    (cbp->args == -1 && cbp->intr_enum != CB_INTR_RANDOM && numargs < 1)) {
-			cb_error_x (name, _("FUNCTION %s has wrong number of arguments"), cbp->name);
+	if (unlikely(isuser)) {
+		if (refmod && CB_LITERAL_P(CB_PAIR_X(refmod)) &&
+		    cb_get_int (CB_PAIR_X(refmod)) < 1) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid reference modification"), CB_NAME(name));
 			return cb_error_node;
 		}
-		if (refmod) {
-			if (!cbp->refmod) {
-				cb_error_x (name, _("FUNCTION %s can not have reference modification"), cbp->name);
-				return cb_error_node;
-			}
-			if (CB_LITERAL_P(CB_PAIR_X(refmod)) &&
-			    cb_get_int (CB_PAIR_X(refmod))< 1) {
-				cb_error_x (name, _("FUNCTION %s has invalid reference modification"), cbp->name);
-				return cb_error_node;
-			}
-			if (CB_PAIR_Y(refmod) && CB_LITERAL_P(CB_PAIR_Y(refmod)) &&
-			    cb_get_int (CB_PAIR_Y(refmod))< 1) {
-				cb_error_x (name, _("FUNCTION %s has invalid reference modification"), cbp->name);
-				return cb_error_node;
-			}
+		if (refmod && CB_PAIR_Y(refmod) &&
+		    CB_LITERAL_P(CB_PAIR_Y(refmod)) &&
+		    cb_get_int (CB_PAIR_Y(refmod)) < 1) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid reference modification"), CB_NAME(name));
+			return cb_error_node;
 		}
-		/* cb_tree      x; */
-		switch (cbp->intr_enum) {
-		case CB_INTR_LENGTH:
-		case CB_INTR_BYTE_LENGTH:
-			x = CB_VALUE (args);
-			if (CB_INTRINSIC_P (x)) {
-				return make_intrinsic (name, cbp, args, NULL, NULL);
-			} else if ((CB_FIELD_P (x) || CB_REFERENCE_P (x)) &&
-				    cb_field(x)->flag_any_length) {
-				return make_intrinsic (name, cbp, args, NULL, NULL);
-			} else {
-				return cb_build_length (CB_VALUE (args));
-			}
+		if (numargs > current_program->max_call_param) {
+			current_program->max_call_param = numargs;
+		}
+		return make_intrinsic (name, &userbp, args, cb_int1, refmod, 1);
+	}
 
-		case CB_INTR_WHEN_COMPILED:
-			if (refmod) {
-				return make_intrinsic (name, cbp,
-					cb_list_init (cb_intr_whencomp), NULL, refmod);
-			} else {
-				return cb_intr_whencomp;
-			}
-		case CB_INTR_PI:
-			return cb_intr_pi;
-		case CB_INTR_E:
-			return cb_intr_e;
-
-		case CB_INTR_LOWER_CASE:
-		case CB_INTR_UPPER_CASE:
-		case CB_INTR_REVERSE:
-/* RXW Why did I do this ? - still do not know
-			if (CB_INTRINSIC_P (CB_VALUE (args))) {
-				return make_intrinsic (name, cbp, args, cb_int0);
-			} else {
-				return make_intrinsic (name, cbp, args,
-						       cb_build_length (CB_VALUE (args)));
-			}
-RXW */
-
-		case CB_INTR_ABS:
-		case CB_INTR_ACOS:
-		case CB_INTR_ANNUITY:
-		case CB_INTR_ASIN:
-		case CB_INTR_ATAN:
-		case CB_INTR_CHAR:
-		case CB_INTR_COMBINED_DATETIME:
-		case CB_INTR_COS:
-		case CB_INTR_CURRENT_DATE:
-		case CB_INTR_DATE_OF_INTEGER:
-		case CB_INTR_DAY_OF_INTEGER:
-		case CB_INTR_EXCEPTION_FILE:
-		case CB_INTR_EXCEPTION_LOCATION:
-		case CB_INTR_EXCEPTION_STATUS:
-		case CB_INTR_EXCEPTION_STATEMENT:
-		case CB_INTR_EXP:
-		case CB_INTR_EXP10:
-		case CB_INTR_FACTORIAL:
-		case CB_INTR_FRACTION_PART:
-		case CB_INTR_INTEGER:
-		case CB_INTR_INTEGER_OF_DATE:
-		case CB_INTR_INTEGER_OF_DAY:
-		case CB_INTR_INTEGER_PART:
-		case CB_INTR_LOCALE_DATE:
-		case CB_INTR_LOCALE_TIME:
-		case CB_INTR_LOCALE_TIME_FROM_SECS:
-		case CB_INTR_LOG:
-		case CB_INTR_LOG10:
-		case CB_INTR_MOD:
-		case CB_INTR_NUMVAL:
-		case CB_INTR_NUMVAL_C:
-		case CB_INTR_ORD:
-		case CB_INTR_REM:
-		case CB_INTR_SECONDS_FROM_FORMATTED_TIME:
-		case CB_INTR_SECONDS_PAST_MIDNIGHT:
-		case CB_INTR_SIGN:
-		case CB_INTR_SIN:
-		case CB_INTR_SQRT:
-		case CB_INTR_STORED_CHAR_LENGTH:
-		case CB_INTR_TAN:
-		case CB_INTR_TEST_DATE_YYYYMMDD:
-		case CB_INTR_TEST_DAY_YYYYDDD:
-		case CB_INTR_TRIM:
-			return make_intrinsic (name, cbp, args, NULL, refmod);
-
-		case CB_INTR_CONCATENATE:
-			return make_intrinsic (name, cbp, args, cb_int1, refmod);
-		case CB_INTR_DATE_TO_YYYYMMDD:
-		case CB_INTR_DAY_TO_YYYYDDD:
-		case CB_INTR_MAX:
-		case CB_INTR_MEAN:
-		case CB_INTR_MEDIAN:
-		case CB_INTR_MIDRANGE:
-		case CB_INTR_MIN:
-		case CB_INTR_ORD_MAX:
-		case CB_INTR_ORD_MIN:
-		case CB_INTR_PRESENT_VALUE:
-		case CB_INTR_RANDOM:
-		case CB_INTR_RANGE:
-		case CB_INTR_STANDARD_DEVIATION:
-		case CB_INTR_SUM:
-		case CB_INTR_VARIANCE:
-		case CB_INTR_YEAR_TO_YYYY:
-			return make_intrinsic (name, cbp, args, cb_int1, NULL);
-		case CB_INTR_SUBSTITUTE:
-		case CB_INTR_SUBSTITUTE_CASE:
-			if (numargs < 3 || (numargs % 2) == 0) {
-				cb_error_x (name, _("FUNCTION %s has wrong number of arguments"), cbp->name);
-				return cb_error_node;
-			}
-			return make_intrinsic (name, cbp, args, cb_int1, refmod);
-
-		default:
-			break;
+	cbp = lookup_intrinsic (CB_NAME (name), 0, 1);
+	if (!cbp) {
+		cb_error_x (name, _("FUNCTION '%s' unknown"), CB_NAME (name));
+		return cb_error_node;
+	}
+	if (!cbp->implemented) {
+		cb_error_x (name, _("FUNCTION '%s' not implemented"),
+			    cbp->name);
+		return cb_error_node;
+	}
+	if ((cbp->args >= 0 && numargs != cbp->args) ||
+	    (cbp->args < 0 && numargs < cbp->min_args)) {
+		cb_error_x (name,
+			    _("FUNCTION '%s' has wrong number of arguments"),
+			    cbp->name);
+		return cb_error_node;
+	}
+	if (refmod) {
+		if (!cbp->refmod) {
+			cb_error_x (name, _("FUNCTION '%s' can not have reference modification"), cbp->name);
+			return cb_error_node;
+		}
+		if (CB_LITERAL_P(CB_PAIR_X(refmod)) &&
+		    cb_get_int (CB_PAIR_X(refmod)) < 1) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid reference modification"), cbp->name);
+			return cb_error_node;
+		}
+		if (CB_PAIR_Y(refmod) && CB_LITERAL_P(CB_PAIR_Y(refmod)) &&
+		    cb_get_int (CB_PAIR_Y(refmod)) < 1) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid reference modification"), cbp->name);
+			return cb_error_node;
 		}
 	}
-	cb_error_x (name, _("FUNCTION %s not implemented"), CB_NAME (name));
-	return cb_error_node;
+
+	switch (cbp->intr_enum) {
+	case CB_INTR_LENGTH:
+	case CB_INTR_BYTE_LENGTH:
+		x = CB_VALUE (args);
+		if (CB_LITERAL_P (x)) {
+			return cb_build_length (x);
+		} else {
+			return make_intrinsic (name, cbp, args, NULL, NULL, 0);
+		}
+
+	case CB_INTR_WHEN_COMPILED:
+		if (refmod) {
+			return make_intrinsic (name, cbp,
+				CB_LIST_INIT (cb_intr_whencomp), NULL, refmod, 0);
+		} else {
+			return cb_intr_whencomp;
+		}
+
+	case CB_INTR_ABS:
+	case CB_INTR_ACOS:
+	case CB_INTR_ASIN:
+	case CB_INTR_ATAN:
+	case CB_INTR_COS:
+	case CB_INTR_DATE_OF_INTEGER:
+	case CB_INTR_DAY_OF_INTEGER:
+	case CB_INTR_EXP:
+	case CB_INTR_EXP10:
+	case CB_INTR_FACTORIAL:
+	case CB_INTR_FRACTION_PART:
+	case CB_INTR_INTEGER:
+	case CB_INTR_INTEGER_OF_DATE:
+	case CB_INTR_INTEGER_OF_DAY:
+	case CB_INTR_INTEGER_PART:
+	case CB_INTR_LOG:
+	case CB_INTR_LOG10:
+	case CB_INTR_SIGN:
+	case CB_INTR_SIN:
+	case CB_INTR_SQRT:
+	case CB_INTR_TAN:
+	case CB_INTR_TEST_DATE_YYYYMMDD:
+	case CB_INTR_TEST_DAY_YYYYDDD:
+		x = CB_VALUE (args);
+		if (cb_tree_category (x) != CB_CATEGORY_NUMERIC) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid parameter"), cbp->name);
+			return cb_error_node;
+		}
+		return make_intrinsic (name, cbp, args, NULL, refmod, 0);
+
+	case CB_INTR_ANNUITY:
+	case CB_INTR_BOOLEAN_OF_INTEGER:
+	case CB_INTR_CHAR:
+	case CB_INTR_CHAR_NATIONAL:
+	case CB_INTR_COMBINED_DATETIME:
+	case CB_INTR_CURRENCY_SYMBOL:
+	case CB_INTR_CURRENT_DATE:
+	case CB_INTR_E:
+	case CB_INTR_EXCEPTION_FILE:
+	case CB_INTR_EXCEPTION_FILE_N:
+	case CB_INTR_EXCEPTION_LOCATION:
+	case CB_INTR_EXCEPTION_LOCATION_N:
+	case CB_INTR_EXCEPTION_STATUS:
+	case CB_INTR_EXCEPTION_STATEMENT:
+	case CB_INTR_FORMATTED_CURRENT_DATE:
+	case CB_INTR_FORMATTED_DATE:
+	case CB_INTR_INTEGER_OF_BOOLEAN:
+	case CB_INTR_INTEGER_OF_FORMATTED_DATE:
+	case CB_INTR_LOCALE_DATE:
+	case CB_INTR_LOCALE_TIME:
+	case CB_INTR_LOCALE_TIME_FROM_SECS:
+	case CB_INTR_LOWER_CASE:
+	case CB_INTR_MOD:
+	case CB_INTR_MODULE_CALLER_ID:
+	case CB_INTR_MODULE_DATE:
+	case CB_INTR_MODULE_FORMATTED_DATE:
+	case CB_INTR_MODULE_ID:
+	case CB_INTR_MODULE_PATH:
+	case CB_INTR_MODULE_SOURCE:
+	case CB_INTR_MODULE_TIME:
+	case CB_INTR_MON_DECIMAL_POINT:
+	case CB_INTR_MON_THOUSANDS_SEP:
+	case CB_INTR_NUM_DECIMAL_POINT:
+	case CB_INTR_NUM_THOUSANDS_SEP:
+	case CB_INTR_NUMVAL:
+	case CB_INTR_NUMVAL_C:
+	case CB_INTR_NUMVAL_F:
+	case CB_INTR_ORD:
+	case CB_INTR_PI:
+	case CB_INTR_REM:
+	case CB_INTR_REVERSE:
+	case CB_INTR_SECONDS_FROM_FORMATTED_TIME:
+	case CB_INTR_SECONDS_PAST_MIDNIGHT:
+	case CB_INTR_STORED_CHAR_LENGTH:
+	case CB_INTR_TEST_FORMATTED_DATETIME:
+	case CB_INTR_TEST_NUMVAL:
+	case CB_INTR_TEST_NUMVAL_C:
+	case CB_INTR_TEST_NUMVAL_F:
+	case CB_INTR_TRIM:
+	case CB_INTR_UPPER_CASE:
+		return make_intrinsic (name, cbp, args, NULL, refmod, 0);
+
+	case CB_INTR_HIGHEST_ALGEBRAIC:
+	case CB_INTR_LOWEST_ALGEBRAIC:
+		x = CB_VALUE (args);
+		if (!CB_REF_OR_FIELD_P (x)) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid parameter"), cbp->name);
+			return cb_error_node;
+		}
+		catg = cb_tree_category (x);
+		if (catg != CB_CATEGORY_NUMERIC &&
+		    catg != CB_CATEGORY_NUMERIC_EDITED) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid parameter"), cbp->name);
+			return cb_error_node;
+		}
+		return make_intrinsic (name, cbp, args, NULL, refmod, 0);
+
+
+	case CB_INTR_CONCATENATE:
+	case CB_INTR_DISPLAY_OF:
+	case CB_INTR_FORMATTED_DATETIME:
+	case CB_INTR_FORMATTED_TIME:
+	case CB_INTR_NATIONAL_OF:
+		return make_intrinsic (name, cbp, args, cb_int1, refmod, 0);
+
+	case CB_INTR_DATE_TO_YYYYMMDD:
+	case CB_INTR_DAY_TO_YYYYDDD:
+	case CB_INTR_LOCALE_COMPARE:
+	case CB_INTR_MAX:
+	case CB_INTR_MEAN:
+	case CB_INTR_MEDIAN:
+	case CB_INTR_MIDRANGE:
+	case CB_INTR_MIN:
+	case CB_INTR_ORD_MAX:
+	case CB_INTR_ORD_MIN:
+	case CB_INTR_PRESENT_VALUE:
+	case CB_INTR_RANDOM:
+	case CB_INTR_RANGE:
+	case CB_INTR_STANDARD_COMPARE:
+	case CB_INTR_STANDARD_DEVIATION:
+	case CB_INTR_SUM:
+	case CB_INTR_VARIANCE:
+	case CB_INTR_YEAR_TO_YYYY:
+		return make_intrinsic (name, cbp, args, cb_int1, NULL, 0);
+	case CB_INTR_SUBSTITUTE:
+	case CB_INTR_SUBSTITUTE_CASE:
+		if ((numargs % 2) == 0) {
+			cb_error_x (name, _("FUNCTION '%s' has wrong number of arguments"), cbp->name);
+			return cb_error_node;
+		}
+#if	0	/* RXWRXW - Substitute param 1 */
+		x = CB_VALUE (args);
+		if (!CB_REF_OR_FIELD_P (x)) {
+			cb_error_x (name, _("FUNCTION '%s' has invalid first parameter"), cbp->name);
+			return cb_error_node;
+		}
+#endif
+		return make_intrinsic (name, cbp, args, cb_int1, refmod, 0);
+
+	default:
+		cb_error_x (name, _("FUNCTION '%s' unknown"), CB_NAME (name));
+		return cb_error_node;
+	}
 }

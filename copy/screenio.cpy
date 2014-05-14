@@ -1,4 +1,24 @@
-      *> Colors
+      *>  Copyright (C) 2008-2012 Roger While
+      *>
+      *>  This file is part of GNU Cobol.
+      *>
+      *>  The GNU Cobol compiler is free software: you can redistribute
+      *>  it and/or modify it under the terms of the GNU General Public
+      *>  License as published by the Free Software Foundation, either
+      *>  version 3 of the License, or (at your option) any later
+      *>  version.
+      *>
+      *>  GNU Cobol is distributed in the hope that it will be useful,
+      *>  but WITHOUT ANY WARRANTY; without even the implied warranty of
+      *>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      *>  GNU General Public License for more details.
+      *>
+      *>  You should have received a copy of the GNU General Public
+      *>  License along with GNU Cobol.
+      *>  If not, see <http://www.gnu.org/licenses/>.
+
+
+      *>   Colors
        78  COB-COLOR-BLACK     VALUE 0.
        78  COB-COLOR-BLUE      VALUE 1.
        78  COB-COLOR-GREEN     VALUE 2.
@@ -7,10 +27,12 @@
        78  COB-COLOR-MAGENTA   VALUE 5.
        78  COB-COLOR-YELLOW    VALUE 6.
        78  COB-COLOR-WHITE     VALUE 7.
+
       *>
       *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
       *> Normal return - Value 0000
        78  COB-SCR-OK          VALUE 0.
+
       *>  Function keys - Values 1xxx
        78  COB-SCR-F1          VALUE 1001.
        78  COB-SCR-F2          VALUE 1002.
@@ -83,9 +105,9 @@
        78  COB-SCR-KEY-DOWN    VALUE 2004.
        78  COB-SCR-ESC         VALUE 2005.
        78  COB-SCR-PRINT       VALUE 2006.
-       78  COB-SCR-TAB         VALUE 2007. 
-       78  COB-SCR-BACK-TAB    VALUE 2008. 
       *>  Input validation - Values 8xxx
        78  COB-SCR-NO-FIELD    VALUE 8000.
+       78  COB-SCR-TIME-OUT    VALUE 8001.
       *>  Other errors - Values 9xxx
        78  COB-SCR-FATAL       VALUE 9000.
+       78  COB-SCR-MAX-FIELD   VALUE 9001.

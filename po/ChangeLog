@@ -1,3 +1,12 @@
+2014-01-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* gettext extra message catalogues en@quot and en@boldquot added
+
+2010-06-28  Roger While <simrw@sim-basis.de>
+
+	* MARK - Version 2.0
+	* Move to GPL/LGPL 3
+
 2002-05-29  Keisuke Nishida  <knishida@netlab.jp>
 
 	* ja.po: New file.
