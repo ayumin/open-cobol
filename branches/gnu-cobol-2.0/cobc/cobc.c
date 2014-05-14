@@ -3025,7 +3025,9 @@ preprocess (struct filename *fn)
 	}
 
 	if (ppout) {
-		fclose (ppout);
+		if (unlikely(fclose(ppout) != 0)) {
+			cobc_terminate(fn->preprocess);
+		}
 		ppout = NULL;
 	}
 
@@ -3040,7 +3042,9 @@ preprocess (struct filename *fn)
 	cobc_plexmem_base = NULL;
 
 	if (cobc_gen_listing && !cobc_list_file) {
-		fclose (cb_listing_file);
+		if (unlikely(fclose (cb_listing_file) != 0)) {
+			cobc_terminate(fn->listing_file);
+		}
 		if (cobc_gen_listing > 1) {
 			sprintf (cobc_buffer, "cobxref %s -R", fn->listing_file);
 			if (verbose_output) {
@@ -3224,12 +3228,18 @@ process_translate (struct filename *fn)
 	codegen (p, 0);
 
 	/* Close files */
-	fclose (cb_storage_file);
+	if(unlikely(fclose (cb_storage_file) != 0)) {
+		cobc_terminate (cb_storage_file_name);
+	}
 	cb_storage_file = NULL;
-	fclose (yyout);
+	if(unlikely(fclose (yyout) != 0)) {
+		cobc_terminate (fn->translate);
+	}
 	yyout = NULL;
 	for (q = p; q; q = q->next_program) {
-		fclose (q->local_include->local_fp);
+		if(unlikely(fclose (q->local_include->local_fp) != 0)) {
+			cobc_terminate(lf->local_name);
+		}
 		q->local_include->local_fp = NULL;
 	}
 	return !!errorcount;
