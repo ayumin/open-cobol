@@ -8714,6 +8714,7 @@ use_statement:
 use_phrase:
   use_file_exception
 | use_debugging
+| use_start_end
 | use_reporting
 | use_exception
 ;
@@ -8915,6 +8916,31 @@ all_refs:
 | REFERENCES OF
 | OF
 ;
+
+use_start_end:
+  _at PROGRAM program_start_end
+  {
+	if (current_program->nested_level) {
+		cb_error (_("USE AT is invalid in nested program"));
+	}
+  }
+;
+
+program_start_end:
+  START
+  {
+	emit_statement (cb_build_comment ("USE AT PROGRAM START"));
+	/* emit_entry ("_START", 0, NULL); */
+	PENDING ("USE AT PROGRAM START");
+  }
+  | END
+  {
+	emit_statement (cb_build_comment ("USE AT PROGRAM END"));
+	/* emit_entry ("_END", 0, NULL); */
+	PENDING ("USE AT PROGRAM END");
+  }
+;
+
 
 use_reporting:
   use_global BEFORE REPORTING identifier

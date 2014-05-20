@@ -1,3 +1,8 @@
+2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* parser.* : Added extension "USE AT PROGRAM START/END" as
+		not implemented
+
 2014-05-14  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c : Catch and treat error when no disc space is available for 
