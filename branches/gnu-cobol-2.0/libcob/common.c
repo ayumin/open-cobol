@@ -953,17 +953,38 @@ cob_check_trace_file (void)
 	}
 }
 
+int
+cob_check_env_true(char* s) {
+	int len;
+	char* temp;
+
+	if(!s) return 0;
+
+	len = strlen(s);
+	temp = cob_strdup(s);
+
+	if(len == 1 && (*temp == 'Y' || *s == 'y' || *s == '1')) return 1;
+
+	cob_sys_toupper(s, len);
+	if(strcmp(s, "YES") == 0 || strcmp(s, "ON") == 0 || strcmp(s, "TRUE") == 0) {
+		return 1;
+	}
+
+	return 0;
+}
+
 static void
 cob_rescan_env_vals (void)
 {
-	char	*s;
+	char	*s, *tail;
+	int		timeout_scale;
 
 	/* termio */
 	s = getenv("COB_REDIRECT_DISPLAY");
 	if (s) {
 		runtimeptr->cob_disp_to_stderr_env = cob_save_env_value(runtimeptr->cob_disp_to_stderr_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+	if (cob_check_env_true(s)) {
 		cobglobptr->cob_disp_to_stderr = 1;
 	} else {
 		cobglobptr->cob_disp_to_stderr = 0;
@@ -1007,12 +1028,21 @@ cob_rescan_env_vals (void)
 		runtimeptr->cob_timeout_scale_env = cob_save_env_value(
 				runtimeptr->cob_timeout_scale_env, s);
 
-		if (*s == '1') {
-			cobglobptr->cob_timeout_scale = 100;
-		} else if (*s == '2') {
-			cobglobptr->cob_timeout_scale = 10;
-		} else if (*s == '3') {
-			cobglobptr->cob_timeout_scale = 1;
+		if (strlen(s) == 1) {
+			switch(s[0]) {
+				case '1':
+					cobglobptr->cob_timeout_scale = 100; break;
+				case '2':
+					cobglobptr->cob_timeout_scale = 10; break;
+				case '3':
+					cobglobptr->cob_timeout_scale = 1; break;
+			}
+		}
+		else {
+			timeout_scale = (int) strtol(s, &tail, 10);
+			if((!tail || strlen(tail) == 0) && timeout_scale >= 0) {
+				cobglobptr->cob_timeout_scale = timeout_scale;
+			}
 		}
 	}
 
@@ -1024,14 +1054,14 @@ cob_rescan_env_vals (void)
 		runtimeptr->cob_extended_status_env = cob_save_env_value(
 				runtimeptr->cob_extended_status_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cobglobptr->cob_extended_status = 1;
 			s = getenv ("COB_SCREEN_ESC");
 			if (s) {
 				runtimeptr->cob_use_esc_env = cob_save_env_value(
 						runtimeptr->cob_use_esc_env, s);
 
-				if (*s == 'Y' || *s == 'y' || *s == '1') {
+				if (cob_check_env_true(s)) {
 					cobglobptr->cob_use_esc = 1;
 				}
 			}
@@ -3957,6 +3987,11 @@ print_runtime_env(void) {
 	var_print("cob_screen_esc",
 			cob_int_to_string(cobglobptr->cob_use_esc, intstring),
 			no_default, 3);
+	var_print("COB_LEGACY", runtimeptr->cob_legacy_env,
+				not_set, 2);
+	var_print("cob_legacy",
+				cob_int_to_string(*(runtimeptr->cob_legacy), intstring),
+				no_default, 3);
 	
 	printf(_("\n\nMiscellaneous\n"));
 	var_print("COB_SET_TRACE", runtimeptr->cob_line_trace_env, not_set, 2);
@@ -4194,13 +4229,13 @@ cob_init (const int argc, char **argv)
 	if (s) {
 		runtimeptr->cob_unix_lf_env = cob_save_env_value(runtimeptr->cob_unix_lf_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 
-		cobglobptr->cob_unix_lf = 1;
-		_setmode (_fileno (stdin), _O_BINARY);
-		_setmode (_fileno (stdout), _O_BINARY);
-		_setmode (_fileno (stderr), _O_BINARY);
-	}
+			cobglobptr->cob_unix_lf = 1;
+			_setmode (_fileno (stdin), _O_BINARY);
+			_setmode (_fileno (stdout), _O_BINARY);
+			_setmode (_fileno (stderr), _O_BINARY);
+		}
 	}
 #endif
 
@@ -4211,7 +4246,7 @@ cob_init (const int argc, char **argv)
 	cob_init_intrinsic(cobglobptr);
 	cob_init_fileio(cobglobptr, runtimeptr);
 	cob_init_call(cobglobptr, runtimeptr);
-	cob_init_screenio(cobglobptr);
+	cob_init_screenio(cobglobptr, runtimeptr);
 	cob_init_termio(cobglobptr);
 
 	/* Set up library routine stuff */
@@ -4223,20 +4258,20 @@ cob_init (const int argc, char **argv)
 		sprintf (runtime_err_str, "COB_SWITCH_%d", i);
 		s = getenv (runtime_err_str);
 		if (s && (*s == '1' || strcasecmp (s, "ON") == 0)) {
-			cob_switch[i] = 1;
+				cob_switch[i] = 1;
 		} else {
-			cob_switch[i] = 0;
+				cob_switch[i] = 0;
+			}
 		}
-	}
 
 	/* Trace enable */
 	s = getenv ("COB_SET_TRACE");
 	if (s) {
 		runtimeptr->cob_line_trace_env = cob_save_env_value(runtimeptr->cob_line_trace_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
-		cob_line_trace = 1;
-	}
+		if (cob_check_env_true(s)) {
+			cob_line_trace = 1;
+		}
 	}
 
 	/* Trace file */
@@ -4254,7 +4289,7 @@ cob_init (const int argc, char **argv)
 	if (s) {
 		runtimeptr->cob_display_warn_env = cob_save_env_value(runtimeptr->cob_display_warn_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cobglobptr->cob_display_warn = 0;
 		} else {
 			cobglobptr->cob_display_warn = 1;
@@ -4266,7 +4301,7 @@ cob_init (const int argc, char **argv)
 	if (s) {
 		runtimeptr->cob_env_mangle_env = cob_save_env_value(runtimeptr->cob_env_mangle_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cobglobptr->cob_env_mangle = 1;
 		}
 	}

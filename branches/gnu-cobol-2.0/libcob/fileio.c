@@ -6393,20 +6393,14 @@ cob_init_fileio (cob_global *lptr, runtime_env* runtimeptr)
 	if ((s = getenv ("COB_SYNC")) != NULL) {
 		cob_do_sync_env = cob_save_env_value(cob_do_sync_env, s);
 
-		switch (*s) {
-		case 'Y':
-		case 'y':
-		case 'P':
-		case 'p':
-		case '1':
+		if (cob_check_env_true(s) || *s == 'P' || *s == 'p' ) {
 			cob_do_sync = 1;
-			break;
 		}
 	}
 	if ((s = getenv ("COB_LS_USES_CR")) != NULL) {
 		cob_ls_uses_cr_env = cob_save_env_value(cob_ls_uses_cr_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cob_ls_uses_cr = 1;
 		}
 	}
@@ -6447,14 +6441,14 @@ cob_init_fileio (cob_global *lptr, runtime_env* runtimeptr)
 	if ((s = getenv ("COB_LS_NULLS")) != NULL) {
 		cob_ls_nulls_env = cob_save_env_value(cob_ls_nulls_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cob_ls_nulls = 1;
 		}
 	}
 	if ((s = getenv ("COB_LS_FIXED")) != NULL) {
 		cob_ls_fixed_env = cob_save_env_value(cob_ls_fixed_env, s);
 
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
 			cob_ls_fixed = 1;
 		}
 	}

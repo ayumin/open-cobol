@@ -1696,7 +1696,7 @@ cob_init_move (cob_global *lptr, runtime_env* runtimeptr)
 	cob_lc_thou = 0;
 #ifdef	HAVE_LOCALECONV
 	s = getenv ("COB_LOCALE_NUMERIC_EDITED");
-	if (s && (*s == 'Y' || *s == 'y' || *s == '1')) {
+	if (cob_check_env_true(s)) {
 		p = localeconv ();
 		if (strlen (p->mon_decimal_point) != 1) {
 			return;

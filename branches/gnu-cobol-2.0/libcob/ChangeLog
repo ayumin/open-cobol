@@ -1,3 +1,9 @@
+2014-05-20  Philipp Böhme <phi.boehme@googlemail.com>
+
+    * call.c : inverted preload list for WIN32 builds
+    * common.c, move.c, screenio.c, fileio.c : Set runtime switch 
+        from environment to true on "1", "Y", "YES", "TRUE", "ON"
+
 2014-05-12  Ron Norman <rjn@inglenet.com>
 
 	* move.c : fixed bug in cob_move_fp_to_fp()	

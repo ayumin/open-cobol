@@ -453,11 +453,20 @@ cache_preload (const char *path)
 	struct struct_handle	*preptr;
 	lt_dlhandle		libhandle;
 
+#ifdef _WIN32
+	struct struct_handle	*last_elem;
+	last_elem = NULL;
+#endif
+
 	/* Check for duplicate */
 	for (preptr = base_preload_ptr; preptr; preptr = preptr->next) {
 		if (!strcmp (path, preptr->path)) {
 			return 1;
 		}
+#ifdef _WIN32
+		/* Save last element of preload list */
+		if (!preptr->next) last_elem = preptr;
+#endif
 	}
 
 	if (access (path, R_OK) != 0) {
@@ -472,8 +481,30 @@ cache_preload (const char *path)
 	preptr = cob_malloc (sizeof (struct struct_handle));
 	preptr->path = cob_strdup (path);
 	preptr->handle = libhandle;
+
+#ifdef _WIN32
+	/*
+	 * Observation: dlopen (POSIX) and lt_dlopen (UNIX) are overloading
+	 * symbols with equal name. So if we load two libraries with equal
+	 * named symbols, the last one wins and is loaded.
+	 * LoadLibrary (Win32) ignores any equal named symbol
+	 * if another library with this symbol was already loaded.
+	 *
+	 * In Windows and MinGW we need to load modules in the same order
+	 * as we save them to COB_PRE_LOAD due to issues if we have got
+	 * two modules with equal entry points.
+	 */
+	if(last_elem) {
+		last_elem->next = preptr;
+	}
+	else {
+		preptr->next = NULL;
+		base_preload_ptr = preptr;
+	}
+#else
 	preptr->next = base_preload_ptr;
 	base_preload_ptr = preptr;
+#endif
 
 
 	if(!cob_preload_resolved) {
@@ -642,8 +673,7 @@ cob_resolve_internal (const char *name, const char *dirent,
 	for (preptr = base_preload_ptr; preptr; preptr = preptr->next) {
 		func = lt_dlsym (preptr->handle, call_entry_buff);
 		if (func != NULL) {
-			insert (name, func, preptr->handle,
-				NULL, preptr->path, 1);
+			insert (name, func, preptr->handle,	NULL, preptr->path, 1);
 			resolve_error = NULL;
 			return func;
 		}

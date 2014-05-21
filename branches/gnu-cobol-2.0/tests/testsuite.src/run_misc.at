@@ -2100,6 +2100,87 @@ AT_CHECK([export COB_PRE_LOAD=callee; ./caller], [0])
 
 AT_CLEANUP
 
+AT_SETUP([COB_PRE_LOAD with entry points])
+AT_KEYWORDS([runmisc])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+
+        01 VAR1 PIC X(5) VALUE '12abc'.
+        01 VAR2 PIC X(2) VALUE '11'.
+
+        PROCEDURE DIVISION.
+        
+        ENTRY 'par1'.
+        PARA1.
+        DISPLAY VAR1 END-DISPLAY
+        GOBACK.
+
+        ENTRY 'par2'.
+        PARA2.
+        DISPLAY VAR2 END-DISPLAY
+
+        .
+])
+
+AT_DATA([prog1.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog1.
+
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+
+        01 VAR1 PIC X(5) VALUE 'xxxxx'.
+        01 VAR2 PIC X(2) VALUE '55'.
+
+        PROCEDURE DIVISION.
+        
+        ENTRY 'par1'.
+        PARA1.
+        DISPLAY VAR1 END-DISPLAY
+        GOBACK.
+
+        ENTRY 'par2'.
+        PARA2.
+        DISPLAY VAR2 END-DISPLAY
+
+        .
+])
+
+AT_DATA([main-prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. main-prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE DIVISION.
+
+        CALL 'par1' END-CALL
+        CALL 'par2' END-CALL
+       
+        stop run.
+])
+
+AT_CHECK([$COMPILE_MODULE -std=default prog.cob], [0], , [prog.cob: 13: Warning: ENTRY is obsolete in GNU Cobol
+prog.cob: In paragraph 'PARA1':
+prog.cob: 18: Warning: ENTRY is obsolete in GNU Cobol
+])
+AT_CHECK([$COMPILE_MODULE -std=default prog1.cob], [0], , [prog1.cob: 13: Warning: ENTRY is obsolete in GNU Cobol
+prog1.cob: In paragraph 'PARA1':
+prog1.cob: 18: Warning: ENTRY is obsolete in GNU Cobol
+])
+AT_CHECK([$COMPILE main-prog.cob], [0], , [])
+AT_CHECK([export COB_PRE_LOAD=prog:prog1; ./main-prog], [0], [12abc
+11
+], [])
+
+AT_CLEANUP
+
+
+
 AT_SETUP([COB_LOAD_CASE=UPPER test])
 AT_KEYWORDS([runmisc])
 
