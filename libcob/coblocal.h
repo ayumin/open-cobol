@@ -227,6 +227,10 @@ typedef struct runtime_env {
 	unsigned int* cob_local_edit;
 	char* cob_local_edit_env;
 
+	/* screenio.c */
+	cob_u32_t* cob_legacy;
+	char* cob_legacy_env;
+
 	/* others */
 	char *cob_line_trace_env;
 	char* cob_display_warn_env;
@@ -250,7 +254,7 @@ COB_HIDDEN void		cob_init_call		(cob_global *, runtime_env* runtimeptr);
 COB_HIDDEN void		cob_init_intrinsic	(cob_global *);
 COB_HIDDEN void		cob_init_strings	(void);
 COB_HIDDEN void		cob_init_move		(cob_global *, runtime_env* runtimeptr);
-COB_HIDDEN void		cob_init_screenio	(cob_global *);
+COB_HIDDEN void		cob_init_screenio	(cob_global *, runtime_env* runtimeptr);
 
 COB_HIDDEN void		cob_exit_screen		(void);
 
@@ -275,6 +279,7 @@ COB_HIDDEN void		cob_print_realbin	(const cob_field *, FILE *,
 COB_HIDDEN void		cob_screen_set_mode	(const cob_u32_t);
 COB_HIDDEN void		cob_set_exception	(const int);
 COB_HIDDEN int		cob_get_exception_code	(void);
+COB_HIDDEN int      cob_check_env_true	(char*);
 COB_HIDDEN const char	*cob_get_exception_name	(void);
 COB_HIDDEN void		cob_field_to_string	(const cob_field *, void *,
 						 const size_t);

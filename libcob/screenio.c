@@ -104,6 +104,7 @@ static int			global_return;
 static int			cob_current_y;
 static int			cob_current_x;
 static cob_u32_t		cob_legacy;
+static char*			cob_legacy_env;
 static short			fore_color;
 static short			back_color;
 #endif
@@ -468,8 +469,13 @@ cob_screen_init (void)
 	fflush (stdout);
 	fflush (stderr);
 
+	/*
+	 * TODO: needs Documentation
+	 */
 	if ((s = getenv ("COB_LEGACY")) != NULL) {
-		if (*s == 'Y' || *s == 'y' || *s == '1') {
+		if (cob_check_env_true(s)) {
+			cob_legacy_env = cob_save_env_value(cob_legacy_env, s);
+
 			cob_legacy = 1U;
 		}
 	}
@@ -1807,7 +1813,22 @@ cob_sys_get_scr_size (unsigned char *line, unsigned char *col)
 }
 
 void
-cob_init_screenio (cob_global *lptr)
+cob_init_screenio (cob_global *lptr, runtime_env* runtimeptr)
 {
+	char* s;
+
+	/*
+	 * TODO: needs Documentation
+	 */
+	if ((s = getenv ("COB_LEGACY")) != NULL) {
+		if (cob_check_env_true(s)) {
+			cob_legacy_env = cob_save_env_value(cob_legacy_env, s);
+
+			cob_legacy = 1U;
+		}
+	}
+
 	cobglobptr = lptr;
+	runtimeptr->cob_legacy_env = cob_legacy_env;
+	runtimeptr->cob_legacy = &cob_legacy;
 }
