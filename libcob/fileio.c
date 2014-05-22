@@ -2276,7 +2276,7 @@ get_dupno (cob_file *f, const cob_u32_t i)
 	unsigned int		dupno;
 
 	p = f->file;
-	dupno =  0;
+	dupno = 0;
 	DBT_SET (p->key, f->keys[i].field);
 	memcpy (p->temp_key, p->key.data, (size_t)p->key.size);
 	p->db[i]->cursor (p->db[i], NULL, &p->cursor[i], 0);
@@ -3835,6 +3835,8 @@ indexed_read_next (cob_file *f, const int read_opts)
 	nextprev = DB_NEXT;
 	dupno = 0;
 	file_changed = 0;
+	
+	dupno = 0;
 
 	bdb_opts = read_opts;
 	if (bdb_env != NULL) {
