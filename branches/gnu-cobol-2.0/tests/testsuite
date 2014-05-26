@@ -723,47 +723,47 @@ at_help_all="1;syn_copy.at:21;COPY: within comment;copy;
 108;run_fundamental.at:280;MOVE to edited item (2);fundamental;
 109;run_fundamental.at:328;MOVE to JUSTIFIED item;fundamental;
 110;run_fundamental.at:372;MOVE integer literal to alphanumeric;fundamental;
-111;run_fundamental.at:397;COMPARE FLOAT-SHORT/FLOAT-LONG;fundamental;
-112;run_fundamental.at:454;Overlapping MOVE;fundamental;
-113;run_fundamental.at:518;ALPHABETIC test;fundamental;
-114;run_fundamental.at:549;ALPHABETIC-UPPER test;fundamental;
-115;run_fundamental.at:580;ALPHABETIC-LOWER test;fundamental;
-116;run_fundamental.at:611;GLOBAL at same level;fundamental;
-117;run_fundamental.at:660;GLOBAL at lower level;fundamental;
-118;run_fundamental.at:708;START RELATIVE (1);fundamental;
-119;run_fundamental.at:756;START RELATIVE (2);fundamental;
-120;run_fundamental.at:832;GLOBAL FD (1);fundamental;
-121;run_fundamental.at:881;GLOBAL FD (2);fundamental;
-122;run_fundamental.at:930;GLOBAL FD (3);fundamental;
-123;run_fundamental.at:979;GLOBAL FD (4);fundamental;
-124;run_fundamental.at:1028;Contained program visibility (1);fundamental;
-125;run_fundamental.at:1082;Contained program visibility (2);fundamental;
-126;run_fundamental.at:1134;Contained program visibility (3);fundamental;
-127;run_fundamental.at:1184;Contained program visibility (4);fundamental;
-128;run_fundamental.at:1238;CANCEL test (1);fundamental;
-129;run_fundamental.at:1260;CANCEL test (2);fundamental;
-130;run_fundamental.at:1296;Separate sign positions (1);fundamental;
-131;run_fundamental.at:1319;Separate sign positions (2);fundamental;
-132;run_fundamental.at:1350;Context sensitive words (1);fundamental;
-133;run_fundamental.at:1372;Context sensitive words (2);fundamental;
-134;run_fundamental.at:1395;Context sensitive words (3);fundamental;
-135;run_fundamental.at:1418;Context sensitive words (4);fundamental;
-136;run_fundamental.at:1442;Context sensitive words (5);fundamental;
-137;run_fundamental.at:1464;Context sensitive words (6);fundamental;
-138;run_fundamental.at:1486;Context sensitive words (7);fundamental;
-139;run_fundamental.at:1512;ROUNDED AWAY-FROM-ZERO;fundamental;
-140;run_fundamental.at:1574;ROUNDED NEAREST-AWAY-FROM-ZERO;fundamental;
-141;run_fundamental.at:1636;ROUNDED NEAREST-EVEN;fundamental;
-142;run_fundamental.at:1698;ROUNDED NEAREST-TOWARD-ZERO;fundamental;
-143;run_fundamental.at:1760;ROUNDED TOWARD-GREATER;fundamental;
-144;run_fundamental.at:1822;ROUNDED TOWARD-LESSER;fundamental;
-145;run_fundamental.at:1884;ROUNDED TRUNCATION;fundamental;
-146;run_fundamental.at:1946;Numeric operations (1);fundamental;
-147;run_fundamental.at:1989;Numeric operations (2);fundamental;
-148;run_fundamental.at:2294;Numeric operations (3);fundamental;
-149;run_fundamental.at:2599;Numeric operations (4);fundamental;
-150;run_fundamental.at:2904;Numeric operations (5);fundamental;
-151;run_fundamental.at:3211;Numeric operations (6);fundamental;
+111;run_fundamental.at:397;Check for equality of FLOAT-SHORT/FLOAT-LONG;fundamental;
+112;run_fundamental.at:520;Overlapping MOVE;fundamental;
+113;run_fundamental.at:584;ALPHABETIC test;fundamental;
+114;run_fundamental.at:615;ALPHABETIC-UPPER test;fundamental;
+115;run_fundamental.at:646;ALPHABETIC-LOWER test;fundamental;
+116;run_fundamental.at:677;GLOBAL at same level;fundamental;
+117;run_fundamental.at:726;GLOBAL at lower level;fundamental;
+118;run_fundamental.at:774;START RELATIVE (1);fundamental;
+119;run_fundamental.at:822;START RELATIVE (2);fundamental;
+120;run_fundamental.at:898;GLOBAL FD (1);fundamental;
+121;run_fundamental.at:947;GLOBAL FD (2);fundamental;
+122;run_fundamental.at:996;GLOBAL FD (3);fundamental;
+123;run_fundamental.at:1045;GLOBAL FD (4);fundamental;
+124;run_fundamental.at:1094;Contained program visibility (1);fundamental;
+125;run_fundamental.at:1148;Contained program visibility (2);fundamental;
+126;run_fundamental.at:1200;Contained program visibility (3);fundamental;
+127;run_fundamental.at:1250;Contained program visibility (4);fundamental;
+128;run_fundamental.at:1304;CANCEL test (1);fundamental;
+129;run_fundamental.at:1326;CANCEL test (2);fundamental;
+130;run_fundamental.at:1362;Separate sign positions (1);fundamental;
+131;run_fundamental.at:1385;Separate sign positions (2);fundamental;
+132;run_fundamental.at:1416;Context sensitive words (1);fundamental;
+133;run_fundamental.at:1438;Context sensitive words (2);fundamental;
+134;run_fundamental.at:1461;Context sensitive words (3);fundamental;
+135;run_fundamental.at:1484;Context sensitive words (4);fundamental;
+136;run_fundamental.at:1508;Context sensitive words (5);fundamental;
+137;run_fundamental.at:1530;Context sensitive words (6);fundamental;
+138;run_fundamental.at:1552;Context sensitive words (7);fundamental;
+139;run_fundamental.at:1578;ROUNDED AWAY-FROM-ZERO;fundamental;
+140;run_fundamental.at:1640;ROUNDED NEAREST-AWAY-FROM-ZERO;fundamental;
+141;run_fundamental.at:1702;ROUNDED NEAREST-EVEN;fundamental;
+142;run_fundamental.at:1764;ROUNDED NEAREST-TOWARD-ZERO;fundamental;
+143;run_fundamental.at:1826;ROUNDED TOWARD-GREATER;fundamental;
+144;run_fundamental.at:1888;ROUNDED TOWARD-LESSER;fundamental;
+145;run_fundamental.at:1950;ROUNDED TRUNCATION;fundamental;
+146;run_fundamental.at:2012;Numeric operations (1);fundamental;
+147;run_fundamental.at:2055;Numeric operations (2);fundamental;
+148;run_fundamental.at:2360;Numeric operations (3);fundamental;
+149;run_fundamental.at:2665;Numeric operations (4);fundamental;
+150;run_fundamental.at:2970;Numeric operations (5);fundamental;
+151;run_fundamental.at:3277;Numeric operations (6);fundamental;
 152;run_subscripts.at:26;Subscript out of bounds (1);runsubscripts subscripts;
 153;run_subscripts.at:51;Subscript out of bounds (2);runsubscripts subscripts;
 154;run_subscripts.at:76;Value of DEPENDING ON N out of bounds (lower);runsubscripts subscripts;
@@ -8455,15 +8455,12 @@ read at_status <"$at_status_file"
 #AT_STOP_110
 #AT_START_111
 at_fn_group_banner 111 'run_fundamental.at:397' \
-  "COMPARE FLOAT-SHORT/FLOAT-LONG" "                 " 2
-at_xfail=yes
+  "Check for equality of FLOAT-SHORT/FLOAT-LONG" "   " 2
+at_xfail=no
 (
   $as_echo "111. $at_setup_line: testing $at_desc ..."
   $at_traceon
 
-
-
-# bug when comparing float and double for equality
 
 
 cat >prog.cob <<'_ATEOF'
@@ -8483,14 +8480,14 @@ cat >prog.cob <<'_ATEOF'
                DISPLAY "Error: move/compare FLOAT-LONG to FLOAT-SHORT fa
       -                "iled " DST1
                END-DISPLAY
-           END-IF
+           END-IF.
 
            MOVE SRC1 TO DST2.
            IF DST1 not = 11.55
                DISPLAY "Error: move/compare FLOAT-LONG to FLOAT-LONG fai
       -                "led " DST2
                END-DISPLAY
-           END-IF
+           END-IF.
 
            MOVE ZERO TO DST1.
            MOVE ZERO TO DST2.
@@ -8498,44 +8495,113 @@ cat >prog.cob <<'_ATEOF'
            MOVE SRC2 TO DST1.
            IF DST1 not = 11.55
                DISPLAY "Error: move/compare FLOAT-SHORT to FLOAT-SHORT f
-      -                "ailed " DST1
+      -                "ailed: " DST1
                END-DISPLAY
-           END-IF
+           END-IF.
 
            MOVE SRC2 TO DST2.
            IF DST2 not = 11.55
                DISPLAY "Error: move/compare FLOAT-SHORT to FLOAT-LONG fa
-      -                "iled " DST2
+      -                "iled: " DST2
                END-DISPLAY
-           END-IF
+           END-IF.
+
+           MOVE ZERO TO DST1.
+           IF not (DST1 = 0 AND 0.0)
+               DISPLAY "Zero compare failed: " DST1 END-DISPLAY
+           END-IF.
+
+           MOVE -0.0 TO DST1.
+           IF not (DST1 = 0 AND 0.0)
+               DISPLAY "Negative Zero compare failed: " DST1
+               END-DISPLAY
+           END-IF.
+
+           MOVE 1.1234567 TO DST1.
+           MOVE DST1 TO DST2.
+           IF DST2 not = 1.1234567
+               DISPLAY "move/compare number to FLOAT to DOUBLE failed: "
+                       DST1 " - " DST2
+               END-DISPLAY
+           END-IF.
+
+      * Check for Tolerance
+           MOVE 1.1234567 TO DST1.
+           MOVE 1.1234568 TO DST2.
+           IF DST1 not = DST2 THEN
+               DISPLAY "move/compare of very near numbers failed (not id
+      -                "entical): " DST1 " - " DST2
+               END-DISPLAY
+           END-IF.
+
+      * Within tolerance by definition, therefore not checked
+      *     MULTIPLY 10000000000 BY DST1 DST2 END-MULTIPLY.
+      *     IF DST1 = DST2 THEN
+      *         DISPLAY "compare of very near numbers computed failed (id
+      *-                "entical): " DST1 " - " DST2
+      *         END-DISPLAY
+      *     END-IF.
+
+           MOVE 1.1234567 TO DST1.
+           MOVE 1.1234569 TO DST2.
+           IF DST1 = DST2 THEN
+               DISPLAY "move/compare of near equal numbers failed (ident
+      -                "ical): " DST1 " - " DST2
+               END-DISPLAY
+           END-IF.
+
+           MOVE 0.0001 TO DST1.
+           MOVE 0.0000 TO DST2.
+           IF DST1 = DST2 THEN
+               DISPLAY "move/compare of nearly equal very small numbers
+      -                "failed  (identical): " DST1 " - " DST2
+               END-DISPLAY
+           END-IF.
+
+           MOVE 1000001.0 TO DST1.
+           MOVE 1000000.0 TO DST2.
+           IF DST1 = DST2 THEN
+               DISPLAY "move/compare of nearly equal big numbers failed
+      -                "(identical): " DST1 " - " DST2
+               END-DISPLAY
+           END-IF.
+
+      * Within tolerance by definition, therefore not checked
+      *     MOVE 1000000000.0 TO DST1.
+      *     MOVE 1000000001.0 TO DST2.
+      *     IF DST1 = DST2 THEN
+      *         DISPLAY "move/compare of nearly equal very big numbers fa
+      *-                "iled (identical): " DST1 " - " DST2
+      *         END-DISPLAY
+      *     END-IF.
 
            STOP RUN.
 _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:448: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:448"
+$as_echo "$at_srcdir/run_fundamental.at:514: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:514"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:448"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:514"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:449: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:449"
+$as_echo "$at_srcdir/run_fundamental.at:515: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:515"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:449"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:515"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8546,7 +8612,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_111
 #AT_START_112
-at_fn_group_banner 112 'run_fundamental.at:454' \
+at_fn_group_banner 112 'run_fundamental.at:520' \
   "Overlapping MOVE" "                               " 2
 at_xfail=no
 (
@@ -8613,21 +8679,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:510: \$COMPILE_MODULE subprog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE subprog.cob" "run_fundamental.at:510"
+$as_echo "$at_srcdir/run_fundamental.at:576: \$COMPILE_MODULE subprog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE subprog.cob" "run_fundamental.at:576"
 ( $at_check_trace; $COMPILE_MODULE subprog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:510"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:576"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:511: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:511"
+$as_echo "$at_srcdir/run_fundamental.at:577: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:577"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -8636,20 +8702,20 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 15: Warning: Overlapping MOVE may produ
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:511"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:577"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:513: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:513"
+$as_echo "$at_srcdir/run_fundamental.at:579: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:579"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:513"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:579"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8660,7 +8726,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_112
 #AT_START_113
-at_fn_group_banner 113 'run_fundamental.at:518' \
+at_fn_group_banner 113 'run_fundamental.at:584' \
   "ALPHABETIC test" "                                " 2
 at_xfail=no
 (
@@ -8695,28 +8761,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:544: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:544"
+$as_echo "$at_srcdir/run_fundamental.at:610: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:610"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:544"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:610"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:545: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:545"
+$as_echo "$at_srcdir/run_fundamental.at:611: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:611"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:545"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:611"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8727,7 +8793,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_113
 #AT_START_114
-at_fn_group_banner 114 'run_fundamental.at:549' \
+at_fn_group_banner 114 'run_fundamental.at:615' \
   "ALPHABETIC-UPPER test" "                          " 2
 at_xfail=no
 (
@@ -8762,28 +8828,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:575: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:575"
+$as_echo "$at_srcdir/run_fundamental.at:641: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:641"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:575"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:641"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:576: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:576"
+$as_echo "$at_srcdir/run_fundamental.at:642: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:642"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:576"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:642"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8794,7 +8860,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_114
 #AT_START_115
-at_fn_group_banner 115 'run_fundamental.at:580' \
+at_fn_group_banner 115 'run_fundamental.at:646' \
   "ALPHABETIC-LOWER test" "                          " 2
 at_xfail=no
 (
@@ -8829,28 +8895,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:606: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:606"
+$as_echo "$at_srcdir/run_fundamental.at:672: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:672"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:606"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:672"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:607: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:607"
+$as_echo "$at_srcdir/run_fundamental.at:673: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:673"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:607"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:673"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8861,7 +8927,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_115
 #AT_START_116
-at_fn_group_banner 116 'run_fundamental.at:611' \
+at_fn_group_banner 116 'run_fundamental.at:677' \
   "GLOBAL at same level" "                           " 2
 at_xfail=no
 (
@@ -8909,21 +8975,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:650: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:650"
+$as_echo "$at_srcdir/run_fundamental.at:716: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:716"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:650"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:716"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:651: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:651"
+$as_echo "$at_srcdir/run_fundamental.at:717: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:717"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -8934,7 +9000,7 @@ prog2
 prog1
 " | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:651"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:717"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -8945,7 +9011,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_116
 #AT_START_117
-at_fn_group_banner 117 'run_fundamental.at:660' \
+at_fn_group_banner 117 'run_fundamental.at:726' \
   "GLOBAL at lower level" "                          " 2
 at_xfail=no
 (
@@ -8993,21 +9059,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:699: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:699"
+$as_echo "$at_srcdir/run_fundamental.at:765: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:765"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:699"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:765"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:700: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:700"
+$as_echo "$at_srcdir/run_fundamental.at:766: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:766"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -9018,7 +9084,7 @@ prog2
 prog2
 " | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:700"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:766"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9029,7 +9095,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_117
 #AT_START_118
-at_fn_group_banner 118 'run_fundamental.at:708' \
+at_fn_group_banner 118 'run_fundamental.at:774' \
   "START RELATIVE (1)" "                             " 2
 at_xfail=no
 (
@@ -9081,28 +9147,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:751: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:751"
+$as_echo "$at_srcdir/run_fundamental.at:817: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:817"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:751"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:817"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:752: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:752"
+$as_echo "$at_srcdir/run_fundamental.at:818: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:818"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:752"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:818"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9113,7 +9179,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_118
 #AT_START_119
-at_fn_group_banner 119 'run_fundamental.at:756' \
+at_fn_group_banner 119 'run_fundamental.at:822' \
   "START RELATIVE (2)" "                             " 2
 at_xfail=no
 (
@@ -9193,28 +9259,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:827: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:827"
+$as_echo "$at_srcdir/run_fundamental.at:893: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:893"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:827"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:893"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:828: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:828"
+$as_echo "$at_srcdir/run_fundamental.at:894: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:894"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:828"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:894"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9225,7 +9291,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_119
 #AT_START_120
-at_fn_group_banner 120 'run_fundamental.at:832' \
+at_fn_group_banner 120 'run_fundamental.at:898' \
   "GLOBAL FD (1)" "                                  " 2
 at_xfail=no
 (
@@ -9279,15 +9345,15 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:877: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:877"
+$as_echo "$at_srcdir/run_fundamental.at:943: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:943"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:877"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:943"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9298,7 +9364,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_120
 #AT_START_121
-at_fn_group_banner 121 'run_fundamental.at:881' \
+at_fn_group_banner 121 'run_fundamental.at:947' \
   "GLOBAL FD (2)" "                                  " 2
 at_xfail=no
 (
@@ -9352,15 +9418,15 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:926: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:926"
+$as_echo "$at_srcdir/run_fundamental.at:992: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:992"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:926"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:992"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9371,7 +9437,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_121
 #AT_START_122
-at_fn_group_banner 122 'run_fundamental.at:930' \
+at_fn_group_banner 122 'run_fundamental.at:996' \
   "GLOBAL FD (3)" "                                  " 2
 at_xfail=no
 (
@@ -9424,28 +9490,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:974: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:974"
+$as_echo "$at_srcdir/run_fundamental.at:1040: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1040"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:974"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1040"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:975: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:975"
+$as_echo "$at_srcdir/run_fundamental.at:1041: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1041"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:975"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1041"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9456,7 +9522,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_122
 #AT_START_123
-at_fn_group_banner 123 'run_fundamental.at:979' \
+at_fn_group_banner 123 'run_fundamental.at:1045' \
   "GLOBAL FD (4)" "                                  " 2
 at_xfail=no
 (
@@ -9509,28 +9575,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1023: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1023"
+$as_echo "$at_srcdir/run_fundamental.at:1089: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1089"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1023"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1089"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1024: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1024"
+$as_echo "$at_srcdir/run_fundamental.at:1090: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1090"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1024"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1090"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9541,7 +9607,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_123
 #AT_START_124
-at_fn_group_banner 124 'run_fundamental.at:1028' \
+at_fn_group_banner 124 'run_fundamental.at:1094' \
   "Contained program visibility (1)" "               " 2
 at_xfail=no
 (
@@ -9597,21 +9663,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1075: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1075"
+$as_echo "$at_srcdir/run_fundamental.at:1141: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1141"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1075"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1141"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1076: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1076"
+$as_echo "$at_srcdir/run_fundamental.at:1142: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1142"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -9620,7 +9686,7 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 14: libcob: Cannot find module 'prog3'
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1076"
+at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1142"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9631,7 +9697,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_124
 #AT_START_125
-at_fn_group_banner 125 'run_fundamental.at:1082' \
+at_fn_group_banner 125 'run_fundamental.at:1148' \
   "Contained program visibility (2)" "               " 2
 at_xfail=no
 (
@@ -9685,21 +9751,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1127: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1127"
+$as_echo "$at_srcdir/run_fundamental.at:1193: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1193"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1127"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1193"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1128: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1128"
+$as_echo "$at_srcdir/run_fundamental.at:1194: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1194"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -9708,7 +9774,7 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 25: libcob: Cannot find module 'prog3'
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1128"
+at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1194"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9719,7 +9785,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_125
 #AT_START_126
-at_fn_group_banner 126 'run_fundamental.at:1134' \
+at_fn_group_banner 126 'run_fundamental.at:1200' \
   "Contained program visibility (3)" "               " 2
 at_xfail=no
 (
@@ -9773,28 +9839,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1179: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1179"
+$as_echo "$at_srcdir/run_fundamental.at:1245: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1245"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1179"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1245"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1180: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1180"
+$as_echo "$at_srcdir/run_fundamental.at:1246: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1246"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1180"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1246"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9805,7 +9871,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_126
 #AT_START_127
-at_fn_group_banner 127 'run_fundamental.at:1184' \
+at_fn_group_banner 127 'run_fundamental.at:1250' \
   "Contained program visibility (4)" "               " 2
 at_xfail=no
 (
@@ -9862,21 +9928,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1232: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1232"
+$as_echo "$at_srcdir/run_fundamental.at:1298: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1298"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1232"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1298"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1233: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1233"
+$as_echo "$at_srcdir/run_fundamental.at:1299: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1299"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -9884,7 +9950,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "P1P2P3P4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1233"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1299"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9895,7 +9961,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_127
 #AT_START_128
-at_fn_group_banner 128 'run_fundamental.at:1238' \
+at_fn_group_banner 128 'run_fundamental.at:1304' \
   "CANCEL test (1)" "                                " 2
 at_xfail=no
 (
@@ -9919,21 +9985,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1253: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1253"
+$as_echo "$at_srcdir/run_fundamental.at:1319: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1319"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1253"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1319"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1254: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1254"
+$as_echo "$at_srcdir/run_fundamental.at:1320: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1320"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -9942,7 +10008,7 @@ echo >>"$at_stderr"; $as_echo "prog.cob: 7: libcob: Attempt to CANCEL active pro
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1254"
+at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1320"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -9953,7 +10019,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_128
 #AT_START_129
-at_fn_group_banner 129 'run_fundamental.at:1260' \
+at_fn_group_banner 129 'run_fundamental.at:1326' \
   "CANCEL test (2)" "                                " 2
 at_xfail=no
 (
@@ -9992,34 +10058,34 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1288: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1288"
+$as_echo "$at_srcdir/run_fundamental.at:1354: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1354"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1288"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1354"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1289: \$COMPILE_MODULE prog2.cob"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE prog2.cob" "run_fundamental.at:1289"
+$as_echo "$at_srcdir/run_fundamental.at:1355: \$COMPILE_MODULE prog2.cob"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE prog2.cob" "run_fundamental.at:1355"
 ( $at_check_trace; $COMPILE_MODULE prog2.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1289"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1355"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1290: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1290"
+$as_echo "$at_srcdir/run_fundamental.at:1356: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1356"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10028,7 +10094,7 @@ echo >>"$at_stderr"; $as_echo "prog2.cob: 7: libcob: Attempt to CANCEL active pr
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1290"
+at_fn_check_status 1 $at_status "$at_srcdir/run_fundamental.at:1356"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10039,7 +10105,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_129
 #AT_START_130
-at_fn_group_banner 130 'run_fundamental.at:1296' \
+at_fn_group_banner 130 'run_fundamental.at:1362' \
   "Separate sign positions (1)" "                    " 2
 at_xfail=no
 (
@@ -10066,21 +10132,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1314: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1314"
+$as_echo "$at_srcdir/run_fundamental.at:1380: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1380"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1314"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1380"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1315: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1315"
+$as_echo "$at_srcdir/run_fundamental.at:1381: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1381"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10088,7 +10154,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "-11-" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1315"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1381"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10099,7 +10165,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_130
 #AT_START_131
-at_fn_group_banner 131 'run_fundamental.at:1319' \
+at_fn_group_banner 131 'run_fundamental.at:1385' \
   "Separate sign positions (2)" "                    " 2
 at_xfail=no
 (
@@ -10134,21 +10200,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1345: \$COMPILE -std=mf -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -std=mf -o prog prog.cob" "run_fundamental.at:1345"
+$as_echo "$at_srcdir/run_fundamental.at:1411: \$COMPILE -std=mf -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -std=mf -o prog prog.cob" "run_fundamental.at:1411"
 ( $at_check_trace; $COMPILE -std=mf -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1345"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1411"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1346: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1346"
+$as_echo "$at_srcdir/run_fundamental.at:1412: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1412"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10156,7 +10222,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+0+00+0+" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1346"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1412"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10167,7 +10233,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_131
 #AT_START_132
-at_fn_group_banner 132 'run_fundamental.at:1350' \
+at_fn_group_banner 132 'run_fundamental.at:1416' \
   "Context sensitive words (1)" "                    " 2
 at_xfail=no
 (
@@ -10193,21 +10259,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1367: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1367"
+$as_echo "$at_srcdir/run_fundamental.at:1433: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1433"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1367"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1433"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1368: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1368"
+$as_echo "$at_srcdir/run_fundamental.at:1434: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1434"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10215,7 +10281,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "1" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1368"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1434"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10226,7 +10292,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_132
 #AT_START_133
-at_fn_group_banner 133 'run_fundamental.at:1372' \
+at_fn_group_banner 133 'run_fundamental.at:1438' \
   "Context sensitive words (2)" "                    " 2
 at_xfail=no
 (
@@ -10253,21 +10319,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1390: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1390"
+$as_echo "$at_srcdir/run_fundamental.at:1456: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1456"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1390"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1456"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1391: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1391"
+$as_echo "$at_srcdir/run_fundamental.at:1457: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1457"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10275,7 +10341,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "0" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1391"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1457"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10286,7 +10352,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_133
 #AT_START_134
-at_fn_group_banner 134 'run_fundamental.at:1395' \
+at_fn_group_banner 134 'run_fundamental.at:1461' \
   "Context sensitive words (3)" "                    " 2
 at_xfail=no
 (
@@ -10313,21 +10379,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1413: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1413"
+$as_echo "$at_srcdir/run_fundamental.at:1479: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1479"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1413"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1479"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1414: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1414"
+$as_echo "$at_srcdir/run_fundamental.at:1480: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1480"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10335,7 +10401,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "0" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1414"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1480"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10346,7 +10412,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_134
 #AT_START_135
-at_fn_group_banner 135 'run_fundamental.at:1418' \
+at_fn_group_banner 135 'run_fundamental.at:1484' \
   "Context sensitive words (4)" "                    " 2
 at_xfail=no
 (
@@ -10374,21 +10440,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1437: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1437"
+$as_echo "$at_srcdir/run_fundamental.at:1503: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1503"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1437"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1503"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1438: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1438"
+$as_echo "$at_srcdir/run_fundamental.at:1504: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1504"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10396,7 +10462,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "0" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1438"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1504"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10407,7 +10473,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_135
 #AT_START_136
-at_fn_group_banner 136 'run_fundamental.at:1442' \
+at_fn_group_banner 136 'run_fundamental.at:1508' \
   "Context sensitive words (5)" "                    " 2
 at_xfail=no
 (
@@ -10433,21 +10499,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1459: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1459"
+$as_echo "$at_srcdir/run_fundamental.at:1525: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1525"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1459"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1525"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1460: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1460"
+$as_echo "$at_srcdir/run_fundamental.at:1526: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1526"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10455,7 +10521,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "0" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1460"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1526"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10466,7 +10532,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_136
 #AT_START_137
-at_fn_group_banner 137 'run_fundamental.at:1464' \
+at_fn_group_banner 137 'run_fundamental.at:1530' \
   "Context sensitive words (6)" "                    " 2
 at_xfail=no
 (
@@ -10492,21 +10558,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1481: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1481"
+$as_echo "$at_srcdir/run_fundamental.at:1547: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1547"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1481"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1547"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1482: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1482"
+$as_echo "$at_srcdir/run_fundamental.at:1548: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1548"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10514,7 +10580,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "0" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1482"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1548"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10525,7 +10591,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_137
 #AT_START_138
-at_fn_group_banner 138 'run_fundamental.at:1486' \
+at_fn_group_banner 138 'run_fundamental.at:1552' \
   "Context sensitive words (7)" "                    " 2
 at_xfail=no
 (
@@ -10555,21 +10621,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1507: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1507"
+$as_echo "$at_srcdir/run_fundamental.at:1573: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1573"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1507"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1573"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1508: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1508"
+$as_echo "$at_srcdir/run_fundamental.at:1574: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1574"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10577,7 +10643,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "21" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1508"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1574"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10588,7 +10654,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_138
 #AT_START_139
-at_fn_group_banner 139 'run_fundamental.at:1512' \
+at_fn_group_banner 139 'run_fundamental.at:1578' \
   "ROUNDED AWAY-FROM-ZERO" "                         " 2
 at_xfail=no
 (
@@ -10654,21 +10720,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1569: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1569"
+$as_echo "$at_srcdir/run_fundamental.at:1635: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1635"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1569"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1635"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1570: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1570"
+$as_echo "$at_srcdir/run_fundamental.at:1636: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1636"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10676,7 +10742,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+3 -3 +3 -3 +4 -4 +4 -4 +4 -4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1570"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1636"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10687,7 +10753,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_139
 #AT_START_140
-at_fn_group_banner 140 'run_fundamental.at:1574' \
+at_fn_group_banner 140 'run_fundamental.at:1640' \
   "ROUNDED NEAREST-AWAY-FROM-ZERO" "                 " 2
 at_xfail=no
 (
@@ -10753,21 +10819,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1631: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1631"
+$as_echo "$at_srcdir/run_fundamental.at:1697: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1697"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1631"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1697"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1632: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1632"
+$as_echo "$at_srcdir/run_fundamental.at:1698: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1698"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10775,7 +10841,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+2 -2 +3 -3 +3 -3 +4 -4 +4 -4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1632"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1698"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10786,7 +10852,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_140
 #AT_START_141
-at_fn_group_banner 141 'run_fundamental.at:1636' \
+at_fn_group_banner 141 'run_fundamental.at:1702' \
   "ROUNDED NEAREST-EVEN" "                           " 2
 at_xfail=no
 (
@@ -10852,21 +10918,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1693: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1693"
+$as_echo "$at_srcdir/run_fundamental.at:1759: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1759"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1693"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1759"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1694: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1694"
+$as_echo "$at_srcdir/run_fundamental.at:1760: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1760"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10874,7 +10940,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+2 -2 +2 -2 +3 -3 +4 -4 +4 -4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1694"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1760"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10885,7 +10951,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_141
 #AT_START_142
-at_fn_group_banner 142 'run_fundamental.at:1698' \
+at_fn_group_banner 142 'run_fundamental.at:1764' \
   "ROUNDED NEAREST-TOWARD-ZERO" "                    " 2
 at_xfail=no
 (
@@ -10951,21 +11017,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1755: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1755"
+$as_echo "$at_srcdir/run_fundamental.at:1821: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1821"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1755"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1821"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1756: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1756"
+$as_echo "$at_srcdir/run_fundamental.at:1822: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1822"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -10973,7 +11039,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+2 -2 +2 -2 +3 -3 +3 -3 +4 -4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1756"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1822"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -10984,7 +11050,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_142
 #AT_START_143
-at_fn_group_banner 143 'run_fundamental.at:1760' \
+at_fn_group_banner 143 'run_fundamental.at:1826' \
   "ROUNDED TOWARD-GREATER" "                         " 2
 at_xfail=no
 (
@@ -11050,21 +11116,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1817: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1817"
+$as_echo "$at_srcdir/run_fundamental.at:1883: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1883"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1817"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1883"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1818: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1818"
+$as_echo "$at_srcdir/run_fundamental.at:1884: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1884"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -11072,7 +11138,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+3 -2 +3 -2 +4 -3 +4 -3 +4 -3" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1818"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1884"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -11083,7 +11149,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_143
 #AT_START_144
-at_fn_group_banner 144 'run_fundamental.at:1822' \
+at_fn_group_banner 144 'run_fundamental.at:1888' \
   "ROUNDED TOWARD-LESSER" "                          " 2
 at_xfail=no
 (
@@ -11149,21 +11215,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1879: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1879"
+$as_echo "$at_srcdir/run_fundamental.at:1945: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1945"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1879"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1945"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1880: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1880"
+$as_echo "$at_srcdir/run_fundamental.at:1946: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:1946"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -11171,7 +11237,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+2 -3 +2 -3 +3 -4 +3 -4 +3 -4" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1880"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1946"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -11182,7 +11248,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_144
 #AT_START_145
-at_fn_group_banner 145 'run_fundamental.at:1884' \
+at_fn_group_banner 145 'run_fundamental.at:1950' \
   "ROUNDED TRUNCATION" "                             " 2
 at_xfail=no
 (
@@ -11248,21 +11314,21 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1941: \$COMPILE -o prog prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:1941"
+$as_echo "$at_srcdir/run_fundamental.at:2007: \$COMPILE -o prog prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -o prog prog.cob" "run_fundamental.at:2007"
 ( $at_check_trace; $COMPILE -o prog prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1941"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2007"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1942: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1942"
+$as_echo "$at_srcdir/run_fundamental.at:2008: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:2008"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -11270,7 +11336,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "+2 -2 +2 -2 +3 -3 +3 -3 +3 -3" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1942"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2008"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -11281,7 +11347,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_145
 #AT_START_146
-at_fn_group_banner 146 'run_fundamental.at:1946' \
+at_fn_group_banner 146 'run_fundamental.at:2012' \
   "Numeric operations (1)" "                         " 2
 at_xfail=no
 (
@@ -11328,28 +11394,28 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1984: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:1984"
+$as_echo "$at_srcdir/run_fundamental.at:2050: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:2050"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1984"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2050"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:1985: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:1985"
+$as_echo "$at_srcdir/run_fundamental.at:2051: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:2051"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:1985"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2051"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -11360,7 +11426,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_146
 #AT_START_147
-at_fn_group_banner 147 'run_fundamental.at:1989' \
+at_fn_group_banner 147 'run_fundamental.at:2055' \
   "Numeric operations (2)" "                         " 2
 at_xfail=no
 (
@@ -11664,8 +11730,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2284: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:2284"
+$as_echo "$at_srcdir/run_fundamental.at:2350: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:2350"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -11677,20 +11743,20 @@ prog.cob: 172: Warning: Ignoring sign
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2284"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2350"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2290: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:2290"
+$as_echo "$at_srcdir/run_fundamental.at:2356: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:2356"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2290"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2356"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -11701,7 +11767,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_147
 #AT_START_148
-at_fn_group_banner 148 'run_fundamental.at:2294' \
+at_fn_group_banner 148 'run_fundamental.at:2360' \
   "Numeric operations (3)" "                         " 2
 at_xfail=no
 (
@@ -12005,8 +12071,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2589: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:2589"
+$as_echo "$at_srcdir/run_fundamental.at:2655: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:2655"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -12018,20 +12084,20 @@ prog.cob: 172: Warning: Ignoring sign
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2589"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2655"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2595: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:2595"
+$as_echo "$at_srcdir/run_fundamental.at:2661: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:2661"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2595"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2661"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -12042,7 +12108,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_148
 #AT_START_149
-at_fn_group_banner 149 'run_fundamental.at:2599' \
+at_fn_group_banner 149 'run_fundamental.at:2665' \
   "Numeric operations (4)" "                         " 2
 at_xfail=no
 (
@@ -12346,8 +12412,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2894: \$COMPILE -std=mf prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -std=mf prog.cob" "run_fundamental.at:2894"
+$as_echo "$at_srcdir/run_fundamental.at:2960: \$COMPILE -std=mf prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -std=mf prog.cob" "run_fundamental.at:2960"
 ( $at_check_trace; $COMPILE -std=mf prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -12359,20 +12425,20 @@ prog.cob: 172: Warning: Ignoring sign
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2894"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2960"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:2900: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:2900"
+$as_echo "$at_srcdir/run_fundamental.at:2966: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:2966"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2900"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:2966"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -12383,7 +12449,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_149
 #AT_START_150
-at_fn_group_banner 150 'run_fundamental.at:2904' \
+at_fn_group_banner 150 'run_fundamental.at:2970' \
   "Numeric operations (5)" "                         " 2
 at_xfail=no
 (
@@ -12687,8 +12753,8 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:3199: \$COMPILE -std=mf prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE -std=mf prog.cob" "run_fundamental.at:3199"
+$as_echo "$at_srcdir/run_fundamental.at:3265: \$COMPILE -std=mf prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE -std=mf prog.cob" "run_fundamental.at:3265"
 ( $at_check_trace; $COMPILE -std=mf prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -12700,20 +12766,20 @@ prog.cob: 172: Warning: Ignoring sign
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3199"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3265"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:3205: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:3205"
+$as_echo "$at_srcdir/run_fundamental.at:3271: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:3271"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3205"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3271"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -12724,7 +12790,7 @@ $at_traceon; }
 read at_status <"$at_status_file"
 #AT_STOP_150
 #AT_START_151
-at_fn_group_banner 151 'run_fundamental.at:3211' \
+at_fn_group_banner 151 'run_fundamental.at:3277' \
   "Numeric operations (6)" "                         " 2
 at_xfail=no
 (
@@ -12794,34 +12860,34 @@ _ATEOF
 
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:3270: \$COMPILE_MODULE dump.c"
-at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.c" "run_fundamental.at:3270"
+$as_echo "$at_srcdir/run_fundamental.at:3336: \$COMPILE_MODULE dump.c"
+at_fn_check_prepare_dynamic "$COMPILE_MODULE dump.c" "run_fundamental.at:3336"
 ( $at_check_trace; $COMPILE_MODULE dump.c
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3270"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3336"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:3271: \$COMPILE prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:3271"
+$as_echo "$at_srcdir/run_fundamental.at:3337: \$COMPILE prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE prog.cob" "run_fundamental.at:3337"
 ( $at_check_trace; $COMPILE prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3271"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3337"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_fundamental.at:3272: ./prog"
-at_fn_check_prepare_trace "run_fundamental.at:3272"
+$as_echo "$at_srcdir/run_fundamental.at:3338: ./prog"
+at_fn_check_prepare_trace "run_fundamental.at:3338"
 ( $at_check_trace; ./prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
@@ -12829,7 +12895,7 @@ $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "05108855" | \
   $at_diff - "$at_stdout" || at_failed=:
-at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3272"
+at_fn_check_status 0 $at_status "$at_srcdir/run_fundamental.at:3338"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 

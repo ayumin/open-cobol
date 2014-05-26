@@ -1,16 +1,16 @@
-2014-05-26  Ron Norman <rjn@inglenet.com>
-
-	* move.c : replaced memcpy by memmove
-
 2014-05-20  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* call.c : inverted preload list for WIN32 builds
 	* common.c, move.c, screenio.c, fileio.c : Set runtime switch 
 		from environment to true on "1", "Y", "YES", "TRUE", "ON"
 
-2014-05-12  Ron Norman <rjn@inglenet.com>
+2014-05-13  Ron Norman <rjn@inglenet.com>
 
-	* move.c : fixed bug in cob_move_fp_to_fp()	
+	* numeric.c : added cob_cmp_float with tolerance for equality comparison
+
+2014-05-07  Ron Norman <rjn@inglenet.com>
+
+	* move.c : replaced memcpy by memmove
 
 2014-05-06  Philipp Böhme <phi.boehme@googlemail.com>
 
@@ -20,8 +20,9 @@
 		cob_int_to_formatted_bytestring
 	* call.c : Remove duplicates when resolving COB_LIBRARY_PATH
 
-2014-04-28  Ron Norman <rjn@inglenet.com>
+2014-04-25  Ron Norman <rjn@inglenet.com>
 
+	* move.c : fixed bug in cob_move_fp_to_fp()	
 	* numeric.c : Fixed errors in cob_add_int() when computing with floats.
 
 2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
