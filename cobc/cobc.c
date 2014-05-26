@@ -3192,6 +3192,7 @@ process_translate (struct filename *fn)
 	p = program_list_reverse (current_program);
 
 	/* Set up local storage files */
+	lf = NULL;
 	ret = 1;
 	for (q = p; q; q = q->next_program, ret++) {
 		lf = cobc_main_malloc (sizeof(struct local_filename));

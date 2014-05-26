@@ -1,3 +1,8 @@
+2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* scanner.* : Fixing #71 Referencing GLOBAL 78/CONSTANT in SELECT
+		causes internal error 
+
 2014-05-26  Ron Norman <rjn@inglenet.com>
 
 	* typeck.c : use memmove for move of LINKAGE items
