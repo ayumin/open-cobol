@@ -1436,6 +1436,7 @@ COB_EXPIMP int	cob_cmp_packed		(cob_field *, const cob_s64_t);
 COB_EXPIMP int	cob_cmp_numdisp		(const unsigned char *,
 					 const size_t, const cob_s64_t,
 					 const cob_u32_t);
+COB_EXPIMP int	cob_cmp_float		(cob_field *, cob_field *);
 COB_EXPIMP void	cob_set_packed_zero	(cob_field *);
 COB_EXPIMP void	cob_set_packed_int	(cob_field *, const int);
 
