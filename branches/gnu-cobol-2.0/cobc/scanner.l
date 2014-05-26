@@ -1750,6 +1750,12 @@ check_level_78 (const char *name)
 			return p78->fld78;
 		}
 	}
+	/* Check against a global constant (78 level) */
+	for (p78 = globlev78ptr; p78; p78 = p78->next) {
+		if (strcasecmp (name, p78->fld78->name) == 0) {
+			return p78->fld78;
+		}
+	}
 	return NULL;
 }
 

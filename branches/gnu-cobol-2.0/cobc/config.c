@@ -173,6 +173,7 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 		fflush (stderr);
 		fprintf (stderr, "%s: %s", name,
 			 _("No such file or directory"));
+		putc ('\n', stderr);
 		fflush (stderr);
 		return -1;
 	}

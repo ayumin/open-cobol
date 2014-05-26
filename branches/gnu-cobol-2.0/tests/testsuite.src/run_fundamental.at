@@ -560,9 +560,9 @@ AT_DATA([prog.cob], [
         END-IF        
         IF FIELD2 not = "67890     "
            DISPLAY "Error: 2: " FIELD2
-           END-DISPLAY
-        END-IF
-        
+               END-DISPLAY
+           END-IF
+           
         
         MOVE "Hallo" TO FIELD1.
         MOVE "1234567890" TO FIELD2.        
@@ -570,7 +570,7 @@ AT_DATA([prog.cob], [
         CALL "subprog" USING BY REFERENCE FIELD2 STRUCTURE 
         END-CALL        
 
-        STOP RUN.
+           STOP RUN.
 ])
 
 AT_CHECK([$COMPILE_MODULE subprog.cob], [0])
@@ -768,6 +768,301 @@ AT_CHECK([./prog], [0],
 prog2
 prog2
 ])
+
+AT_CLEANUP
+
+
+AT_SETUP([GLOBAL CONSTANT])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN    GLOB-PATH
+       .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE    GLOBAL.
+       01  TEST-REC     PIC X(4).
+       WORKING-STORAGE  SECTION.
+       78  GLOB-PATH           GLOBAL VALUE "GLOBP1".
+       01  GLOB-PATH2 CONSTANT GLOBAL       "GLOBP2".
+      * Test global vars because of implicitely defined ASSIGN var, too.
+       78  GLOB-VAR            GLOBAL VALUE "GLOBV1".
+       01  GLOB-VAR2  CONSTANT GLOBAL       "GLOBV2".
+       PROCEDURE        DIVISION.
+           DISPLAY GLOB-PATH GLOB-VAR
+           END-DISPLAY.
+           CALL "prog2"
+           END-CALL.
+           CALL "prog3"
+           END-CALL.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        ENVIRONMENT      DIVISION. 
+        INPUT-OUTPUT     SECTION.
+        FILE-CONTROL.
+        SELECT TEST2-FILE
+               ASSIGN    GLOB-PATH2
+        .
+        DATA             DIVISION.
+        FILE             SECTION.
+        FD  TEST2-FILE   GLOBAL.
+        01  TEST2-REC    PIC X(4).
+        WORKING-STORAGE  SECTION.
+        PROCEDURE        DIVISION.
+            DISPLAY GLOB-PATH2 GLOB-VAR2
+            END-DISPLAY.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+       END PROGRAM prog.
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog3.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST3-FILE
+              ASSIGN    GLOB-PATH
+       .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST3-FILE   GLOBAL.
+       01  TEST3-REC    PIC X(4).
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY 'in prog3'
+           END-DISPLAY
+           IF GLOB-PATH NOT = SPACES
+              DISPLAY GLOB-PATH 
+              END-DISPLAY
+           END-IF
+           EXIT PROGRAM.
+       END PROGRAM prog3.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], ,
+[prog.cob: 60: Warning: 'GLOB-PATH' will be implicitly defined
+])
+AT_CHECK([./prog], [0],
+[GLOBP1GLOBV1
+GLOBP2GLOBV2
+in prog3
+])
+
+AT_CLEANUP
+
+AT_SETUP([Contained program visibility (1)])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  X   PIC X(5) GLOBAL  VALUE "prog1".
+       PROCEDURE        DIVISION.
+           IF X NOT = "prog1"
+              DISPLAY X
+              END-DISPLAY
+           END-IF.
+           CALL "prog2"
+           END-CALL.
+           CALL "prog3"
+           END-CALL.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01  X   PIC X(5) GLOBAL  VALUE "prog2".
+        PROCEDURE        DIVISION.
+            IF X NOT = "prog2"
+               DISPLAY X
+               END-DISPLAY
+            END-IF.
+            CALL "prog3"
+            END-CALL.
+            EXIT PROGRAM.
+         IDENTIFICATION   DIVISION.
+         PROGRAM-ID.      prog3.
+         DATA DIVISION.
+         WORKING-STORAGE SECTION.
+         PROCEDURE        DIVISION.
+             IF X NOT = "prog2"
+                DISPLAY X
+                END-DISPLAY
+             END-IF
+             EXIT PROGRAM.
+         END PROGRAM prog3.
+        END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [1], [],
+[prog.cob: 14: libcob: Cannot find module 'prog3'
+])
+
+AT_CLEANUP
+
+AT_SETUP([Contained program visibility (2)])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  X   PIC X(5) GLOBAL  VALUE "prog1".
+       PROCEDURE        DIVISION.
+           IF X NOT = "prog1"
+              DISPLAY X
+              END-DISPLAY
+           END-IF.
+           CALL "prog2"
+           END-CALL.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01  X   PIC X(5) GLOBAL  VALUE "prog2".
+        PROCEDURE        DIVISION.
+            IF X NOT = "prog2"
+               DISPLAY X
+               END-DISPLAY
+            END-IF.
+            CALL "prog3"
+            END-CALL.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog3.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            IF X NOT = "prog2"
+               DISPLAY X
+               END-DISPLAY
+            END-IF.
+            EXIT PROGRAM.
+        END PROGRAM prog3.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [1], [],
+[prog.cob: 25: libcob: Cannot find module 'prog3'
+])
+
+AT_CLEANUP
+
+AT_SETUP([Contained program visibility (3)])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  X   PIC X(5) GLOBAL  VALUE "prog1".
+       PROCEDURE        DIVISION.
+           IF X NOT = "prog1"
+              DISPLAY X
+              END-DISPLAY
+           END-IF.
+           CALL "prog2"
+           END-CALL.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01  X   PIC X(5) GLOBAL  VALUE "prog2".
+        PROCEDURE        DIVISION.
+            IF X NOT = "prog2"
+               DISPLAY X
+               END-DISPLAY
+            END-IF.
+            CALL "prog3"
+            END-CALL.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog3 COMMON.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            IF X NOT = "prog1"
+               DISPLAY X
+               END-DISPLAY
+            END-IF.
+            EXIT PROGRAM.
+        END PROGRAM prog3.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+AT_SETUP([Contained program visibility (4)])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY "P1" NO ADVANCING
+           END-DISPLAY.
+           CALL "prog2"
+           END-CALL
+           CALL "prog3"
+           END-CALL
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            DISPLAY "P2" NO ADVANCING
+            END-DISPLAY.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+       END PROGRAM prog.
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog3.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY "P3" NO ADVANCING
+           END-DISPLAY.
+           CALL "prog2"
+           END-CALL.
+           EXIT PROGRAM.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            DISPLAY "P4" NO ADVANCING
+            END-DISPLAY.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+       END PROGRAM prog3.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0],
+[P1P2P3P4])
 
 AT_CLEANUP
 
@@ -1088,216 +1383,6 @@ AT_DATA([prog.cob], [
 
 AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
-
-AT_CLEANUP
-
-AT_SETUP([Contained program visibility (1)])
-AT_KEYWORDS([fundamental])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       01  X   PIC X(5) GLOBAL  VALUE "prog1".
-       PROCEDURE        DIVISION.
-           IF X NOT = "prog1"
-              DISPLAY X
-              END-DISPLAY
-           END-IF
-           CALL "prog2"
-           END-CALL
-           CALL "prog3"
-           END-CALL
-           STOP RUN.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog2.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        01  X   PIC X(5) GLOBAL  VALUE "prog2".
-        PROCEDURE        DIVISION.
-            IF X NOT = "prog2"
-               DISPLAY X
-               END-DISPLAY
-            END-IF
-            CALL "prog3"
-            END-CALL
-            EXIT PROGRAM.
-         IDENTIFICATION   DIVISION.
-         PROGRAM-ID.      prog3.
-         DATA DIVISION.
-         WORKING-STORAGE SECTION.
-         PROCEDURE        DIVISION.
-             IF X NOT = "prog2"
-                DISPLAY X
-                END-DISPLAY
-             END-IF
-             EXIT PROGRAM.
-         END PROGRAM prog3.
-        END PROGRAM prog2.
-       END PROGRAM prog.
-])
-
-AT_CHECK([$COMPILE prog.cob], [0], , [])
-AT_CHECK([./prog], [1], [],
-[prog.cob: 14: libcob: Cannot find module 'prog3'
-])
-
-AT_CLEANUP
-
-AT_SETUP([Contained program visibility (2)])
-AT_KEYWORDS([fundamental])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       01  X   PIC X(5) GLOBAL  VALUE "prog1".
-       PROCEDURE        DIVISION.
-           IF X NOT = "prog1"
-              DISPLAY X
-              END-DISPLAY
-           END-IF
-           CALL "prog2"
-           END-CALL
-           STOP RUN.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog2.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        01  X   PIC X(5) GLOBAL  VALUE "prog2".
-        PROCEDURE        DIVISION.
-            IF X NOT = "prog2"
-               DISPLAY X
-               END-DISPLAY
-            END-IF
-            CALL "prog3"
-            END-CALL
-            EXIT PROGRAM.
-        END PROGRAM prog2.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog3.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        PROCEDURE        DIVISION.
-            IF X NOT = "prog2"
-               DISPLAY X
-               END-DISPLAY
-            END-IF
-            EXIT PROGRAM.
-        END PROGRAM prog3.
-       END PROGRAM prog.
-])
-
-AT_CHECK([$COMPILE prog.cob], [0], , [])
-AT_CHECK([./prog], [1], [],
-[prog.cob: 25: libcob: Cannot find module 'prog3'
-])
-
-AT_CLEANUP
-
-AT_SETUP([Contained program visibility (3)])
-AT_KEYWORDS([fundamental])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       01  X   PIC X(5) GLOBAL  VALUE "prog1".
-       PROCEDURE        DIVISION.
-           IF X NOT = "prog1"
-              DISPLAY X
-              END-DISPLAY
-           END-IF
-           CALL "prog2"
-           END-CALL
-           STOP RUN.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog2.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        01  X   PIC X(5) GLOBAL  VALUE "prog2".
-        PROCEDURE        DIVISION.
-            IF X NOT = "prog2"
-               DISPLAY X
-               END-DISPLAY
-            END-IF
-            CALL "prog3"
-            END-CALL
-            EXIT PROGRAM.
-        END PROGRAM prog2.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog3 COMMON.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        PROCEDURE        DIVISION.
-            IF X NOT = "prog1"
-               DISPLAY X
-               END-DISPLAY
-            END-IF
-            EXIT PROGRAM.
-        END PROGRAM prog3.
-       END PROGRAM prog.
-])
-
-AT_CHECK([$COMPILE prog.cob], [0], , [])
-AT_CHECK([./prog], [0])
-
-AT_CLEANUP
-
-AT_SETUP([Contained program visibility (4)])
-AT_KEYWORDS([fundamental])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       PROCEDURE        DIVISION.
-           DISPLAY "P1" NO ADVANCING
-           END-DISPLAY.
-           CALL "prog2"
-           END-CALL
-           CALL "prog3"
-           END-CALL
-           STOP RUN.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog2.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        PROCEDURE        DIVISION.
-            DISPLAY "P2" NO ADVANCING
-            END-DISPLAY.
-            EXIT PROGRAM.
-        END PROGRAM prog2.
-       END PROGRAM prog.
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog3.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       PROCEDURE        DIVISION.
-           DISPLAY "P3" NO ADVANCING
-           END-DISPLAY.
-           CALL "prog2"
-           END-CALL
-           EXIT PROGRAM.
-        IDENTIFICATION   DIVISION.
-        PROGRAM-ID.      prog2.
-        DATA DIVISION.
-        WORKING-STORAGE SECTION.
-        PROCEDURE        DIVISION.
-            DISPLAY "P4" NO ADVANCING
-            END-DISPLAY.
-            EXIT PROGRAM.
-        END PROGRAM prog2.
-       END PROGRAM prog3.
-])
-
-AT_CHECK([$COMPILE prog.cob], [0], , [])
-AT_CHECK([./prog], [0],
-[P1P2P3P4])
 
 AT_CLEANUP
 
