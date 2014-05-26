@@ -451,6 +451,70 @@ AT_CHECK([./prog], [0], [], [])
 AT_CLEANUP
 
 
+AT_SETUP([Overlapping MOVE])
+AT_KEYWORDS([fundamental])
+
+AT_DATA([subprog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. subprog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        LINKAGE SECTION.
+        01 F1 PIC X(10).
+        01 F2 PIC X(15).
+
+        PROCEDURE DIVISION USING F1 F2.
+        MOVE F2(1:6) TO F1 (1:8).
+        IF F1 not = "Hallo1  90"
+           DISPLAY "Error: 3: " F1
+           END-DISPLAY
+        END-IF
+
+        GOBACK.
+])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 STRUCTURE.
+            05 FIELD1 PIC X(5).
+            05 FIELD2 PIC X(10).
+
+        PROCEDURE DIVISION.
+        MOVE "Hallo" TO FIELD1.
+        MOVE "1234567890" TO FIELD2.
+        
+        MOVE FIELD2 TO STRUCTURE.
+        IF FIELD1 not = "12345"
+           DISPLAY "Error: 1: " FIELD1
+           END-DISPLAY
+        END-IF        
+        IF FIELD2 not = "67890     "
+           DISPLAY "Error: 2: " FIELD2
+           END-DISPLAY
+        END-IF
+        
+        
+        MOVE "Hallo" TO FIELD1.
+        MOVE "1234567890" TO FIELD2.        
+
+        CALL "subprog" USING BY REFERENCE FIELD2 STRUCTURE 
+        END-CALL        
+
+        STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE subprog.cob], [0])
+AT_CHECK([$COMPILE prog.cob], [0], , [prog.cob: 15: Warning: Overlapping MOVE may produce unpredictable results
+])
+AT_CHECK([./prog], [0], [], [])
+
+AT_CLEANUP
+
+
 AT_SETUP([ALPHABETIC test])
 AT_KEYWORDS([fundamental])
 
