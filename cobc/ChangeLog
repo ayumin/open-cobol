@@ -1,3 +1,7 @@
+2014-05-26  Ron Norman <rjn@inglenet.com>
+
+	* typeck.c : use memmove for move of LINKAGE items
+
 2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* parser.* : Added extension "USE AT PROGRAM START/END" as
