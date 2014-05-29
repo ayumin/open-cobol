@@ -2115,14 +2115,13 @@ AT_DATA([prog.cob], [
 
         PROCEDURE DIVISION.
         
-        ENTRY 'par1'.
-        PARA1.
+        ENTRY 'ent1'.
         DISPLAY VAR1 END-DISPLAY
         GOBACK.
 
-        ENTRY 'par2'.
-        PARA2.
+        ENTRY 'ent2'.
         DISPLAY VAR2 END-DISPLAY
+        GOBACK.
 
         .
 ])
@@ -2134,19 +2133,18 @@ AT_DATA([prog1.cob], [
         DATA DIVISION.
         WORKING-STORAGE SECTION.
 
-        01 VAR1 PIC X(5) VALUE 'xxxxx'.
         01 VAR2 PIC X(2) VALUE '55'.
+        01 VAR3 PIC X(5) VALUE 'xxxxx'.
 
         PROCEDURE DIVISION.
-        
-        ENTRY 'par1'.
-        PARA1.
-        DISPLAY VAR1 END-DISPLAY
-        GOBACK.
 
-        ENTRY 'par2'.
-        PARA2.
+        ENTRY 'ent2'.
         DISPLAY VAR2 END-DISPLAY
+        GOBACK.
+        
+        ENTRY 'ent3'.
+        DISPLAY VAR3 END-DISPLAY
+        GOBACK.
 
         .
 ])
@@ -2158,23 +2156,23 @@ AT_DATA([main-prog.cob], [
         WORKING-STORAGE SECTION.
         PROCEDURE DIVISION.
 
-        CALL 'par1' END-CALL
-        CALL 'par2' END-CALL
+        CALL 'ent1' END-CALL
+        CALL 'ent2' END-CALL
+        CALL 'ent3' END-CALL
        
         stop run.
 ])
 
 AT_CHECK([$COMPILE_MODULE -std=default prog.cob], [0], , [prog.cob: 13: Warning: ENTRY is obsolete in GNU Cobol
-prog.cob: In paragraph 'PARA1':
-prog.cob: 18: Warning: ENTRY is obsolete in GNU Cobol
+prog.cob: 17: Warning: ENTRY is obsolete in GNU Cobol
 ])
 AT_CHECK([$COMPILE_MODULE -std=default prog1.cob], [0], , [prog1.cob: 13: Warning: ENTRY is obsolete in GNU Cobol
-prog1.cob: In paragraph 'PARA1':
-prog1.cob: 18: Warning: ENTRY is obsolete in GNU Cobol
+prog1.cob: 17: Warning: ENTRY is obsolete in GNU Cobol
 ])
-AT_CHECK([$COMPILE main-prog.cob], [0], , [])
+AT_CHECK([$COMPILE main-prog.cob], [0], [], [])
 AT_CHECK([export COB_PRE_LOAD=prog:prog1; ./main-prog], [0], [12abc
 11
+xxxxx
 ], [])
 
 AT_CLEANUP

@@ -453,7 +453,7 @@ cache_preload (const char *path)
 	struct struct_handle	*preptr;
 	lt_dlhandle		libhandle;
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__CYGWIN__)
 	struct struct_handle	*last_elem;
 	last_elem = NULL;
 #endif
@@ -463,7 +463,7 @@ cache_preload (const char *path)
 		if (!strcmp (path, preptr->path)) {
 			return 1;
 		}
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__CYGWIN__)
 		/* Save last element of preload list */
 		if (!preptr->next) last_elem = preptr;
 #endif
@@ -482,7 +482,7 @@ cache_preload (const char *path)
 	preptr->path = cob_strdup (path);
 	preptr->handle = libhandle;
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__CYGWIN__)
 	/*
 	 * Observation: dlopen (POSIX) and lt_dlopen (UNIX) are overloading
 	 * symbols with equal name. So if we load two libraries with equal
@@ -490,9 +490,9 @@ cache_preload (const char *path)
 	 * LoadLibrary (Win32) ignores any equal named symbol
 	 * if another library with this symbol was already loaded.
 	 *
-	 * In Windows and MinGW we need to load modules in the same order
-	 * as we save them to COB_PRE_LOAD due to issues if we have got
-	 * two modules with equal entry points.
+	 * In Windows (including MinGW/CYGWIN) we need to load modules
+	 * in the same order as we save them to COB_PRE_LOAD due to issues
+	 * if we have got two modules with equal entry points.
 	 */
 	if(last_elem) {
 		last_elem->next = preptr;
