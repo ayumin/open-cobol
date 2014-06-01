@@ -1,3 +1,7 @@
+2014-06-01  Sergey Kashyrin <ska@kiska.net>
+
+    * codegen.cpp : Workaround for MSVC bug: http://support.microsoft.com/kb/315481
+
 2014-02-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* codegen.cpp : Fixing #65 code generation for CALL USING
