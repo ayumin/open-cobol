@@ -2647,6 +2647,9 @@ output_initialize_literal(cb_tree x, cb_field * f,
 	}
 	int i = size / lsize;
 	i_counters[0] = 1;
+#ifdef _MSC_VER
+	str += output_indent("{");
+#endif
 	str += output_line("for(_i0 = 0; _i0 < %d; _i0++)", i);
 	str += output_indent("{");
 	str += output_prefix();
@@ -2656,6 +2659,9 @@ output_initialize_literal(cb_tree x, cb_field * f,
 	str += output_string(l->data, lsize, l->llit);
 	str += output(", %d);\n", lsize);
 	str += output_indent("}");
+#ifdef _MSC_VER
+	str += output_indent("}");
+#endif
 	int n = size % lsize;
 	if(n) {
 		str += output_prefix();
@@ -2768,6 +2774,9 @@ output_initialize_one(cb_initialize * p, cb_tree x)
 			/* Check for non-standard 01 OCCURS */
 			if(init_occurs) {
 				i_counters[0] = 1;
+#ifdef _MSC_VER
+				str += output_indent("{");
+#endif
 				str += output_line("for(_i0 = 1; _i0 <= %d; _i0++)",
 								   f->occurs_max);
 				str += output_indent("{");
@@ -2777,6 +2786,9 @@ output_initialize_one(cb_initialize * p, cb_tree x)
 				CB_REFERENCE(x)->subs =
 					CB_CHAIN(CB_REFERENCE(x)->subs);
 				str += output_indent("}");
+#ifdef _MSC_VER
+				str += output_indent("}");
+#endif
 			} else {
 				str += output_move(value, x);
 			}
@@ -2991,6 +3003,9 @@ output_initialize_compound(cb_initialize * p, cb_tree x)
 				/* Begin occurs loop */
 				int i = f->indexes;
 				i_counters[i] = 1;
+#ifdef _MSC_VER
+				str += output_indent("{");
+#endif
 				str += output_line("for(_i%d = 1; _i%d <= %d; _i%d++)",
 								   i, i, f->occurs_max, i);
 				str += output_indent("{");
@@ -3008,6 +3023,9 @@ output_initialize_compound(cb_initialize * p, cb_tree x)
 				/* Close loop */
 				CB_REFERENCE(c)->subs = CB_CHAIN(CB_REFERENCE(c)->subs);
 				str += output_indent("}");
+#ifdef _MSC_VER
+				str += output_indent("}");
+#endif
 			}
 		}
 	}
@@ -3038,6 +3056,9 @@ output_initialize(cb_initialize * p)
 			/* Fall through */
 		case INITIALIZE_COMPOUND:
 			i_counters[0] = 1;
+#ifdef _MSC_VER
+			str += output_indent("{");
+#endif
 			str += output_line("for(_i0 = 1; _i0 <= %d; _i0++)", f->occurs_max);
 			str += output_indent("{");
 			x = cb_build_field_reference(f, NULL);
@@ -3047,6 +3068,9 @@ output_initialize(cb_initialize * p)
 			CB_REFERENCE(x)->subs =
 				CB_CHAIN(CB_REFERENCE(x)->subs);
 			str += output_indent("}");
+#ifdef _MSC_VER
+			str += output_indent("}");
+#endif
 			return str;
 		default:
 			break;
@@ -3104,6 +3128,9 @@ output_search_whens(cb_tree table, cb_tree var, cb_tree stmt, cb_tree whens)
 	}
 
 	/* Start loop */
+#ifdef _MSC_VER
+	str += output_line("{");
+#endif
 	str += output_line("for(;;) {");
 	output_indent_level += 2;
 
@@ -3138,6 +3165,9 @@ output_search_whens(cb_tree table, cb_tree var, cb_tree stmt, cb_tree whens)
 	/* End loop */
 	output_indent_level -= 2;
 	str += output_line("}");
+#ifdef _MSC_VER
+	str += output_line("}");
+#endif
 	return str;
 }
 
@@ -3156,6 +3186,9 @@ output_search_all(cb_tree table, cb_tree stmt, cb_tree cond, cb_tree when)
 	str += output(" + 1;\n");
 
 	/* Start loop */
+#ifdef _MSC_VER
+	str += output_indent("{");
+#endif
 	str += output_line("for(;;)");
 	str += output_indent("{");
 
@@ -3198,6 +3231,9 @@ output_search_all(cb_tree table, cb_tree stmt, cb_tree cond, cb_tree when)
 	str += output(";\n");
 	str += output_indent("}");
 	str += output_indent("}");
+#ifdef _MSC_VER
+	str += output_indent("}");
+#endif
 	return str;
 }
 
@@ -4364,6 +4400,9 @@ output_perform_until(cb_perform * p, cb_tree l)
 	cb_perform_varying * v = CB_PERFORM_VARYING(CB_VALUE(l));
 	cb_tree next = CB_CHAIN(l);
 
+#ifdef _MSC_VER
+	str += output_indent("{");
+#endif
 	str += output_line("for(;;)");
 	str += output_indent("{");
 
@@ -4409,6 +4448,9 @@ output_perform_until(cb_perform * p, cb_tree l)
 	}
 
 	str += output_indent("}");
+#ifdef _MSC_VER
+	str += output_indent("}");
+#endif
 	return str;
 }
 
@@ -4428,6 +4470,9 @@ output_perform(cb_perform * p)
 		str += output_perform_once(p);
 		break;
 	case CB_PERFORM_TIMES:
+#ifdef _MSC_VER
+		str += output_indent("{");
+#endif
 		str += output_prefix();
 		str += output("for(_n%d = ", loop_counter);
 		str += output_param(cb_build_cast_llint(p->data), 0);
@@ -4436,6 +4481,9 @@ output_perform(cb_perform * p)
 		str += output_indent("{");
 		str += output_perform_once(p);
 		str += output_indent("}");
+#ifdef _MSC_VER
+		str += output_indent("}");
+#endif
 		break;
 	case CB_PERFORM_UNTIL:
 		v = CB_PERFORM_VARYING(CB_VALUE(p->varying));
@@ -4458,11 +4506,17 @@ output_perform(cb_perform * p)
 		str += output_perform_until(p, p->varying);
 		break;
 	case CB_PERFORM_FOREVER:
+#ifdef _MSC_VER
+		str += output_indent("{");
+#endif
 		str += output_prefix();
 		str += output("for(;;)\n");
 		str += output_indent("{");
 		str += output_perform_once(p);
 		str += output_indent("}");
+#ifdef _MSC_VER
+		str += output_indent("}");
+#endif
 		break;
 	default:
 		break;
