@@ -41,7 +41,11 @@
 #define COB_ALIGN ""
 #endif
 
+#ifndef __clang__
 #define COB_USE_SETJMP		0
+#else
+#define COB_USE_SETJMP		1
+#endif
 #define COB_MAX_SUBSCRIPTS	16
 
 #define INITIALIZE_NONE		0
