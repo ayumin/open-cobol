@@ -284,7 +284,11 @@ static struct filename	*file_list;
 
 /* NOTE fcopts MUST have at least one leading space */
 #if defined (__GNUC__) && (__GNUC__ >= 3)
+#if !defined (__clang__)
 static const char fcopts[] = " -finline-functions -fno-gcse -freorder-blocks ";
+#else
+static const char fcopts[] = " -finline-functions -freorder-blocks ";
+#endif
 #elif defined(__xlc__)
 static const char fcopts[] = " -Q -qro -qroconst ";
 #else
