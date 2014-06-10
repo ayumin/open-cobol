@@ -736,7 +736,7 @@ report_line(cob_report *r, cob_report_line *l)
 				cob_field_to_string(rf->f, wrk, sizeof(wrk)-1);
 				memcpy(&rec[rf->column-1], wrk, strlen(wrk));
 			}
-			if((rf->flags && COB_REPORT_GROUP_INDICATE)) {	/* Suppress subsequent printings */
+			if((rf->flags & COB_REPORT_GROUP_INDICATE)) {	/* Suppress subsequent printings */
 				rf->group_indicate = TRUE;
 			}
 		}
