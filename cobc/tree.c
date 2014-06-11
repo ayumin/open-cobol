@@ -864,6 +864,11 @@ cb_get_int (const cb_tree x)
 	size_t			i;
 	int			val;
 
+	if(x == cb_int1)	return 1;
+	if(x == cb_int2)	return 2;
+	if(x == cb_int3)	return 3;
+	if(x == cb_int4)	return 4;
+	if(x == cb_int5)	return 5;
 	if (!CB_LITERAL_P (x)) {
 		cobc_abort_pr (_("Invalid literal cast - Aborting"));
 		COBC_ABORT ();

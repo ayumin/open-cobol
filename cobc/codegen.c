@@ -5683,6 +5683,8 @@ output_report_data (struct cb_field *p)
 			p->report_column = report_col_pos + p->report_column;
 			p->report_flag &= ~COB_REPORT_COLUMN_PLUS;
 		}
+		else if(p->report_column <= 0)	/* No COLUMN was given */
+			p->report_column = 1;
 		report_col_pos = p->report_column + p->size;
 		if(!(p->report_flag & COB_REPORT_REF_EMITED)) {
 			p->report_flag |= COB_REPORT_REF_EMITED;
@@ -5917,8 +5919,10 @@ output_report_def_fields (int bgn, int id, struct cb_field *f, struct cb_report 
 	} else {
 		output_local("NULL,0,");	
 	}
+	if(f->report_column <= 0)	/* No COLUMN was given */
+		f->report_column = 1;
 	output_local("%d,%d,%d,%d,%d",f->report_flag&~COB_REPORT_EMITED,
-					f->report_line, f->report_column,
+					f->report_line,f->report_column,
 					f->step_count,f->next_group_line);
 	output_local ("};\n");
 }
@@ -6016,10 +6020,14 @@ output_report_define_lines (int top, struct cb_field *f, struct cb_report *r)
 		}
 	}
 	output_local ("static cob_report_line  %s%d\t= {", CB_PREFIX_REPORT_LINE,f->id);
-	if(n == NULL)
+	if(n == NULL) {
 		output_local("NULL,");
-	else
+	} else if(n->level > 1
+	&& !(n->report_flag & COB_REPORT_LINE)) {
+		output_local("NULL, ");
+	} else {
 		output_local("&%s%d,",CB_PREFIX_REPORT_LINE,n->id);
+	}
 	if(c == NULL)
 		output_local("NULL,");
 	else
