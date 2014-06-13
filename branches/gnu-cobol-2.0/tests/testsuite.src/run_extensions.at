@@ -2752,6 +2752,194 @@ AT_CHECK([./prog5 --static], [1], [], [prog5.cob: 35: libcob: Call to CBL_OC_GET
 AT_CLEANUP
 
 
+AT_SETUP([System routine CBL_COPY_FILE])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE DIVISION.
+        DISPLAY "test" END-DISPLAY
+        STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 FILE1 PIC X(8) VALUE 'prog.cob'.
+        01 FILE2 PIC X(9) VALUE 'prog3.cob'.
+        
+        PROCEDURE DIVISION.
+        CALL 'CBL_COPY_FILE' USING 
+        FILE1 FILE2
+        END-CALL
+        STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog2.cob], [0], [], [])
+AT_CHECK([./prog2], [0], [], [])
+AT_CHECK([diff prog.cob prog3.cob], [0], [], [])
+
+AT_CLEANUP
+
+AT_SETUP([System routines for directories])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 DIR PIC X(4) VALUE 'ABCD'.
+        
+        PROCEDURE DIVISION.
+        CALL 'CBL_CREATE_DIR' USING DIR END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error creating dir ...' END-DISPLAY
+        END-IF
+
+        CALL 'CBL_CHANGE_DIR' USING DIR END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error changing dir ...' END-DISPLAY
+        END-IF
+
+        CALL 'CBL_CHANGE_DIR' USING '..' END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error changing dir up ...' END-DISPLAY
+        END-IF
+
+        CALL 'CBL_DELETE_DIR' USING DIR END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error deleting dir' END-DISPLAY
+        END-IF
+        
+        STOP RUN.
+])
+
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([./prog], [0], [], [])
+AT_CHECK([ls abcd], [2], [], [ls: abcd: No such file or directory
+])
+
+AT_CLEANUP
+
+AT_SETUP([System routines for files])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 FNAME PIC X(256) VALUE 'testtext.txt'.
+        01 ACCESS-MODE PIC X USAGE COMP-X VALUE 2.
+        01 HANDLE PIC X(4) USAGE COMP-X.
+        
+        01 OFFSET PIC X(8) USAGE COMP-X.
+        01 NBYTES PIC X(4) USAGE COMP-X.
+        01 WRITE-BUFFER PIC X(20).
+        
+        PROCEDURE DIVISION.
+        CALL 'CBL_CREATE_FILE' USING 
+        FNAME 55 11 22 HANDLE 
+        END-CALL
+        IF RETURN-CODE NOT = -1
+            DISPLAY 'Wrong return codes ...' END-DISPLAY
+        END-IF
+        
+        CALL 'CBL_CREATE_FILE' USING 
+        FNAME ACCESS-MODE 0 0 HANDLE 
+        END-CALL        
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error creating file ...' END-DISPLAY
+        END-IF
+        
+        MOVE 'TestText.ABCD' TO WRITE-BUFFER.
+        MOVE 0 TO OFFSET.
+        MOVE 9 TO NBYTES.
+
+        CALL 'CBL_WRITE_FILE' USING 
+        HANDLE OFFSET NBYTES '0' WRITE-BUFFER
+        END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error writing file ...' END-DISPLAY
+        END-IF
+        
+        CALL 'CBL_FLUSH_FILE' USING HANDLE END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error flushing file ...' END-DISPLAY
+        END-IF        
+        
+        STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 FNAME PIC X(256) VALUE 'testtext.txt'.
+        01 RET PIC -9.
+        01 HANDLE PIC X(4) USAGE COMP-X.
+        
+        01 OFFSET PIC X(8) USAGE COMP-X.
+        01 NBYTES PIC X(4) USAGE COMP-X.
+        01 READ-BUFFER PIC X(10).
+        
+        PROCEDURE DIVISION.
+        CALL 'CBL_OPEN_FILE' USING
+        FNAME 1 0 0 HANDLE
+        END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error opening file ...' END-DISPLAY
+        END-IF
+        
+        MOVE SPACES TO READ-BUFFER.
+        MOVE 2 TO OFFSET.
+        MOVE 9 TO NBYTES.
+        
+        CALL 'CBL_READ_FILE' USING
+        HANDLE OFFSET NBYTES 0 READ-BUFFER
+        END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error reading file ...' END-DISPLAY
+        END-IF        
+        IF READ-BUFFER NOT = 'stText.'
+            DISPLAY 'Wrong readbuffer ...' END-DISPLAY
+        END-IF
+        
+        CALL 'CBL_CLOSE_FILE' USING HANDLE END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error closing file ...' END-DISPLAY
+        END-IF 
+        
+        CALL 'CBL_RENAME_FILE' USING FNAME 'foo.txt' END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error renaming file ...' END-DISPLAY
+        END-IF                               
+                
+        CALL 'CBL_DELETE_FILE' USING 'foo.txt' END-CALL
+        IF RETURN-CODE NOT = 0
+            DISPLAY 'Error deleting file ...' END-DISPLAY
+        END-IF                
+        
+        STOP RUN.
+])
+
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([$COMPILE prog2.cob], [0], [], [])
+AT_CHECK([./prog], [0], [], [WARNING - Call to CBL_CREATE_FILE with wrong file_lock: 11
+WARNING - Call to CBL_CREATE_FILE with wrong file_dev: 22
+WARNING - Call to CBL_OPEN_FILE with wrong access mode: 55
+])
+AT_CHECK([./prog2], [0], [], [])
+
+AT_CLEANUP
+
+
 AT_SETUP([Conditional/define directives (1)])
 AT_KEYWORDS([extensions])
 

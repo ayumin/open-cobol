@@ -511,8 +511,8 @@ cache_preload (const char *path)
 		cob_preload_resolved = cob_strdup(path);
 	}
 	else {
-		cob_preload_resolved = cob_strcat((char*) PATHSEPS, cob_strdup(cob_preload_resolved));
-		cob_preload_resolved = cob_strcat((char*) path, cob_strdup(cob_preload_resolved));
+		cob_preload_resolved = cob_strcat((char*) PATHSEPS, cob_preload_resolved);
+		cob_preload_resolved = cob_strcat((char*) path, cob_preload_resolved);
 	}
 
 	return 1;

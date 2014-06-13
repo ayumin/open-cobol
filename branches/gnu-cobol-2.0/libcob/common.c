@@ -3761,14 +3761,30 @@ cob_int_to_formatted_bytestring(int i, char* number) {
 
 char*
 cob_strcat(char* str1, char* str2) {
-	size_t l = strlen(str1) + strlen(str2) + 1;
+	size_t l;
+	char *temp1, *temp2;
 
-	if(!strbuff || strlen(strbuff) != l) {
-		free(strbuff);
-		strbuff = (char*) cob_fast_malloc(l);
+	l = strlen(str1) + strlen(str2) + 1;
+
+	/*
+	 * If one of the parameter is the buffer itself,
+	 * we copy the buffer before continuing.
+	 */
+	if (str1 == strbuff) {
+		temp1 = cob_strdup(str1);
+	} else {
+		temp1 = str1;
+	}
+	if (str2 == strbuff) {
+		temp2 = cob_strdup(str2);
+	} else {
+		temp2 = str2;
 	}
 
-	sprintf(strbuff, "%s%s", str1, str2);
+	free(strbuff);
+	strbuff = (char*) cob_fast_malloc(l);
+
+	sprintf(strbuff, "%s%s", temp1, temp2);
 	return strbuff;
 }
 
@@ -3782,8 +3798,8 @@ cob_strjoin(char** strarray, int size, char* separator) {
 
 	result = strarray[0];
 	for (i = 1; i < size; i++) {
-		result = cob_strcat(cob_strdup(result), separator);
-		result = cob_strcat(cob_strdup(result), strarray[i]);
+		result = cob_strcat(result, separator);
+		result = cob_strcat(result, strarray[i]);
 	}
 
 	return result;
@@ -3804,8 +3820,8 @@ static void var_print(const char *msg, const char *val, const char *default_val,
 	char	*p;
 	char	*token;
 	size_t	n;
-	size_t	lablen;
-	size_t	toklen;
+	int	lablen;
+	int	toklen;
 
 	switch (format) {
 	case 0:
@@ -4285,14 +4301,13 @@ cob_init (const int argc, char **argv)
 	}
 
 	/* Disable runtime warnings */
+	cobglobptr->cob_display_warn = 1;
 	s = getenv ("COB_DISABLE_WARNINGS");
 	if (s) {
 		runtimeptr->cob_display_warn_env = cob_save_env_value(runtimeptr->cob_display_warn_env, s);
 
 		if (cob_check_env_true(s)) {
 			cobglobptr->cob_display_warn = 0;
-		} else {
-			cobglobptr->cob_display_warn = 1;
 		}
 	}
 

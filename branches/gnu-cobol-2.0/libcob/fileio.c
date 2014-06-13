@@ -5026,6 +5026,11 @@ open_cbl_file (unsigned char *file_name, unsigned char *file_access,
 			flag |= O_RDWR;
 			break;
 		default:
+			if (cobglobptr->cob_display_warn) {
+				fprintf (stderr, _("WARNING - Call to CBL_OPEN_FILE with wrong access mode: %d"), *file_access & 0x3F);
+				putc ('\n', stderr);
+				fflush (stderr);
+			}
 			memset (file_handle, -1, (size_t)4);
 			return -1;
 	}
@@ -5059,8 +5064,22 @@ cob_sys_create_file (unsigned char *file_name, unsigned char *file_access,
 		     unsigned char *file_lock, unsigned char *file_dev,
 		     unsigned char *file_handle)
 {
-	COB_UNUSED (file_lock);
-	COB_UNUSED (file_dev);
+	/*
+	 * @param: file_access : 1 (read-only), 2 (write-only), 3 (both)
+	 * @param: file_lock : not implemented, set 0
+	 * @param: file_dev : not implemented, set 0
+	 */
+
+	if (*file_lock != 0 && cobglobptr->cob_display_warn) {
+		fprintf (stderr, _("WARNING - Call to CBL_CREATE_FILE with wrong file_lock: %d"), *file_lock);
+		putc ('\n', stderr);
+		fflush (stderr);
+	}
+	if (*file_dev != 0 && cobglobptr->cob_display_warn) {
+		fprintf (stderr, _("WARNING - Call to CBL_CREATE_FILE with wrong file_dev: %d"), *file_dev);
+		putc ('\n', stderr);
+		fflush (stderr);
+	}
 
 	COB_CHK_PARMS (CBL_CREATE_FILE, 5);
 
