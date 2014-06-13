@@ -230,8 +230,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@COB_MAKE_IX_FALSE@MODULES = NC SM IC SQ RL ST SG OB IF RW DBNOIX
-@COB_MAKE_IX_TRUE@MODULES = NC SM IC SQ RL IX ST SG OB IF RW DB
+@COB_MAKE_IX_FALSE@MODULES = NC SM IC SQ RL ST SG OB IF DBNOIX
+@COB_MAKE_IX_TRUE@MODULES = NC SM IC SQ RL IX ST SG OB IF DB
 
 #
 EXTRA_DIST = EXEC85.conf.in expand.pl report.pl summary.pl summary.txt \

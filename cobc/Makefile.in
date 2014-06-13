@@ -790,7 +790,7 @@ uninstall-am: uninstall-binPROGRAMS
 	LC_CTYPE=C flex -s -o$@ $<
 
 .y.c:
-	bison -o $@ $<
+	bison -g -o $@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

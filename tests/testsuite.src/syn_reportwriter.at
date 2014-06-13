@@ -136,3 +136,55 @@ prog.cob: 41: Error: 'SOME-REPORT' is not a report name
 ])
 
 AT_CLEANUP
+
+
+AT_SETUP([REPORT not positive integers in COL / LINE [PLUS]])
+AT_KEYWORDS([report])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT out-file ASSIGN "blah.txt"
+           ORGANIZATION LINE SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  out-file REPORT rp.
+
+       REPORT SECTION.
+       RD  rp.
+       01  rp-head TYPE PH.
+          02  LINE 1, COL 0 VALUE "Hello!".
+          02  LINE 2, COL 2 VALUE "Hello!".
+          02  LINE PLUS 0.
+              03 COLUMN 01      PIC X(09) VALUE 'CUST. NO.'.
+              03 COLUMN PLUS 0  PIC X(09) VALUE 'ITEM'.
+          02  LINE PLUS zero.
+              03 COLUMN 1.5     PIC X(09) VALUE 'CUST. NO.'.
+              03 COLUMN + -10   PIC X(09) VALUE 'ITEM'.
+
+
+       PROCEDURE DIVISION.
+           OPEN OUTPUT out-file
+           INITIATE rp
+           GENERATE rp-detail
+           TERMINATE rp
+           CLOSE out-file
+           STOP RUN.
+])
+
+# Check for correct compile and a warning
+AT_CHECK([$COMPILE_ONLY -std=mf prog.cob], [1], ,
+[prog.cob: 18: Error: Invalid integer
+prog.cob: 24: Error: syntax error, unexpected Identifier, expecting GLOBAL
+prog.cob: 25: Error: syntax error, unexpected Identifier, expecting GLOBAL
+prog.cob: 28: Error: syntax error, unexpected PROCEDURE, expecting GLOBAL
+prog.cob: 29: Error: syntax error, unexpected OPEN, expecting GLOBAL
+prog.cob: 35: Error: syntax error, unexpected end of file, expecting GLOBAL
+])
+
+AT_CLEANUP
