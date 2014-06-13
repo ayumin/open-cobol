@@ -77,10 +77,10 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            .
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_PRINTOUT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -116,6 +116,7 @@ RF
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([REPORT COL PLUS])
 AT_KEYWORDS([report])
@@ -159,10 +160,10 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            .
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_PRINTOUT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -186,6 +187,7 @@ AT_DATA([reference], [
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([REPORT BUG3])
 AT_KEYWORDS([report])
@@ -229,10 +231,10 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            .
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_PRINTOUT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -256,6 +258,7 @@ AT_DATA([reference], [
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([EMPTY REPORT])
 AT_KEYWORDS([report])
@@ -311,10 +314,10 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            .
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_PRINTOUT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -325,11 +328,12 @@ AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([PAGE LIMIT REPORT])
 AT_KEYWORDS([report])
 
-AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
-       PROGRAM-ID.      prog.
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
        PROGRAM-ID.      prog.
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
@@ -356,25 +360,78 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
          03    COL +1            PIC X(6) VALUE "<--->".
 
        PROCEDURE DIVISION.
-           OPEN OUTPUT report-file
-           INITIATE rp
+           OPEN OUTPUT report-file.
+           INITIATE rp.
 
-           MOVE "hello" TO foo
-            GENERATE rp-detail
+           MOVE "hello" TO foo.
+           GENERATE rp-detail
 
-           MOVE "goodbye" TO foo
-            GENERATE rp-detail
+           MOVE "goodbye" TO foo.
+           GENERATE rp-detail.
 
-           TERMINATE rp
-             CLOSE report-file
-            .
-           END PROGRAM paglim.
+           TERMINATE rp.
+           CLOSE report-file.
+           
+           STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_DATA([prog2.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT report-file ASSIGN EXTERNAL PRINTOUT
+            ORGANIZATION LINE SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  report-file REPORT rp.
+
+       WORKING-STORAGE SECTION.
+       01  foo  PIC X(20).
+
+       REPORT SECTION.
+       RD  rp PAGE LIMIT 3 LINES.
+
+       01  rp-detail TYPE DE.
+         02  LINE +1.
+         03            COL 1; SOURCE foo, PIC X(30).
+      *  03  LINE + 1, COL 1; SOURCE foo, PIC X(30).
+      *  03  LINE + 1         SOURCE foo, PIC X(30).
+      *  03  LINE + 1 SOURCE foo, PIC X(30).
+         03    COL +1            PIC X(6) VALUE "<--->".
+
+       PROCEDURE DIVISION.
+           OPEN OUTPUT report-file.
+           INITIATE rp.
+
+           MOVE "hello" TO foo.
+           GENERATE rp-detail.
+
+           MOVE "world" TO foo.
+           GENERATE rp-detail.
+
+           MOVE "from" TO foo.
+           GENERATE rp-detail.
+
+           MOVE "REPORT WRITER" TO foo.
+           GENERATE rp-detail.
+
+           MOVE "goodbye" TO foo.
+           GENERATE rp-detail.
+
+           TERMINATE rp
+           CLOSE report-file.
+           
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [])
+AT_CHECK([$COMPILE -std=mf prog2.cob],  [0], [], [])
 
 AT_CHECK([export DD_PRINTOUT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -388,7 +445,27 @@ goodbye                        <--->
 
 AT_CHECK([diff reference report.txt], [0])
 
+
+AT_CHECK([export DD_PRINTOUT=./report2.txt
+./prog2], [0], [], [])
+
+
+AT_CAPTURE_FILE(./report2.txt)
+
+AT_DATA([reference], [hello                          <--->
+world                          <--->
+from                           <--->
+REPORT WRITER                  <--->
+goodbye                        <--->
+
+
+
+])
+
+AT_CHECK([diff reference report2.txt], [0])
+
 AT_CLEANUP
+
 
 AT_SETUP([Customer Report])
 AT_KEYWORDS([report])
@@ -564,7 +641,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 44: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -572,7 +649,7 @@ prog.cob: 44: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -716,6 +793,7 @@ CUST. NO.     CUST. NAME     DEPT.    ITEM NO.    ITEM COST
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Charge Report])
 AT_KEYWORDS([report])
@@ -929,7 +1007,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 26: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 27: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -937,7 +1015,7 @@ prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -1081,6 +1159,7 @@ CUST. NO.     CUST. NAME     DEPT.    ITEM NO.    ITEM COST    DISCT. %    DISCT
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Charge Report 2])
 AT_KEYWORDS([report])
@@ -1311,7 +1390,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 26: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 27: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -1319,7 +1398,7 @@ prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -1463,6 +1542,7 @@ CUST. NO.     CUST. NAME     DEPT.    ITEM NO.    ITEM COST    DISCT. %    DISCT
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Charge Report 3])
 AT_KEYWORDS([report])
@@ -1688,7 +1768,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 31: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 31: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 33: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 34: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 51: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -1696,7 +1776,7 @@ prog.cob: 51: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -1774,6 +1854,7 @@ CUST. NO.     CUST. NAME                          ITEM COST                DISCT
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Charge Report 4])
 AT_KEYWORDS([report])
@@ -2050,7 +2131,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 39: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -2061,7 +2142,7 @@ prog.cob: 126: Warning: Ignoring sign
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -2205,6 +2286,7 @@ AT_DATA([reference], [                          D I S T R I C T   S A L E S   R 
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Payroll Report])
 AT_KEYWORDS([report])
@@ -2771,7 +2853,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 29: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 29: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 31: Warning: RECORD clause ignored for LINE SEQUENTIAL
 prog.cob: 32: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
 prog.cob: 62: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
@@ -2779,7 +2861,7 @@ prog.cob: 62: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 
 AT_CHECK([export DD_DATAIN=./inp_data
 export DD_SYSPRINT=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -2878,6 +2960,7 @@ AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([STUDENT REPORT])
 AT_KEYWORDS([report])
 
@@ -2969,7 +3052,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
 
        PROCEDURE DIVISION.
        A000-MAINLINE.
-           DISPLAY "Report Test 1 " UPON CONSOLE.
+           DISPLAY "Report Test 1" UPON CONSOLE.
            OPEN  INPUT  INPUT-FILE
                  OUTPUT PRINT-FILE
            MOVE SPACES TO REPORT-DUMMY.
@@ -2977,8 +3060,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            MOVE "Hello" TO COLUMN-15.
            MOVE "Bye" TO COLUMN-40.
            MOVE 75 TO COLUMN-46.
-           MOVE REPORT-DUMMY (2:47) TO REPORT-DUMMY.
-           DISPLAY REPORT-DUMMY UPON CONSOLE.
+           DISPLAY REPORT-DUMMY (2:47) UPON CONSOLE.
            PERFORM DO-INIT.
            READ INPUT-FILE
                AT END
@@ -3002,13 +3084,13 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
            TERMINATE STUDENT-REPORT.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
 ])
 
 AT_CHECK([export DD_STUDENT=./inp_data
 export DD_REPORT1=./report.txt
-./prog], [0], [Report Test 1 
-  000005     Hello                    Bye     7    
+./prog], [0], [Report Test 1
+  000005     Hello                    Bye     7
 ], [])
 
 
@@ -3071,6 +3153,7 @@ AT_DATA([reference], [
 AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([ORDER REPORT])
 AT_KEYWORDS([report])
@@ -3288,7 +3371,7 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
                     MOVE 'NO' TO ARE-THERE-MORE-RECORDS.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
 ])
 
 AT_CHECK([export DD_CUSTORD=./inp_data
@@ -3418,6 +3501,7 @@ AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([Control Break Report])
 AT_KEYWORDS([report])
 
@@ -3545,11 +3629,11 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
                     MOVE 'NO ' TO ARE-THERE-MORE-RECORDS.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_STUDREC=./inp_data
 export DD_REPORT3=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
@@ -3662,6 +3746,7 @@ AT_CHECK([diff reference report.txt], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([Inventory Report])
 AT_KEYWORDS([report])
 
@@ -3758,11 +3843,11 @@ AT_DATA([prog.cob], [       IDENTIFICATION DIVISION.
        
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob],  [0], , [])
+AT_CHECK([$COMPILE -std=mf prog.cob],  [0], [], [])
 
 AT_CHECK([export DD_INVFILE=./inp_data
 export DD_REPORT4=./report.txt
-./prog], [0], , [])
+./prog], [0], [], [])
 
 
 AT_CAPTURE_FILE(./report.txt)
