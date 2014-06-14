@@ -1,3 +1,6 @@
+2014-06-14  Ron Norman (rjn@inglenet.com)
+	* Fixes for LINE|COL 0 to get error message
+
 2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
 	* cobc.c : Tweaked --info for showing current settings (environment) along

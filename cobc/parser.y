@@ -4919,7 +4919,7 @@ col_keyword_clause:
 ;
 
 col_or_plus:
-  PLUS integer
+  PLUS report_integer 
   {
 	current_field->report_column = cb_get_int ($2);
 	current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
