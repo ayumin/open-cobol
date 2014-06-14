@@ -180,6 +180,9 @@ AT_DATA([prog.cob], [
 # Check for correct compile and a warning
 AT_CHECK([$COMPILE_ONLY -std=mf prog.cob], [1], ,
 [prog.cob: 18: Error: Invalid integer
+prog.cob: 20: Error: Invalid integer
+prog.cob: 22: Error: Invalid integer
+prog.cob: 23: Error: syntax error, unexpected ZERO, expecting Literal
 prog.cob: 24: Error: syntax error, unexpected Identifier, expecting GLOBAL
 prog.cob: 25: Error: syntax error, unexpected Identifier, expecting GLOBAL
 prog.cob: 28: Error: syntax error, unexpected PROCEDURE, expecting GLOBAL
