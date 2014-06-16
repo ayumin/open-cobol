@@ -4870,14 +4870,15 @@ line_keyword_clause:
 
 line_clause_options:
   line_clause_integer 
-| PLUS line_clause_integer
+| PLUS_KEYWORD line_clause_integer
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
   }
-| TOK_PLUS line_clause_integer
-  {
-	current_field->report_flag |= COB_REPORT_LINE_PLUS;
-  }
+;
+
+PLUS_KEYWORD:
+  PLUS
+| TOK_PLUS
 ;
 
 number_is:
@@ -4919,7 +4920,7 @@ col_keyword_clause:
 ;
 
 col_or_plus:
-  PLUS report_integer 
+  PLUS_KEYWORD report_integer 
   {
 	current_field->report_column = cb_get_int ($2);
 	current_field->report_flag |= COB_REPORT_COLUMN_PLUS;

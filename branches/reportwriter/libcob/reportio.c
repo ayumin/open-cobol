@@ -19,7 +19,7 @@
 
 /*************************************************************************
  * This module and Report Writer code added by Ron Norman, November 2013 *
- * including parts of sources found in cobc/*                            *
+ * including parts of sources found in cobc                              *
  ************************************************************************/
 
 #include "config.h"
