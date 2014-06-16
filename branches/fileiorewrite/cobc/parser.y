@@ -147,6 +147,7 @@ static struct cb_field		*description_field;
 static struct cb_file		*current_file;
 static struct cb_report		*current_report;
 static struct cb_report		*report_instance;
+static struct cb_key_component  *key_component_list;
 
 static struct cb_file		*linage_file;
 static cb_tree			next_label_list;
@@ -2694,14 +2695,21 @@ access_mode:
 /* ALTERNATIVE RECORD KEY clause */
 
 alternative_record_key_clause:
-  ALTERNATE _record _key _is opt_splitk flag_duplicates
+  ALTERNATE RECORD _key _is reference flag_duplicates suppress_clause
   {
 	struct cb_alt_key *p;
 	struct cb_alt_key *l;
 
 	p = cobc_parse_malloc (sizeof (struct cb_alt_key));
 	p->key = $5;
+	p->component_list = NULL;
 	p->duplicates = CB_INTEGER ($6)->val;
+	if (CB_INTEGER ($7)->val == -1) {
+		p->tf_suppress = 0;
+	} else {
+		p->tf_suppress = 1;
+		p->char_suppress = CB_INTEGER ($7)->val;
+	}
 	p->next = NULL;
 
 	/* Add to the end of list */
@@ -2715,7 +2723,85 @@ alternative_record_key_clause:
 		l->next = p;
 	}
   }
+|
+  ALTERNATE RECORD _key _is reference '=' split_key_list flag_duplicates suppress_clause
+  {
+	struct cb_alt_key *p;
+	struct cb_alt_key *l;
+	cb_tree composite_key;
+
+	p = cobc_malloc (sizeof (struct cb_alt_key));
+	// generate field (in w-s) for composite-key
+	composite_key = cb_build_field($5);
+	if (composite_key == cb_error_node) {
+		YYERROR;
+	} else {
+		composite_key->category = CB_CATEGORY_ALPHANUMERIC; 
+		((struct cb_field *)composite_key)->count = 1;
+		p->key = cb_build_field_reference((struct cb_field *)composite_key, NULL);
+		p->component_list = key_component_list;
+		p->duplicates = CB_INTEGER ($8)->val;
+		if (CB_INTEGER ($9)->val == -1) {
+			p->tf_suppress = 0;
+		} else {
+			p->tf_suppress = 1;
+			p->char_suppress = CB_INTEGER ($9)->val;
+ 		}
+		p->next = NULL;
+
+		/* add to the end of list */
+		if (current_file->alt_key_list == NULL) {
+			current_file->alt_key_list = p;
+		} else {
+			l = current_file->alt_key_list;
+			for (; l->next; l = l->next);
+			l->next = p;
+		}
+	}
+  }
 ;
+
+
+
+split_key_list:
+  {
+    key_component_list = NULL;
+  }
+  split_key
+| split_key_list split_key
+;
+
+
+
+split_key:
+  reference
+  {
+    struct cb_key_component *c;
+    struct cb_key_component *comp = cobc_malloc(sizeof(struct cb_key_component));
+    comp->next = NULL;
+    comp->component = $1;
+    if (key_component_list == NULL) {
+       key_component_list = comp;
+    } else {
+       for (c = key_component_list; c->next != NULL; c = c->next);
+       c->next = comp;
+    }
+  }
+;
+
+suppress_clause:
+  /* empty */                   { $$ = cb_int (-1); }
+|
+  SUPPRESS WHEN ALL simple_value
+  {
+     if (cb_verify (cb_use_sparse_indexed_keys, "SUPPRESS WHEN")) {
+        $$ = cb_int (literal_value ($4));
+     } else {
+        $$ = cb_int (-1);
+     }
+  }
+;
+
 
 
 /* COLLATING SEQUENCE clause */
@@ -2841,18 +2927,13 @@ record_delimiter_clause:
 /* RECORD KEY clause */
 
 record_key_clause:
-  RECORD _key _is opt_splitk
+  RECORD _key _is reference
   {
 	check_repeated ("RECORD KEY", SYN_CLAUSE_9);
 	current_file->key = $4;
   }
 ;
 
-opt_splitk:
-  reference				{ $$ = $1; }
-| reference TOK_EQUAL reference_list	{ PENDING ("SPLIT KEYS"); }
-| reference SOURCE _is reference_list	{ PENDING ("SPLIT KEYS"); }
-;
 
 /* RELATIVE KEY clause */
 
@@ -2885,14 +2966,13 @@ sharing_clause:
   SHARING _with sharing_option
   {
 	check_repeated ("SHARING", SYN_CLAUSE_12);
-	current_file->sharing = $3;
   }
 ;
 
 sharing_option:
-  ALL _other			{ $$ = NULL; }
-| NO _other			{ $$ = cb_int (COB_LOCK_OPEN_EXCLUSIVE); }
-| READ ONLY			{ $$ = NULL; }
+  ALL _other        { current_file->sharing = COB_SHARE_ALL; }
+| NO _other         { current_file->sharing = COB_SHARE_EXCLUSIVE; }
+| READ ONLY         { current_file->sharing = COB_SHARE_READ_ONLY; }
 ;
 
 
@@ -7539,8 +7619,17 @@ open_mode:
 
 open_sharing:
   /* empty */			{ $$ = NULL; }
-| SHARING _with sharing_option	{ $$ = $3; }
+| SHARING _with open_sharing_option	{ $$ = $3; }
 ;
+
+
+open_sharing_option:
+  ALL _other                    { $$ = cb_int (COB_SHARE_ALL); }
+| NO _other                     { $$ = cb_int (COB_SHARE_EXCLUSIVE); }
+| READ ONLY                     { $$ = cb_int (COB_SHARE_READ_ONLY); }
+;
+
+
 
 open_option:
   /* empty */			{ $$ = NULL; }
