@@ -780,11 +780,20 @@ struct handler_struct {
 
 /* File */
 
+
+struct cb_key_component {
+   struct cb_key_component *next;
+   cb_tree                  component;
+};
+
 struct cb_alt_key {
-	struct cb_alt_key	*next;			/* Pointer to next */
-	cb_tree			key;			/* Key item */
-	int			duplicates;		/* DUPLICATES */
-	int			offset;			/* Offset from start */
+	struct cb_alt_key       *next;
+	cb_tree                  key;
+	int                      duplicates;
+	int                      offset;
+	int                      tf_suppress;
+	int                      char_suppress;
+	struct cb_key_component *component_list;
 };
 
 struct cb_file {
@@ -1381,6 +1390,7 @@ extern void			cb_build_symbolic_chars (const cb_tree,
 
 extern struct cb_field		*cb_field_add (struct cb_field *,
 					       struct cb_field *);
+extern int		             cb_field_size (cb_tree x);
 extern struct cb_field		*cb_field_founder (const struct cb_field *);
 extern struct cb_field		*cb_field_variable_size (const struct cb_field *);
 extern unsigned int		cb_field_variable_address (const struct cb_field *);

@@ -1958,6 +1958,47 @@ cb_field_add (struct cb_field *f, struct cb_field *p)
 	return f;
 }
 
+
+int
+cb_field_size (const cb_tree x)
+{
+	struct cb_reference	*r;
+	struct cb_field		*f;
+
+	switch (CB_TREE_TAG (x)) {
+	case CB_TAG_LITERAL:
+		return CB_LITERAL (x)->size;
+	case CB_TAG_FIELD:
+		return CB_FIELD (x)->size;
+	case CB_TAG_REFERENCE:
+		r = CB_REFERENCE (x);
+		f = CB_FIELD (r->value);
+
+		if (r->length) {
+			if (CB_LITERAL_P (r->length)) {
+				return cb_get_int (r->length);
+			} else {
+				return -1;
+			}
+		} else if (r->offset) {
+			if (CB_LITERAL_P (r->offset)) {
+				return f->size - cb_get_int (r->offset) + 1;
+			} else {
+				return -1;
+			}
+		} else {
+			return f->size;
+		}
+	default:
+		cobc_abort_pr (_("Unexpected tree tag %d"), (int)CB_TREE_TAG (x));
+		/* Use dumb variant */
+		COBC_DUMB_ABORT ();
+	}
+	/* NOT REACHED */
+	return 0;
+}
+
+
 struct cb_field *
 cb_field_founder (const struct cb_field *f)
 {
@@ -2067,6 +2108,8 @@ build_report (cb_tree name)
 #if	0	/* RXWRXW RP */
 	p->organization = COB_ORG_SEQUENTIAL;
 	p->access_mode = COB_ACCESS_SEQUENTIAL;
+	p->lock_mode = COB_LOCK_NONE;
+	p->sharing = COB_SHARE_ALL;
 	p->handler = CB_LABEL (cb_standard_error_handler);
 	p->handler_prog = current_program;
 #endif
@@ -2176,7 +2219,32 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 			}
 		}
 	}
-
+	// compute composite key total length
+	if (f->alt_key_list != NULL) {
+		int cb;
+		char pic[32]; 
+		struct cb_alt_key *alt_key;
+		struct cb_key_component *key_component;
+		struct cb_field *composite_key;
+		for (alt_key = f->alt_key_list; alt_key != NULL; alt_key = alt_key->next) {
+			if (alt_key->component_list != NULL) {
+				cb = 0;
+				for (key_component = alt_key->component_list;
+				     key_component != NULL;
+				     key_component = key_component->next) {
+					// resolution of references in key components must be done here
+					cb += cb_field_size(cb_ref(key_component->component));
+				}
+				composite_key = (struct cb_field *)cb_ref(alt_key->key);
+				memset (pic, 0, sizeof(pic));
+				sprintf (pic, "X(%d)", cb);
+				if (composite_key->pic != NULL) free(composite_key->pic);
+				composite_key->pic = CB_PICTURE (cb_build_picture (pic));
+				cb_validate_field (composite_key);
+			}
+		}
+	} 
+       
 	/* Check the record size if it is limited */
 	for (p = records; p; p = p->sister) {
 		if (f->record_min > 0) {
