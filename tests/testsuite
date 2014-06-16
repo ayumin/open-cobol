@@ -7285,7 +7285,7 @@ cat >prog.cob <<'_ATEOF'
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT out-file ASSIGN "blah.txt"
+       SELECT out-file ASSIGN "dummy.txt"
            ORGANIZATION LINE SEQUENTIAL.
 
        DATA DIVISION.
@@ -7300,8 +7300,11 @@ cat >prog.cob <<'_ATEOF'
           02  LINE PLUS 0.
               03 COLUMN 01      PIC X(09) VALUE 'CUST. NO.'.
               03 COLUMN PLUS 0  PIC X(09) VALUE 'ITEM'.
+          02  LINE + 2.
+              03 COLUMN 01      PIC X(09) VALUE 'PLUS'.
+              03 COLUMN + 5     PIC X(09) VALUE 'ITEM'.
           02  LINE PLUS zero.
-              03 COLUMN 1.5     PIC X(09) VALUE 'CUST. NO.'.
+              03 COLUMN + 0     PIC X(09) VALUE 'PLUS2'.
               03 COLUMN + -10   PIC X(09) VALUE 'ITEM'.
 
 
@@ -7317,22 +7320,20 @@ _ATEOF
 
 # Check for correct compile and a warning
 { set +x
-$as_echo "$at_srcdir/syn_reportwriter.at:181: \$COMPILE_ONLY -std=mf prog.cob"
-at_fn_check_prepare_dynamic "$COMPILE_ONLY -std=mf prog.cob" "syn_reportwriter.at:181"
+$as_echo "$at_srcdir/syn_reportwriter.at:184: \$COMPILE_ONLY -std=mf prog.cob"
+at_fn_check_prepare_dynamic "$COMPILE_ONLY -std=mf prog.cob" "syn_reportwriter.at:184"
 ( $at_check_trace; $COMPILE_ONLY -std=mf prog.cob
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
 echo >>"$at_stderr"; $as_echo "prog.cob: 18: Error: Invalid integer
-prog.cob: 24: Error: syntax error, unexpected Identifier, expecting GLOBAL
-prog.cob: 25: Error: syntax error, unexpected Identifier, expecting GLOBAL
-prog.cob: 28: Error: syntax error, unexpected PROCEDURE, expecting GLOBAL
-prog.cob: 29: Error: syntax error, unexpected OPEN, expecting GLOBAL
-prog.cob: 35: Error: syntax error, unexpected end of file, expecting GLOBAL
+prog.cob: 22: Error: Invalid integer
+prog.cob: 27: Error: Invalid integer
+prog.cob: 28: Error: Invalid integer
 " | \
   $at_diff - "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 1 $at_status "$at_srcdir/syn_reportwriter.at:181"
+at_fn_check_status 1 $at_status "$at_srcdir/syn_reportwriter.at:184"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
@@ -32159,7 +32160,7 @@ cat >prog2.cob <<'_ATEOF'
 
        01  rp-detail TYPE DE.
          02  LINE +1.
-         03            COL 1; SOURCE foo, PIC X(30).
+         03                   SOURCE foo, PIC X(30).
       *  03  LINE + 1, COL 1; SOURCE foo, PIC X(30).
       *  03  LINE + 1         SOURCE foo, PIC X(30).
       *  03  LINE + 1 SOURCE foo, PIC X(30).

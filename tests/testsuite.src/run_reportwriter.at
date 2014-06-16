@@ -396,7 +396,7 @@ AT_DATA([prog2.cob], [
 
        01  rp-detail TYPE DE.
          02  LINE +1.
-         03            COL 1; SOURCE foo, PIC X(30).
+         03                   SOURCE foo, PIC X(30).
       *  03  LINE + 1, COL 1; SOURCE foo, PIC X(30).
       *  03  LINE + 1         SOURCE foo, PIC X(30).
       *  03  LINE + 1 SOURCE foo, PIC X(30).
