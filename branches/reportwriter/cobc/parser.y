@@ -4544,18 +4544,7 @@ page_limit_clause:
 	} else if (!current_report->footing) {
 		current_report->footing = current_report->last_detail;
 	}
-	if(current_report->heading > 0
-	&& current_report->first_detail > 0
-	&& current_report->last_control > 0
-	&& current_report->last_detail > 0
-	&& current_report->footing > 0) {
-		if (current_report->heading > current_report->first_detail ||
-		    current_report->first_detail > current_report->last_control ||
-		    current_report->last_control > current_report->last_detail ||
-		    current_report->last_detail > current_report->footing) {
-			cb_error (_("Invalid PAGE clause"));
-		}
-	}
+	/* PAGE LIMIT values checked in finalize_report in typeck.c */
   }
 ;
 
@@ -4564,6 +4553,8 @@ page_line_column:
   {
 	if (CB_LITERAL_P ($1)) {
 		current_report->lines = cb_get_int ($1);
+		if(current_report->lines > 999)
+			cb_error (_("PAGE LIMIT lines > 999"));
 	} else {
 		current_report->t_lines = $1;
 	}
@@ -4572,6 +4563,8 @@ page_line_column:
   {
 	if (CB_LITERAL_P ($1)) {
 		current_report->lines = cb_get_int ($1);
+		if(current_report->lines > 999)
+			cb_error (_("PAGE LIMIT lines > 999"));
 	} else {
 		current_report->t_lines = $1;
 	}
@@ -4580,6 +4573,8 @@ page_line_column:
   {
 	if (CB_LITERAL_P ($1)) {
 		current_report->lines = cb_get_int ($1);
+		if(current_report->lines > 999)
+			cb_error (_("PAGE LIMIT lines > 999"));
 	} else {
 		current_report->t_lines = $1;
 	}
@@ -4870,15 +4865,25 @@ line_keyword_clause:
 
 line_clause_options:
   line_clause_integer 
-| PLUS_KEYWORD line_clause_integer
+  {
+	if(current_field->report_line == 0) {
+		cb_warning (_("LINE 0 not implemented"));
+	}
+  }
+| PLUS line_clause_integer
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	if(current_field->report_line == 0) {
+		cb_warning (_("LINE PLUS 0 not implemented"));
+	}
   }
-;
-
-PLUS_KEYWORD:
-  PLUS
-| TOK_PLUS
+| TOK_PLUS line_clause_integer
+  {
+	current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	if(current_field->report_line == 0) {
+		cb_warning (_("LINE PLUS 0 not implemented"));
+	}
+  }
 ;
 
 number_is:
@@ -4891,6 +4896,11 @@ line_clause_integer:
   {
 	current_field->report_line = cb_get_int($1);
 	if (CB_LITERAL ($1)->sign > 0) {
+		current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	} else if (CB_LITERAL ($1)->sign < 0
+	|| current_field->report_line < 0) {
+		cb_error (_("Positive Integer value expected"));
+		current_field->report_line = 1;
 		current_field->report_flag |= COB_REPORT_LINE_PLUS;
 	}
   }
@@ -4920,16 +4930,33 @@ col_keyword_clause:
 ;
 
 col_or_plus:
-  PLUS_KEYWORD report_integer 
+  PLUS report_integer 
   {
 	current_field->report_column = cb_get_int ($2);
-	current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
+	if(current_field->report_column > 0)
+		current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
+	else
+		current_field->report_column = 0;
+  }
+| TOK_PLUS report_integer 
+  {
+	current_field->report_column = cb_get_int ($2);
+	if(current_field->report_column > 0)
+		current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
+	else
+		current_field->report_column = 0;
   }
 | report_integer
   {
 	current_field->report_column = cb_get_int ($1);
 	if (CB_LITERAL ($1)->sign > 0) {
 		current_field->report_flag |= COB_REPORT_COLUMN_PLUS;
+	}
+	if (current_field->report_column <= 0
+	|| CB_LITERAL ($1)->sign < 0) {
+		cb_error (_("Invalid COLUMN integer; Must be > 0"));
+		current_field->report_column = 0;
+		$$ = cb_int0;
 	}
   }
 ;
@@ -10332,13 +10359,17 @@ report_integer:
 		$$ = cb_int1;
 	} else {
 		n = cb_get_int ($1);
-		if (n < 1) {
+		if (n < 0) {
 			cb_error (_("Invalid integer"));
 			$$ = cb_int1;
 		} else {
 			$$ = $1;
 		}
 	}
+  }
+| ZERO
+  {
+	$$ = cb_int0;
   }
 ;
 

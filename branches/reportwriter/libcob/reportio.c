@@ -19,7 +19,7 @@
 
 /*************************************************************************
  * This module and Report Writer code added by Ron Norman, November 2013 *
- * including parts of sources found in cobc                              *
+ * including parts of sources found in 'cobc / *'                        *
  ************************************************************************/
 
 #include "config.h"
@@ -484,7 +484,7 @@ reportDump(const cob_report *r, const char *msg)
 
 	if(fdbg == NULL)
 		return;
-	LOG("Dump of %s Report for %s\n",r->report_name,msg);
+	LOG("Dump of Report '%s' for %s\n",r->report_name,msg);
 	if(r->report_file) {
 		LOG("Using File %s ",r->report_file->select_name);
 		if(r->report_file->assign
@@ -549,6 +549,68 @@ reportDump(const cob_report *r, const char *msg)
 	LOG("\n");
 }
 
+/*
+ * Verify that each LINE # is within PAGE LIMITS
+ */
+static void
+limitCheckOneLine(cob_report *r, cob_report_line *fl)
+{
+	cob_report_field	*rf;
+
+	if((fl->line && fl->line > r->def_lines)) {
+		fprintf(stderr,_("ERROR INITIATE %s LINE %d exceeds PAGE LIMIT\n"),r->report_name,fl->line);
+		LOG("PAGE LIMITs is incorrect; LINE %d > LIMIT %d\n",fl->line,r->def_lines);
+		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
+		r->initiate_done = FALSE;
+		return;
+	}
+	if((fl->next_group_line && fl->next_group_line > r->def_lines)) {
+		fprintf(stderr,_("ERROR INITIATE %s NEXT GROUP %d exceeds PAGE LIMIT\n"),r->report_name,fl->next_group_line);
+		LOG("PAGE LIMITs is incorrect; NEXT GROUP %d > LIMIT %d\n",fl->next_group_line,r->def_lines);
+		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
+		r->initiate_done = FALSE;
+		return;
+	}
+	for(rf = fl->fields; rf; rf = rf->next) {
+		if((rf->line && rf->line > r->def_lines)) {
+			fprintf(stderr,_("ERROR INITIATE %s LINE %d exceeds PAGE LIMIT\n"),r->report_name,rf->line);
+			LOG("PAGE LIMITs is incorrect; LINE %d > LIMIT %d\n",rf->line,r->def_lines);
+			cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
+			r->initiate_done = FALSE;
+			return;
+		}
+		if((rf->next_group_line && rf->next_group_line > r->def_lines)) {
+			fprintf(stderr,_("ERROR INITIATE %s NEXT GROUP %d exceeds PAGE LIMIT\n"),r->report_name,rf->next_group_line);
+			LOG("PAGE LIMITs is incorrect; NEXT GROUP %d > LIMIT %d\n",rf->next_group_line,r->def_lines);
+			cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
+			r->initiate_done = FALSE;
+			return;
+		}
+	}
+}
+
+/*
+ * Verify that LINE # is within PAGE LIMITS
+ */
+static void
+limitCheckLine(cob_report *r, cob_report_line *fl)
+{
+	limitCheckOneLine(r,fl);
+	if(fl->child)
+		limitCheckLine(r,fl->child);
+	if(fl->sister)
+		limitCheckLine(r,fl->sister);
+}
+
+/*
+ * Verify that all LINE # are within PAGE LIMITS
+ */
+static void
+limitCheck(cob_report *r)
+{
+	limitCheckLine(r,r->first_line);
+}
+
 static void
 saveLineCounter(cob_report *r)
 {
@@ -578,7 +640,7 @@ do_page_footing(cob_report *r)
 	report_line_type(r,r->first_line,COB_REPORT_PAGE_FOOTING);
 	memset(rec,' ',f->record_max);
 	if(r->curr_line < r->def_lines) {
-		cob_write(f, f->record, COB_WRITE_AFTER|COB_WRITE_LINES|(r->def_lines-r->curr_line+1), NULL, 0);
+		cob_write(f, f->record, COB_WRITE_BEFORE|COB_WRITE_LINES|(r->def_lines-r->curr_line), NULL, 0);
 		r->curr_line = r->def_lines;
 		r->incr_line = FALSE;
 	} else {
@@ -929,14 +991,34 @@ cob_report_initiate(cob_report *r)
 	cob_report_sum_ctr	*sc;
 
 	reportInitialize();
+	if(r->initiate_done) {
+		fprintf(stderr,_("ERROR INITIATE %s was already done\n"),r->report_name);
+		LOG("REPORT was already INITIATEd\n");
+		cob_set_exception (COB_EC_REPORT_ACTIVE);
+		return;
+	}
+	if(!(r->def_first_detail >= r->def_heading)
+	|| !(r->def_footing >= r->def_heading)
+	|| !(r->def_last_detail >= r->def_first_detail)
+	|| !(r->def_footing >= r->def_last_detail)
+	|| !(r->def_heading <= r->def_lines)
+	|| !(r->def_lines >= r->def_footing)) {
+		fprintf(stderr,_("ERROR INITIATE %s PAGE LIMIT problem\n"),r->report_name);
+		LOG("PAGE LIMITs is incorrect\n");
+		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
+		return;
+	}
 	r->curr_page = 1;
 	r->curr_line = 0;
 	r->incr_line = TRUE;
 	saveLineCounter(r);
 	reportDump(r,"INITIATE");
+	r->initiate_done = TRUE;
+	limitCheck(r);
+	if(!r->initiate_done)	/* Problem during LIMIT check */
+		return;
 	r->first_detail = TRUE;
 	r->first_generate = TRUE;
-	r->initiate_done = TRUE;
 	r->next_value = 0;
 	r->next_line = 0;
 	r->next_line_plus = 0;
@@ -985,6 +1067,8 @@ cob_report_terminate(cob_report *r, int ctl)
 
 	if(!r->initiate_done) {
 		LOG("INITIATE was never done!\n");
+		fprintf(stderr,_("ERROR TERMINATE %s but No INITIATE was done\n"),r->report_name);
+		cob_set_exception (COB_EC_REPORT_INACTIVE);
 		return 0;
 	}
 	if(r->first_generate) {
@@ -1144,7 +1228,8 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 
 	reportInitialize();
 	if(!r->initiate_done) {
-		printf("ERROR No INITIATE %s was done\n",r->report_name);
+		fprintf(stderr,_("ERROR GENERATE %s but No INITIATE was done\n"),r->report_name);
+		cob_set_exception (COB_EC_REPORT_INACTIVE);
 		return 0;
 	}
 
@@ -1408,5 +1493,5 @@ cob_report_suppress(cob_report *r, cob_report_line *l)
 			}
 		}
 	}
-	printf("ERROR Could not find line to suppress in report %s\n",r->report_name);
+	fprintf(stderr,_("ERROR Could not find line to suppress in report %s\n"),r->report_name);
 }
