@@ -26,7 +26,7 @@ AC_INIT([GNU Cobol],
 	[2.0],
 	[open-cobol-list@lists.sourceforge.net],
 	[gnu-cobol],
-	[http://www.opencobol.org])
+	[http://sourceforge.net/projects/open-cobol/])
 AC_CONFIG_SRCDIR([libcob.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_TESTDIR([tests])
@@ -57,12 +57,32 @@ AM_INIT_AUTOMAKE([gnu no-texinfo.tex])
 AM_MAINTAINER_MODE
 
 # Autoheader templates
-AH_TEMPLATE([WITH_DB], [Compile with the Berkeley DB library])
-AH_TEMPLATE([WITH_INDEX_EXTFH], [Compile with an external ISAM handler])
-AH_TEMPLATE([WITH_SEQRA_EXTFH], [Compile with an external SEQ/RAN handler])
-AH_TEMPLATE([WITH_CISAM], [Use CISAM as ISAM handler])
-AH_TEMPLATE([WITH_DISAM], [Use DISAM as ISAM handler])
-AH_TEMPLATE([WITH_VBISAM], [Use VBISAM as ISAM handler])
+AH_TEMPLATE([WITH_RELATIVE], [The ORGANIZATION RELATIVE handler: standard])
+AH_TEMPLATE([WITH_RELATIVE_NONE], [The ORGANIZATION RELATIVE handler: none])
+AH_TEMPLATE([WITH_SEQUENTIAL], [The ORGANIZATION SEQUENTIAL handler: standard])
+AH_TEMPLATE([WITH_SEQUENTIAL_NONE], [The ORGANIZATION SEQUENTIAL handler: none])
+AH_TEMPLATE([WITH_INDEXED_CISAM], [The ORGANIZATION INDEXED handler: CISAM ])
+AH_TEMPLATE([WITH_INDEXED_DISAM], [The ORGANIZATION INDEXED handler: DISAM])
+AH_TEMPLATE([WITH_INDEXED_VBISAM], [The ORGANIZATION INDEXED handler: VBISAM])
+AH_TEMPLATE([WITH_INDEXED_BDB], [The ORGANIZATION INDEXED handler: Berkeley DB])
+AH_TEMPLATE([WITH_INDEXED_BDB_1], [The ORGANIZATION INDEXED handler: Berkeley DB < 4.1])
+AH_TEMPLATE([WITH_INDEXED_ODBC], [The ORGANIZATION INDEXED handler: ODBC DB])
+AH_TEMPLATE([WITH_INDEXED_NONE], [The ORGANIZATION INDEXED handler: none])
+AH_TEMPLATE([WITH_ODBC_DYNAMIC_CONNECTION], [Get ODBC SERVER & DB from file name])
+AH_TEMPLATE([WITH_VARSEQ], [Define variable sequential file format])
+AH_TEMPLATE([WITH_RELATIVE_FIXED_RSZ], [Use fixed length records for relative file format])
+AH_TEMPLATE([WITH_FILEIO_TRACE], [Include code to trace file i-o])
+AH_TEMPLATE([WITH_FILEIO_STATS], [Include code to generate file i-o stats])
+AH_TEMPLATE([WITH_FILEIO_LOG], [Include code to log file i-o])
+AH_TEMPLATE([WITH_FILEIO_SHARING], [Include code to implement COBOL file sharing])
+AH_TEMPLATE([WITH_FILEIO_EXCHANGE], [Include code to call external file-handler])
+AH_TEMPLATE([WITH_FILE_STATUS_ANSI85], [Use ANSI85 file-status codes])
+AH_TEMPLATE([WITH_FILE_STATUS_EXTENDED], [Use extended file-status codes: 9, cob_errno])
+AH_TEMPLATE([WITH_FILE_STATUS_NATIVE], [Use errno in file-status codes: 8, errno])
+AH_TEMPLATE([WITH_FILE_STATUS_RM], [Use RM file-status codes: 9, N])
+
+AH_TEMPLATE([COB_IGNORE_NUMBER_ZONE], [Ignore zone on number conversion])
+AH_TEMPLATE([COB_TREAT_NULL_AS_ZERO], [Interpret nulls in numerics as zeros])
 AH_TEMPLATE([COB_EXPERIMENTAL], [Enable experimemental code (Developers only!)])
 AH_TEMPLATE([COB_PARAM_CHECK], [Enable CALL parameter checking])
 AH_TEMPLATE([COB_EXPORT_DYN], [Compile/link option for exporting symbols])
@@ -72,7 +92,6 @@ AH_TEMPLATE([COB_STRIP_CMD], [Strip command])
 AH_TEMPLATE([USE_LIBDL], [Use system dynamic loader])
 AH_TEMPLATE([HAVE_DLADDR], [Has dladdr function])
 AH_TEMPLATE([PATCH_LEVEL], [Define a patch level])
-AH_TEMPLATE([WITH_VARSEQ], [Define variable sequential file format])
 AH_TEMPLATE([HAVE_PSIGN_OPT], [Has -Wno-pointer-sign])
 AH_TEMPLATE([HAVE_ATTRIBUTE_ALIGNED], [Has __attribute__((aligned))])
 AH_TEMPLATE([HAVE_TIMEZONE], [Has timezone variable])
@@ -222,80 +241,148 @@ fi
 
 # Configure options.
 
-AC_ARG_WITH([seqra-extfh],
-  [  --with-seqra-extfh      (GNU Cobol) Use external SEQ/RAN file handler],
-  [ if test "$with_seqra_extfh" = "yes"
-    then
-	AC_DEFINE([WITH_SEQRA_EXTFH], [1])
-    fi ],
-  [])
+AC_ARG_WITH(relative,
+  [  --with-relative         (GNU Cobol) RELATIVE Handler [[default=yes]]],
+  [ case "$with_relative" in
+		yes )
+			WITH_RELATIVE=1
+			AC_DEFINE(WITH_RELATIVE)
+			;;
+		no )
+			WITH_RELATIVE_NONE=1
+			AC_DEFINE(WITH_RELATIVE_NONE)
+			;;
+		* )
+			AC_MSG_ERROR(["--with-relative expects: yes no"])
+    esac ],
+  [
+		# default if no ref to --with-relative
+		WITH_RELATIVE=1
+		AC_DEFINE(WITH_RELATIVE)
+  ])
 
-AC_ARG_WITH([cisam],
-  [  --with-cisam            (GNU Cobol) Use CISAM for ISAM I/O (Experimental)],
-  [ if test "$with_cisam" = "yes"
-    then
-	AC_CHECK_HEADERS([isam.h], [],
-		AC_MSG_ERROR([isam.h is required for CISAM]))
-	AC_CHECK_LIB([ifisam], [isopen],
-		[AC_DEFINE([WITH_CISAM], [1])
-		LIBCOB_LIBS="$LIBCOB_LIBS -lifisam -lifisamx"],
-		AC_MSG_ERROR([libifisam is required for CISAM]), [-lifisamx])
-    fi ],
-  [])
 
-if test "$with_cisam" != "yes"
-then
-  AC_ARG_WITH([disam],
-  [  --with-disam            (GNU Cobol) Use DISAM for ISAM I/O (Experimental)],
-  [ if test "$with_disam" = "yes"
-    then
-	AC_CHECK_HEADERS([disam.h], [],
-		AC_MSG_ERROR([disam.h is required for DISAM]))
-	AC_CHECK_LIB([disam], [isopen],
-		[AC_DEFINE([WITH_DISAM], [1])
-		LIBCOB_LIBS="$LIBCOB_LIBS -ldisam"],
-		AC_MSG_ERROR([libdisam is required for DISAM]), [])
-    fi ],
-  [])
-fi
+AC_ARG_WITH(sequential,
+  [  --with-sequential       (GNU Cobol) SEQUENTIAL Handler [[default=yes]]],
+  [ case "$with_sequential" in
+		yes )
+			WITH_SEQUENTIAL=1
+			AC_DEFINE(WITH_SEQUENTIAL)
+			;;
+		no )
+			WITH_SEQUENTIAL_NONE=1
+			AC_DEFINE(WITH_SEQUENTIAL_NONE)
+			;;
+		* )
+			AC_MSG_ERROR(["--with-sequential expects: yes no"])
+    esac ],
+  [
+		# default if no ref to --with-sequential
+		WITH_SEQUENTIAL=1
+		AC_DEFINE(WITH_SEQUENTIAL)
+  ])
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes"
-then
-  AC_ARG_WITH([vbisam],
-  [  --with-vbisam           (GNU Cobol) Use VBISAM for ISAM I/O (Experimental)],
-  [ if test "$with_vbisam" = "yes"
-    then
-	AC_CHECK_HEADERS([vbisam.h], [],
-		AC_MSG_ERROR([vbisam.h is required for VBISAM]))
-	AC_CHECK_LIB([vbisam], [isopen],
-		[AC_DEFINE([WITH_VBISAM], [1])
-		LIBCOB_LIBS="$LIBCOB_LIBS -lvbisam"],
-		AC_MSG_ERROR([libvbisam is required for VBISAM]), [])
-    fi ],
-  [])
-fi
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes"
-then
-  AC_ARG_WITH([index-extfh],
-  [  --with-index-extfh      (GNU Cobol) Use external ISAM file handler],
-  [ if test "$with_index_extfh" = "yes"
-    then
-	AC_DEFINE([WITH_INDEX_EXTFH], [1])
-    fi ],
-  [])
-fi
+do_cobol85_IX_tests="yes"
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
-then
-  AC_ARG_WITH([db],
-  [  --with-db               (GNU Cobol) Use Berkeley DB >= 4.1 for ISAM I/O (default)],
-  [],
-  [with_db=yes])
-fi
+AC_ARG_WITH(indexed,
+  [  --with-indexed          (GNU Cobol) INDEXED Handler :: yes | no | cisam | disam | vbisam | bdb | bdb1 | odbc | odbc_dsn [[default=bdb]]],
+  [ case "$with_indexed" in
+    	cisam ) 
+			AC_CHECK_HEADERS([isam.h], , AC_MSG_ERROR(isam.h is required for CISAM))
+			AC_CHECK_LIB([ifisam], [isopen], , AC_MSG_ERROR(libifisam is required for CISAM), [ifisamx])
+			WITH_INDEXED_CISAM=1
+			AC_DEFINE(WITH_INDEXED_CISAM)
+			LIBCOB_LIBS="$LIBCOB_LIBS -lifisam -lifisamx"
+			;;
+		disam )
+			AC_CHECK_HEADERS([disam.h], , AC_MSG_ERROR(disam.h is required for DISAM))
+			AC_CHECK_LIB([disam], [isopen], , AC_MSG_ERROR(libdisam is required for DISAM))
+			WITH_INDEXED_DISAM=1
+			AC_DEFINE(WITH_INDEXED_DISAM)
+			LIBCOB_LIBS="$LIBCOB_LIBS -ldisam"
+			;;
+		vbisam )
+			AC_CHECK_HEADERS([vbisam.h], , AC_MSG_ERROR(vbisam.h is required for VBISAM))
+			AC_CHECK_LIB([vbisam], [isopen], , AC_MSG_ERROR(libvbisam is required for VBISAM))
+			WITH_INDEXED_VBISAM=1
+			AC_DEFINE(WITH_INDEXED_VBISAM)
+			LIBCOB_LIBS="$LIBCOB_LIBS -lvbisam"
+			;;
+		bdb | yes )	   # default
+			AC_CHECK_HEADERS([db.h], , AC_MSG_ERROR(db.h is required for BDB))
+			AC_SEARCH_LIBS([db_env_create], [db], , AC_MSG_ERROR(library is required for BDB))
+			LIBCOB_LIBS="$LIBCOB_LIBS ${ac_cv_search_db_env_create}"
+			WITH_INDEXED_BDB=1
+			AC_DEFINE(WITH_INDEXED_BDB)
+			;;
+		bdb1 )
+			AC_CHECK_HEADERS([db1.h], , AC_MSG_ERROR(db1.h is required for BDB1. Please copy or link db.h to db1.h))
+			AC_SEARCH_LIBS([dbopen], [db1], , AC_MSG_ERROR(library libdb1 is required for BDB1. Please copy or link libdb to libdb1))
+			LIBCOB_LIBS="$LIBCOB_LIBS ${ac_cv_search_dbopen}"
+			WITH_INDEXED_BDB_1=1
+			AC_DEFINE(WITH_INDEXED_BDB_1)
+			;;
+		odbc )
+			AC_CHECK_HEADERS([sql.h], , AC_MSG_ERROR(sql.h is required for ODBC DB))
+			AC_CHECK_HEADERS([sqlext.h], , AC_MSG_ERROR(sqlext.h is required for ODBC DB))
+			AC_CHECK_LIB([odbc], [SQLAllocHandle], , AC_MSG_ERROR(libodbc is required for ODBC DB))
+			WITH_INDEXED_ODBC=1
+			AC_DEFINE(WITH_INDEXED_ODBC)
+			LIBCOB_LIBS="$LIBCOB_LIBS -lodbc"
+			;;
+		no )
+			WITH_INDEXED_NONE=1
+			AC_DEFINE(WITH_INDEXED_NONE)
+			do_cobol85_IX_tests="no"
+			;;
+		* )
+			AC_MSG_ERROR(["--with-indexed expects: cisam disam vbisam bdb bdb1 odbc yes no"])
+    esac ],
+  [
+		# default if no ref to --with-indexed
+		AC_CHECK_HEADERS([db.h], , AC_MSG_ERROR(db.h is required for BDB))
+		AC_SEARCH_LIBS([db_env_create], [db], , AC_MSG_ERROR(library is required for BDB))
+		LIBCOB_LIBS="$LIBCOB_LIBS ${ac_cv_search_db_env_create}"
+		WITH_INDEXED_BDB=1
+		AC_DEFINE(WITH_INDEXED_BDB)
+
+  ])
+
+
+
+AC_ARG_WITH(file-status,
+  [  --with-file-status      (GNU Cobol) File-status codes :: ansi85 | ext\[ended\] | native | rm [[default=ext]]],
+  [ case "$with_file_status" in
+		ansi85 )
+			WITH_FILE_STATUS_ANSI85=1
+			AC_DEFINE(WITH_FILE_STATUS_ANSI85)
+			;;
+		ext | extended )
+			WITH_FILE_STATUS_EXTENDED=1
+			AC_DEFINE(WITH_FILE_STATUS_EXTENDED)
+			;;
+		native )
+			WITH_FILE_STATUS_NATIVE=1
+			AC_DEFINE(WITH_FILE_STATUS_NATIVE)
+			;;
+		rm | RM )
+			WITH_FILE_STATUS_RM=1
+			AC_DEFINE(WITH_FILE_STATUS_RM)
+			;;
+		* )
+			AC_MSG_ERROR(["--with-file-status expects: ansi85 ext\[ended\] native rm"])
+    esac ],
+  [
+		# default if no ref to --with-file-status
+		WITH_FILE_STATUS_EXTENDED=1
+		AC_DEFINE(WITH_FILE_STATUS_EXTENDED)
+  ])
+
+
 
 AC_ARG_WITH([dl],
-  [  --with-dl               (GNU Cobol) Use system dynamic loader (default)],
+  [  --with-dl               (GNU Cobol) Use system dynamic loader [[default=yes]]],
   [case $with_dl in  
     yes)
 		;;
@@ -307,12 +394,12 @@ AC_ARG_WITH([dl],
   [with_dl=yes])
 
 AC_ARG_ENABLE([debug],
-  [  --enable-debug          (GNU Cobol) Enable -g C compiler debug option],
+  [  --enable-debug                (GNU Cobol) Enable -g C compiler debug option],
   [],
   [enable_debug=no])
 
 AC_ARG_ENABLE([experimental],
-  [  --enable-experimental   (GNU Cobol) Enable experimental code (Developers only!)],
+  [  --enable-experimental         (GNU Cobol) Enable experimental code (Developers only!)],
   [if test "$enable_experimental" = "yes"
    then
 	AC_DEFINE([COB_EXPERIMENTAL], [1])
@@ -320,15 +407,80 @@ AC_ARG_ENABLE([experimental],
   [])
 
 AC_ARG_ENABLE([param-check],
-  [  --enable-param-check    (GNU Cobol) Enable CALL parameter checking],
+  [  --enable-param-check          (GNU Cobol) Enable CALL parameter checking],
   [if test "$enable_param_check" = "yes"
    then
 	AC_DEFINE([COB_PARAM_CHECK], [1])
    fi],
   [])
 
+AC_ARG_ENABLE(ignore-number-zone,
+  [  --enable-ignore-number-zone   (GNU Cobol) disregard top 4 bits of numeric character],
+  [if test "$enable_ignore_number_zone" = "yes"
+   then
+	AC_DEFINE(COB_IGNORE_NUMBER_ZONE)
+   fi])
+
+AC_ARG_ENABLE(treat-null-as-zero,
+  [  --enable-treat-null-as-zero   (GNU Cobol) interpret nulls in numeric fields as zeros],
+  [if test "$enable_treat_null_as_zero" = "yes"
+   then
+	AC_DEFINE(COB_TREAT_NULL_AS_ZERO)
+   fi])
+
+AC_ARG_ENABLE(relative-fixed,
+  [  --enable-relative-fixed       (GNU Cobol) use fixed length records on relative format],
+  [if test "$enable_relative_fixed" = "yes"
+   then
+	AC_DEFINE(WITH_RELATIVE_FIXED_RSZ)
+   fi])
+
+AC_ARG_ENABLE(fileio-trace,
+  [  --enable-fileio-trace         (GNU Cobol) enable code to generate diagnostic trace of file io],
+  [if test "$enable_fileio_trace" = "yes"
+   then
+	AC_DEFINE(WITH_FILEIO_TRACE)
+   fi])
+
+AC_ARG_ENABLE(fileio-stats,
+  [  --enable-fileio-stats         (GNU Cobol) enable code to generate file io statistics],
+  [if test "$enable_fileio_stats" = "yes"
+   then
+	AC_DEFINE(WITH_FILEIO_STATS)
+   fi])
+
+AC_ARG_ENABLE(fileio-log,
+  [  --enable-fileio-log           (GNU Cobol) enable code to generate file io log],
+  [if test "$enable_fileio_log" = "yes"
+   then
+    # Some non LINUX environments might not support syslog
+	AC_CHECK_HEADERS([syslog.h], , AC_MSG_ERROR(syslog is required for file io log. syslog.h not found))
+	AC_DEFINE(WITH_FILEIO_LOG)
+   fi])
+
+AC_ARG_ENABLE(fileio-sharing,
+  [  --enable-fileio-sharing       (GNU Cobol) enable code to control file sharing],
+  [if test "$enable_fileio_sharing" = "yes"
+   then
+	AC_DEFINE(WITH_FILEIO_SHARING)
+   fi])
+
+AC_ARG_ENABLE(fileio-exchange,
+  [  --enable-fileio-exchange      (GNU Cobol) enable code to call external file-handler],
+  [if test "$enable_fileio_exchange" = "yes"
+   then
+	AC_DEFINE(WITH_FILEIO_EXCHANGE)
+   fi])
+
+AC_ARG_ENABLE(odbc_dynamic_connection,
+  [  --enable-odbc_dynamic_connection (GNU Cobol) extract ODBC SERVER and DB names from COBOL file-name],
+  [if test "$enable_odbc_dynamic_connection" = "yes"
+   then
+	AC_DEFINE(WITH_ODBC_DYNAMIC_CONNECTION)
+   fi])
+
 AC_ARG_WITH([patch-level],
-  [  --with-patch-level      (GNU Cobol) Define a patch level (default 0)],
+  [  --with-patch-level      (GNU Cobol) Define a patch level [[default=0]]],
   [case $with_patch_level in  
     yes)	AC_MSG_ERROR([[You must give --with-patch-level an argument.]])
 		;;
@@ -344,20 +496,21 @@ AC_ARG_WITH([patch-level],
 AC_DEFINE_UNQUOTED([PATCH_LEVEL], [$with_patch_level])
 
 AC_ARG_WITH([varseq],
-  [  --with-varseq           (GNU Cobol) Define variable sequential format (default 0)],
-  [case $with_varseq in  
-    yes)	AC_MSG_ERROR([[You must give --with-varseq an argument.]])
-		;;
-    no)		AC_MSG_ERROR([[--without-varseq not supported.]])
-		;;
+  [  --with-varseq           (GNU Cobol) Define variable sequential format [[default=0]]],
+  [case $with_varseq in
+    yes)        AC_MSG_ERROR([[You must give --with-varseq an argument.]])
+                ;;
+    no)         AC_MSG_ERROR([[--without-varseq not supported.]])
+                ;;
     [[0-3]])
-		;;
-    *)		AC_MSG_ERROR([[Invalid --with-varseq argument]])
-		;;
+                ;;
+    *)          AC_MSG_ERROR([[Invalid --with-varseq argument]])
+                ;;
   esac],
   [with_varseq=0])
 
 AC_DEFINE_UNQUOTED([WITH_VARSEQ], [$with_varseq])
+
 
 # Checks for gmp.
 AC_CHECK_HEADERS([gmp.h], [], AC_MSG_ERROR([gmp.h (GMP) is required]), [])
@@ -571,82 +724,7 @@ then
 	[])
 fi
 
-# Checks for db.
-if test "$with_db" = "yes"
-then
-	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-		#include <db.h>]], [[
-		printf("checking for Berkeley DB db.h version >= 4.1 ... ");
-		#if (defined(DB_VERSION_MAJOR) && defined(DB_VERSION_MINOR))
-		#if (DB_VERSION_MAJOR > 4) || ((DB_VERSION_MAJOR == 4) && (DB_VERSION_MINOR > 0))
-		printf("yes (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 0;
-		#else
-		printf("no (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 1;
-		#endif
-		#else
-		printf("no (version numbers not found)\n");
-		return 1;
-		#endif]])],
-		[],
-		[AC_MSG_ERROR([Berkeley DB db.h is missing or has incompatible version])],
-		[])
 
-	# BDB header is valid. Extract major/minor number pair
-	COB_BDB_HEADER=''
-	AC_RUN_IFELSE([AC_LANG_SOURCE([[
-		#include <stdio.h>
-		#include <db.h>
-		int main (int argc, char **argv)
-		{
-			(void)argv;
-			if (argc > 1)
-				printf ("%d.%d\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-			return 0;
-		}
-		]])],
-		[COB_BDB_HEADER=`./conftest$ac_exeext x`],
-		[AC_MSG_ERROR([Unable to extract version information])],
-		[])
-	if test "x$COB_BDB_HEADER" = "x"
-	then
-		AC_MSG_ERROR([Unable to extract version information])
-	fi
-	MYOLDLIBS="$LIBS"
-	cob_got_db=no
-	AC_MSG_CHECKING([for Berkeley DB library with version $COB_BDB_HEADER])
-	for cobdb in db db-$COB_BDB_HEADER
-	do
-		LIBS="$MYOLDLIBS -l$cobdb"
-		AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-		#include <db.h>]], [[
-		int major, minor, patch;
-		db_version (&major, &minor, &patch);
-		if (major == DB_VERSION_MAJOR && minor == DB_VERSION_MINOR) {
-			return 0;
-		}
-		return 1;]])],
-		[AC_DEFINE([WITH_DB], [1])
-		cob_got_db=yes
-		LIBCOB_LIBS="$LIBCOB_LIBS -l$cobdb"
-		break],
-		[],
-		[])
-	done
-	LIBS="$MYOLDLIBS"
-	if test "$cob_got_db" = "yes"
-	then
-		AC_MSG_RESULT([yes])
-		AC_MSG_NOTICE([BDB library version $COB_BDB_HEADER found as -l$cobdb])
-	else
-		AC_MSG_RESULT([no])
-		AC_MSG_ERROR([BDB library version $COB_BDB_HEADER not found])
-	fi
-	unset cobdb
-	unset cob_got_db
-	unset COB_BDB_HEADER
-fi
 
 # Checks for dl/ltdl.
 DEFINE_DL="no"
@@ -960,12 +1038,7 @@ then
 	AC_DEFINE([COB_NO_SELFOPEN], [1])
 fi
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes" -a "$with_db" != "yes"
-then
-	COB_HAS_ISAM=no
-else
-	COB_HAS_ISAM=yes
-fi
+
 
 unset COB_USES_GCC_ICC
 unset COB_USES_GCC_ONLY
@@ -976,7 +1049,7 @@ unset MYOCLIBS
 
 # Generate the output
 
-AM_CONDITIONAL([COB_MAKE_IX], [test $COB_HAS_ISAM = yes])
+AM_CONDITIONAL([COB_MAKE_IX], [test $do_cobol85_IX_tests = "yes"])
 
 AC_DEFINE_UNQUOTED([COB_EXPORT_DYN], ["$COB_EXPORT_DYN"])
 AC_DEFINE_UNQUOTED([COB_PIC_FLAGS], ["$COB_PIC_FLAGS"])
@@ -1004,7 +1077,6 @@ AC_SUBST([COB_BIGENDIAN])
 AC_SUBST([COB_FIX_LIB])
 AC_SUBST([COB_FIX_LIBTOOL])
 AC_SUBST([COB_KEYWORD_INLINE])
-AC_SUBST([COB_HAS_ISAM])
 AC_SUBST([COB_PATCH_LEVEL], [$with_patch_level])
 
 AC_CONFIG_FILES([bin/cob-config Makefile libcob/Makefile lib/Makefile
@@ -1047,34 +1119,110 @@ then
 else
   echo " Dynamic loading:  Libtool"
 fi
-echo " Use gettext for international messages:      ${USE_NLS}"
-echo " Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
+echo " Use gettext for international messages:       ${USE_NLS}"
+echo " Use fcntl for file locking:                   ${ac_cv_func_fcntl}"
 if test "$USE_NCURSES" != "no"
 then
-  echo " Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"
+  echo " Use ncurses/pdcurses/curses for screen I/O:   ${USE_NCURSES}"
 else
-  echo " screen I/O (no curses found):                NO"
+  echo " screen I/O (no curses found):                 NO"
 fi
-if test "$with_seqra_extfh" = "yes"
+echo ""
+echo "GNU Cobol FILE I-O:"
+if test "${WITH_RELATIVE}" != ""
 then
-  echo " Use external SEQ/RAN file handler            yes"
+  echo "  Handler for ORGANIZATION RELATIVE I-O:       standard"
 fi
-if test "$with_index_extfh" = "yes"
+if test "${WITH_RELATIVE_NONE}" != ""
 then
-  echo " Use external ISAM file handler               yes"
-elif test "$with_cisam" = "yes"
-then
-  echo " Use CISAM for ISAM I/O                       yes"
-elif test "$with_disam" = "yes"
-then
-  echo " Use DISAM for ISAM I/O                       yes"
-elif test "$with_vbisam" = "yes"
-then
-  echo " Use VBISAM for ISAM I/O                      yes"
-elif test "$with_db" = "yes"
-then
-  echo " Use Berkeley DB for ISAM I/O:                yes"
-else
-  echo " ISAM I/O (no handler configured):            NO"
+  echo "  Handler for ORGANIZATION RELATIVE I-O:       none"
 fi
+
+if test "${WITH_SEQUENTIAL}" != ""
+then
+  echo "  Handler for ORGANIZATION SEQUENTIAL I-O:     standard"
+fi
+if test "${WITH_SEQUENTIAL_NONE}" != ""
+then
+  echo "  Handler for ORGANIZATION SEQUENTIAL I-O:     none"
+fi
+
+if test "${WITH_INDEXED_CISAM}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        CISAM"
+fi
+if test "${WITH_INDEXED_DISAM}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        DISAM"
+fi
+if test "${WITH_INDEXED_VBISAM}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        VBISAM"
+fi
+if test "${WITH_INDEXED_BDB}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        Berkeley DB"
+fi
+if test "${WITH_INDEXED_BDB_1}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        Berkeley DB < 4.1"
+fi
+if test "${WITH_INDEXED_ODBC}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        ODBC Database"
+  if test "$enable_odbc_dynamic_connection" = "yes"
+  then
+     echo "  Get ODBC SERVER and DB names from file-name: yes"
+  fi
+fi
+if test "${WITH_INDEXED_NONE}" != ""
+then
+  echo "  Handler for ORGANIZATION INDEXED I-O:        none"
+fi
+
+if test "${WITH_FILE_STATUS_ANSI85}" != ""
+then
+  echo "  File Status Key coding:                      ANSI85"
+fi
+if test "${WITH_FILE_STATUS_EXTENDED}" != ""
+then
+  echo "  File Status Key coding:                      extended: 9/cobol_rts_errno"
+fi
+if test "${WITH_FILE_STATUS_NATIVE}" != ""
+then
+  echo "  File Status Key coding:                      native: 8/os_errno"
+fi
+if test "${WITH_FILE_STATUS_RM}" != ""
+then
+  echo "  File Status Key coding:                      RM: 9N"
+fi
+
+echo "  Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
+echo "  SEQUENTIAL variable length records style:    ${with_varseq}"
+if test "$enable-relative-fixed" = "yes"
+then
+  echo "  Use fixed length records for RELATIVE:       yes"
+fi
+if test "$enable_fileio_trace" = "yes"
+then
+  echo "  Include code for fileio trace:               yes"
+fi
+if test "$enable_fileio_log" = "yes"
+then
+  echo "  Include code for fileio log:                 yes"        
+fi
+if test "$enable_fileio_stats" = "yes"
+then
+  echo "  Include code for fileio stats:               yes" 
+fi
+if test "$enable_fileio_sharing" = "yes"
+then
+  echo "  Include code for file sharing:               yes" 
+fi
+if test "$enable_fileio_exchange" = "yes"
+then
+  echo "  Include code to call external file-handler:  yes" 
+fi
+echo ""
+
 unset DEFINE_DL
