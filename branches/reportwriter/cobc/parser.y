@@ -4870,16 +4870,32 @@ line_clause_options:
 		cb_warning (_("LINE 0 not implemented"));
 	}
   }
-| PLUS line_clause_integer
+| PLUS report_integer 
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	current_field->report_line = cb_get_int($2);
+	if($2 != cb_int0
+	&& $2 != cb_int1) {
+		if (CB_LITERAL ($2)->sign < 0
+		|| current_field->report_line < 0) {
+			cb_error (_("Positive Integer value expected"));
+		}
+	}
 	if(current_field->report_line == 0) {
 		cb_warning (_("LINE PLUS 0 not implemented"));
 	}
   }
-| TOK_PLUS line_clause_integer
+| TOK_PLUS report_integer 
   {
 	current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	current_field->report_line = cb_get_int($2);
+	if($2 != cb_int0
+	&& $2 != cb_int1) {
+		if (CB_LITERAL ($2)->sign < 0
+		|| current_field->report_line < 0) {
+			cb_error (_("Positive Integer value expected"));
+		}
+	}
 	if(current_field->report_line == 0) {
 		cb_warning (_("LINE PLUS 0 not implemented"));
 	}
@@ -4895,13 +4911,15 @@ line_clause_integer:
   report_integer
   {
 	current_field->report_line = cb_get_int($1);
-	if (CB_LITERAL ($1)->sign > 0) {
-		current_field->report_flag |= COB_REPORT_LINE_PLUS;
-	} else if (CB_LITERAL ($1)->sign < 0
-	|| current_field->report_line < 0) {
-		cb_error (_("Positive Integer value expected"));
-		current_field->report_line = 1;
-		current_field->report_flag |= COB_REPORT_LINE_PLUS;
+	if($1 != cb_int0) {
+		if (CB_LITERAL ($1)->sign > 0) {
+			current_field->report_flag |= COB_REPORT_LINE_PLUS;
+		} else if (CB_LITERAL ($1)->sign < 0
+		|| current_field->report_line < 0) {
+			cb_error (_("Positive Integer value expected"));
+			current_field->report_line = 1;
+			current_field->report_flag |= COB_REPORT_LINE_PLUS;
+		}
 	}
   }
 ;
@@ -9858,7 +9876,7 @@ report_name:
 	if (CB_REPORT_P (cb_ref ($1))) {
 		$$ = $1;
 	} else {
-		cb_error_x ($1, _("'%s' is not a report name"), CB_NAME ($1));
+		cb_error (_("'%s' is not a valid report name"), CB_NAME ($1));
 		$$ = cb_error_node;
 	}
   }

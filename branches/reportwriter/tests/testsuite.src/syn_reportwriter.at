@@ -14,18 +14,17 @@
 ## 
 ## You should have received a copy of the GNU General Public License
 ## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
-
+ 
 ### GNU Cobol Test Suite
-
+ 
 ### ISO+IEC+1989-2002 REPORT WRITER module
-
 
 AT_SETUP([Check REPORT error/warning])
 AT_KEYWORDS([report])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
+       PROGRAM-ID. prog.
        ENVIRONMENT      DIVISION.
        INPUT-OUTPUT     SECTION.
        FILE-CONTROL.
@@ -63,7 +62,7 @@ AT_DATA([prog.cob], [
           88 END-OF-FILE            VALUE 'Y'.
       
        REPORT           SECTION.
-       RD SOME-REPORT
+       RD NO-REPORT
           PAGE LIMIT IS 66 LINES
           HEADING 1
           FIRST DETAIL 5
@@ -87,6 +86,7 @@ AT_DATA([prog.cob], [
              03 COLUMN 32   PIC 9(01) SOURCE TR-ITEM-DEPARTMENT.
              03 COLUMN 40   PIC 9(05) SOURCE TR-ITEM-NUMBER.
              03 COLUMN 51   PIC $$$$.99 SOURCE TR-ITEM-COST.
+
        PROCEDURE        DIVISION.
       
            OPEN INPUT TRANSACTION-DATA,
@@ -115,30 +115,25 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-# Parsing + Error with -std=cobol2002
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
-[prog.cob: 17: Error: LABEL RECORDS does not conform to COBOL 2002
-prog.cob: 19: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 20: Error: DATA RECORDS does not conform to COBOL 2002
-prog.cob: 34: Error: LABEL RECORDS does not conform to COBOL 2002
-prog.cob: 41: Error: 'SOME-REPORT' is not defined
-prog.cob: 41: Error: 'SOME-REPORT' is not a report name
-])
-
-# Check for correct compile and a warning
-AT_CHECK([$COMPILE_ONLY -std=mf prog.cob], [1], ,
-[prog.cob: 17: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 19: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 20: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 34: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 41: Error: 'SOME-REPORT' is not defined
-prog.cob: 41: Error: 'SOME-REPORT' is not a report name
+AT_CHECK([$COMPILE_ONLY -std=mf -Wall prog.cob], [1], [],
+[prog.cob: 16: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 18: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 19: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 33: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 70: Error: 'CUSTOMER-REPORT' is not defined
+prog.cob: 70: Error: 'CUSTOMER-REPORT' is not a valid report name
+prog.cob: 77: Error: syntax error, unexpected FOREVER
+prog.cob: 78: Error: syntax error, unexpected Identifier
+prog.cob: 79: Error: syntax error, unexpected Identifier
+prog.cob: 82: Error: syntax error, unexpected END-READ
+prog.cob: 85: Error: 'CUSTOMER-REPORT' is not defined
+prog.cob: 85: Error: 'CUSTOMER-REPORT' is not a valid report name
 ])
 
 AT_CLEANUP
 
 
-AT_SETUP([REPORT not positive integers in COL / LINE PLUS])
+AT_SETUP([REPORT not positive integers in COL / LINE [PLUS]])
 AT_KEYWORDS([report])
 
 AT_DATA([prog.cob], [
@@ -148,7 +143,7 @@ AT_DATA([prog.cob], [
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT out-file ASSIGN "dummy.txt"
+       SELECT out-file ASSIGN "blah.txt"
            ORGANIZATION LINE SEQUENTIAL.
 
        DATA DIVISION.
@@ -163,11 +158,8 @@ AT_DATA([prog.cob], [
           02  LINE PLUS 0.
               03 COLUMN 01      PIC X(09) VALUE 'CUST. NO.'.
               03 COLUMN PLUS 0  PIC X(09) VALUE 'ITEM'.
-          02  LINE + 2.
-              03 COLUMN 01      PIC X(09) VALUE 'PLUS'.
-              03 COLUMN + 5     PIC X(09) VALUE 'ITEM'.
           02  LINE PLUS zero.
-              03 COLUMN + 0     PIC X(09) VALUE 'PLUS2'.
+              03 COLUMN 1.5     PIC X(09) VALUE 'CUST. NO.'.
               03 COLUMN + -10   PIC X(09) VALUE 'ITEM'.
 
 
@@ -180,12 +172,14 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-# Check for correct compile and a warning
-AT_CHECK([$COMPILE_ONLY -std=mf prog.cob], [1], ,
-[prog.cob: 18: Error: Invalid integer
-prog.cob: 22: Error: Invalid integer
-prog.cob: 27: Error: Invalid integer
-prog.cob: 28: Error: Invalid integer
+AT_CHECK([$COMPILE_ONLY -std=mf -Wall prog.cob], [1], [],
+[prog.cob: 17: Error: Invalid COLUMN integer; Must be > 0
+prog.cob: 19: Warning: LINE PLUS 0 not implemented
+prog.cob: 22: Warning: LINE PLUS 0 not implemented
+prog.cob: 23: Error: Positive Integer value expected
+prog.cob: 24: Error: Positive Integer value expected
+prog.cob: 12: Warning: NO DETAIL line defined in report rp
+prog.cob: 30: Error: 'rp-detail' is not defined
 ])
 
 AT_CLEANUP

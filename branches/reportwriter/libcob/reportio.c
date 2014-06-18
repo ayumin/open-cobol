@@ -302,7 +302,7 @@ reportInitialize()
 		return;
 	bDidReportInit = 1;
 	if((env = getenv("OCREPORTDEBUG")) != NULL
-	&& toupper(*env) == 'Y') {
+	&& (toupper(*env) == 'Y')) {
 		fdbg = fopen("/tmp/ocreport.log","w");
 	}
 }
