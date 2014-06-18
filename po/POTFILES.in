@@ -23,6 +23,7 @@ libcob/call.c
 libcob/common.c
 libcob/fileio.c
 libcob/move.c
+libcob/reportio.c
 libcob/screenio.c
 libcob/termio.c
 
