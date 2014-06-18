@@ -864,6 +864,7 @@ cb_get_int (const cb_tree x)
 	size_t			i;
 	int			val;
 
+	if(x == NULL)		return 0;
 	if(x == cb_int0)	return 0;
 	if(x == cb_int1)	return 1;
 	if(x == cb_int2)	return 2;
@@ -2455,13 +2456,16 @@ finalize_report (struct cb_report *r, struct cb_field *records)
 		&& r->t_last_detail == NULL
 		&& r->t_last_control == NULL
 		&& r->t_footing == NULL) {	/* No PAGE LIMITS set at run-time so check it now */
-			if(!(r->first_detail >= r->heading)) {
+			if(r->first_detail <= 0) {
+				cb_warning_x (CB_TREE(r), _("NO DETAIL line defined in report %s"),r->name);
+			} else if(!(r->first_detail >= r->heading)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT FIRST DETAIL should be >= HEADING"));
-			} else if(!(r->footing >= r->heading)) {
+			} 
+			if(r->footing > 0 && !(r->footing >= r->heading)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT FOOTING should be >= HEADING"));
 			} else if(!(r->last_detail >= r->first_detail)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT LAST DETAIL should be >= FIRST DETAIL"));
-			} else if(!(r->footing >= r->last_detail)) {
+			} else if(r->footing > 0 && !(r->footing >= r->last_detail)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT FOOTING should be >= LAST DETAIL"));
 			} else if(!(r->lines >= r->footing)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT LINES should be >= FOOTING"));
