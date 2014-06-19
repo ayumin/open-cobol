@@ -1110,12 +1110,12 @@ following example.@*@*
                     10 optionname   pic x(25).
                     10 has-value    pic 9.
                     10 valpoint     pointer value NULL.
-                    10 return-value pic x.
+                    10 return-value pic x(4).
         
             01 longind     pic 99.
             01 long-only   pic 9 value 1.
         
-            01 return-char pic x.
+            01 return-char pic x(4).
             01 opt-val     pic x(10).
             
             01 counter     pic 9 value 0.
@@ -1140,8 +1140,10 @@ The field oname defines the name of a longoption, has-value defines if an option
 demanded(has-val = 1), optional(2) or not required(0). @*
 The longoption structure is immutable! You can vary the amount of records only.
 The pointer valpoint is used to specify an address to save getopt's return value to. The pointer 
-is optional. If it is NULL, getopt returns a value as usual. @*
-The field val is a single character which is returned if the longoption was recognized.@*@*
+is optional. If it is NULL, getopt returns a value as usual. If you use the pointer it has to 
+point to a PIC X(4) field.@*
+The field val is a PIC X(4) character which is returned 
+if the longoption was recognized.@*@*
 Now we have the tools to run CBL_OC_GETOPT within the procedure division.@*
 
 @example

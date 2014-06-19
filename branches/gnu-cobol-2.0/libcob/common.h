@@ -223,7 +223,7 @@
 
 #endif
 
-#elif defined (_MSC_VER)
+#elif defined(_MSC_VER) && (_MSC_VER >= 1400)
 
 #define COB_BSWAP_16(val) (_byteswap_ushort (val))
 #define COB_BSWAP_32(val) (_byteswap_ulong (val))
@@ -1305,7 +1305,7 @@ typedef struct longoption_def{
 	char name[25];
 	char has_option;
 	char return_value_pointer[sizeof(char*)];
-	char return_value;
+	char return_value[4];
 } longoption_def;
 
 
