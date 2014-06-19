@@ -4068,6 +4068,11 @@ main (int argc, char **argv)
 	/* Enable default I/O exceptions */
 	CB_EXCEPTION_ENABLE (COB_EC_I_O) = 1;
 
+	/* Compiler initialization I */
+#ifndef	HAVE_DESIGNATED_INITS
+	cobc_init_reserved ();
+#endif
+
 	/* Process command line arguments */
 	iargs = process_command_line (argc, argv);
 
@@ -4171,10 +4176,9 @@ main (int argc, char **argv)
 		cb_pretty_display = 0;
 	}
 
-	/* Compiler initialization */
+	/* Compiler initialization II */
 #ifndef	HAVE_DESIGNATED_INITS
 	cobc_init_scanner ();
-	cobc_init_reserved ();
 	cobc_init_typeck ();
 #endif
 
