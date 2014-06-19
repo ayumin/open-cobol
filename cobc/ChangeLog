@@ -1,3 +1,8 @@
+2014-06-19  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobc.c : Fixing compilers (like MSC) that don't HAVE_DESIGNATED_INITS
+		cobc_init_reserved() has to be called before process_command_line()
+
 2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* scanner.* : Fixing #71 Referencing GLOBAL 78/CONSTANT in SELECT
