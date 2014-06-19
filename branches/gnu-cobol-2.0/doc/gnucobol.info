@@ -1,4 +1,4 @@
-Dies ist gnucobol.info, hergestellt von Makeinfo Version 4.8 aus
+This is gnucobol.info, produced by makeinfo version 4.13 from
 gnucobol.texi.
 
 INFO-DIR-SECTION COBOL
@@ -1074,12 +1074,12 @@ following example.
                     10 optionname   pic x(25).
                     10 has-value    pic 9.
                     10 valpoint     pointer value NULL.
-                    10 return-value pic x.
+                    10 return-value pic x(4).
 
             01 longind     pic 99.
             01 long-only   pic 9 value 1.
 
-            01 return-char pic x.
+            01 return-char pic x(4).
             01 opt-val     pic x(10).
 
             01 counter     pic 9 value 0.
@@ -1102,9 +1102,10 @@ longoption, has-value defines if an option value is demanded(has-val =
 The longoption structure is immutable! You can vary the amount of
 records only.  The pointer valpoint is used to specify an address to
 save getopt's return value to. The pointer is optional. If it is NULL,
-getopt returns a value as usual.
-The field val is a single character which is returned if the longoption
-was recognized.
+getopt returns a value as usual. If you use the pointer it has to point
+to a PIC X(4) field.
+The field val is a PIC X(4) character which is returned if the
+longoption was recognized.
 Now we have the tools to run CBL_OC_GETOPT within the procedure
 division.
         procedure division.
@@ -1161,9 +1162,8 @@ The return-codes of CBL_OC_GETOPT are:
 
 File: gnucobol.info,  Node: Appendix A,  Next: Appendix B,  Prev: System routines,  Up: Top
 
-Anhang A `cobc --help'
-**********************
-
+Appendix A `cobc --help'
+************************
 
 Usage: cobc [options] file ...
 
@@ -1283,9 +1283,8 @@ Options:
 
 File: gnucobol.info,  Node: Appendix B,  Next: Appendix C,  Prev: Appendix A,  Up: Top
 
-Anhang B `cobc --info'
-**********************
-
+Appendix B `cobc --info'
+************************
 
 cobc (GNU Cobol) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
@@ -1326,9 +1325,8 @@ ISAM handler             : BDB
 
 File: gnucobol.info,  Node: Appendix C,  Next: Appendix D,  Prev: Appendix B,  Up: Top
 
-Anhang C `cobc --list-reserved'
-*******************************
-
+Appendix C `cobc --list-reserved'
+*********************************
 
 
 Reserved Words			Implemented (Y/N)
@@ -1931,9 +1929,8 @@ COB-CRT-STATUS			PIC 9(4)
 
 File: gnucobol.info,  Node: Appendix D,  Next: Appendix E,  Prev: Appendix C,  Up: Top
 
-Anhang D `cobc --list-intrinsics'
-*********************************
-
+Appendix D `cobc --list-intrinsics'
+***********************************
 
 
 Intrinsic Function		Implemented	Parameters
@@ -2045,9 +2042,8 @@ YEAR-TO-YYYY			Y		Variable
 
 File: gnucobol.info,  Node: Appendix E,  Next: Appendix F,  Prev: Appendix D,  Up: Top
 
-Anhang E `cobc --list-system'
-*****************************
-
+Appendix E `cobc --list-system'
+*******************************
 
 
 System routine			Parameters
@@ -2105,9 +2101,8 @@ X"F5"				2
 
 File: gnucobol.info,  Node: Appendix F,  Prev: Appendix E,  Up: Top
 
-Anhang F `cobc --list-mnemonics'
-********************************
-
+Appendix F `cobc --list-mnemonics'
+**********************************
 
 
 Mnemonic names
@@ -2175,9 +2170,8 @@ SW15		Switch name
 
 File: gnucobol.info,  Node: Appendix G,  Up: Top
 
-Anhang G config/default.conf
-****************************
-
+Appendix G config/default.conf
+******************************
 
 # GNU Cobol compiler configuration
 #
@@ -2325,50 +2319,50 @@ value-of-clause:			obsolete
 
 
 Tag Table:
-Node: Top1018
-Node: Getting Started3355
-Node: Hello World!3532
-Node: Compile4916
-Node: Compiler Options5275
-Node: Help Options5949
-Ref: Help Options-Footnote-17590
-Node: Built Target7633
-Ref: Built Target-Footnote-19748
-Node: Source Format9801
-Node: Warning Options10711
-Node: Configuration Options11895
-Node: Debug Switches12640
-Node: Miscellaneous13726
-Node: Multiple Sources14536
-Node: Static Linking15216
-Node: Dynamic Linking16741
-Ref: Dynamic Linking-Footnote-118139
-Ref: Dynamic Linking-Footnote-218192
-Node: Building Library18245
-Node: Using Library18628
-Node: C Interface19199
-Node: Main C Program19543
-Node: Static C to COBOL20458
-Node: Dynamic C to COBOL21945
-Node: Static COBOL to C23395
-Node: Dynamic COBOL to C24827
-Node: Customize25232
-Node: Customizing Compiler25456
-Node: Customizing Library26034
-Node: Optimize26348
-Node: Optimize Options26651
-Node: Optimize Call27191
-Node: Optimize Binary27569
-Node: Debug28149
-Node: Debug Options28310
-Node: System routines28653
-Node: CBL_OC_GETOPT28825
-Node: Appendix A32509
-Node: Appendix B38395
-Node: Appendix C40048
-Node: Appendix D49742
-Node: Appendix E52154
-Node: Appendix F53104
-Node: Appendix G54437
+Node: Top1015
+Node: Getting Started3352
+Node: Hello World!3529
+Node: Compile4913
+Node: Compiler Options5272
+Node: Help Options5946
+Ref: Help Options-Footnote-17587
+Node: Built Target7630
+Ref: Built Target-Footnote-19745
+Node: Source Format9798
+Node: Warning Options10708
+Node: Configuration Options11892
+Node: Debug Switches12637
+Node: Miscellaneous13723
+Node: Multiple Sources14533
+Node: Static Linking15213
+Node: Dynamic Linking16738
+Ref: Dynamic Linking-Footnote-118136
+Ref: Dynamic Linking-Footnote-218189
+Node: Building Library18242
+Node: Using Library18625
+Node: C Interface19196
+Node: Main C Program19540
+Node: Static C to COBOL20455
+Node: Dynamic C to COBOL21942
+Node: Static COBOL to C23392
+Node: Dynamic COBOL to C24824
+Node: Customize25229
+Node: Customizing Compiler25453
+Node: Customizing Library26031
+Node: Optimize26345
+Node: Optimize Options26648
+Node: Optimize Call27188
+Node: Optimize Binary27566
+Node: Debug28146
+Node: Debug Options28307
+Node: System routines28650
+Node: CBL_OC_GETOPT28822
+Node: Appendix A32574
+Node: Appendix B38463
+Node: Appendix C40119
+Node: Appendix D49816
+Node: Appendix E52231
+Node: Appendix F53184
+Node: Appendix G54520
 
 End Tag Table
