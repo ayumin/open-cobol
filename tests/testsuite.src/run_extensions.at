@@ -30,7 +30,9 @@ AT_DATA([dump.c], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-int dump (unsigned char *, int *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *, int *);
 int dump (unsigned char *data, int *p)
 {
   int i;
@@ -2431,12 +2433,12 @@ AT_DATA([prog.cob], [
                     10 ONAME        PIC X(25).
                     10 HAS-VALUE    PIC 9.
                     10 VALPOINT     POINTER     VALUE NULL.
-                    10 VAL          PIC X.
+                    10 VAL          PIC X(4).
 
             01 SO PIC X(256).
             01 LONGIND PIC 99.
             01 LONG-ONLY PIC 9 VALUE 1.
-            01 RETURN-CHAR PIC X.
+            01 RETURN-CHAR PIC X(4).
             01 OPT-VAL PIC X(10).
             01 RET-DISP PIC S9 VALUE 0.
             
@@ -2496,12 +2498,12 @@ AT_DATA([prog2.cob], [
                     10 ONAME        PIC X(25).
                     10 HAS-VALUE    PIC 9.
                     10 VALPOINT     POINTER     VALUE NULL.
-                    10 VAL          PIC X.
+                    10 VAL          PIC X(4).
 
             78 SO VALUE "jkl".
             01 LONGIND PIC 99.
             01 LONG-ONLY PIC 9 VALUE 1.
-            01 RETURN-CHAR PIC X.
+            01 RETURN-CHAR PIC X(4).
             01 OPT-VAL PIC X(10).
             01 RET-DISP PIC S9 VALUE 0.
             
@@ -2548,10 +2550,10 @@ AT_DATA([prog3.cob], [
                     10 ONAME        PIC X(25).
                     10 HAS-VALUE    PIC 9.
                     10 VALPOINT     POINTER     VALUE NULL.
-                    10 VAL          PIC X.
+                    10 VAL          PIC X(4).
             01 LONGIND PIC 99.
             01 LONG-ONLY PIC 9 VALUE 0.
-            01 RETURN-CHAR PIC X.
+            01 RETURN-CHAR PIC X(4).
             01 OPT-VAL PIC X(10).
             01 RET-DISP PIC S9 VALUE 0.
             
@@ -2621,16 +2623,16 @@ AT_DATA([prog4.cob], [
                     10 ONAME        PIC X(25).
                     10 HAS-VALUE    PIC 9.
                     10 VALPOINT     POINTER     VALUE NULL.
-                    10 VAL          PIC X.
+                    10 VAL          PIC X(4).
             01 LONGIND PIC 99.
             01 LONG-ONLY PIC 9 VALUE 1.
-            01 RETURN-CHAR PIC X.
+            01 RETURN-CHAR PIC X(4).
             01 OPT-VAL PIC X(10).
             01 RET-DISP PIC S999 VALUE 0.
 
             01 COUNTER PIC 9 VALUE 0.
 
-            01 FLAG-VAL PIC 9.
+            01 FLAG-VAL PIC X(4).
         procedure division.
             MOVE "jkl" TO SO.
 
@@ -2695,10 +2697,10 @@ AT_DATA([prog5.cob], [
                     10 ONAME        PIC X(45).
                     10 HAS-VALUE    PIC 9.
                     10 VALPOINT     POINTER     VALUE NULL.
-                    10 VAL          PIC X.
+                    10 VAL          PIC X(4).
             01 LONGIND PIC 99.
             01 LONG-ONLY PIC 9 VALUE 1.
-            01 RETURN-CHAR PIC X.
+            01 RETURN-CHAR PIC X(4).
             01 OPT-VAL PIC X(10).
             01 RET-DISP PIC S999 VALUE 0.
 
@@ -2734,9 +2736,9 @@ AT_DATA([prog5.cob], [
             STOP RUN.
 ])
 
-AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
 AT_CHECK([./prog --version --verbose -jkl], [0], [])
-AT_CHECK([$COMPILE_MODULE prog2.cob], [0], , [])
+AT_CHECK([$COMPILE_MODULE prog2.cob], [0], [], [])
 AT_CHECK([$COBCRUN prog2 --ver --vers], [0], [], [prog2: option `--ver' is ambiguous
 ])
 AT_CHECK([$COMPILE prog3.cob], [0], , [])

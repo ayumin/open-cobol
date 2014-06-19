@@ -3416,6 +3416,7 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	int exit_status;
 
 	char* shortoptions;
+	char* temp;
 
 	struct option* longoptions;
 	longoption_def* l;
@@ -3425,7 +3426,7 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	int j;
 
 	unsigned int optlen;
-	unsigned int c;
+	int return_value;
 
 	COB_UNUSED (idx);
 	COB_UNUSED (lo);
@@ -3473,7 +3474,7 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 		longoptions->name = l->name;
 		longoptions->has_arg = (int) l->has_option - '0';
 		memcpy(&longoptions->flag, l->return_value_pointer, sizeof(char*));
-		longoptions->val = (int)l->return_value;
+		memcpy(&longoptions->val, &l->return_value, 4);
 
 		l = l + 1; /* +1 means pointer + 1*sizeof(longoption_def) */
 		longoptions = longoptions + 1;
@@ -3491,16 +3492,24 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	l -= lo_amount; /* Set pointer back to begin of longoptions */
 	longoptions -= lo_amount;
 
-	c = cob_getopt_long_long(cob_argc, cob_argv, shortoptions, longoptions, &longind, long_only);
-
+	return_value = cob_getopt_long_long(cob_argc, cob_argv, shortoptions, longoptions, &longind, long_only);
+	temp = (char*) &return_value;
+	
 	/*
 	 * Write data back to Cobol
 	 */
-	if (c == '?' || c == ':' || c == 'W' || c == -1 || c == 0) exit_status = c;
+	if (temp[0] == '?' || temp[0] == ':' || temp[0] == 'W' 
+		|| temp[0] == -1 || temp[0] == 0) exit_status = return_value;
 	else exit_status = 3;
-	
+
+	for(i = 3; i > 0; i--) {
+		if(temp[i] == 0x00) temp[i] = 0x20;
+		else break;
+	}
+
 	cob_set_int(COB_MODULE_PTR->cob_procedure_params[2], longind);
-	memcpy(return_char, &c, 1);
+	memcpy(return_char, &return_value, 4);
+
 	if(cob_optarg != NULL) {
 		memset(opt_val, 0x00, opt_val_size);
 		
