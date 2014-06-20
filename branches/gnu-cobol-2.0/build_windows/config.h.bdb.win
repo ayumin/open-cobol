@@ -1,4 +1,4 @@
-/* config.h	Win32/x64 with VS2005-2013 */
+/* config.h	Win32/x64 VS2003-2013  */
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -83,6 +83,9 @@
 /* #undef HAVE_DCGETTEXT */
 
 /* Has designated initializers */
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+#define HAVE_DESIGNATED_INITS 1
+#endif
 /* #undef HAVE_DESIGNATED_INITS */
 
 /* Define to 1 if you have the <disam.h> header file. */
@@ -275,7 +278,7 @@
 /* #undef HAVE_USE_LEGACY_CODING */
 
 /* Define to 1 if you have the <vbisam.h> header file. */
-#define HAVE_VBISAM_H 1
+/* #undef HAVE_VBISAM_H */
 
 /* Define to 1 if you have the `vprintf' function. */
 #define HAVE_VPRINTF 1
@@ -360,7 +363,7 @@
 /* #undef WITH_CISAM */
 
 /* Compile with the Berkeley DB library */
-/* #undef WITH_DB */
+#define WITH_DB 1
 
 /* Use DISAM as ISAM handler */
 /* #undef WITH_DISAM */
@@ -375,7 +378,7 @@
 #define WITH_VARSEQ 0
 
 /* Use VBISAM as ISAM handler */
-#define WITH_VBISAM 1
+/* #undef WITH_VBISAM */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

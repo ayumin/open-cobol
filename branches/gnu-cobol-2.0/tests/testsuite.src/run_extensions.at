@@ -667,8 +667,9 @@ AT_KEYWORDS([extensions])
 AT_DATA([setfilename.c], [
 #include <stdio.h>
 #include <string.h>
+#define COB_LIB_EXPIMP
 #include <libcob.h>
-int setfilename (cob_file *f, unsigned char *name)
+COB_EXPIMP int setfilename (cob_file *f, unsigned char *name)
 {
   memcpy (f->assign->data, name, strlen ((char *)name));
   return 0;

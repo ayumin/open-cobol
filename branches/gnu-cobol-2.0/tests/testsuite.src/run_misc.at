@@ -408,7 +408,9 @@ AT_DATA([dump.c], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-int dump (unsigned char *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *);
 int dump (unsigned char *data)
 {
   printf ("%02x%02x%02x", data[[0]], data[[1]], data[[2]]);
@@ -733,6 +735,9 @@ binary-byteorder: native
 
 AT_DATA([dump.c], [
 #include <stdio.h>
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (int *);
 int dump (int *p)
 {
   printf ("%8.8d\n", *p);
