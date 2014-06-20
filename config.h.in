@@ -21,6 +21,9 @@
 /* Can not dlopen self */
 #undef COB_NO_SELFOPEN
 
+/* Object extension */
+#undef COB_OBJEXT
+
 /* Enable CALL parameter checking */
 #undef COB_PARAM_CHECK
 

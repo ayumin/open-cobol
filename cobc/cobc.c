@@ -2561,21 +2561,23 @@ process_filename (const char *filename)
 		/* Already compiled */
 		fn->need_preprocess = 0;
 		fn->need_translate = 0;
-#if	defined (_MSC_VER) || defined (__WATCOMC__) || defined (__BORLANDC__)
-	} else if (strcmp (extension, "obj") == 0 ||
-		   strcmp (extension, "lib") == 0) {
-#elif	defined(__OS400__)
-	} else if (extension[0] == 0) {
-#else
-	} else if (strcmp (extension, "o") == 0 ||
-#if	defined(__MINGW32__) || defined(__MINGW64__)
-		   strcmp (extension, "lib") == 0 ||
+	}
+	else if (
+#if	defined(__OS400__)
+			extension[0] == 0
+#else	
+			strcmp (extension, COB_OBJECT_EXT) == 0
+#if	defined(_WIN32)
+			|| strcmp(extension, "lib") == 0
 #endif
-		   strcmp (extension, "a") == 0 ||
-		   strcmp (extension, "so") == 0 ||
-		   strcmp (extension, "dylib") == 0 ||
-		   strcmp (extension, "sl") == 0) {
+#if	!defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+		    || strcmp(extension, "a") == 0
+		    || strcmp(extension, "so") == 0
+		    || strcmp(extension, "dylib") == 0
+			|| strcmp(extension, "sl") == 0
 #endif
+#endif
+	) {
 		/* Already assembled */
 		fn->need_preprocess = 0;
 		fn->need_translate = 0;
@@ -2621,17 +2623,9 @@ process_filename (const char *filename)
 	} else if (output_name && cb_compile_level == CB_LEVEL_ASSEMBLE) {
 		fn->object = cobc_main_strdup (output_name);
 	} else if (save_temps || cb_compile_level == CB_LEVEL_ASSEMBLE) {
-#if	defined(_MSC_VER) || defined(__OS400__) || defined(__WATCOMC__) || defined(__BORLANDC__)
-		fn->object = cobc_stradd_dup (fbasename, ".obj");
-#else
-		fn->object = cobc_stradd_dup (fbasename, ".o");
-#endif
+		fn->object = cobc_stradd_dup(fbasename, "."COB_OBJECT_EXT);
 	} else {
-#if	defined(_MSC_VER) || defined(__OS400__) || defined(__WATCOMC__) || defined(__BORLANDC__)
-		fn->object = cobc_stradd_dup (fbasename, ".obj");
-#else
-		fn->object = cobc_temp_name (".o");
-#endif
+		fn->object = cobc_temp_name ("."COB_OBJECT_EXT);
 	}
 	fn->object_len = strlen (fn->object);
 	cobc_objects_len += fn->object_len + 8U;
@@ -4095,7 +4089,11 @@ main (int argc, char **argv)
 		manilink = "/link /manifest";
 	}
 #else
-	manilink = "/link";
+	if (!verbose_output) {
+		manilink = "/link /nologo";
+	} else {
+		manilink = "/link";
+	}
 #endif
 	manilink_len = strlen (manilink);
 #endif

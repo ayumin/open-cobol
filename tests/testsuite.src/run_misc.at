@@ -664,7 +664,7 @@ AT_DATA([caller.cob], [
 
 AT_CHECK([$COMPILE_MODULE -c callee.cob], [0], , [])
 AT_CHECK([$COMPILE -c caller.cob], [0], , [])
-AT_CHECK([$COMPILE -o prog caller.o callee.o], [0], , [])
+AT_CHECK([$COMPILE -o prog caller.$OBJECT_EXT callee.$OBJECT_EXT], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -2170,7 +2170,7 @@ AT_CHECK([$COMPILE_MODULE -std=default prog1.cob], [0], , [prog1.cob: 13: Warnin
 prog1.cob: 17: Warning: ENTRY is obsolete in GNU Cobol
 ])
 AT_CHECK([$COMPILE main-prog.cob], [0], [], [])
-AT_CHECK([export COB_PRE_LOAD=prog:prog1; ./main-prog], [0], [12abc
+AT_CHECK([export COB_PRE_LOAD="prog"$PATHSEP"prog1"; ./main-prog], [0], [12abc
 11
 xxxxx
 ], [])
