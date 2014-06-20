@@ -95,7 +95,9 @@ AT_DATA([dump.c], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-int dump (unsigned char *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *);
 int dump (unsigned char *data)
 {
   int i;
@@ -3364,6 +3366,9 @@ AT_KEYWORDS([fundamental])
 
 AT_DATA([dump.c], [
 #include <stdio.h>
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (char *);
 int dump (char *p)
 {
   printf ("%c%c", p[[0]], p[[1]]);
