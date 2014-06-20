@@ -80,6 +80,7 @@ defaults.h: Makefile.am $(top_builddir)/config.status
 	  echo "#define COB_COPY_DIR     \"$(COB_COPY_DIR)\"";		\
 	  echo "#define COB_LIBRARY_PATH \"$(COB_LIBRARY_PATH)\"";	\
 	  echo "#define COB_MODULE_EXT   \"$(COB_MODULE_EXT)\"";	\
+	  echo "#define COB_OBJECT_EXT   \"$(COB_OBJECT_EXT)\"";	\
 	  echo "#define COB_BLD_CC       \"$(CC)\"";			\
 	  echo "#define COB_BLD_CPPFLAGS \"$(CPPFLAGS)\"";		\
 	  echo "#define COB_BLD_CFLAGS   \"$(CFLAGS)\"";		\

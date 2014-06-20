@@ -15980,9 +15980,9 @@ $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:667: \$COMPILE -o prog caller.o callee.o"
-at_fn_check_prepare_dynamic "$COMPILE -o prog caller.o callee.o" "run_misc.at:667"
-( $at_check_trace; $COMPILE -o prog caller.o callee.o
+$as_echo "$at_srcdir/run_misc.at:667: \$COMPILE -o prog caller.\$OBJECT_EXT callee.\$OBJECT_EXT"
+at_fn_check_prepare_dynamic "$COMPILE -o prog caller.$OBJECT_EXT callee.$OBJECT_EXT" "run_misc.at:667"
+( $at_check_trace; $COMPILE -o prog caller.$OBJECT_EXT callee.$OBJECT_EXT
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
@@ -19142,9 +19142,9 @@ $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_misc.at:2173: export COB_PRE_LOAD=prog:prog1; ./main-prog"
-at_fn_check_prepare_trace "run_misc.at:2173"
-( $at_check_trace; export COB_PRE_LOAD=prog:prog1; ./main-prog
+$as_echo "$at_srcdir/run_misc.at:2173: export COB_PRE_LOAD=\"prog\"\$PATHSEP\"prog1\"; ./main-prog"
+at_fn_check_prepare_dynamic "export COB_PRE_LOAD=\"prog\"$PATHSEP\"prog1\"; ./main-prog" "run_misc.at:2173"
+( $at_check_trace; export COB_PRE_LOAD="prog"$PATHSEP"prog1"; ./main-prog
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
