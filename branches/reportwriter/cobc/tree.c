@@ -2445,10 +2445,12 @@ finalize_report (struct cb_report *r, struct cb_field *records)
 	struct cb_field		*p;
 	if(report_checked != r) {
 		report_checked = r;
-		if(r->lines <= 0)
+		if(r->lines > 9999)
 			r->lines = 9999;
-		if(r->heading < 1)
-			r->heading = 1;
+		if(r->heading < 0)
+			r->heading = 0;
+		if(r->first_detail < 1)
+			r->first_detail = 1;
 		if(r->t_lines == NULL
 		&& r->t_columns == NULL
 		&& r->t_heading == NULL
@@ -2463,7 +2465,7 @@ finalize_report (struct cb_report *r, struct cb_field *records)
 			} 
 			if(r->footing > 0 && !(r->footing >= r->heading)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT FOOTING should be >= HEADING"));
-			} else if(!(r->last_detail >= r->first_detail)) {
+			} else if(r->last_detail > 0 && !(r->last_detail >= r->first_detail)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT LAST DETAIL should be >= FIRST DETAIL"));
 			} else if(r->footing > 0 && !(r->footing >= r->last_detail)) {
 				cb_error_x (CB_TREE(r), _("PAGE LIMIT FOOTING should be >= LAST DETAIL"));
