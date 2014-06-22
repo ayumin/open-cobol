@@ -2,20 +2,20 @@
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
 
-   This file is part of GNU Cobol.
+   This file is part of OpenCOBOL.
 
-   The GNU Cobol compiler is free software: you can redistribute it
+   The OpenCOBOL compiler is free software: you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation, either version 3 of the
    License, or (at your option) any later version.
 
-   GNU Cobol is distributed in the hope that it will be useful,
+   OpenCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+   along with OpenCOBOL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -1148,7 +1148,8 @@ compute_size (struct cb_field *f)
 				c->offset = f->offset + size;
 				size += compute_size (c) * c->occurs_max;
 				if(c->storage == CB_STORAGE_REPORT
-				&& c->report_column > 0) {/* offset based on COLUMN value */
+				&& !(c->report_flag & COB_REPORT_COLUMN_PLUS)
+				&& c->report_column > 0) {	/* offset based on COLUMN value */
 					c->offset = c->report_column - 1;
 				}
 
@@ -1213,8 +1214,9 @@ compute_size (struct cb_field *f)
 	} else {
 		/* Elementary item */
 		if(f->storage == CB_STORAGE_REPORT
+		&& !(f->report_flag & COB_REPORT_COLUMN_PLUS)
 		&& f->report_column > 0) {		/* offset based on COLUMN value */
-			f->offset = f->report_column - 1;	
+				f->offset = f->report_column - 1;	
 		}
 		switch (f->usage) {
 		case CB_USAGE_COMP_X:
