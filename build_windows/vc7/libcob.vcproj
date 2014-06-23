@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -34,7 +34,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mpir.lib pdcurses.lib libvbisam.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir).."
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(SolutionDir)..\$(PlatformName)"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -76,7 +77,7 @@
 				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -87,7 +88,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mpir.lib pdcurses.lib libvbisam.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(SolutionDir).."
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(SolutionDir)..\$(PlatformName)"
 				ModuleDefinitionFile=""
 				DelayLoadDLLs=""
 				GenerateDebugInformation="TRUE"
@@ -166,9 +168,6 @@
 				RelativePath="..\..\libcob\coblocal.h">
 			</File>
 			<File
-				RelativePath="..\..\libcob\codegen.h">
-			</File>
-			<File
 				RelativePath="..\..\libcob\common.h">
 			</File>
 			<File
@@ -182,6 +181,9 @@
 			</File>
 			<File
 				RelativePath="..\..\libcob\system.def">
+			</File>
+			<File
+				RelativePath="..\..\cobc\tree.h">
 			</File>
 		</Filter>
 		<Filter

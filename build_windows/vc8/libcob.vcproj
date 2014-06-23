@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -66,7 +66,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mpir.lib pdcurses.lib libvbisam.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir).."
+				AdditionalLibraryDirectories="$(SolutionDir)..\$(PlatformName)"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -130,7 +130,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -149,7 +149,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mpir.lib pdcurses.lib libvbisam.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(SolutionDir).."
+				AdditionalLibraryDirectories="$(SolutionDir)..\$(PlatformName)"
 				ModuleDefinitionFile=""
 				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
@@ -210,7 +210,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -290,7 +290,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -407,10 +407,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libcob\codegen.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libcob\common.h"
 				>
 			</File>
@@ -428,6 +424,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libcob\system.def"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cobc\tree.h"
 				>
 			</File>
 		</Filter>
