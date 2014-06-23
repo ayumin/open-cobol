@@ -80,7 +80,7 @@
     <None Include="..\..\cobc\ChangeLog" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\cobgetopt.h">
+    <ClInclude Include="..\..\libcob\cobgetopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
@@ -108,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\libcob\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libcob\cobgetopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
