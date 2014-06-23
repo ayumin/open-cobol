@@ -22,7 +22,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(TargetName)\"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -102,7 +102,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(TargetName)\"
 			ConfigurationType="2"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -130,7 +130,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -185,7 +185,7 @@
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(TargetName)\"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -209,7 +209,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -265,7 +265,7 @@
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(TargetName)\"
 			ConfigurationType="2"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -289,7 +289,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCOB_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -398,6 +398,18 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="config.h"
+				>
+			</File>
+			<File
+				RelativePath="defaults.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cobc\tree.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libcob\cobgetopt.h"
 				>
 			</File>
@@ -406,19 +418,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libcob\codegen.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libcob\common.h"
-				>
-			</File>
-			<File
-				RelativePath="config.h"
-				>
-			</File>
-			<File
-				RelativePath="defaults.h"
 				>
 			</File>
 			<File

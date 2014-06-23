@@ -41,9 +41,9 @@
 #define COB_BLD_CC       "cl"
 #define COB_BLD_CPPFLAGS ""
 #ifdef _DEBUG
-#define COB_BLD_CFLAGS   "/Od /Gm /EHsc /RTC1 /MDd /GS /W3 /nologo /c /Zi /TP"
+#define COB_BLD_CFLAGS   "/Od /Gm /EHsc /RTC1 /MDd /GS /c /Zi /TP"
 #else
-#define COB_BLD_CFLAGS   "/O2 /Ot /GL /FD /EHsc /MD /GS /W4 /nologo /c /Zi /TP"
+#define COB_BLD_CFLAGS   "/O2 /Ot /GL /FD /EHsc /MD /GS /c /Zi /TP"
 #endif
 #define COB_BLD_LD       "link.exe"
 #define COB_BLD_LDFLAGS  ""

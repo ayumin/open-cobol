@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -33,6 +33,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="1"
@@ -73,7 +74,7 @@
 				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\.."
-				PreprocessorDefinitions="HAVE_CONFIG_H"
+				PreprocessorDefinitions="HAVE_CONFIG_H;WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -83,6 +84,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
