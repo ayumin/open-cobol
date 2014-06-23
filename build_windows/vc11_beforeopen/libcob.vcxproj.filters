@@ -47,13 +47,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\libcob\cobgetopt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\libcob\coblocal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libcob\codegen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\libcob\common.h">
@@ -65,7 +59,7 @@
     <ClInclude Include="defaults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cobc\tree.h">
+    <ClInclude Include="..\..\libcob\cobgetopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

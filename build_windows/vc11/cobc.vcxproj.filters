@@ -14,13 +14,13 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="Auto Generated Files">
-      <UniqueIdentifier>{1fe5076c-204b-4e02-9596-188b8a32470e}</UniqueIdentifier>
+      <UniqueIdentifier>{52a26ee8-8710-4e07-bd0a-c645992b0580}</UniqueIdentifier>
     </Filter>
     <Filter Include="Auto Generated Files\Header Files">
-      <UniqueIdentifier>{8986b486-b27f-43cb-a931-57fc05ac3375}</UniqueIdentifier>
+      <UniqueIdentifier>{c8ba0efa-01fd-4bb0-b862-277aca9f93cf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Auto Generated Files\Source Files">
-      <UniqueIdentifier>{c9882a98-fcb9-40c5-be83-cca99b089812}</UniqueIdentifier>
+      <UniqueIdentifier>{e010c45a-73a0-4dfd-85bd-dc395e22a3f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
