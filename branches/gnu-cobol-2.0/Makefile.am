@@ -28,9 +28,8 @@ BUILT_SOURCES = defaults.h
 DISTCLEANFILES = $(BUILT_SOURCES)
 # CLEANFILES = $(bin_SCRIPTS)
 
-EXTRA_DIST = gnu-cobol.spec config.h.bdb.win config.h.vb.win \
-	lib/Makefile.am lib/ChangeLog lib/dummymac.c lib/gettext.h \
-	po/en.translate
+EXTRA_DIST = gnu-cobol.spec po/en.translate \
+	lib/Makefile.am lib/ChangeLog lib/dummymac.c lib/gettext.h
 
 dist-hook:
 	echo "#define COB_TAR_DATE \"`date -u +'%b %d %Y %T'` UTC\"" > $(distdir)/tarstamp.h
@@ -49,8 +48,6 @@ dist-hook:
 	chmod 644 $(distdir)/THANKS
 	chmod 644 $(distdir)/TODO
 	chmod 644 $(distdir)/gnu-cobol.spec
-	chmod 644 $(distdir)/config.h.bdb.win
-	chmod 644 $(distdir)/config.h.vb.win
 	chmod 755 $(distdir)/ltmain.sh
 	chmod 755 $(distdir)/missing
 	chmod 755 $(distdir)/install-sh
