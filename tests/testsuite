@@ -27728,17 +27728,15 @@ $at_failed && at_fn_log_failure
 $at_traceon; }
 
 { set +x
-$as_echo "$at_srcdir/run_extensions.at:2827: ls abcd"
+$as_echo "$at_srcdir/run_extensions.at:2827: test -e abcd"
 at_fn_check_prepare_trace "run_extensions.at:2827"
-( $at_check_trace; ls abcd
+( $at_check_trace; test -e abcd
 ) >>"$at_stdout" 2>>"$at_stderr"
 at_status=$? at_failed=false
 $at_check_filter
-echo >>"$at_stderr"; $as_echo "ls: abcd: No such file or directory
-" | \
-  $at_diff - "$at_stderr" || at_failed=:
+at_fn_diff_devnull "$at_stderr" || at_failed=:
 at_fn_diff_devnull "$at_stdout" || at_failed=:
-at_fn_check_status 2 $at_status "$at_srcdir/run_extensions.at:2827"
+at_fn_check_status 1 $at_status "$at_srcdir/run_extensions.at:2827"
 $at_failed && at_fn_log_failure
 $at_traceon; }
 
