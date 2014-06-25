@@ -296,7 +296,7 @@
 
 #include <setjmp.h>
 
-#if	defined(_WIN32) || defined(__CYGWIN__)
+#if	(defined(_WIN32) || defined(__CYGWIN__)) && !defined(__clang__)
 #ifdef	COB_LIB_EXPIMP
 	#define COB_EXPIMP	__declspec(dllexport) extern
 #else

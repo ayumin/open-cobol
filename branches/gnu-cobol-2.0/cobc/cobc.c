@@ -4021,7 +4021,7 @@ main (int argc, char **argv)
 	}
 
 	/* Set default computed goto usage if appropriate */
-#ifdef	__GNUC__
+#if	defined(__GNUC__) && !defined(__clang__)
 	cb_flag_computed_goto = 1;
 #elif	defined(__SUNPRO_C) && __SUNPRO_C >= 0x570
 	cb_flag_computed_goto = 1;
