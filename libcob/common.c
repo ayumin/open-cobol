@@ -3461,19 +3461,19 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	 * Add 0-termination to strings.
 	 */
 	shortoptions = cob_malloc(so_size + 1U);
-	cob_field_to_string(COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
+	cob_field_to_string (COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
 
 	l = (struct longoption_def*) (COB_MODULE_PTR->cob_procedure_params[1]->data);
 
-	for(i=0; i < lo_amount; i++) {
+	for (i = 0; i < lo_amount; i++) {
 		j = sizeof(l->name) - 1;
-		while(j >= 0 && l->name[j] == 0x20) {
+		while (j >= 0 && l->name[j] == 0x20) {
 			l->name[j] = 0x00;
 			j--;
 		}
 		longoptions->name = l->name;
 		longoptions->has_arg = (int) l->has_option - '0';
-		memcpy(&longoptions->flag, l->return_value_pointer, sizeof(char*));
+		memcpy (&longoptions->flag, l->return_value_pointer, sizeof(l->return_value_pointer));
 		memcpy(&longoptions->val, &l->return_value, 4);
 
 		l = l + 1; /* +1 means pointer + 1*sizeof(longoption_def) */
@@ -3507,24 +3507,24 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 		else break;
 	}
 
-	cob_set_int(COB_MODULE_PTR->cob_procedure_params[2], longind);
-	memcpy(return_char, &return_value, 4);
+	cob_set_int (COB_MODULE_PTR->cob_procedure_params[2], longind);
+	memcpy (return_char, &return_value, 4);
 
 	if(cob_optarg != NULL) {
-		memset(opt_val, 0x00, opt_val_size);
+		memset (opt_val, 0x00, opt_val_size);
 		
-		optlen = strlen(cob_optarg);
+		optlen = strlen (cob_optarg);
 		if (optlen > opt_val_size) {
 			/* Returncode 2 for "Optionvalue too long => cut" */
 			optlen = opt_val_size;
 			exit_status = 2;
 		}
-		memcpy(opt_val, cob_optarg, optlen);
+		memcpy (opt_val, cob_optarg, optlen);
 	}
 
 
-	free(shortoptions);
-	free(longoptions);
+	free (shortoptions);
+	free (longoptions);
 
 	return exit_status;
 
@@ -4001,7 +4001,7 @@ print_runtime_env(void) {
 			not_set, 2);
 	var_print("cob_timeout_scale",
 			cob_int_to_string(cobglobptr->cob_timeout_scale,
-					intstring), _("1000"), 3);
+					intstring), "1000", 3);
 	var_print("COB_SCREEN_EXCEPTIONS",
 			runtimeptr->cob_extended_status_env, not_set, 2);
 	var_print("cob_extended_status",
