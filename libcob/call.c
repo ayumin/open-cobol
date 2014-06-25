@@ -947,7 +947,7 @@ cob_resolve_func (const char *name)
 
 	p = cob_resolve_internal (name, NULL, 0);
 	if (unlikely(!p)) {
-		cob_runtime_error (_("User function '%s' not found"), name);
+		cob_runtime_error (_("User FUNCTION '%s' not found"), name);
 		cob_stop_run (1);
 	}
 	return p;
@@ -1021,7 +1021,7 @@ cob_cancel (const char *name)
 		cob_fatal_error (COB_FERROR_INITIALIZED);
 	}
 	if (unlikely(!name)) {
-		cob_runtime_error (_("NULL parameter passed to 'cob_cancel'"));
+		cob_runtime_error (_("NULL parameter passed to '%s'"), "cob_cancel");
 		cob_stop_run (1);
 	}
 	entry = cob_chk_dirp (name);
@@ -1087,11 +1087,11 @@ cob_call (const char *name, const int argc, void **argv)
 		cob_fatal_error (COB_FERROR_INITIALIZED);
 	}
 	if (argc < 0 || argc > COB_MAX_FIELD_PARAMS) {
-		cob_runtime_error (_("Invalid number of arguments to 'cob_call'"));
+		cob_runtime_error (_("Invalid number of arguments to '%s'"), "cob_call");
 		cob_stop_run (1);
 	}
 	if (unlikely(!name)) {
-		cob_runtime_error (_("NULL name parameter passed to 'cob_call'"));
+		cob_runtime_error (_("NULL parameter passed to '%s'"), "cob_call");
 		cob_stop_run (1);
 	}
 	unifunc.funcvoid = cob_resolve_cobol (name, 0, 1);
@@ -1137,7 +1137,7 @@ cob_savenv (struct cobjmp_buf *jbuf)
 		cob_fatal_error (COB_FERROR_INITIALIZED);
 	}
 	if (unlikely(!jbuf)) {
-		cob_runtime_error (_("NULL parameter passed to 'cob_savenv'"));
+		cob_runtime_error (_("NULL parameter passed to '%s'"), "cob_savenv");
 		cob_stop_run (1);
 	}
 	if (cob_jmp_primed) {
@@ -1163,7 +1163,7 @@ cob_longjmp (struct cobjmp_buf *jbuf)
 		cob_fatal_error (COB_FERROR_INITIALIZED);
 	}
 	if (unlikely(!jbuf)) {
-		cob_runtime_error (_("NULL parameter passed to 'cob_longjmp'"));
+		cob_runtime_error (_("NULL parameter passed to '%s'"), "cob_longjmp");
 		cob_stop_run (1);
 	}
 	if (!cob_jmp_primed) {
