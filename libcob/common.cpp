@@ -31,7 +31,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
+
 #include <math.h>
+#ifdef HAVE_FINITE_IEEEFP_H
+#include <ieeefp.h>
+#endif
+
 #include <time.h>
 
 #ifdef	HAVE_UNISTD_H
@@ -64,6 +69,9 @@
 
 #include "libcob.h"
 #include "coblocal.h"
+
+#include "libcob/cobgetopt.h"
+
 
 struct cob_alloc_cache {
 	cob_alloc_cache *	next;			/* Pointer to next */
@@ -3080,6 +3088,121 @@ cob_sys_parameter_size(void * data)
 		}
 	}
 	return 0;
+}
+
+int
+cob_sys_getopt_long_long(void* so, void* lo, void* idx, const int long_only, void* return_char, void* opt_val) {
+	/*
+	 * cob_argc is a static int containing argc from runtime
+	 * cob_argv is a static char** containing argv from runtime
+	 */
+
+	COB_UNUSED (idx);
+	COB_UNUSED (lo);
+	COB_UNUSED (so);
+
+	COB_CHK_PARMS (CBL_OC_GETOPT, 6);
+
+	
+	/*
+	 * Read in sizes of some parameters
+	 */
+	size_t lo_size = COB_MODULE_PTR->cob_procedure_params[1]->size;
+	size_t so_size = COB_MODULE_PTR->cob_procedure_params[0]->size;
+	size_t opt_val_size = COB_MODULE_PTR->cob_procedure_params[5]->size;
+
+	/*
+	 * Buffering longoptions (cobol), target format (struct option)
+	 */
+
+	struct option* longoptions;
+	unsigned int lo_amount;
+	if (lo_size % sizeof(longoption_def) == 0) {
+		lo_amount = (int)lo_size / sizeof(longoption_def);
+		longoptions = (struct option*) cob_malloc(sizeof(struct option) * (lo_amount + 1U));
+	} else {
+		cob_runtime_error (_("Call to CBL_OC_GETOPT with wrong longoption size."));
+		cob_stop_run (1);
+	}
+	
+	int longind;
+	if (COB_MODULE_PTR->cob_procedure_params[2]) {
+		longind = cob_get_int (COB_MODULE_PTR->cob_procedure_params[2]);
+	}
+
+	/*
+	 * Add 0-termination to strings.
+	 */
+	char* shortoptions = cob_malloc(so_size + 1U);
+	cob_field_to_string(COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
+
+	longoption_def* l = (struct longoption_def*) (COB_MODULE_PTR->cob_procedure_params[1]->data);
+
+	for (unsigned int i=0; i < lo_amount; i++) {
+		int j = sizeof(l->name) - 1;
+		while (j >= 0 && l->name[j] == 0x20) {
+			l->name[j] = 0x00;
+			j--;
+		}
+		longoptions->name = l->name;
+		longoptions->has_arg = (int) l->has_option - '0';
+		memcpy(&longoptions->flag, l->return_value_pointer, sizeof(char*));
+		memcpy(&longoptions->val, &l->return_value, 4);
+
+		l = l + 1; /* +1 means pointer + 1*sizeof(longoption_def) */
+		longoptions = longoptions + 1;
+	}
+
+	/*
+	 * Appending final record, so getopt can spot the end of longoptions
+	 */
+	longoptions->name = NULL;
+	longoptions->has_arg = 0;
+	longoptions->flag = NULL;
+	longoptions->val = 0;
+
+
+	l -= lo_amount; /* Set pointer back to begin of longoptions */
+	longoptions -= lo_amount;
+
+	int return_value = cob_getopt_long_long(cob_argc, cob_argv, shortoptions, longoptions, &longind, long_only);
+	char* temp = (char*) &return_value;
+	
+	/*
+	 * Write data back to Cobol
+	 */
+	int exit_status;
+
+	if (temp[0] == '?' || temp[0] == ':' || temp[0] == 'W' 
+		|| temp[0] == -1 || temp[0] == 0) exit_status = return_value;
+	else exit_status = 3;
+
+	for (unsigned int i = 3; i > 0; i--) {
+		if(temp[i] == 0x00) temp[i] = 0x20;
+		else break;
+	}
+
+	cob_set_int(COB_MODULE_PTR->cob_procedure_params[2], longind);
+	memcpy(return_char, &return_value, 4);
+
+	if(cob_optarg != NULL) {
+		memset(opt_val, 0x00, opt_val_size);
+		
+		size_t optlen = strlen(cob_optarg);
+		if (optlen > opt_val_size) {
+			/* Returncode 2 for "Optionvalue too long => cut" */
+			optlen = opt_val_size;
+			exit_status = 2;
+		}
+		memcpy(opt_val, cob_optarg, optlen);
+	}
+
+
+	free(shortoptions);
+	free(longoptions);
+
+	return exit_status;
+
 }
 
 int

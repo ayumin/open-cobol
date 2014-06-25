@@ -20,26 +20,27 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	gcc
 BuildRequires:	glibc-devel
 BuildRequires:	glibc
-BuildRequires:  gmp-devel >= 4.1.4
+BuildRequires:	gmp-devel >= 4.1.4
 BuildRequires:	gmp >= 4.1.4
 BuildRequires:	db-devel >= 4.1.24
 BuildRequires:	db >= 4.1.24
 BuildRequires:	ncurses-devel >= 5.4
 BuildRequires:	ncurses >= 5.4
 
-Requires:       gcc
+Requires:	gcc
 Requires:	glibc
 Requires:	glibc-devel
-Requires:       gmp >= 4.1.4
-Requires:       gmp-devel >= 4.1.4
-Requires:       db >= 4.1.24
-Requires:       ncurses >= 5.4
+Requires:	gmp >= 4.1.4
+Requires:	gmp-devel >= 4.1.4
+Requires:	db >= 4.1.24
+Requires:	ncurses >= 5.4
 
-Requires(post): /sbin/install-info
+Requires(post):	/sbin/install-info
 
 %description
-GNU Cobol C++ is an open-source COBOL compiler, which translates COBOL
-programs to C code and compiles it using GCC.
+GNU Cobol C++ is a free and open-source COBOL compiler, which translates
+COBOL programs to C++ code and compiles it using GCC (or other native
+C compilers).
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -67,7 +68,7 @@ make check
 %{_bindir}/cob-config
 %{_includedir}/*
 %{_datadir}/gnu-cobol-cpp
-%{_infodir}/gnu-cobol.info*
+%{_infodir}/gnucobolcpp.info
 %{_libdir}/libcob.so*
 %{_libdir}/libcob.a
 %{_libdir}/libcob.la
@@ -77,12 +78,12 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 
 %post 
-/sbin/install-info %{_infodir}/gnu-cobol.info %{_infodir}/dir 2>/dev/null || :
+/sbin/install-info %{_infodir}/gnucobolcpp.info %{_infodir}/dir 2>/dev/null || :
 /sbin/ldconfig
 
 %postun 
 if [ $1 = 0 ]; then
-  /sbin/install-info --delete %{_infodir}/gnu-cobol.info %{_infodir}/dir 2>/dev/null || :
+  /sbin/install-info --delete %{_infodir}/gnucobolcpp.info %{_infodir}/dir 2>/dev/null || :
 fi
 /sbin/ldconfig
 

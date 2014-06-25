@@ -29,7 +29,9 @@ AT_DATA([dump.cpp], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-extern "C" int dump (unsigned char *, int *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *, int *);
 int dump (unsigned char *data, int *p)
 {
   int i;
@@ -613,9 +615,9 @@ AT_KEYWORDS([extensions])
 AT_DATA([setfilename.cpp], [
 #include <stdio.h>
 #include <string.h>
+#define COB_LIB_EXPIMP
 #include <libcob.h>
-extern "C" int setfilename(cob_file *, unsigned char *);
-int setfilename (cob_file *f, unsigned char *name)
+COB_EXPIMP int setfilename (cob_file *f, unsigned char *name)
 {
   memcpy (f->assign->data, name, strlen ((char *)name));
   return 0;
@@ -2305,6 +2307,342 @@ AT_CHECK([$COMPILE prog.cob])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
+
+AT_SETUP([System routine CBL_OC_GETOPT])
+AT_KEYWORDS([extensions])
+
+AT_DATA([prog.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+      *> check combination long and short options
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+           01 LO.
+                05 OPTIONRECORD OCCURS 2 TIMES.
+                    10 ONAME        PIC X(25).
+                    10 HAS-VALUE    PIC 9.
+                    10 VALPOINT     POINTER     VALUE NULL.
+                    10 VAL          PIC X(4).
+
+            01 SO PIC X(256).
+            01 LONGIND PIC 99.
+            01 LONG-ONLY PIC 9 VALUE 1.
+            01 RETURN-CHAR PIC X(4).
+            01 OPT-VAL PIC X(10).
+            01 RET-DISP PIC S9 VALUE 0.
+            
+            01 COUNTER PIC 9 VALUE 0.
+        PROCEDURE DIVISION.
+            MOVE "jkl" TO SO.
+            
+            MOVE "version" TO ONAME(1).
+            MOVE 0 TO HAS-VALUE(1).
+            MOVE "v" TO VAL(1).
+            
+            MOVE "verbose" TO ONAME(2).
+            MOVE 0 TO HAS-VALUE(2).
+            MOVE "V" TO VAL(2).
+        
+            PERFORM WITH TEST BEFORE UNTIL COUNTER > 5
+                CALL 'CBL_OC_GETOPT' USING 
+                BY REFERENCE SO LO LONGIND
+                BY VALUE LONG-ONLY
+                BY REFERENCE RETURN-CHAR OPT-VAL
+            
+                IF COUNTER = 0 AND RETURN-CHAR NOT = 'v' THEN
+                    DISPLAY '0-Error: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 1 AND RETURN-CHAR NOT = 'V' THEN
+                    DISPLAY '1-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 2 AND RETURN-CHAR NOT = 'j' THEN
+                    DISPLAY '2-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 3 AND RETURN-CHAR NOT = 'k' THEN
+                    DISPLAY '3-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 4 AND RETURN-CHAR NOT = 'l' THEN
+                    DISPLAY '4-ERROR: ' RETURN-CHAR
+               END-IF
+                
+               ADD 1 TO COUNTER
+            END-PERFORM
+
+            MOVE 0 TO RETURN-CODE.
+
+            STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog2.
+      *> check if partial options work correct
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+      *> Check with wrong record count
+
+
+            01 LO.
+                05 OPTIONRECORD OCCURS 3 TIMES.
+                    10 ONAME        PIC X(25).
+                    10 HAS-VALUE    PIC 9.
+                    10 VALPOINT     POINTER     VALUE NULL.
+                    10 VAL          PIC X(4).
+
+            78 SO VALUE "jkl".
+            01 LONGIND PIC 99.
+            01 LONG-ONLY PIC 9 VALUE 1.
+            01 RETURN-CHAR PIC X(4).
+            01 OPT-VAL PIC X(10).
+            01 RET-DISP PIC S9 VALUE 0.
+            
+            01 COUNTER PIC 9 VALUE 0.
+        PROCEDURE DIVISION.
+            MOVE "version" TO ONAME(1).
+            MOVE 0 TO HAS-VALUE(1).
+            MOVE "v" TO VAL(1).
+            
+            MOVE "verbose" TO ONAME(2).
+            MOVE 0 to HAS-VALUE(2).
+            MOVE "V" TO VAL(2).
+        
+            PERFORM WITH TEST BEFORE UNTIL COUNTER > 2
+                CALL 'CBL_OC_GETOPT' USING 
+                BY REFERENCE SO LO LONGIND
+                BY VALUE LONG-ONLY
+                BY REFERENCE RETURN-CHAR OPT-VAL
+            
+                IF COUNTER = 0 AND RETURN-CHAR NOT = '?' THEN
+                    DISPLAY '0-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 1 AND RETURN-CHAR NOT = 'v' THEN
+                    DISPLAY '1-ERROR: ' RETURN-CHAR
+                END-IF
+                      
+               ADD 1 TO COUNTER
+            END-PERFORM
+
+            MOVE 0 TO RETURN-CODE.
+
+            STOP RUN.
+])
+
+AT_DATA([prog3.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog3.
+      *> check for optional and mandatory parameters
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+            01 SO PIC X(128).
+            01 LO.
+                05 OPTIONRECORD OCCURS 3 TIMES.
+                    10 ONAME        PIC X(25).
+                    10 HAS-VALUE    PIC 9.
+                    10 VALPOINT     POINTER     VALUE NULL.
+                    10 VAL          PIC X(4).
+            01 LONGIND PIC 99.
+            01 LONG-ONLY PIC 9 VALUE 0.
+            01 RETURN-CHAR PIC X(4).
+            01 OPT-VAL PIC X(10).
+            01 RET-DISP PIC S9 VALUE 0.
+            
+            01 COUNTER PIC 9 VALUE 0.
+        PROCEDURE DIVISION.
+            MOVE "j:k::l" TO SO.
+
+            MOVE "version" TO ONAME(1).
+            MOVE 1 TO HAS-VALUE(1).
+            MOVE "v" TO VAL(1).
+
+            MOVE "verbose" TO ONAME(2).
+            MOVE 2 TO HAS-VALUE(2).
+            MOVE "V" TO VAL(2).
+
+            MOVE "usage" TO ONAME(3).
+            MOVE 0 TO HAS-VALUE(3).
+            MOVE "u" TO VAL(3).
+
+            PERFORM WITH TEST BEFORE UNTIL COUNTER > 6
+                CALL 'CBL_OC_GETOPT' USING
+                BY REFERENCE SO LO LONGIND
+                BY VALUE LONG-ONLY
+                BY REFERENCE RETURN-CHAR OPT-VAL
+
+                IF COUNTER = 0 AND OPT-VAL(1:4) NOT = 'lang' THEN
+                        DISPLAY '0-ERROR: ' OPT-VAL
+                END-IF
+                IF COUNTER = 1 AND 
+                  (OPT-VAL(1:1) NOT = 'k' OR 
+                   RETURN-CHAR  NOT = 'V' OR 
+                   OPT-VAL(1:4)     = 'kang') THEN
+                        DISPLAY '1-ERROR: ' OPT-VAL ' ' RETURN-CHAR ' '
+                END-IF
+                IF COUNTER = 2 AND RETURN-CHAR NOT = 'u' THEN
+                        DISPLAY '2-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 3 AND (OPT-VAL(1:1) NOT = '5' OR 
+                RETURN-CHAR NOT = 'j') THEN
+                        DISPLAY '3-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 4 AND (OPT-VAL(1:1) NOT = '6' OR 
+                RETURN-CHAR NOT = 'k') THEN
+                        DISPLAY '4-ERROR: ' RETURN-CHAR
+                END-IF
+                IF COUNTER = 5 AND RETURN-CHAR NOT = 'l' THEN
+                        DISPLAY '5-ERROR: ' RETURN-CHAR
+                END-IF
+
+               ADD 1 TO COUNTER
+            END-PERFORM
+
+            MOVE 0 TO RETURN-CODE.
+
+            STOP RUN.
+])
+
+AT_DATA([prog4.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog4.
+      *> check use of value pointer and trimming of opt-val
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+            01 SO PIC X(12).
+            01 LO.
+                05 OPTIONRECORD OCCURS 3 TIMES.
+                    10 ONAME        PIC X(25).
+                    10 HAS-VALUE    PIC 9.
+                    10 VALPOINT     POINTER     VALUE NULL.
+                    10 VAL          PIC X(4).
+            01 LONGIND PIC 99.
+            01 LONG-ONLY PIC 9 VALUE 1.
+            01 RETURN-CHAR PIC X(4).
+            01 OPT-VAL PIC X(10).
+            01 RET-DISP PIC S999 VALUE 0.
+
+            01 COUNTER PIC 9 VALUE 0.
+
+            01 FLAG-VAL PIC X(4).
+        procedure division.
+            MOVE "jkl" TO SO.
+
+            MOVE "static" TO ONAME(1).
+            MOVE 0 TO HAS-VALUE(1).
+            SET VALPOINT(1) TO ADDRESS OF FLAG-VAL.
+            MOVE '1' TO VAL(1).
+
+            MOVE "dynamic" TO ONAME(2).
+            MOVE 0 TO HAS-VALUE(2).
+            SET VALPOINT(2) TO ADDRESS OF FLAG-VAL.
+            MOVE '0' TO VAL(2).
+
+            MOVE "usage" TO ONAME(3).
+            MOVE 1 TO HAS-VALUE(3).
+            MOVE 'u' TO VAL(3).
+
+            PERFORM WITH TEST BEFORE UNTIL COUNTER > 3
+                CALL 'CBL_OC_GETOPT' USING
+                BY REFERENCE SO LO LONGIND
+                BY VALUE LONG-ONLY
+                BY REFERENCE RETURN-CHAR OPT-VAL
+
+                MOVE RETURN-CODE TO RET-DISP
+                
+                IF COUNTER = 0 AND (RETURN-CODE NOT = 0 OR 
+                                    FLAG-VAL NOT = '1') THEN
+                    DISPLAY 'RETURN VALUE: ' RET-DISP ' ' FLAG-VAL
+                END-IF
+                IF COUNTER = 1 AND (RETURN-CODE NOT = 0 OR 
+                                    FLAG-VAL NOT = '0') THEN
+                    DISPLAY 'RETURN VALUE: ' RET-DISP ' ' FLAG-VAL
+                END-IF
+                IF COUNTER = 2 AND (RETURN-CHAR NOT = 'u' OR 
+                                    RETURN-CODE NOT = 2) THEN
+                    DISPLAY 'RETURN VALUE: ' RET-DISP ' ' FLAG-VAL
+                END-IF
+
+               ADD 1 TO COUNTER
+            END-PERFORM
+
+            IF RETURN-CODE NOT = -1
+               MOVE RETURN-CODE TO RET-DISP
+               DISPLAY 'last RETURN-CODE wrong ' RET-DISP
+               END-DISPLAY
+            END-IF
+
+            MOVE 0 TO RETURN-CODE.
+
+            STOP RUN.
+])
+
+AT_DATA([prog5.cob], [
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog5.
+      *> check for wrong longopotion structure
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+            01 SO PIC X.
+            01 LO.
+                05 OPTIONRECORD OCCURS 2 TIMES.
+                    10 ONAME        PIC X(45).
+                    10 HAS-VALUE    PIC 9.
+                    10 VALPOINT     POINTER     VALUE NULL.
+                    10 VAL          PIC X(4).
+            01 LONGIND PIC 99.
+            01 LONG-ONLY PIC 9 VALUE 1.
+            01 RETURN-CHAR PIC X(4).
+            01 OPT-VAL PIC X(10).
+            01 RET-DISP PIC S999 VALUE 0.
+
+            01 COUNTER PIC 9 VALUE 0.
+
+            01 FLAG-VAL PIC 9.
+        PROCEDURE DIVISION.
+            MOVE "super-long-option-with-more-than-25-bytes" 
+            TO ONAME(1).
+            MOVE 0 TO HAS-VALUE(1).
+            MOVE '1' TO VAL(1).
+
+            MOVE "stupid-long-option-with-more-than-25-bytes" 
+            TO ONAME(2).
+            MOVE 0 TO HAS-VALUE(2).
+            MOVE '0' TO VAL(2).
+
+            PERFORM WITH TEST BEFORE UNTIL COUNTER > 2
+                CALL 'CBL_OC_GETOPT' USING
+                BY REFERENCE SO LO LONGIND
+                BY VALUE LONG-ONLY
+                BY REFERENCE RETURN-CHAR OPT-VAL
+
+      *>          MOVE RETURN-CODE TO RET-DISP
+                
+      *>          IF COUNTER = 0 AND RETURN-CODE NOT = 1 THEN
+      *>              DISPLAY 'RETURN VALUE: ' RET-DISP ' ' FLAG-VAL
+      *>          END-IF
+            END-PERFORM
+            
+      *>      MOVE 0 TO RETURN-CODE.
+
+            STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([./prog --version --verbose -jkl], [0], [])
+AT_CHECK([$COMPILE_MODULE prog2.cob], [0], [], [])
+AT_CHECK([$COBCRUN prog2 --ver --vers], [0], [], [prog2: option `--ver' is ambiguous
+])
+AT_CHECK([$COMPILE prog3.cob])
+AT_CHECK([./prog3 --version=lang --verbose=k --usage -j 5 -k6 -l], [0], [])
+AT_CHECK([$COMPILE prog4.cob --free])
+AT_CHECK([./prog4 --static --dynamic --usage=boringandtoolongtext], [0], [])
+# Again a long and system specific error message which we ignore. 
+# Return code 1 is sufficient as proof of hard return (as wanted).
+AT_CHECK([$COMPILE prog5.cob])
+AT_CHECK([./prog5 --static], [1], [], [prog5.cob: 35: libcob: Call to CBL_OC_GETOPT with wrong longoption size.
+])
+
+AT_CLEANUP
+
 
 AT_SETUP([Conditional/define directives (1)])
 AT_KEYWORDS([extensions])

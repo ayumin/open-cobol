@@ -229,7 +229,7 @@
 
 #endif
 
-#elif defined (_MSC_VER)
+#elif defined(_MSC_VER) && (_MSC_VER >= 1400)
 
 #define COB_BSWAP_16(val) (_byteswap_ushort (val))
 #define COB_BSWAP_32(val) (_byteswap_ulong (val))
@@ -1272,6 +1272,17 @@ COB_EXPIMP int	cob_sys_sleep(const void *);
 COB_EXPIMP int	cob_sys_calledby(void *);
 COB_EXPIMP int	cob_sys_justify(void *, ...);
 COB_EXPIMP int	cob_sys_printable(void *, ...);
+
+/*
+ * cob_sys_getopt_long_long
+ */
+COB_EXPIMP int	cob_sys_getopt_long_long	(void*, void*, void*, const int, void*, void*);
+typedef struct longoption_def{
+	char name[25];
+	char has_option;
+	char return_value_pointer[sizeof(char*)];
+	char return_value[4];
+} longoption_def;
 
 /* Utilities */
 

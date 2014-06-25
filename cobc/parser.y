@@ -839,7 +839,7 @@ check_headers_present(const unsigned int lev1, const unsigned int lev2,
 %token DAY_OF_WEEK		"DAY-OF-WEEK"
 %token DE
 %token DEBUGGING
-%token DECIMAL_POINT		"DECIMAL-POINT"
+%token CS_DECIMAL_POINT		"DECIMAL-POINT"
 %token DECLARATIVES
 %token DEFAULT
 %token DELETE
@@ -2390,7 +2390,7 @@ with_pic_symbol:
 /* DECIMAL-POINT clause */
 
 decimal_point_clause:
-  DECIMAL_POINT _is COMMA
+  CS_DECIMAL_POINT _is COMMA
   {
 	check_headers_present(COBC_HD_ENVIRONMENT_DIVISION,
 			       COBC_HD_CONFIGURATION_SECTION,

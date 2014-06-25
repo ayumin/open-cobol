@@ -31,7 +31,7 @@
    Also, when `ordering' is RETURN_IN_ORDER,
    each non-option ARGV-element is returned here.  */
 
-extern char * cob_optarg;
+COB_EXPIMP char *cob_optarg;
 
 /* Index in ARGV of the next element to be scanned.
    This is used for communication to and from the caller
@@ -45,16 +45,16 @@ extern char * cob_optarg;
    Otherwise, `optind' communicates from one call to the next
    how much of ARGV has been scanned so far.  */
 
-extern int cob_optind;
+COB_EXPIMP int cob_optind;
 
 /* Callers store zero here to inhibit the error message `getopt' prints
    for unrecognized options.  */
 
-extern int cob_opterr;
+COB_EXPIMP int cob_opterr;
 
 /* Set to an option character which was unrecognized.  */
 
-extern int cob_optopt;
+COB_EXPIMP int cob_optopt;
 
 /* Describe the long-named options requested by the application.
    The LONG_OPTIONS argument to getopt_long or getopt_long_only is a vector
@@ -77,12 +77,13 @@ extern int cob_optopt;
    one).  For long options that have a zero `flag' field, `getopt'
    returns the contents of the `val' field.  */
 
-struct option {
-	const char * name;
+struct option
+{
+	const char	*name;
 	/* has_arg can't be an enum because some compilers complain about
 	type mismatches in all the code that assumes it is an int.  */
 	int		has_arg;
-	int *	flag;
+	int		*flag;
 	int		val;
 };
 
@@ -116,6 +117,6 @@ struct option {
    arguments to the option '\0'.  This behavior is specific to the GNU
    `getopt'.  */
 
-extern int cob_getopt_long_long(const int, char * const *, const char *,
-								const option *, int *, const int);
+COB_EXPIMP int cob_getopt_long_long (const int, char *const *, const char *,
+				 const struct option *, int *, const int);
 #endif

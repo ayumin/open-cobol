@@ -1,0 +1,49 @@
+#
+# atlocal gnu-cobol-cpp/tests
+#
+# Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+# Copyright (C) 2008-2012 Roger While
+#
+# This file is part of GNU Cobol C++.
+#
+# The GNU Cobol C++ compiler is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# GNU Cobol C++ is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
+
+# CC="gcc"
+COB_BIGENDIAN="no"
+COB_HAS_ISAM="yes"
+COBC="cobc"
+COBCRUN="cobcrun"
+
+TEMPLATE="${abs_srcdir}/testsuite.src"
+
+FLAGS="-std=cobol2002 -debug -Wall ${COBOL_FLAGS}"
+COMPILE="${COBC} -x ${FLAGS}"
+COMPILE_ONLY="${COBC} -fsyntax-only ${FLAGS}"
+COMPILE_MODULE="${COBC} -m ${FLAGS}"
+
+OBJECT_EXT="obj"
+
+PATHSEP=";"
+
+PATH="${abs_top_srcdir}/build_windows/win32/release:${PATH}"
+export PATH
+unset COB_CFLAGS
+unset COB_LDFLAGS
+unset COB_LIBS
+export COB_CONFIG_DIR="${abs_top_srcdir}/config"
+export COB_COPY_DIR="${abs_top_srcdir}/copy"
+export COB_LIBRARY_PATH="${abs_top_builddir}/extras:$COB_LIBRARY_PATH"
+export COB_UNIX_LF=YES
+export COB_HAS_ISAM
+export LC_ALL=C

@@ -1,3 +1,7 @@
+2014-14-04  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* gnu-cobol.texi : Added documentation for CBL_OC_GETOPT
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0

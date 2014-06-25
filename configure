@@ -628,6 +628,7 @@ COB_PIC_FLAGS
 COB_EXPORT_DYN
 LIBCOB_LIBS
 COBC_LIBS
+COB_OBJECT_EXT
 COB_MODULE_EXT
 COB_LIBRARY_PATH
 COB_COPY_DIR
@@ -700,7 +701,6 @@ MAINTAINER_MODE_TRUE
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
 CXXDEPMODE
-am__nodep
 AMDEPBACKSLASH
 AMDEP_FALSE
 AMDEP_TRUE
@@ -3588,7 +3588,6 @@ fi
 if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
-  am__nodep='_no'
 fi
  if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
@@ -3651,11 +3650,11 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.  Yes, it's still used
-# in the wild :-(  We should find a proper way to deprecate it ...
-AMTAR='$${TAR-tar}'
+# Always define AMTAR for backward compatibility.
 
-am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
+AMTAR=${AMTAR-"${am_missing_run}tar"}
+
+am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
@@ -3673,7 +3672,6 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
-  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -3733,7 +3731,7 @@ else
 	break
       fi
       ;;
-    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
+    msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -3814,6 +3812,8 @@ fi
 
 
 # Autoheader templates
+
+
 
 
 
@@ -4730,7 +4730,6 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
-  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -4790,7 +4789,7 @@ else
 	break
       fi
       ;;
-    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
+    msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -18248,30 +18247,6 @@ fi
 LIBS=$MYOLDLIBS
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for raise" >&5
-$as_echo_n "checking for raise... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <signal.h>
-int
-main ()
-{
-raise (SIGINT);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  $as_echo "#define HAVE_RAISE 1" >>confdefs.h
- { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
 # Solaris has nanosleep in other libraries
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nanosleep" >&5
 $as_echo_n "checking for nanosleep... " >&6; }
@@ -18404,6 +18379,69 @@ $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
+
+# Check for raise (optional)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for raise" >&5
+$as_echo_n "checking for raise... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <signal.h>
+int
+main ()
+{
+raise (SIGINT);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  $as_echo "#define HAVE_RAISE 1" >>confdefs.h
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+# Check prototype for finite in math.h (alternative ieeefp.h)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite in <math.h>" >&5
+$as_echo_n "checking prototype for finite in <math.h>... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <math.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "finite" >/dev/null 2>&1; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite in <ieeefp.h>" >&5
+$as_echo_n "checking prototype for finite in <ieeefp.h>... " >&6; }
+	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ieeefp.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "finite" >/dev/null 2>&1; then :
+  $as_echo "#define HAVE_FINITE_IEEEFP_H 1" >>confdefs.h
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  as_fn_error $? "
+		Declaration for finite function neither in math.h nor in ieeefp.h" "$LINENO" 5
+fi
+rm -f conftest*
+
+
+fi
+rm -f conftest*
+
 
 for ac_func in fdatasync sigaction
 do :
@@ -21468,6 +21506,7 @@ COB_CONFIG_DIR="$datadir/$PACKAGE_TARNAME/config"
 COB_COPY_DIR="$datadir/$PACKAGE_TARNAME/copy"
 COB_LIBRARY_PATH="$libdir/$PACKAGE_TARNAME"
 COB_MODULE_EXT=`echo "$acl_cv_shlibext" | sed -e 's/dll\.a/dll/'`
+COB_OBJECT_EXT="$OBJEXT"
 LIBS="$save_libs"
 COB_EXPORT_DYN="`eval echo $export_dynamic_flag_spec`"
 COB_PIC_FLAGS=`echo "$lt_prog_compiler_pic" | sed -e 's/^ //'`
@@ -21684,6 +21723,7 @@ then
 _ACEOF
 
 fi
+
 
 
 
@@ -24558,6 +24598,7 @@ echo " COB_CONFIG_DIR    ${COB_CONFIG_DIR}"
 echo " COB_COPY_DIR      ${COB_COPY_DIR}"
 echo " COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}"
 echo " COB_MODULE_EXT    ${COB_MODULE_EXT}"
+echo " COB_OBJECT_EXT    ${COB_OBJECT_EXT}"
 echo " COB_SHARED_OPT    ${COB_SHARED_OPT}"
 echo " COB_PIC_FLAGS     ${COB_PIC_FLAGS}"
 echo " COB_EXPORT_DYN    ${COB_EXPORT_DYN}"

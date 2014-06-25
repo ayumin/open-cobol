@@ -29,8 +29,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnu-cobol-cpp 2.0\n"
 "Report-Msgid-Bugs-To: open-cobol-list@lists.sourceforge.net\n"
-"POT-Creation-Date: 2014-05-03 17:13-0400\n"
-"PO-Revision-Date: 2014-05-03 17:13-0400\n"
+"POT-Creation-Date: 2014-06-25 12:26+0200\n"
+"PO-Revision-Date: 2014-06-25 12:26+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@quot\n"
@@ -39,126 +39,126 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cobc/cobc.cpp:81
+#: cobc/cobc.cpp:83
 #, c-format
 msgid "Invalid %s parameter"
 msgstr "Invalid %s parameter"
 
-#: cobc/cobc.cpp:604
+#: cobc/cobc.cpp:606
 msgid "Too many errors - Aborting compilation"
 msgstr "Too many errors - Aborting compilation"
 
-#: cobc/cobc.cpp:611
+#: cobc/cobc.cpp:613
 #, c-format
 msgid "%s:%d Internal compiler error"
 msgstr "%s:%d Internal compiler error"
 
-#: cobc/cobc.cpp:625
+#: cobc/cobc.cpp:627
 #, c-format
 msgid "%s:%d Invalid cast from '%s' type %s to type %s"
 msgstr "%s:%d Invalid cast from ‘%s’ type %s to type %s"
 
-#: cobc/cobc.cpp:650
+#: cobc/cobc.cpp:652
 msgid "Call to cobc_strdup with NULL pointer"
 msgstr "Call to cobc_strdup with NULL pointer"
 
-#: cobc/cobc.cpp:678
+#: cobc/cobc.cpp:680
 msgid "Call to cobc_main_strdup with NULL pointer"
 msgstr "Call to cobc_main_strdup with NULL pointer"
 
-#: cobc/cobc.cpp:705
+#: cobc/cobc.cpp:707
 msgid "Attempt to reallocate non-allocated memory - Aborting"
 msgstr "Attempt to reallocate non-allocated memory - Aborting"
 
-#: cobc/cobc.cpp:762
+#: cobc/cobc.cpp:764
 msgid "Call to cobc_parse_strdup with NULL pointer"
 msgstr "Call to cobc_parse_strdup with NULL pointer"
 
-#: cobc/cobc.cpp:812
+#: cobc/cobc.cpp:814
 msgid "Call to cobc_plex_strdup with NULL pointer"
 msgstr "Call to cobc_plex_strdup with NULL pointer"
 
-#: cobc/cobc.cpp:827
+#: cobc/cobc.cpp:829
 msgid "Call to cobc_check_string with NULL pointer"
 msgstr "Call to cobc_check_string with NULL pointer"
 
-#: cobc/cobc.cpp:925
+#: cobc/cobc.cpp:927
 #, c-format
 msgid "Warning - Assuming literal for unquoted '%s'"
 msgstr "Warning - Assuming literal for unquoted ‘%s’"
 
-#: cobc/cobc.cpp:960
+#: cobc/cobc.cpp:962
 msgid " - Length is < 1 or > 31"
 msgstr " - Length is < 1 or > 31"
 
-#: cobc/cobc.cpp:963
+#: cobc/cobc.cpp:965
 msgid " - Name cannot begin with space or underscore"
 msgstr " - Name cannot begin with space or underscore"
 
-#: cobc/cobc.cpp:966
+#: cobc/cobc.cpp:968
 msgid " - Name cannot begin with 'cob_' or 'COB_'"
 msgstr " - Name cannot begin with ‘cob_’ or ‘COB_’"
 
-#: cobc/cobc.cpp:969
+#: cobc/cobc.cpp:971
 msgid " - Name duplicates a 'C' keyword"
 msgstr " - Name duplicates a ‘C’ keyword"
 
-#: cobc/cobc.cpp:972
+#: cobc/cobc.cpp:974
 msgid " - Name cannot contain a directory separator"
 msgstr " - Name cannot contain a directory separator"
 
-#: cobc/cobc.cpp:980
+#: cobc/cobc.cpp:982
 #, c-format
 msgid "Invalid file base name '%s'%s"
 msgstr "Invalid file base name '%s'%s"
 
-#: cobc/cobc.cpp:985
+#: cobc/cobc.cpp:987
 #, c-format
 msgid "Invalid ENTRY '%s'%s"
 msgstr "Invalid ENTRY '%s'%s"
 
-#: cobc/cobc.cpp:989
+#: cobc/cobc.cpp:991
 #, c-format
 msgid "Invalid PROGRAM-ID '%s'%s"
 msgstr "Invalid PROGRAM-ID '%s'%s"
 
-#: cobc/cobc.cpp:992
+#: cobc/cobc.cpp:994
 #, c-format
 msgid "Unknown name error '%s'%s"
 msgstr "Unknown name error '%s'%s"
 
-#: cobc/cobc.cpp:1084 cobc/error.cpp:97 cobc/error.cpp:125 cobc/error.cpp:149
+#: cobc/cobc.cpp:1086 cobc/error.cpp:97 cobc/error.cpp:125 cobc/error.cpp:149
 msgid "Error: "
 msgstr "Error: "
 
-#: cobc/cobc.cpp:1103
+#: cobc/cobc.cpp:1105
 #, c-format
 msgid "Duplicate define '%s' - Ignoring"
 msgstr "Duplicate define ‘%s’ - Ignoring"
 
-#: cobc/cobc.cpp:1135
+#: cobc/cobc.cpp:1137
 msgid "Call to cobc_stradd_dup with NULL pointer"
 msgstr "Call to cobc_stradd_dup with NULL pointer"
 
-#: cobc/cobc.cpp:1175
+#: cobc/cobc.cpp:1177
 msgid "Parameter buffer size exceeded"
 msgstr "Parameter buffer size exceeded"
 
-#: cobc/cobc.cpp:1210
+#: cobc/cobc.cpp:1212
 #, c-format
 msgid "Warning - Could not move temporary file to %s"
 msgstr "Warning - Could not move temporary file to %s"
 
-#: cobc/cobc.cpp:1317
+#: cobc/cobc.cpp:1319
 #, c-format
 msgid "Aborting compile of %s at line %d"
 msgstr "Aborting compile of %s at line %d"
 
-#: cobc/cobc.cpp:1327
+#: cobc/cobc.cpp:1329
 msgid "Cannot allocate memory - Aborting"
 msgstr "Cannot allocate memory - Aborting"
 
-#: cobc/cobc.cpp:1383 bin/cobcrun.cpp:81
+#: cobc/cobc.cpp:1385 bin/cobcrun.cpp:81
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
@@ -166,425 +166,425 @@ msgstr ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 
-#: cobc/cobc.cpp:1385 bin/cobcrun.cpp:83
+#: cobc/cobc.cpp:1387 bin/cobcrun.cpp:83
 #, c-format
 msgid "Built     %s"
 msgstr "Built     %s"
 
-#: cobc/cobc.cpp:1387 bin/cobcrun.cpp:85
+#: cobc/cobc.cpp:1389 bin/cobcrun.cpp:85
 #, c-format
 msgid "Packaged  %s"
 msgstr "Packaged  %s"
 
-#: cobc/cobc.cpp:1389
+#: cobc/cobc.cpp:1391
 #, c-format
 msgid "C version %s%s"
 msgstr "C version %s%s"
 
-#: cobc/cobc.cpp:1396
+#: cobc/cobc.cpp:1398
 msgid "Executing:"
 msgstr "Executing:"
 
-#: cobc/cobc.cpp:1452 bin/cobcrun.cpp:136
+#: cobc/cobc.cpp:1454 bin/cobcrun.cpp:136
 msgid "Build information"
 msgstr "Build information"
 
-#: cobc/cobc.cpp:1453
+#: cobc/cobc.cpp:1455
 msgid "Build environment"
 msgstr "Build environment"
 
-#: cobc/cobc.cpp:1459 bin/cobcrun.cpp:143
+#: cobc/cobc.cpp:1461 bin/cobcrun.cpp:143
 msgid "GNU Cobol C++ information"
 msgstr "GNU Cobol C++ information"
 
-#: cobc/cobc.cpp:1471 cobc/cobc.cpp:1473 bin/cobcrun.cpp:155
+#: cobc/cobc.cpp:1473 cobc/cobc.cpp:1475 bin/cobcrun.cpp:155
 #: bin/cobcrun.cpp:157
 msgid "Dynamic loading"
 msgstr "Dynamic loading"
 
-#: cobc/cobc.cpp:1471 bin/cobcrun.cpp:155
+#: cobc/cobc.cpp:1473 bin/cobcrun.cpp:155
 msgid "System"
 msgstr "System"
 
-#: cobc/cobc.cpp:1473 bin/cobcrun.cpp:157
+#: cobc/cobc.cpp:1475 bin/cobcrun.cpp:157
 msgid "Libtool"
 msgstr "Libtool"
 
-#: cobc/cobc.cpp:1477 bin/cobcrun.cpp:161
+#: cobc/cobc.cpp:1479 bin/cobcrun.cpp:161
 msgid "Enabled"
 msgstr "Enabled"
 
-#: cobc/cobc.cpp:1479 bin/cobcrun.cpp:163
+#: cobc/cobc.cpp:1481 bin/cobcrun.cpp:163
 msgid "Disabled"
 msgstr "Disabled"
 
-#: cobc/cobc.cpp:1483 bin/cobcrun.cpp:168
+#: cobc/cobc.cpp:1485 bin/cobcrun.cpp:168
 msgid "Variable format"
 msgstr "Variable format"
 
-#: cobc/cobc.cpp:1486 bin/cobcrun.cpp:171
+#: cobc/cobc.cpp:1488 bin/cobcrun.cpp:171
 msgid "8 bytes"
 msgstr "8 bytes"
 
-#: cobc/cobc.cpp:1488 bin/cobcrun.cpp:173
+#: cobc/cobc.cpp:1490 bin/cobcrun.cpp:173
 msgid "4 bytes"
 msgstr "4 bytes"
 
-#: cobc/cobc.cpp:1492 cobc/cobc.cpp:1494 bin/cobcrun.cpp:177
+#: cobc/cobc.cpp:1494 cobc/cobc.cpp:1496 bin/cobcrun.cpp:177
 #: bin/cobcrun.cpp:179
 msgid "Sequential handler"
 msgstr "Sequential handler"
 
-#: cobc/cobc.cpp:1492 cobc/cobc.cpp:1497 bin/cobcrun.cpp:177
+#: cobc/cobc.cpp:1494 cobc/cobc.cpp:1499 bin/cobcrun.cpp:177
 #: bin/cobcrun.cpp:182
 msgid "External"
 msgstr "External"
 
-#: cobc/cobc.cpp:1494 bin/cobcrun.cpp:179
+#: cobc/cobc.cpp:1496 bin/cobcrun.cpp:179
 msgid "Internal"
 msgstr "Internal"
 
-#: cobc/cobc.cpp:1497 cobc/cobc.cpp:1500 cobc/cobc.cpp:1503 cobc/cobc.cpp:1506
-#: cobc/cobc.cpp:1509 bin/cobcrun.cpp:182 bin/cobcrun.cpp:185
+#: cobc/cobc.cpp:1499 cobc/cobc.cpp:1502 cobc/cobc.cpp:1505 cobc/cobc.cpp:1508
+#: cobc/cobc.cpp:1511 bin/cobcrun.cpp:182 bin/cobcrun.cpp:185
 #: bin/cobcrun.cpp:188 bin/cobcrun.cpp:191 bin/cobcrun.cpp:194
 msgid "ISAM handler"
 msgstr "ISAM handler"
 
-#: cobc/cobc.cpp:1500 bin/cobcrun.cpp:185
+#: cobc/cobc.cpp:1502 bin/cobcrun.cpp:185
 msgid "BDB"
 msgstr "BDB"
 
-#: cobc/cobc.cpp:1503
+#: cobc/cobc.cpp:1505
 msgid "C-ISAM(Experimental)"
 msgstr "C-ISAM(Experimental)"
 
-#: cobc/cobc.cpp:1506
+#: cobc/cobc.cpp:1508
 msgid "D-ISAM(Experimental)"
 msgstr "D-ISAM(Experimental)"
 
-#: cobc/cobc.cpp:1509
+#: cobc/cobc.cpp:1511
 msgid "VBISAM(Experimental)"
 msgstr "VBISAM(Experimental)"
 
-#: cobc/cobc.cpp:1519
+#: cobc/cobc.cpp:1521
 msgid "- NOT set with -Wall"
 msgstr "- NOT set with -Wall"
 
-#: cobc/cobc.cpp:1546
+#: cobc/cobc.cpp:1548
 msgid "Usage: cobc [options] file ..."
 msgstr "Usage: cobc [options] file ..."
 
-#: cobc/cobc.cpp:1548
+#: cobc/cobc.cpp:1550
 msgid "Options:"
 msgstr "Options:"
 
-#: cobc/cobc.cpp:1549
+#: cobc/cobc.cpp:1551
 msgid "  -help                 Display this message"
 msgstr "  -help                 Display this message"
 
-#: cobc/cobc.cpp:1550
+#: cobc/cobc.cpp:1552
 msgid "  -version, -V          Display compiler version"
 msgstr "  -version, -V          Display compiler version"
 
-#: cobc/cobc.cpp:1551
+#: cobc/cobc.cpp:1553
 msgid "  -info, -i             Display compiler build information"
 msgstr "  -info, -i             Display compiler build information"
 
-#: cobc/cobc.cpp:1552
+#: cobc/cobc.cpp:1554
 msgid "  -v                    Display the commands invoked by the compiler"
 msgstr "  -v                    Display the commands invoked by the compiler"
 
-#: cobc/cobc.cpp:1553
+#: cobc/cobc.cpp:1555
 msgid "  -x                    Build an executable program"
 msgstr "  -x                    Build an executable program"
 
-#: cobc/cobc.cpp:1554
+#: cobc/cobc.cpp:1556
 msgid "  -m                    Build a dynamically loadable module(default)"
 msgstr "  -m                    Build a dynamically loadable module(default)"
 
-#: cobc/cobc.cpp:1555
+#: cobc/cobc.cpp:1557
 msgid "  -std=<dialect>        Warnings/features for a specific dialect :"
 msgstr "  -std=<dialect>        Warnings/features for a specific dialect :"
 
-#: cobc/cobc.cpp:1556
+#: cobc/cobc.cpp:1558
 msgid "                          cobol2002   Cobol 2002"
 msgstr "                          cobol2002   Cobol 2002"
 
-#: cobc/cobc.cpp:1557
+#: cobc/cobc.cpp:1559
 msgid "                          cobol85     Cobol 85"
 msgstr "                          cobol85     Cobol 85"
 
-#: cobc/cobc.cpp:1558
+#: cobc/cobc.cpp:1560
 msgid "                          ibm         IBM Compatible"
 msgstr "                          ibm         IBM Compatible"
 
-#: cobc/cobc.cpp:1559
+#: cobc/cobc.cpp:1561
 msgid "                          mvs         MVS Compatible"
 msgstr "                          mvs         MVS Compatible"
 
-#: cobc/cobc.cpp:1560
+#: cobc/cobc.cpp:1562
 msgid "                          bs2000      BS2000 Compatible"
 msgstr "                          bs2000      BS2000 Compatible"
 
-#: cobc/cobc.cpp:1561
+#: cobc/cobc.cpp:1563
 msgid "                          mf          Micro Focus Compatible"
 msgstr "                          mf          Micro Focus Compatible"
 
-#: cobc/cobc.cpp:1562
+#: cobc/cobc.cpp:1564
 msgid "                          default     When not specified"
 msgstr "                          default     When not specified"
 
-#: cobc/cobc.cpp:1563
+#: cobc/cobc.cpp:1565
 msgid "                        See config/default.conf and config/*.conf"
 msgstr "                        See config/default.conf and config/*.conf"
 
-#: cobc/cobc.cpp:1564
+#: cobc/cobc.cpp:1566
 msgid "  -free                 Use free source format"
 msgstr "  -free                 Use free source format"
 
-#: cobc/cobc.cpp:1565
+#: cobc/cobc.cpp:1567
 msgid "  -fixed                Use fixed source format(default)"
 msgstr "  -fixed                Use fixed source format(default)"
 
-#: cobc/cobc.cpp:1566
+#: cobc/cobc.cpp:1568
 msgid "  -O, -O2, -Os          Enable optimization"
 msgstr "  -O, -O2, -Os          Enable optimization"
 
-#: cobc/cobc.cpp:1567
+#: cobc/cobc.cpp:1569
 msgid "  -g                    Enable C compiler debug / stack check / trace"
 msgstr "  -g                    Enable C compiler debug / stack check / trace"
 
-#: cobc/cobc.cpp:1568
+#: cobc/cobc.cpp:1570
 msgid "  -debug                Enable all run-time error checking"
 msgstr "  -debug                Enable all run-time error checking"
 
-#: cobc/cobc.cpp:1569
+#: cobc/cobc.cpp:1571
 msgid "  -o <file>             Place the output into <file>"
 msgstr "  -o <file>             Place the output into <file>"
 
-#: cobc/cobc.cpp:1570
+#: cobc/cobc.cpp:1572
 msgid "  -b                    Combine all input files into a single"
 msgstr "  -b                    Combine all input files into a single"
 
-#: cobc/cobc.cpp:1571
+#: cobc/cobc.cpp:1573
 msgid "                        dynamically loadable module"
 msgstr "                        dynamically loadable module"
 
-#: cobc/cobc.cpp:1572
+#: cobc/cobc.cpp:1574
 msgid "  -E                    Preprocess only; do not compile or link"
 msgstr "  -E                    Preprocess only; do not compile or link"
 
-#: cobc/cobc.cpp:1573
+#: cobc/cobc.cpp:1575
 msgid "  -C                    Translation only; convert COBOL to C"
 msgstr "  -C                    Translation only; convert COBOL to C"
 
-#: cobc/cobc.cpp:1574
+#: cobc/cobc.cpp:1576
 msgid "  -S                    Compile only; output assembly file"
 msgstr "  -S                    Compile only; output assembly file"
 
-#: cobc/cobc.cpp:1575
+#: cobc/cobc.cpp:1577
 msgid "  -c                    Compile and assemble, but do not link"
 msgstr "  -c                    Compile and assemble, but do not link"
 
-#: cobc/cobc.cpp:1576
+#: cobc/cobc.cpp:1578
 msgid "  -P(=<dir or file>)    Generate preprocessed program listing(.lst)"
 msgstr "  -P(=<dir or file>)    Generate preprocessed program listing(.lst)"
 
-#: cobc/cobc.cpp:1577
+#: cobc/cobc.cpp:1579
 msgid "  -Xref                 Generate cross reference through 'cobxref'"
 msgstr "  -Xref                 Generate cross reference through ‘cobxref’"
 
-#: cobc/cobc.cpp:1578
+#: cobc/cobc.cpp:1580
 msgid "                       (V. Coen's 'cobxref' must be in path)"
 msgstr "                       (V. Coen's ‘cobxref’ must be in path)"
 
-#: cobc/cobc.cpp:1579
+#: cobc/cobc.cpp:1581
 msgid "  -I <directory>        Add <directory> to copy/include search path"
 msgstr "  -I <directory>        Add <directory> to copy/include search path"
 
-#: cobc/cobc.cpp:1580
+#: cobc/cobc.cpp:1582
 msgid "  -L <directory>        Add <directory> to library search path"
 msgstr "  -L <directory>        Add <directory> to library search path"
 
-#: cobc/cobc.cpp:1581
+#: cobc/cobc.cpp:1583
 msgid "  -l <lib>              Link the library <lib>"
 msgstr "  -l <lib>              Link the library <lib>"
 
-#: cobc/cobc.cpp:1582
+#: cobc/cobc.cpp:1584
 msgid "  -A <options>          Add <options> to the C compile phase"
 msgstr "  -A <options>          Add <options> to the C compile phase"
 
-#: cobc/cobc.cpp:1583
+#: cobc/cobc.cpp:1585
 msgid "  -Q <options>          Add <options> to the C link phase"
 msgstr "  -Q <options>          Add <options> to the C link phase"
 
-#: cobc/cobc.cpp:1584
+#: cobc/cobc.cpp:1586
 msgid "  -D <define>           DEFINE <define> to the COBOL compiler"
 msgstr "  -D <define>           DEFINE <define> to the COBOL compiler"
 
-#: cobc/cobc.cpp:1585
+#: cobc/cobc.cpp:1587
 msgid "  -K <entry>            Generate CALL to <entry> as static"
 msgstr "  -K <entry>            Generate CALL to <entry> as static"
 
-#: cobc/cobc.cpp:1586
+#: cobc/cobc.cpp:1588
 msgid "  -conf=<file>          User defined dialect configuration - See -std="
 msgstr "  -conf=<file>          User defined dialect configuration - See -std="
 
-#: cobc/cobc.cpp:1587
+#: cobc/cobc.cpp:1589
 msgid "  -list-reserved        Display reserved words"
 msgstr "  -list-reserved        Display reserved words"
 
-#: cobc/cobc.cpp:1588
+#: cobc/cobc.cpp:1590
 msgid "  -list-intrinsics      Display intrinsic functions"
 msgstr "  -list-intrinsics      Display intrinsic functions"
 
-#: cobc/cobc.cpp:1589
+#: cobc/cobc.cpp:1591
 msgid "  -list-mnemonics       Display mnemonic names"
 msgstr "  -list-mnemonics       Display mnemonic names"
 
-#: cobc/cobc.cpp:1590
+#: cobc/cobc.cpp:1592
 msgid "  -list-system          Display system routines"
 msgstr "  -list-system          Display system routines"
 
-#: cobc/cobc.cpp:1591
+#: cobc/cobc.cpp:1593
 msgid "  -save-temps(=<dir>)   Save intermediate files"
 msgstr "  -save-temps(=<dir>)   Save intermediate files"
 
-#: cobc/cobc.cpp:1592
+#: cobc/cobc.cpp:1594
 msgid "                        - Default : current directory"
 msgstr "                        - Default : current directory"
 
-#: cobc/cobc.cpp:1593
+#: cobc/cobc.cpp:1595
 msgid "  -ext <extension>      Add default file extension"
 msgstr "  -ext <extension>      Add default file extension"
 
-#: cobc/cobc.cpp:1597
+#: cobc/cobc.cpp:1599
 msgid "  -W                    Enable ALL warnings"
 msgstr "  -W                    Enable ALL warnings"
 
-#: cobc/cobc.cpp:1598
+#: cobc/cobc.cpp:1600
 msgid "  -Wall                 Enable all warnings except as noted below"
 msgstr "  -Wall                 Enable all warnings except as noted below"
 
-#: cobc/cobc.cpp:1631
+#: cobc/cobc.cpp:1633
 msgid "Only one of options 'E', 'S', 'C', 'c' may be specified"
 msgstr "Only one of options 'E', 'S', 'C', ‘c’ may be specified"
 
-#: cobc/cobc.cpp:1637
+#: cobc/cobc.cpp:1639
 msgid "Only one of options 'm', 'x', 'b' may be specified"
 msgstr "Only one of options 'm', 'x', ‘b’ may be specified"
 
-#: cobc/cobc.cpp:1652
+#: cobc/cobc.cpp:1654
 #, c-format
 msgid "'%s' is not an intrinsic function"
 msgstr "‘%s’ is not an intrinsic function"
 
-#: cobc/cobc.cpp:1806
+#: cobc/cobc.cpp:1808
 msgid "Invalid output file name"
 msgstr "Invalid output file name"
 
-#: cobc/cobc.cpp:1848
+#: cobc/cobc.cpp:1850
 #, c-format
 msgid "Invalid option -std=%s"
 msgstr "Invalid option -std=%s"
 
-#: cobc/cobc.cpp:1882
+#: cobc/cobc.cpp:1884
 #, c-format
 msgid "Warning - '%s' is not a directory, defaulting to current directory"
 msgstr "Warning - ‘%s’ is not a directory, defaulting to current directory"
 
-#: cobc/cobc.cpp:1914
+#: cobc/cobc.cpp:1916
 #, c-format
 msgid "Warning - assuming '%s' is a DEFINE - did you intend to use -debug?"
 msgstr "Warning - assuming ‘%s’ is a DEFINE - did you intend to use -debug?"
 
-#: cobc/cobc.cpp:2113
+#: cobc/cobc.cpp:2115
 msgid "Invalid option detected"
 msgstr "Invalid option detected"
 
-#: cobc/cobc.cpp:2126
+#: cobc/cobc.cpp:2128
 msgid "Failed to load the initial config file"
 msgstr "Failed to load the initial config file"
 
-#: cobc/cobc.cpp:2132
+#: cobc/cobc.cpp:2134
 #, c-format
 msgid "Invalid tab-width value - %d"
 msgstr "Invalid tab-width value - %d"
 
-#: cobc/cobc.cpp:2138
+#: cobc/cobc.cpp:2140
 #, c-format
 msgid "Invalid text-column value - %d"
 msgstr "Invalid text-column value - %d"
 
-#: cobc/cobc.cpp:2291
+#: cobc/cobc.cpp:2293
 msgid "Invalid file name parameter"
 msgstr "Invalid file name parameter"
 
-#: cobc/cobc.cpp:2557
+#: cobc/cobc.cpp:2559
 #, c-format
 msgid "Unknown option ignored:\t%s"
 msgstr "Unknown option ignored:\t%s"
 
-#: cobc/cobc.cpp:2615 cobc/cobc.cpp:2670 cobc/cobc.cpp:2727 cobc/cobc.cpp:2817
-#: cobc/cobc.cpp:2844 cobc/cobc.cpp:2886
+#: cobc/cobc.cpp:2617 cobc/cobc.cpp:2672 cobc/cobc.cpp:2729 cobc/cobc.cpp:2819
+#: cobc/cobc.cpp:2846 cobc/cobc.cpp:2888
 msgid "Return status:"
 msgstr "Return status:"
 
-#: cobc/cobc.cpp:2758
+#: cobc/cobc.cpp:2760
 msgid "Preprocessing:"
 msgstr "Preprocessing:"
 
-#: cobc/cobc.cpp:2822
+#: cobc/cobc.cpp:2824
 msgid "'cobxref' execution unsuccessful"
 msgstr "‘cobxref’ execution unsuccessful"
 
-#: cobc/cobc.cpp:2826
+#: cobc/cobc.cpp:2828
 #, c-format
 msgid "Check that 'cobxref' is in %%PATH%%"
 msgstr "Check that ‘cobxref’ is in %%PATH%%"
 
-#: cobc/cobc.cpp:2829
+#: cobc/cobc.cpp:2831
 msgid "Check that 'cobxref' is in $PATH"
 msgstr "Check that ‘cobxref’ is in $PATH"
 
-#: cobc/cobc.cpp:2833
+#: cobc/cobc.cpp:2835
 msgid "No listing produced"
 msgstr "No listing produced"
 
-#: cobc/cobc.cpp:2868
+#: cobc/cobc.cpp:2870
 msgid "Parsing:"
 msgstr "Parsing:"
 
-#: cobc/cobc.cpp:2925
+#: cobc/cobc.cpp:2927
 msgid "Translating:"
 msgstr "Translating:"
 
-#: cobc/cobc.cpp:3753
+#: cobc/cobc.cpp:3779
 msgid "No input files"
 msgstr "No input files"
 
-#: cobc/cobc.cpp:3843
+#: cobc/cobc.cpp:3869
 msgid "-o option invalid in this combination"
 msgstr "-o option invalid in this combination"
 
-#: cobc/cobc.cpp:3865
+#: cobc/cobc.cpp:3891
 msgid "Command line:\t"
 msgstr "Command line:\t"
 
-#: cobc/codegen.cpp:612 cobc/codegen.cpp:2471 cobc/codegen.cpp:6378
-#: cobc/codegen.cpp:6799
+#: cobc/codegen.cpp:612 cobc/codegen.cpp:2471 cobc/codegen.cpp:6432
+#: cobc/codegen.cpp:6853
 msgid "Unexpected CONSTANT item"
 msgstr "Unexpected CONSTANT item"
 
 #: cobc/codegen.cpp:852 cobc/codegen.cpp:927 cobc/codegen.cpp:1085
 #: cobc/codegen.cpp:1562 cobc/codegen.cpp:1808 cobc/codegen.cpp:2233
-#: cobc/codegen.cpp:2442 cobc/codegen.cpp:5245 cobc/typeck.cpp:710
+#: cobc/codegen.cpp:2442 cobc/codegen.cpp:5299 cobc/typeck.cpp:710
 #: cobc/typeck.cpp:3045 cobc/typeck.cpp:6043
 #, c-format
 msgid "Unexpected tree tag %d"
 msgstr "Unexpected tree tag %d"
 
-#: cobc/codegen.cpp:1371 cobc/codegen.cpp:1641 cobc/codegen.cpp:5031
+#: cobc/codegen.cpp:1371 cobc/codegen.cpp:1641 cobc/codegen.cpp:5085
 #, c-format
 msgid "Unexpected cast type %d"
 msgstr "Unexpected cast type %d"
@@ -603,20 +603,20 @@ msgstr "Unexpected function %s"
 msgid "Unexpected constant"
 msgstr "Unexpected constant"
 
-#: cobc/codegen.cpp:2937
+#: cobc/codegen.cpp:2949
 #, c-format
 msgid "Unexpected tree category %d"
 msgstr "Unexpected tree category %d"
 
-#: cobc/codegen.cpp:3268 cobc/codegen.cpp:3298
+#: cobc/codegen.cpp:3304 cobc/codegen.cpp:3334
 msgid "Unexpected size"
 msgstr "Unexpected size"
 
-#: cobc/codegen.cpp:4833
+#: cobc/codegen.cpp:4887
 msgid "Unexpected error_node parameter"
 msgstr "Unexpected error_node parameter"
 
-#: cobc/codegen.cpp:5049
+#: cobc/codegen.cpp:5103
 #, c-format
 msgid "Unexpected tree type %d"
 msgstr "Unexpected tree type %d"
@@ -1926,7 +1926,7 @@ msgstr "Switch name"
 msgid "Feature name"
 msgstr "Feature name"
 
-#: cobc/reserved.cpp:2481 libcob/common.cpp:3472 libcob/common.cpp:3544
+#: cobc/reserved.cpp:2481 libcob/common.cpp:3595 libcob/common.cpp:3667
 msgid "Unknown"
 msgstr "Unknown"
 
@@ -2268,17 +2268,17 @@ msgstr "‘%s’ requires %d subscripts"
 msgid "'%s' has no OCCURS clause"
 msgstr "‘%s’ has no OCCURS clause"
 
-#: cobc/typeck.cpp:1369 libcob/common.cpp:2160
+#: cobc/typeck.cpp:1369 libcob/common.cpp:2168
 #, c-format
 msgid "Subscript of '%s' out of bounds: %d"
 msgstr "Subscript of ‘%s’ out of bounds: %d"
 
-#: cobc/typeck.cpp:1421 cobc/typeck.cpp:1430 libcob/common.cpp:2172
+#: cobc/typeck.cpp:1421 cobc/typeck.cpp:1430 libcob/common.cpp:2180
 #, c-format
 msgid "Offset of '%s' out of bounds: %d"
 msgstr "Offset of ‘%s’ out of bounds: %d"
 
-#: cobc/typeck.cpp:1425 cobc/typeck.cpp:1434 libcob/common.cpp:2179
+#: cobc/typeck.cpp:1425 cobc/typeck.cpp:1434 libcob/common.cpp:2187
 #, c-format
 msgid "Length of '%s' out of bounds: %d"
 msgstr "Length of ‘%s’ out of bounds: %d"
@@ -2964,212 +2964,266 @@ msgstr "NULL parameter passed to ‘cob_longjmp’"
 msgid "Call to 'cob_longjmp' with no prior 'cob_setjmp'"
 msgstr "Call to ‘cob_longjmp’ with no prior ‘cob_setjmp’"
 
-#: libcob/common.cpp:366
+#: libcob/cobgetopt.cpp:473
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: option ‘%s’ is ambiguous\n"
+
+#: libcob/cobgetopt.cpp:495
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: option ‘--%s’ doesn't allow an argument\n"
+
+#: libcob/cobgetopt.cpp:500
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: option ‘%c%s’ doesn't allow an argument\n"
+
+#: libcob/cobgetopt.cpp:516 libcob/cobgetopt.cpp:675
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: option ‘%s’ requires an argument\n"
+
+#: libcob/cobgetopt.cpp:544
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: unrecognized option ‘--%s’\n"
+
+#: libcob/cobgetopt.cpp:548
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: unrecognized option ‘%c%s’\n"
+
+#: libcob/cobgetopt.cpp:573
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: invalid option -- %c\n"
+
+#: libcob/cobgetopt.cpp:598 libcob/cobgetopt.cpp:717
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: option requires an argument -- %c\n"
+
+#: libcob/cobgetopt.cpp:643
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: option ‘-W %s’ is ambiguous\n"
+
+#: libcob/cobgetopt.cpp:661
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: option ‘-W %s’ doesn't allow an argument\n"
+
+#: libcob/common.cpp:374
 #, c-format
 msgid "Attempt to reference unallocated memory"
 msgstr "Attempt to reference unallocated memory"
 
-#: libcob/common.cpp:368 libcob/common.cpp:371
+#: libcob/common.cpp:376 libcob/common.cpp:379
 #, c-format
 msgid "Caught Signal"
 msgstr "Caught Signal"
 
-#: libcob/common.cpp:374
+#: libcob/common.cpp:382
 #, c-format
 msgid "(Signal %s)"
 msgstr "(Signal %s)"
 
-#: libcob/common.cpp:379
+#: libcob/common.cpp:387
 #, c-format
 msgid "Abnormal termination - File contents may be incorrect"
 msgstr "Abnormal termination - File contents may be incorrect"
 
-#: libcob/common.cpp:1253
+#: libcob/common.cpp:1261
 msgid "Malloc error"
 msgstr "Malloc error"
 
-#: libcob/common.cpp:1283 libcob/common.cpp:1289
+#: libcob/common.cpp:1291 libcob/common.cpp:1297
 msgid "cob_init() has not been called"
 msgstr "cob_init() has not been called"
 
-#: libcob/common.cpp:1286
+#: libcob/common.cpp:1294
 msgid "Attempt to CANCEL active program"
 msgstr "Attempt to CANCEL active program"
 
-#: libcob/common.cpp:1292
+#: libcob/common.cpp:1300
 msgid "Codegen error - Please report this"
 msgstr "Codegen error - Please report this"
 
-#: libcob/common.cpp:1295
+#: libcob/common.cpp:1303
 msgid "Recursive call of chained program"
 msgstr "Recursive call of chained program"
 
-#: libcob/common.cpp:1298
+#: libcob/common.cpp:1306
 msgid "Stack overflow, possible PERFORM depth exceeded"
 msgstr "Stack overflow, possible PERFORM depth exceeded"
 
-#: libcob/common.cpp:1301
+#: libcob/common.cpp:1309
 msgid "Invalid entry/exit in GLOBAL USE procedure"
 msgstr "Invalid entry/exit in GLOBAL USE procedure"
 
-#: libcob/common.cpp:1304
+#: libcob/common.cpp:1312
 msgid "Unable to allocate memory"
 msgstr "Unable to allocate memory"
 
-#: libcob/common.cpp:1307
+#: libcob/common.cpp:1315
 msgid "Invalid entry into module"
 msgstr "Invalid entry into module"
 
-#: libcob/common.cpp:1310
+#: libcob/common.cpp:1318
 msgid "Invalid recursive COBOL CALL"
 msgstr "Invalid recursive COBOL CALL"
 
-#: libcob/common.cpp:1319
+#: libcob/common.cpp:1327
 msgid "End of file"
 msgstr "End of file"
 
-#: libcob/common.cpp:1322
+#: libcob/common.cpp:1330
 msgid "Key out of range"
 msgstr "Key out of range"
 
-#: libcob/common.cpp:1325
+#: libcob/common.cpp:1333
 msgid "Key order not ascending"
 msgstr "Key order not ascending"
 
-#: libcob/common.cpp:1328
+#: libcob/common.cpp:1336
 msgid "Record key already exists"
 msgstr "Record key already exists"
 
-#: libcob/common.cpp:1331
+#: libcob/common.cpp:1339
 msgid "Record key does not exist"
 msgstr "Record key does not exist"
 
-#: libcob/common.cpp:1334
+#: libcob/common.cpp:1342
 msgid "Permanent file error"
 msgstr "Permanent file error"
 
-#: libcob/common.cpp:1337
+#: libcob/common.cpp:1345
 msgid "File does not exist"
 msgstr "File does not exist"
 
-#: libcob/common.cpp:1340
+#: libcob/common.cpp:1348
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: libcob/common.cpp:1343
+#: libcob/common.cpp:1351
 msgid "File already open"
 msgstr "File already open"
 
-#: libcob/common.cpp:1346
+#: libcob/common.cpp:1354
 msgid "File not open"
 msgstr "File not open"
 
-#: libcob/common.cpp:1349
+#: libcob/common.cpp:1357
 msgid "READ must be executed first"
 msgstr "READ must be executed first"
 
-#: libcob/common.cpp:1352
+#: libcob/common.cpp:1360
 msgid "Record overflow"
 msgstr "Record overflow"
 
-#: libcob/common.cpp:1355
+#: libcob/common.cpp:1363
 msgid "Failed to read"
 msgstr "Failed to read"
 
-#: libcob/common.cpp:1358
+#: libcob/common.cpp:1366
 msgid "READ/START not allowed"
 msgstr "READ/START not allowed"
 
-#: libcob/common.cpp:1361
+#: libcob/common.cpp:1369
 msgid "WRITE not allowed"
 msgstr "WRITE not allowed"
 
-#: libcob/common.cpp:1364
+#: libcob/common.cpp:1372
 msgid "DELETE/REWRITE not allowed"
 msgstr "DELETE/REWRITE not allowed"
 
-#: libcob/common.cpp:1367
+#: libcob/common.cpp:1375
 msgid "Record locked by another file connector"
 msgstr "Record locked by another file connector"
 
-#: libcob/common.cpp:1370
+#: libcob/common.cpp:1378
 msgid "LINAGE values invalid"
 msgstr "LINAGE values invalid"
 
-#: libcob/common.cpp:1373
+#: libcob/common.cpp:1381
 msgid "File sharing conflict"
 msgstr "File sharing conflict"
 
-#: libcob/common.cpp:1376
+#: libcob/common.cpp:1384
 msgid "Runtime library is not configured for this operation"
 msgstr "Runtime library is not configured for this operation"
 
-#: libcob/common.cpp:1379
+#: libcob/common.cpp:1387
 msgid "Unknown file error"
 msgstr "Unknown file error"
 
-#: libcob/common.cpp:1385
+#: libcob/common.cpp:1393
 #, c-format
 msgid "%s (Status = %02d) File : '%s'"
 msgstr "%s (Status = %02d) File : ‘%s’"
 
-#: libcob/common.cpp:1391
+#: libcob/common.cpp:1399
 msgid "Attempt to use non-implemented function"
 msgstr "Attempt to use non-implemented function"
 
-#: libcob/common.cpp:1394
+#: libcob/common.cpp:1402
 #, c-format
 msgid "Unknown failure : %d"
 msgstr "Unknown failure : %d"
 
-#: libcob/common.cpp:1503
+#: libcob/common.cpp:1511
 msgid "Error - Version mismatch"
 msgstr "Error - Version mismatch"
 
-#: libcob/common.cpp:1504
+#: libcob/common.cpp:1512
 #, c-format
 msgid "%s has version/patch level %s/%d"
 msgstr "%s has version/patch level %s/%d"
 
-#: libcob/common.cpp:1506
+#: libcob/common.cpp:1514
 #, c-format
 msgid "Library has version/patch level %s/%d"
 msgstr "Library has version/patch level %s/%d"
 
-#: libcob/common.cpp:1516
+#: libcob/common.cpp:1524
 #, c-format
 msgid "CALL to %s requires %d parameters"
 msgstr "CALL to %s requires %d parameters"
 
-#: libcob/common.cpp:2115
+#: libcob/common.cpp:2123
 #, c-format
 msgid "BASED/LINKAGE item '%s' has NULL address"
 msgstr "BASED/LINKAGE item ‘%s’ has NULL address"
 
-#: libcob/common.cpp:2135
+#: libcob/common.cpp:2143
 #, c-format
 msgid "'%s' not numeric: '%s'"
 msgstr "‘%s’ not numeric: ‘%s’"
 
-#: libcob/common.cpp:2148
+#: libcob/common.cpp:2156
 #, c-format
 msgid "OCCURS DEPENDING ON '%s' out of bounds: %d"
 msgstr "OCCURS DEPENDING ON ‘%s’ out of bounds: %d"
 
-#: libcob/common.cpp:2191
+#: libcob/common.cpp:2199
 #, c-format
 msgid ""
 "EXTERNAL item '%s' previously allocated with size %d, requested size is %d"
 msgstr ""
 "EXTERNAL item ‘%s’ previously allocated with size %d, requested size is %d"
 
-#: libcob/common.cpp:2622
+#: libcob/common.cpp:2630
 msgid "'cobcommandline' - Runtime has not been initialized"
 msgstr "‘cobcommandline’ - Runtime has not been initialized"
 
-#: libcob/common.cpp:2750
+#: libcob/common.cpp:2758
 msgid "Parameter to SYSTEM call is larger than 8192 characters"
 msgstr "Parameter to SYSTEM call is larger than 8192 characters"
+
+#: libcob/common.cpp:3124
+msgid "Call to CBL_OC_GETOPT with wrong longoption size."
+msgstr "Call to CBL_OC_GETOPT with wrong longoption size."
 
 #: libcob/fileio.cpp:2050
 #, c-format
@@ -3215,56 +3269,6 @@ msgstr "Failed to initialize curses"
 #: libcob/termio.cpp:60 libcob/termio.cpp:88
 msgid "(Not representable)"
 msgstr "(Not representable)"
-
-#: lib/cobgetopt.cpp:471
-#, c-format
-msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: option ‘%s’ is ambiguous\n"
-
-#: lib/cobgetopt.cpp:493
-#, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: option ‘--%s’ doesn't allow an argument\n"
-
-#: lib/cobgetopt.cpp:498
-#, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: option ‘%c%s’ doesn't allow an argument\n"
-
-#: lib/cobgetopt.cpp:514 lib/cobgetopt.cpp:673
-#, c-format
-msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: option ‘%s’ requires an argument\n"
-
-#: lib/cobgetopt.cpp:542
-#, c-format
-msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: unrecognized option ‘--%s’\n"
-
-#: lib/cobgetopt.cpp:546
-#, c-format
-msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: unrecognized option ‘%c%s’\n"
-
-#: lib/cobgetopt.cpp:571
-#, c-format
-msgid "%s: invalid option -- %c\n"
-msgstr "%s: invalid option -- %c\n"
-
-#: lib/cobgetopt.cpp:596 lib/cobgetopt.cpp:715
-#, c-format
-msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: option requires an argument -- %c\n"
-
-#: lib/cobgetopt.cpp:641
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: option ‘-W %s’ is ambiguous\n"
-
-#: lib/cobgetopt.cpp:659
-#, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: option ‘-W %s’ doesn't allow an argument\n"
 
 #: bin/cobcrun.cpp:92
 msgid "Usage: cobcrun PROGRAM [param ...]"

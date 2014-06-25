@@ -30,7 +30,7 @@
 #include	"libcob.h"
 #include	"tarstamp.h"
 
-#include "lib/cobgetopt.h"
+#include "libcob/cobgetopt.h"
 
 #ifdef	HAVE_LOCALE_H
 #include <locale.h>
