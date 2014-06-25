@@ -2769,7 +2769,7 @@ AT_DATA([prog.cob], [
 
 AT_DATA([prog2.cob], [
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. prog.
+        PROGRAM-ID. prog2.
         DATA DIVISION.
         WORKING-STORAGE SECTION.
         01 FILE1 PIC X(8) VALUE 'prog.cob'.
