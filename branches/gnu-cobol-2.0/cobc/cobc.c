@@ -663,7 +663,7 @@ cobc_strdup (const char *dupstr)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_strdup"));
+		cobc_abort_pr (_("Call to cobc_strdup with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -714,7 +714,7 @@ cobc_main_strdup (const char *dupstr)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_main_strdup"));
+		cobc_abort_pr (_("Call to cobc_main_strdup with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -816,7 +816,7 @@ cobc_parse_strdup (const char *dupstr)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_parse_strdup"));
+		cobc_abort_pr (_("Call to cobc_parse_strdup with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -917,7 +917,7 @@ cobc_plex_strdup (const char *dupstr)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_plex_strdup"));
+		cobc_abort_pr (_("Call to cobc_plex_strdup with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -934,7 +934,7 @@ cobc_check_string (const char *dupstr)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_check_string"));
+		cobc_abort_pr (_("Call to cobc_check_string with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -1271,7 +1271,7 @@ cobc_stradd_dup (const char *str1, const char *str2)
 
 #ifdef	COB_TREE_DEBUG
 	if (unlikely(!str1 || !str2)) {
-		cobc_abort_pr (_("Call to %s with NULL pointer", "cobc_stradd_dup"));
+		cobc_abort_pr (_("Call to cobc_stradd_dup with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
@@ -1747,8 +1747,8 @@ cobc_print_usage (void)
 	puts (_("  -x                    Build an executable program"));
 	puts (_("  -m                    Build a dynamically loadable module (default)"));
 	puts (_("  -std=<dialect>        Warnings/features for a specific dialect :"));
-	puts (_("                          cobol2002   COBOL 2002"));
-	puts (_("                          cobol85     COBOL 85"));
+	puts (_("                          cobol2002   Cobol 2002"));
+	puts (_("                          cobol85     Cobol 85"));
 	puts (_("                          ibm         IBM Compatible"));
 	puts (_("                          mvs         MVS Compatible"));
 	puts (_("                          bs2000      BS2000 Compatible"));
@@ -1822,13 +1822,13 @@ cobc_print_usage (void)
 static void
 cobc_options_error_nonfinal (void)
 {
-	cobc_err_exit (_("Only one of options %s may be specified"), "'E', 'S', 'C', 'c'");
+	cobc_err_exit (_("Only one of options 'E', 'S', 'C', 'c' may be specified"));
 }
 
 static void
 cobc_options_error_build (void)
 {
-	cobc_err_exit (_("Only one of options %s may be specified"), "'m', 'x', 'b'");
+	cobc_err_exit (_("Only one of options 'm', 'x', 'b' may be specified"));
 }
 
 static void
@@ -3055,11 +3055,11 @@ preprocess (struct filename *fn)
 					stderr);
 				putc ('\n', stderr);
 #ifdef	_WIN32
-				fprintf (stderr, _("Check that 'cobxref' is in %s"),
-					"%%PATH%%");
+				fputs (_("Check that 'cobxref' is in %%PATH%%"),
+					stderr);
 #else
-				fprintf (stderr, _("Check that 'cobxref' is in %s"),
-					"$PATH");
+				fputs (_("Check that 'cobxref' is in $PATH"),
+					stderr);
 #endif
 				putc ('\n', stderr);
 				fputs (_("No listing produced"),
@@ -4189,8 +4189,7 @@ main (int argc, char **argv)
 	}
 
 	if (verbose_output) {
-		fputs (_("Command line:"), stderr);
-		putc ('\t', stderr);
+		fputs (_("Command line:\t"), stderr);
 		for (i = 0; i < argc; ++i) {
 			fprintf (stderr, "%s ", argv[i]);
 		}

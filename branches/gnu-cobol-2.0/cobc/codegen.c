@@ -6809,7 +6809,7 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 		output ("/* ENTRY '%s' */\n\n", entry_name);
 	}
 
-#if	defined(_WIN32) || defined(__CYGWIN__)
+#if	(defined(_WIN32) || defined(__CYGWIN__)) && !defined(__clang__)
 	if (!gencode && !prog->nested_level) {
 		output ("__declspec(dllexport) ");
 	}
