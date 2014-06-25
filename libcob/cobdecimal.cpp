@@ -83,8 +83,13 @@ cob_decimal & cob_decimal::operator=(const double rhs) {
 
 	mpf_class temp(rhs);
 
+#ifdef _MSC_VER
 	long lscale;
 	std::string str = temp.get_str(lscale, 10);
+#else
+	mp_exp_t lscale;
+	std::string str = temp.get_str(&lscale, 10, 0);
+#endif
 	int len = (int) str.length();
 	if(len == 0) {
 		value = 0;
