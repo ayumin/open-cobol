@@ -22,7 +22,8 @@
 
 lib_LTLIBRARIES = libcob.la
 libcob_la_SOURCES = common.cpp move.cpp numeric.cpp strings.cpp cobdecimal.cpp \
-	fileio.cpp call.cpp intrinsic.cpp termio.cpp screenio.cpp btmsadd.cpp
+	fileio.cpp call.cpp intrinsic.cpp termio.cpp screenio.cpp btmsadd.cpp \
+	cobgetopt.cpp
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
 libcob_la_LIBADD = $(LIBCOB_LIBS)
@@ -31,5 +32,5 @@ AM_LDFLAGS = $(COB_FIX_LIB)
 
 EXTRA_DIST = coblocal.h system.def
 pkgincludedir = $(includedir)/libcob
-pkginclude_HEADERS = common.h cobdecimal.h exception.def
+pkginclude_HEADERS = common.h cobdecimal.h cobgetopt.h exception.def
 

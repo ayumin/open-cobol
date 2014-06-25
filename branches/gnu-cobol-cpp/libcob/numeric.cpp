@@ -33,7 +33,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
 #include <math.h>
+#ifdef HAVE_FINITE_IEEEFP_H
+#include <ieeefp.h>
+#endif
 
 /* Force symbol exports */
 #define	COB_LIB_EXPIMP

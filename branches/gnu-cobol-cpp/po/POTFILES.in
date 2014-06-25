@@ -20,14 +20,12 @@ cobc/naming.cpp
 
 # libcob
 libcob/call.cpp
+libcob/cobgetopt.cpp
 libcob/common.cpp
 libcob/fileio.cpp
 libcob/move.cpp
 libcob/screenio.cpp
 libcob/termio.cpp
-
-#lib
-lib/cobgetopt.cpp
 
 # bin
 bin/cobcrun.cpp

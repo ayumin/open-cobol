@@ -1,3 +1,21 @@
+2014-06-25  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* New folder build_windows
+	* Added project files for Visual Studio 2005 and newer
+
+2014-06-14  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* General: Win compatibility: define COB_OBJEXT in defaults.h
+
+2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* moved cobgetopt.c from lib to libcob
+	* link cobc to libcob
+
+2014-04-11  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* configure.ac : bugfix for systems with prototype for finite function
+		in ieeefp.h instead of math.h
 
 2013-10-23  Sergey Kashyrin <ska@kiska.net>
 

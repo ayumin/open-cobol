@@ -16,7 +16,7 @@
    along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// config.h - Win32 VS2005-2012
+/* config.h	Win32/x64 VS2005-2013  */
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -31,7 +31,7 @@
 #define COB_EXPORT_DYN ""
 
 /* Keyword for inline */
-#define COB_KEYWORD_INLINE inline
+#define COB_KEYWORD_INLINE __inline
 
 /* long int is long long */
 /* #undef COB_LI_IS_LL */
@@ -121,6 +121,9 @@
 /* Define to 1 if you have the `fdatasync' function. */
 /* #undef HAVE_FDATASYNC */
 
+/* Declaration of finite function in ieeefp.h instead of math.h */
+/* #undef HAVE_FINITE_IEEEFP_H */
+
 /* Define to 1 if you have the `getexecname' function. */
 /* #undef HAVE_GETEXECNAME */
 
@@ -184,7 +187,7 @@
 /* Use MPIR instead of GMP */
 #define WITH_MPIR 1
 
-/* Has nanosleep */
+/* Has nanosleep function */
 /* #undef HAVE_NANO_SLEEP */
 
 /* Define to 1 if you have the <ncursesw/curses.h> header file. */
@@ -284,7 +287,7 @@
 /* #undef HAVE_USE_LEGACY_CODING */
 
 /* Define to 1 if you have the <vbisam.h> header file. */
-/* #undef HAVE_VBISAM_H */
+#define HAVE_VBISAM_H 1
 
 /* Define to 1 if you have the `vprintf' function. */
 #define HAVE_VPRINTF 1
@@ -369,7 +372,7 @@
 /* #undef WITH_CISAM */
 
 /* Compile with the Berkeley DB library */
-#define WITH_DB 1
+/* #undef WITH_DB */
 
 /* Use DISAM as ISAM handler */
 /* #undef WITH_DISAM */
@@ -384,7 +387,7 @@
 #define WITH_VARSEQ 1
 
 /* Use VBISAM as ISAM handler */
-/* #undef WITH_VBISAM */
+#define WITH_VBISAM 1
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

@@ -16,7 +16,7 @@
    along with GNU Cobol C++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// config.h - Win32 VS2005-2012
+/* config.h	Win32/x64 VS2005-2013  */
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -31,7 +31,7 @@
 #define COB_EXPORT_DYN ""
 
 /* Keyword for inline */
-#define COB_KEYWORD_INLINE inline
+#define COB_KEYWORD_INLINE __inline
 
 /* long int is long long */
 /* #undef COB_LI_IS_LL */
@@ -121,6 +121,9 @@
 /* Define to 1 if you have the `fdatasync' function. */
 /* #undef HAVE_FDATASYNC */
 
+/* Declaration of finite function in ieeefp.h instead of math.h */
+/* #undef HAVE_FINITE_IEEEFP_H */
+
 /* Define to 1 if you have the `getexecname' function. */
 /* #undef HAVE_GETEXECNAME */
 
@@ -184,7 +187,7 @@
 /* Use MPIR instead of GMP */
 #define WITH_MPIR 1
 
-/* Has nanosleep */
+/* Has nanosleep function */
 /* #undef HAVE_NANO_SLEEP */
 
 /* Define to 1 if you have the <ncursesw/curses.h> header file. */

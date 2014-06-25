@@ -387,7 +387,9 @@ AT_DATA([dump.cpp], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-extern "C" int dump (unsigned char *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *);
 int dump (unsigned char *data)
 {
   printf ("%02x%02x%02x", data[[0]], data[[1]], data[[2]]);
@@ -579,9 +581,9 @@ AT_DATA([caller.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_MODULE -c callee.cob])
-AT_CHECK([$COMPILE -c caller.cob])
-AT_CHECK([$COMPILE -o prog caller.o callee.o])
+AT_CHECK([$COMPILE_MODULE -c callee.cob], [0], , [])
+AT_CHECK([$COMPILE -c caller.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog caller.$OBJECT_EXT callee.$OBJECT_EXT], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -650,7 +652,9 @@ binary-byteorder: native
 
 AT_DATA([dump.cpp], [
 #include <stdio.h>
-extern "C" int dump(int *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (int *);
 int dump (int *p)
 {
   printf ("%8.8d\n", *p);

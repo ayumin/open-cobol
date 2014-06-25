@@ -535,7 +535,7 @@ static const cobc_reserved reserved_words[] = {
   { "DEBUGGING",		0, 0, DEBUGGING,		/* 2002 */
 						0, 0
   },
-  { "DECIMAL-POINT",	0, 0, DECIMAL_POINT,	/* 2002 */
+  { "DECIMAL-POINT",	0, 0, CS_DECIMAL_POINT,	/* 2002 */
 						0, 0
   },
   { "DECLARATIVES",		0, 0, DECLARATIVES,		/* 2002 */

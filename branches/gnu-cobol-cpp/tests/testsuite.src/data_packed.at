@@ -30,7 +30,9 @@ AT_DATA([dump.cpp], [
 #ifdef	__INTEL_COMPILER
 #pragma warning ( disable : 1419 )
 #endif
-extern "C" int dump (unsigned char *);
+#define COB_LIB_EXPIMP
+#include <libcob.h>
+COB_EXPIMP int dump (unsigned char *);
 int dump (unsigned char *data)
 {
   int i;

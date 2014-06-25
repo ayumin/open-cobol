@@ -81,6 +81,7 @@ AH_TEMPLATE([WITH_VARSEQ], [Define variable sequential file format])
 AH_TEMPLATE([HAVE_ATTRIBUTE_ALIGNED], [Has __attribute__((aligned))])
 AH_TEMPLATE([HAVE_TIMEZONE], [Has timezone variable])
 AH_TEMPLATE([COB_EXEEXT], [Executable extension])
+AH_TEMPLATE([COB_OBJEXT], [Object extension])
 AH_TEMPLATE([COB_KEYWORD_INLINE], [Keyword for inline])
 AH_TEMPLATE([COB_NO_SELFOPEN], [Can not dlopen self])
 AH_TEMPLATE([COB_STRFTIME], [Can use strftime for timezone])
@@ -90,6 +91,8 @@ AH_TEMPLATE([HAVE_CURSES_FREEALL], [ncurses has _nc_freeall function])
 AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
 AH_TEMPLATE([HAVE_NANO_SLEEP], [Has nanosleep function])
 AH_TEMPLATE([HAVE_RAISE], [Has raise function])
+AH_TEMPLATE([HAVE_FINITE_IEEEFP_H],
+	[Declaration of finite function in ieeefp.h instead of math.h])
 
 save_libs="$LIBS"
 
@@ -414,13 +417,6 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
 LIBS=$MYOLDLIBS
 fi
 
-AC_MSG_CHECKING([for raise])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
-  [[raise (SIGINT);]])],
-  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
-  [AC_MSG_RESULT([no])],
-  [])
-
 # Solaris has nanosleep in other libraries
 AC_MSG_CHECKING([for nanosleep])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
@@ -443,6 +439,25 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
        AC_MSG_RESULT([no])
      fi
    fi])
+
+# Check for raise (optional)
+AC_MSG_CHECKING([for raise])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+  [[raise (SIGINT);]])],
+  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
+  [AC_MSG_RESULT([no])],
+  [])
+
+# Check prototype for finite in math.h (alternative ieeefp.h)
+AC_MSG_CHECKING([prototype for finite in <math.h>])
+AC_EGREP_HEADER(finite, math.h, AC_MSG_RESULT([yes]),
+	[AC_MSG_RESULT([no])
+	AC_MSG_CHECKING([prototype for finite in <ieeefp.h>])
+	AC_EGREP_HEADER(finite, ieeefp.h,
+	[AC_DEFINE([HAVE_FINITE_IEEEFP_H], [1]) AC_MSG_RESULT([yes])],
+	AC_MSG_ERROR([
+		Declaration for finite function neither in math.h nor in ieeefp.h]))
+	])
 
 AC_CHECK_FUNCS([fdatasync sigaction])
 
@@ -812,6 +827,7 @@ COB_CONFIG_DIR="$datadir/$PACKAGE_TARNAME/config"
 COB_COPY_DIR="$datadir/$PACKAGE_TARNAME/copy"
 COB_LIBRARY_PATH="$libdir/$PACKAGE_TARNAME"
 COB_MODULE_EXT=`echo "$acl_cv_shlibext" | sed -e 's/dll\.a/dll/'`
+COB_OBJECT_EXT="$OBJEXT"
 LIBS="$save_libs"
 COB_EXPORT_DYN="`eval echo $export_dynamic_flag_spec`"
 COB_PIC_FLAGS=`echo "$lt_prog_compiler_pic" | sed -e 's/^ //'`
@@ -999,6 +1015,7 @@ AC_SUBST([COB_CONFIG_DIR])
 AC_SUBST([COB_COPY_DIR])
 AC_SUBST([COB_LIBRARY_PATH])
 AC_SUBST([COB_MODULE_EXT])
+AC_SUBST([COB_OBJECT_EXT])
 AC_SUBST([COBC_LIBS])
 AC_SUBST([LIBCOB_LIBS])
 AC_SUBST([COB_EXPORT_DYN])
@@ -1047,6 +1064,7 @@ echo " COB_CONFIG_DIR    ${COB_CONFIG_DIR}"
 echo " COB_COPY_DIR      ${COB_COPY_DIR}"
 echo " COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}"
 echo " COB_MODULE_EXT    ${COB_MODULE_EXT}"
+echo " COB_OBJECT_EXT    ${COB_OBJECT_EXT}"
 echo " COB_SHARED_OPT    ${COB_SHARED_OPT}"
 echo " COB_PIC_FLAGS     ${COB_PIC_FLAGS}"
 echo " COB_EXPORT_DYN    ${COB_EXPORT_DYN}"
