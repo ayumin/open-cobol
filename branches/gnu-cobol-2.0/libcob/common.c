@@ -414,9 +414,9 @@ cob_sig_handler (int sig)
 #else
 	fprintf (stderr, _("Caught Signal"));
 #endif
-	putc (' ', stderr);
-	fprintf (stderr, _("(Signal %s)"), signal_name);
-	putc ('\n', stderr);
+	fprintf (stderr, " (");
+	fprintf (stderr, _("Signal %s"), signal_name);
+	fprintf (stderr, ")\n");
 
 	if (cob_initialized) {
 		cob_terminate_routines ();
@@ -1507,7 +1507,7 @@ cob_fatal_error (const int fatal_error)
 			msg = _("Record overflow");
 			break;
 		case COB_STATUS_46_READ_ERROR:
-			msg = _("Failed to read");
+			msg = _("Failed to READ");
 			break;
 		case COB_STATUS_47_INPUT_DENIED:
 			msg = _("READ/START not allowed");
@@ -3905,9 +3905,10 @@ print_runtime_env(void) {
 	char* intstring;
 	char* intstring2;
 
-	printf("GNU Cobol runtime environment\n\n");
-	printf("All values were resolved from current environment. \n\n");
-	/* Alles aus common.c --> cob_init und cob_init_... - einigermaßen sinnvoll sortiert (ggf. Zwischenüberschriften ...*/
+	puts(_("GNU Cobol runtime environment"));
+	putchar ('\n');
+	puts(_("All values were resolved from current environment."));
+	putchar ('\n');
 
 	if(!cob_initialized) {
 		cob_init(cob_argc, cob_argv);
@@ -3918,7 +3919,7 @@ print_runtime_env(void) {
 	intstring = (char*) cob_fast_malloc(10);
 	intstring2 = (char*) cob_fast_malloc(10);
 
-	printf(_("Call environment\n"));
+	puts(_("Call environment"));
 
 	var_print("COB_LIBRARY_PATH", runtimeptr->cob_library_path_env, not_set,
 			2);
@@ -3938,7 +3939,9 @@ print_runtime_env(void) {
 			cob_int_to_string(*(runtimeptr->physical_cancel), intstring),
 			no_default, 3);
 
-	printf(_("\n\nFile I/O\n"));
+	putchar ('\n');
+	putchar ('\n');
+	puts(_("File I/O"));
 	var_print("COB_SYNC", runtimeptr->cob_do_sync_env, not_set, 2);
 	var_print("cob_do_sync",
 			cob_int_to_string(*(runtimeptr->cob_do_sync), intstring),
@@ -3981,7 +3984,9 @@ print_runtime_env(void) {
 			no_default, 3);
 
 	if (runtimeptr->cob_local_edit) {
-		printf(_("\n\nLocale Properties\n"));
+		putchar ('\n');
+		putchar ('\n');
+		puts (_("Locale Properties"));
 		var_print("COB_LOCALE_NUMERIC_EDITED", runtimeptr->cob_local_edit_env,
 				not_set, 2);
 		var_print("cob_local_edit",
@@ -3989,7 +3994,9 @@ print_runtime_env(void) {
 				no_default, 3);
 	}
 
-	printf(_("\n\nScreen I/O\n"));
+	putchar ('\n');
+	putchar ('\n');
+	puts(_("Screen I/O"));
 	var_print("COB_REDIRECT_DISPLAY",
 			runtimeptr->cob_disp_to_stderr_env, not_set, 2);
 	var_print("cob_disp_to_stderr",
@@ -4018,7 +4025,9 @@ print_runtime_env(void) {
 				cob_int_to_string(*(runtimeptr->cob_legacy), intstring),
 				no_default, 3);
 	
-	printf(_("\n\nMiscellaneous\n"));
+	putchar ('\n');
+	putchar ('\n');
+	puts(_("Miscellaneous"));
 	var_print("COB_SET_TRACE", runtimeptr->cob_line_trace_env, not_set, 2);
 	var_print("cob_line_trace", cob_int_to_string(cob_line_trace, intstring), no_default, 3);
 	cob_check_trace_file();
