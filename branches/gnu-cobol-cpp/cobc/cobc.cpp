@@ -3045,6 +3045,10 @@ process_compile(filename * fn)
 			"%s /c %s %s /MD /EHsc /c /Fa\"%s\" /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include, name,
 			name, fn->translate);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 #elif defined(__WATCOMC__)
 	sprintf(cobc_buffer, "%s -fe=\"%s\" -s %s %s %s", cobc_cc, name,
 			cobc_cflags, cobc_include, fn->translate);
@@ -3072,6 +3076,10 @@ process_assemble(filename * fn)
 			"%s /c %s %s /MD /EHsc /Fo\"%s\" \"%s\"",
 			cobc_cc, cobc_cflags, cobc_include,
 			fn->object, fn->translate);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 #elif defined(__OS400__)
 	char * name = (char *) fn->translate;
 	if(name[0] != '/') {
@@ -3164,6 +3172,10 @@ process_module_direct(filename * fn)
 			cobc_cc, cobc_cflags, cobc_include, name, name,
 			fn->translate, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	int ret = process(cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3258,6 +3270,10 @@ process_module(filename * fn)
 			"%s /MD /LD /EHsc /Fe\"%s\" \"%s\" %s %s %s %s",
 			cobc_cc, name, fn->object, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	int ret = process(cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3343,6 +3359,10 @@ process_library(filename * l)
 			"%s /MD /LD /EHsc /Fe\"%s\" %s %s %s %s %s",
 			cobc_cc, name, cobc_objects_buffer, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	int ret = process(cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3428,6 +3448,10 @@ process_link(filename * l)
 			"%s /MD /EHsc /Fe\"%s\" %s %s %s %s %s",
 			cobc_cc, name, cobc_objects_buffer, cobc_libs,
 			manilink, cobc_ldflags, cobc_lib_paths);
+	/* Silence MSC output "Creating xyz..." - FIXME */
+	if (!verbose_output) {
+		strcat (cobc_buffer, " 1>NUL");
+	}
 	int ret = process(cobc_buffer);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3440,6 +3464,10 @@ process_link(filename * l)
 		cobc_check_action(cobc_buffer);
 	}
 #endif
+	sprintf(cobc_buffer, "%s.exp", name);
+	cobc_check_action(cobc_buffer);
+	sprintf(cobc_buffer, "%s.lib", name);
+	cobc_check_action(cobc_buffer);
 #else	/* _MSC_VER */
 #ifdef	__WATCOMC__
 	sprintf(cobc_buffer, "%s %s -fe=\"%s\" %s %s %s %s",
