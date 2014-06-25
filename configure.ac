@@ -449,17 +449,16 @@ case $host_os in
 	;;
 esac
 
-# Simon: removing for test purposes
-## Disable for Cygwin
-#AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
-#	#ifdef __CYGWIN__
-#	return 0;
-#	#else
-#	return 1;
-#	#endif]])],
-#	[enable_nls=no],
-#	[],
-#	[])
+# Disable for Cygwin
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[]], [[
+	#ifdef __CYGWIN__
+	return 0;
+	#else
+	return 1;
+	#endif]])],
+	[enable_nls=no],
+	[],
+	[])
 
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])

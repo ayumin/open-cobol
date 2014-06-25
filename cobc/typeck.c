@@ -4844,7 +4844,7 @@ cb_emit_close (cb_tree file, cb_tree opt)
 
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "CLOSE", "SORT");
+			    _("Operation not allowed on SORT files"));
 	}
 
 	cb_emit (CB_BUILD_FUNCALL_4 ("cob_close", file,
@@ -4895,11 +4895,11 @@ cb_emit_delete (cb_tree file)
 
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "DELETE", "SORT");
+			    _("Operation not allowed on SORT files"));
 		return;
 	} else if (f->organization == COB_ORG_LINE_SEQUENTIAL) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "DELETE", "LINE SEQUENTIAL");
+			    _("Operation not allowed on LINE SEQUENTIAL files"));
 		return;
 	}
 
@@ -4927,7 +4927,7 @@ cb_emit_delete_file (cb_tree file)
 	}
 	if (CB_FILE (file)->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "DELETE FILE", "SORT");
+			    _("Operation not allowed on SORT files"));
 		return;
 	}
 
@@ -5603,7 +5603,7 @@ cb_emit_inspect (cb_tree var, cb_tree body, cb_tree replacing,
 			break;
 		default:
 			cb_error_x (CB_TREE (current_statement),
-				_("Invalid target for %s"), "CONVERTING");
+				    _("Invalid target for INSPECT"));
 			return;
 		}
 		break;
@@ -7238,12 +7238,12 @@ cb_emit_open (cb_tree file, cb_tree mode, cb_tree sharing)
 
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "OPEN", "SORT");
+			    _("Operation not allowed on SORT files"));
 		return;
 	} else if (f->organization == COB_ORG_LINE_SEQUENTIAL &&
 		   mode == cb_int (COB_OPEN_I_O)) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "OPEN I-O", "LINE SEQUENTIAL");
+			    _("OPEN I-O not allowed on LINE SEQUENTIAL files"));
 		return;
 	}
 	if (sharing == NULL) {
@@ -7378,7 +7378,7 @@ cb_emit_read (cb_tree ref, cb_tree next, cb_tree into,
 	rec = cb_build_field_reference (f->record, ref);
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "READ", "SORT");
+			    _("Operation not allowed on SORT files"));
 		return;
 	}
 	if (next == cb_int1 || next == cb_int2 ||
@@ -7482,12 +7482,12 @@ cb_emit_rewrite (cb_tree record, cb_tree from, cb_tree lockopt)
 	}
 	if (!CB_REF_OR_FIELD_P (cb_ref (record))) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s requires a record name as subject"), "REWRITE");
+			_("REWRITE requires a record name as subject"));
 		return;
 	}
 	if (CB_FIELD_PTR (record)->storage != CB_STORAGE_FILE) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s subject does not refer to a record name"), "REWRITE");
+			_("REWRITE subject does not refer to a record name"));
 		return;
 	}
 
@@ -7501,11 +7501,11 @@ cb_emit_rewrite (cb_tree record, cb_tree from, cb_tree lockopt)
 
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-		_("%s not allowed on %s files"), "REWRITE", "SORT");
+		_("Operation not allowed on SORT files"));
 		return;
 	} else if (f->organization == COB_ORG_LINE_SEQUENTIAL) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "REWRITE", "LINE SEQUENTIAL");
+			    _("Operation not allowed on LINE SEQUENTIAL files"));
 		return;
 	} else if (current_statement->handler_id == COB_EC_I_O_INVALID_KEY &&
 		  (f->organization != COB_ORG_RELATIVE &&
@@ -7554,13 +7554,13 @@ cb_emit_release (cb_tree record, cb_tree from)
 	}
 	if (!CB_REF_OR_FIELD_P (cb_ref (record))) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s requires a record name as subject"), "RELEASE");
+			_("RELEASE requires a record name as subject"));
 		return;
 	}
 	f = CB_FIELD_PTR (record);
 	if (f->storage != CB_STORAGE_FILE) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s subject does not refer to a record name"), "RELEASE");
+			_("RELEASE subject does not refer to a record name"));
 		return;
 	}
 	file = CB_TREE (f->file);
@@ -8193,7 +8193,7 @@ cb_emit_start (cb_tree file, cb_tree op, cb_tree key, cb_tree keylen)
 	if (f->organization != COB_ORG_INDEXED &&
 	    f->organization != COB_ORG_RELATIVE) {
 		cb_error_x (CB_TREE (current_statement),
-			    _("%s not allowed on %s files"), "START", "SEQUENTIAL");
+			    _("START not allowed on SEQUENTIAL files"));
 		return;
 	}
 	if (keylen && f->organization != COB_ORG_INDEXED) {
@@ -8372,12 +8372,12 @@ cb_emit_write (cb_tree record, cb_tree from, cb_tree opt, cb_tree lockopt)
 	}
 	if (!CB_REF_OR_FIELD_P (cb_ref (record))) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s requires a record name as subject"), "WRITE");
+			_("WRITE requires a record name as subject"));
 		return;
 	}
 	if (CB_FIELD_PTR (record)->storage != CB_STORAGE_FILE) {
 		cb_error_x (CB_TREE (current_statement),
-			_("%s subject does not refer to a record name"), "WRITE");
+			_("WRITE subject does not refer to a record name"));
 		return;
 	}
 	file = CB_TREE (CB_FIELD (cb_ref (record))->file);
@@ -8389,7 +8389,7 @@ cb_emit_write (cb_tree record, cb_tree from, cb_tree opt, cb_tree lockopt)
 
 	if (f->organization == COB_ORG_SORT) {
 		cb_error_x (CB_TREE (current_statement),
-		_("%s not allowed on %s files"), "WRITE", "SORT");
+		_("Operation not allowed on SORT files"));
 	} else if (current_statement->handler_id == COB_EC_I_O_INVALID_KEY &&
 		  (f->organization != COB_ORG_RELATIVE &&
 		   f->organization != COB_ORG_INDEXED)) {

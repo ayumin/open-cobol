@@ -1284,7 +1284,7 @@ compute_size (struct cb_field *f)
 			f->size = sizeof (void *);
 			break;
 		default:
-			cobc_abort_pr (_("Unexpected USAGE - %d"),
+			cobc_abort_pr (_("Unexpected usage - %d"),
 					(int)f->usage);
 			COBC_ABORT ();
 		}
