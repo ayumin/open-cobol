@@ -5216,7 +5216,6 @@ cob_sys_copy_file (unsigned char *fname1, unsigned char *fname2)
 	int	ret;
 	int	i;
 	int	fd1, fd2;
-	char* read_buffer;
 
 	COB_UNUSED (fname1);
 	COB_UNUSED (fname2);
@@ -5248,17 +5247,15 @@ cob_sys_copy_file (unsigned char *fname1, unsigned char *fname2)
 	}
 	free (fn2);
 
-	read_buffer = (char*) malloc(COB_MEDIUM_BUFF);
 	ret = 0;
-	while ((i = read (fd1, read_buffer, COB_MEDIUM_BUFF)) > 0) {
-		if (write (fd2, read_buffer, (size_t)i) < 0) {
+	while ((i = read (fd1, file_open_buff, COB_FILE_BUFF)) > 0) {
+		if (write (fd2, file_open_buff, (size_t)i) < 0) {
 			ret = -1;
 			break;
 		}
 	}
 	close (fd1);
 	close (fd2);
-	free(read_buffer);
 	return ret;
 }
 

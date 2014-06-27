@@ -1,7 +1,3 @@
-2014-06-25  Philipp Böhme <phi.boehme@googlemail.com>
-
-	* fileio.c : Bugfix in cob_sys_copy_file (now using a medium size buffer)
-
 2014-05-20  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* call.c : inverted preload list for WIN32 builds
@@ -47,6 +43,10 @@
 
 	* strings.c : Fix Unstring delimited by all delimiter size > 1 issue,
 		see bug #54.
+
+2013-??-??  Sergey Kashyrin <ska@kiska.net>
+
+	* fileio.c : Bugfix in cob_sys_copy_file (now using file_open_buff)
 
 2010-09-03  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
