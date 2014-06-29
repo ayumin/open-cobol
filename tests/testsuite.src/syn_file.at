@@ -19,34 +19,8 @@
 ### GNU Cobol Test Suite
 
 
-AT_SETUP([Ambiguous AND/OR])
-AT_KEYWORDS([expression])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       PROCEDURE        DIVISION.
-           IF 3 = 1 AND 2 OR 3
-               DISPLAY "OK"
-               END-DISPLAY
-           END-IF.
-           IF 3 = 1 OR 2 AND 3
-               DISPLAY "NO"
-               END-DISPLAY
-           END-IF.
-           STOP RUN.
-])
-
-AT_CHECK([$COMPILE_ONLY prog.cob], [0], [],
-[prog.cob: 6: Warning: Suggest parentheses around AND within OR
-prog.cob: 10: Warning: Suggest parentheses around AND within OR
-])
-
-AT_CLEANUP
-
-
 AT_SETUP([SELECT without ASSIGN])
-AT_KEYWORDS([expression])
+AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -75,7 +49,7 @@ AT_CLEANUP
 
 
 AT_SETUP([START on SEQUENTIAL file])
-AT_KEYWORDS([expression])
+AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -105,7 +79,7 @@ AT_CLEANUP
 
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (1)])
-AT_KEYWORDS([expression])
+AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -145,7 +119,7 @@ AT_CLEANUP
 
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (2)])
-AT_KEYWORDS([expression])
+AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -185,7 +159,7 @@ AT_CLEANUP
 
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (3)])
-AT_KEYWORDS([expression])
+AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
