@@ -1,3 +1,8 @@
+
+2014-06-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* tree.c : Detect missing ASSIGN at compile time
+
 2014-06-19  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* cobc.c : Fixing compilers (like MSC) that don't HAVE_DESIGNATED_INITS
