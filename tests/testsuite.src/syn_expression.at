@@ -18,6 +18,7 @@
 
 ### GNU Cobol Test Suite
 
+
 AT_SETUP([Ambiguous AND/OR])
 AT_KEYWORDS([expression])
 
@@ -36,12 +37,42 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [0], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [],
 [prog.cob: 6: Warning: Suggest parentheses around AND within OR
 prog.cob: 10: Warning: Suggest parentheses around AND within OR
 ])
 
 AT_CLEANUP
+
+
+AT_SETUP([SELECT without ASSIGN])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT
+               TEST-FILE
+               ORGANIZATION IS SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
+[prog.cob: 8: Error: ASSIGN clause missing
+])
+
+AT_CLEANUP
+
 
 AT_SETUP([START on SEQUENTIAL file])
 AT_KEYWORDS([expression])
@@ -66,11 +97,12 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 15: Error: START not allowed on SEQUENTIAL files
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (1)])
 AT_KEYWORDS([expression])
@@ -103,13 +135,14 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'P01':
 prog.cob: In paragraph 'P02':
 prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (2)])
 AT_KEYWORDS([expression])
@@ -142,13 +175,14 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'P01':
 prog.cob: In paragraph 'P02':
 prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (3)])
 AT_KEYWORDS([expression])
@@ -181,7 +215,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'PP01':
 prog.cob: In paragraph 'PP02':
 prog.cob: 25: Error: Invalid reference to 'P02' (In DECLARATIVES)
