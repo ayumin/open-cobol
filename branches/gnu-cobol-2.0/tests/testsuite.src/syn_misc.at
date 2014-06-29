@@ -17,6 +17,33 @@
 
 ### GNU Cobol Test Suite
 
+
+AT_SETUP([Ambiguous AND/OR])
+AT_KEYWORDS([expression])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       PROCEDURE        DIVISION.
+           IF 3 = 1 AND 2 OR 3
+               DISPLAY "OK"
+               END-DISPLAY
+           END-IF.
+           IF 3 = 1 OR 2 AND 3
+               DISPLAY "NO"
+               END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [],
+[prog.cob: 6: Warning: Suggest parentheses around AND within OR
+prog.cob: 10: Warning: Suggest parentheses around AND within OR
+])
+
+AT_CLEANUP
+
+
 AT_SETUP([Missing headers])
 AT_KEYWORDS([misc])
 
@@ -44,7 +71,7 @@ AT_DATA([prog.cob], [
            .
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 2: Error: PROGRAM-ID header missing
 prog.cob: 2: Error: ENVIRONMENT DIVISION header missing
 prog.cob: 2: Error: CONFIGURATION SECTION header missing
@@ -55,6 +82,7 @@ prog.cob: 17: Error: PROCEDURE DIVISION header missing
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([CLASS duplicate values])
 AT_KEYWORDS([misc])
@@ -84,11 +112,12 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 9: Error: Duplicate values in class 'CHECK-VALID'
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT invalid size])
 AT_KEYWORDS([misc])
@@ -109,7 +138,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 8: Error: REPLACING operands differ in size
 prog.cob: 9: Error: REPLACING operands differ in size
 prog.cob: 11: Error: CONVERTING operands differ in size
@@ -117,6 +146,7 @@ prog.cob: 12: Error: CONVERTING operands differ in size
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT invalid target])
 AT_KEYWORDS([misc])
@@ -133,12 +163,13 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 8: Error: Invalid target for REPLACING
 prog.cob: 9: Error: Invalid target for CONVERTING
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT missing keyword])
 AT_KEYWORDS([misc])
@@ -154,11 +185,12 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 8: Error: INSPECT missing a keyword
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([Maximum data size])
 AT_KEYWORDS([misc])
@@ -179,7 +211,7 @@ AT_DATA([prog.cob], [
 
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 6: Error: 'SINGLE-ITEM' cannot be larger than 268435456 bytes
 prog.cob: 8: Error: 'FILLER 1' cannot be larger than 268435456 bytes
 prog.cob: 7: Error: 'GROUP-ITEM1' cannot be larger than 268435456 bytes
@@ -187,6 +219,7 @@ prog.cob: 9: Error: 'GROUP-ITEM2' cannot be larger than 268435456 bytes
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([REPOSITORY])
 AT_KEYWORDS([misc])
@@ -209,9 +242,10 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [0])
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
 
 AT_CLEANUP
+
 
 AT_SETUP([CRT STATUS])
 AT_KEYWORDS([SPECIAL-NAMES, misc])
@@ -247,7 +281,7 @@ AT_DATA([prog2.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 7: Error: 'MY-CRT-STATUS' is not defined
 ])   
 AT_CHECK([$COMPILE_ONLY prog2.cob], [0])
