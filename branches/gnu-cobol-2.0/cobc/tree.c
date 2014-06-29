@@ -2125,6 +2125,9 @@ validate_file (struct cb_file *f, cb_tree name)
 		}
 		break;
 	}
+	if (!f->assign && !f->flag_fileid) {
+		cb_error_x (name, _("ASSIGN clause missing"));
+	}
 }
 
 void
