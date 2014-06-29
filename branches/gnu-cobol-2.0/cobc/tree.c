@@ -196,11 +196,27 @@ lookup_word (struct cb_reference *p, const char *name)
 	p->hashval = val;
 }
 
+#define CB_FILE_ERR_REQUIRED	1
+#define CB_FILE_ERR_INVALID_FT	2
+#define CB_FILE_ERR_INVALID		3
+
 static void
-file_error (cb_tree name, const char *clause)
+file_error (cb_tree name, const char *clause, const char errtype)
 {
-	cb_error_x (name, _("%s clause is required for file '%s'"), clause,
-		    CB_NAME (name));
+	switch (errtype) {
+	case CB_FILE_ERR_REQUIRED:
+		cb_error_x (name, _("%s clause is required for file '%s'"),
+			clause, CB_NAME (name));
+		break;
+	case CB_FILE_ERR_INVALID_FT:
+		cb_error_x (name, _("%s clause is invalid for file '%s' (file type)"),
+			clause, CB_NAME (name));
+		break;
+	case CB_FILE_ERR_INVALID:
+		cb_error_x (name, _("%s clause is invalid for file '%s'"), 
+			clause, CB_NAME (name));
+		break;
+	}
 }
 
 /* Tree */
@@ -2094,39 +2110,49 @@ build_file (cb_tree name)
 void
 validate_file (struct cb_file *f, cb_tree name)
 {
+	/* Check ASSIGN clause
+		Currently break's GNU COBOL's extension for SORT FILEs having no need
+		for an ASSIGN clause (tested in run_extensions "SORT ASSIGN ..."
+		According to the Programmer's Guide for 1.1 the ASSIGN is totally
+		ignored as the SORT is either done in memory (if there's enough space)
+		or in a temporary disk file.
+		For supporting this f->organization = COB_ORG_SORT is done when we
+		see an SD in FILE SECTION for the file, while validate_file is called
+		in INPUT-OUTPUT Section.
+	*/
+	if (!f->assign && f->organization != COB_ORG_SORT && !f->flag_fileid) {
+		file_error (name, "ASSIGN", CB_FILE_ERR_REQUIRED);
+	}
 	/* Check RECORD/RELATIVE KEY clause */
 	switch (f->organization) {
 	case COB_ORG_INDEXED:
 		if (f->key == NULL) {
-			file_error (name, "RECORD KEY");
+			file_error (name, "RECORD KEY", CB_FILE_ERR_REQUIRED);
 		}
 		break;
 	case COB_ORG_RELATIVE:
 		if (f->key == NULL && f->access_mode != COB_ACCESS_SEQUENTIAL) {
-			file_error (name, "RELATIVE KEY");
+			file_error (name, "RELATIVE KEY", CB_FILE_ERR_REQUIRED);
 		}
 		if (f->alt_key_list) {
-			cb_error_x (name, _("ALTERNATE clause invalid for this file type"));
+			file_error (name, "ALTERNATE", CB_FILE_ERR_INVALID_FT);
 			f->alt_key_list = NULL;
 		}
 		break;
 	default:
 		if (f->key) {
-			cb_error_x (name, _("RECORD clause invalid for this file type"));
+			file_error (name, "RECORD", CB_FILE_ERR_INVALID_FT);
 			f->key = NULL;
 		}
 		if (f->alt_key_list) {
-			cb_error_x (name, _("ALTERNATE clause invalid for this file type"));
+			file_error (name, "ALTERNATE", CB_FILE_ERR_INVALID_FT);
 			f->alt_key_list = NULL;
 		}
 		if (f->access_mode == COB_ACCESS_DYNAMIC ||
 		    f->access_mode == COB_ACCESS_RANDOM) {
-			cb_error_x (name, _("ORGANIZATION clause invalid"));
+			file_error (name, "ORGANIZATION", CB_FILE_ERR_INVALID);
 		}
 		break;
-	}
-	if (!f->assign && !f->flag_fileid) {
-		cb_error_x (name, _("ASSIGN clause missing"));
 	}
 }
 
