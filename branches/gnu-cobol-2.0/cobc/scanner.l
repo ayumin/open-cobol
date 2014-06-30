@@ -764,7 +764,7 @@ H\"[^\"\n]*\" {
 		if (!cb_relaxed_syntax_check) {
 			cb_error (_("Word length exceeds 31 characters - '%s'"),
 				  yytext);
-		} else if (yyleng > 61) {
+		} else if (yyleng > COB_MAX_WORDLEN) {
 			/* Absolute limit */
 			cb_error (_("Word length exceeds maximum allowed - '%s'"),
 				  yytext);

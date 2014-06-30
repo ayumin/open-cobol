@@ -3605,7 +3605,7 @@ output_call (struct cb_call *p)
 			output ("%s", system_call);
 		} else {
 			callp = cb_encode_program_id ((char *)(CB_LITERAL (p->name)->data));
-			/* Check contained progs */
+			/* Check contained programs */
 			nlp = current_prog->nested_prog_list;
 			for (; nlp; nlp = nlp->next) {
 				if (!strcmp (callp, nlp->nested_prog->program_id)) {
@@ -3625,7 +3625,7 @@ output_call (struct cb_call *p)
 			s = (char *)(CB_LITERAL (p->name)->data);
 			callp = cb_encode_program_id (s);
 			lookup_call (callp);
-			/* Check contained progs */
+			/* Check contained programs */
 			nlp = current_prog->nested_prog_list;
 			for (; nlp; nlp = nlp->next) {
 				if (!strcmp (callp, nlp->nested_prog->program_id)) {
@@ -5632,15 +5632,15 @@ output_module_init (struct cb_program *prog)
 	output ("/* Collating, CRT status, CURSOR, */\n");
 	output ("/* Module reference count, Module path, Module active, */\n");
 	output ("/* Module date, Module time, */\n");
-	output ("/* Module type, Number of USING params, Return type */\n");
-	output ("/* Current param count */\n");
+	output ("/* Module type, Number of USING parameters, Return type */\n");
+	output ("/* Current parameter count */\n");
 	output ("/* Display sign, Decimal point, Currency symbol, */\n");
 	output ("/* Numeric separator, File name mapping, Binary truncate, */\n");
 	output ("/* Alternate numeric display, Host sign, No physical cancel */\n");
 	output ("/* Flag main program, Fold call, Exit after CALL */\n\n");
 #endif
 
-	/* Do not initialize next pointer, parameter list pointer, param count */
+	/* Do not initialize next pointer, parameter list pointer + count */
 	output_line ("/* Initialize module structure */");
 	output_line ("module->module_name = \"%s\";", prog->orig_program_id);
 	output_line ("module->module_formatted_date = COB_MODULE_FORMATTED_DATE;");
@@ -6183,7 +6183,7 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 
 	/* Initialize W/S unconditionally when INITIAL program */
 	if (prog->flag_initial) {
-		output_line ("/* Initalize INITIAL program WORKING-STORAGE */");
+		output_line ("/* Initialize INITIAL program WORKING-STORAGE */");
 		output_initial_values (prog->working_storage);
 		output_newline ();
 		for (l = prog->file_list; l; l = CB_CHAIN (l)) {
@@ -7433,7 +7433,7 @@ codegen (struct cb_program *prog, const int nested)
 			strftime (string_buffer, (size_t)COB_MINI_MAX,
 				  "%b %d %Y %H:%M:%S", loctime);
 		} else {
-			strcpy (string_buffer, "Unknown");
+			strcpy (string_buffer, _("Unknown"));
 		}
 		output_header (output_target, string_buffer, NULL);
 		output_header (cb_storage_file, string_buffer, NULL);
@@ -7623,7 +7623,7 @@ codegen (struct cb_program *prog, const int nested)
 
 	/* Nested / contained list */
 	if (prog->nested_prog_list && gen_nested_tab) {
-		/* Generate contained prog list */
+		/* Generate contained program list */
 		output_local ("\n/* Nested call table */\n");
 		output_local ("static struct cob_call_struct\tcob_nest_tab[] = {\n");
 		nlp = prog->nested_prog_list;

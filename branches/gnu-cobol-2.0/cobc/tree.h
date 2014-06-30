@@ -849,7 +849,7 @@ struct cb_reference {
 	cb_tree			subs;		/* List of subscripts */
 	cb_tree			offset;		/* Reference mod offset */
 	cb_tree			length;		/* Reference mod length */
-	cb_tree			check;		/* Bounds check */
+	cb_tree			check;		/* Runtime checks */
 	struct cb_word		*word;		/* Pointer to word list */
 	struct cb_label		*section;	/* Current section */
 	struct cb_label		*paragraph;	/* Current paragraph */

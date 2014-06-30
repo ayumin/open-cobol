@@ -7023,6 +7023,7 @@ free_statement:
   FREE
   {
 	begin_statement ("FREE", 0);
+	current_statement->flag_no_based = 1;
   }
   free_body
 ;
