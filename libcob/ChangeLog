@@ -27,12 +27,12 @@
 
 2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* common.[ch], system.def : Added cob_sys_getopt_long_long
-	* makefile.am : Added cobgetopt.[ch]
+	* common.*, system.def : Added cob_sys_getopt_long_long
+	* makefile.am : Added cobgetopt.[c,h]
 
 2014-03-03  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* common.[ch] : Rewriting cob_sig_handler, printing caught signal to stderr,
+	* common.* : Rewriting cob_sig_handler, printing caught signal to stderr,
 		adding cob_reg_sighnd for registration of external signal handling
 
 2014-01-17  Ron Norman <rjn@inglenet.com>

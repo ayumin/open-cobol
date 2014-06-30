@@ -4086,24 +4086,25 @@ print_info(void) {
 	putchar ('\n');
 	puts (_("Build information"));
 	var_print (_("Build environment"),	COB_BLD_BUILD, "", 0);
-	var_print("CC", COB_BLD_CC, "", 0);
-	var_print("CPPFLAGS", COB_BLD_CPPFLAGS, "", 0);
-	var_print("CFLAGS", COB_BLD_CFLAGS, "", 0);
-	var_print("LD", COB_BLD_LD, "", 0);
-	var_print("LDFLAGS", COB_BLD_LDFLAGS, "", 0);
+	var_print ("CC", COB_BLD_CC, "", 0);
+	var_print ("CPPFLAGS", COB_BLD_CPPFLAGS, "", 0);
+	var_print ("CFLAGS", COB_BLD_CFLAGS, "", 0);
+	var_print ("LD", COB_BLD_LD, "", 0);
+	var_print ("LDFLAGS", COB_BLD_LDFLAGS, "", 0);
 	putchar ('\n');
-	printf(_("C version %s%s"), OC_C_VERSION_PRF, OC_C_VERSION);
+	printf (_("C version %s%s"), OC_C_VERSION_PRF, OC_C_VERSION);
 	putchar ('\n');
 	puts (_("GNU Cobol information"));
 
 //	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
 //		var_print ("COB_LIBRARY_PATH",	s, "", 1);
 //	}
-	var_print("COB_MODULE_EXT", COB_MODULE_EXT, "", 0);
-	var_print("COB_EXEEXT", COB_EXEEXT, "", 0);
+	var_print ("COB_MODULE_EXT", COB_MODULE_EXT, "", 0);
+	var_print ("COB_OBJECT_EXT", COB_OBJECT_EXT, "", 0);
+	var_print ("COB_EXEEXT", COB_EXEEXT, "", 0);
 
 #if	defined(USE_LIBDL) || defined(_WIN32)
-	var_print(_("Dynamic loading"), _("System"), "", 0);
+	var_print (_("Dynamic loading"),	_("System"), "", 0);
 #else
 	var_print (_("Dynamic loading"),	_("Libtool"), "", 0);
 #endif
@@ -4111,25 +4112,25 @@ print_info(void) {
 #ifdef	COB_PARAM_CHECK
 	var_print ("\"CBL_\" param check",	_("Enabled"), "", 0);
 #else
-	var_print("\"CBL_\" param check", _("Disabled"), "", 0);
+	var_print ("\"CBL_\" param check",	_("Disabled"), "", 0);
 #endif
 
 	snprintf (buff, sizeof(buff), "%d", WITH_VARSEQ);
-	var_print(_("Variable format"), buff, "", 0);
+	var_print (_("Variable format"), buff, "", 0);
 	if ((s = getenv ("COB_VARSEQ_FORMAT")) != NULL) {
-		var_print("COB_VARSEQ_FORMAT", s, "", 1);
+		var_print ("COB_VARSEQ_FORMAT", s, "", 1);
 	}
 
 #ifdef	COB_LI_IS_LL
 	var_print ("BINARY-C-LONG",	_("8 bytes"), "", 0);
 #else
-	var_print("BINARY-C-LONG", _("4 bytes"), "", 0);
+	var_print ("BINARY-C-LONG", _("4 bytes"), "", 0);
 #endif
 
 #ifdef	WITH_SEQRA_EXTFH
 	var_print (_("Sequential handler"),	_("External"), "", 0);
 #else
-	var_print(_("Sequential handler"), _("Internal"), "", 0);
+	var_print (_("Sequential handler"), _("Internal"), "", 0);
 #endif
 #ifdef	WITH_INDEX_EXTFH
 	var_print (_("ISAM handler"),		_("External"), "", 0);
@@ -4144,7 +4145,7 @@ print_info(void) {
 	var_print (_("ISAM handler"),		_("D-ISAM (Experimental)"), "", 0);
 #endif
 #ifdef	WITH_VBISAM
-	var_print(_("ISAM handler"), _("VBISAM (Experimental)"), "", 0);
+	var_print (_("ISAM handler"),		_("VBISAM (Experimental)"), "", 0);
 #endif
 }
 

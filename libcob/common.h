@@ -518,14 +518,17 @@
 /* Maximum number of field digits */
 #define	COB_MAX_DIGITS		38
 
-/* Max digits in binary field */
+/* Maximum digits in binary field */
 #define	COB_MAX_BINARY		39
 
-/* Max digits in binary field */
+/* Maximum digits in binary field */
 #define	COB_MAX_FIELD_SIZE	268435456
 
 /* Maximum number of cob_decimal structures */
 #define	COB_MAX_DEC_STRUCT	32
+
+/* Maximum length of COBOL words */
+#define COB_MAX_WORDLEN		61
 
 /* Memory size for sorting */
 #define COB_SORT_MEMORY		128 * 1024 * 1024

@@ -48,7 +48,7 @@
 
 2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
 
-	* typeck.c : Bugfix: no exception check for NULL address on FREE statement
+	* parser.* : Bugfix: no exception check for NULL address on FREE statement
 		(as this is explicit allowed)
 
 2014-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>

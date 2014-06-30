@@ -42,7 +42,7 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
-[prog.cob: 8: Error: ASSIGN clause missing
+[prog.cob: 8: Error: ASSIGN clause is required for file 'TEST-FILE'
 ])
 
 AT_CLEANUP

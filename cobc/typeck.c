@@ -1438,13 +1438,12 @@ cb_build_identifier (cb_tree x, const int subchk)
 	f = CB_FIELD (v);
 
 	/* BASED check */
-	if (CB_EXCEPTION_ENABLE (COB_EC_BOUND_PTR)) {
+	if (current_statement && CB_EXCEPTION_ENABLE (COB_EC_DATA_PTR_NULL)) {
 		p = cb_field_founder (f);
 		if (p->redefines) {
 			p = p->redefines;
 		}
-		if (current_statement && !current_statement->flag_no_based &&
-			strcmp(current_statement->name, "FREE")) {
+		if (!current_statement->flag_no_based) {
 			if (p->flag_item_based ||
 			   (f->storage == CB_STORAGE_LINKAGE &&
 			    !p->flag_is_pdiv_parm)) {

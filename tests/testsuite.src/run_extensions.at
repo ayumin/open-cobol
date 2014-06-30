@@ -1291,6 +1291,7 @@ Bye, COBOL!
 
 AT_CLEANUP
 
+
 ## LINE SEQUENTIAL
 
 AT_SETUP([LINE SEQUENTIAL write])
@@ -1337,6 +1338,7 @@ abcd
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([LINE SEQUENTIAL read])
 AT_KEYWORDS([extensions])
@@ -1404,6 +1406,7 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([ASSIGN to KEYBOARD/DISPLAY])
 AT_KEYWORDS([extensions])
 
@@ -1461,8 +1464,16 @@ abcdef
 
 AT_CLEANUP
 
+
 AT_SETUP([SORT ASSIGN KEYBOARD to ASSIGN DISPLAY])
 AT_KEYWORDS([extensions])
+
+# GC has an extension "SORT FILES always in memory" and therefore didn't
+# used the ASSIGN clause (which should be mandatory) for SORT files at all.
+# We should add an according test and change the test here after cleanup,
+# either officially removing the "ASSIGN clause not necessary for SORT FILES"
+# extension or enable it only with either a conf entry or frelax-syntax.
+AT_XFAIL_IF(true)
 
 AT_DATA([TEST-FILE],
 [9
@@ -1515,6 +1526,7 @@ AT_CHECK([cat TEST-FILE | ./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([Environment/Argument variable])
 AT_KEYWORDS([extensions])
 
@@ -1561,6 +1573,7 @@ AT_CHECK([./prog CHECKPAR], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([DECIMAL-POINT is COMMA (1)])
 AT_KEYWORDS([extensions])
 
@@ -1587,6 +1600,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECIMAL-POINT is COMMA (2)])
 AT_KEYWORDS([extensions])
@@ -1615,6 +1629,7 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([DECIMAL-POINT is COMMA (3)])
 AT_KEYWORDS([extensions])
 
@@ -1642,6 +1657,7 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([DECIMAL-POINT is COMMA (4)])
 AT_KEYWORDS([extensions])
 
@@ -1668,6 +1684,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECIMAL-POINT is COMMA (5)])
 AT_KEYWORDS([extensions])
@@ -1702,6 +1719,7 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([78 Level (1)])
 AT_KEYWORDS([extensions])
 
@@ -1723,6 +1741,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([78 Level (2)])
 AT_KEYWORDS([extensions])
@@ -1749,6 +1768,7 @@ AT_CHECK([./prog], [0],
 
 AT_CLEANUP
 
+
 AT_SETUP([78 Level (3)])
 AT_KEYWORDS([extensions])
 
@@ -1771,6 +1791,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([Unreachable statement])
 AT_KEYWORDS([extensions])
@@ -1796,6 +1817,7 @@ prog.cob: 9: Warning: Unreachable statement 'DISPLAY'
 
 AT_CLEANUP
 
+
 AT_SETUP([DEBUG (1)])
 AT_KEYWORDS([extensions])
 
@@ -1818,6 +1840,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DEBUG (2)])
 AT_KEYWORDS([extensions])
@@ -1843,6 +1866,7 @@ OK
 
 AT_CLEANUP
 
+
 AT_SETUP([DEBUG free format (1)])
 AT_KEYWORDS([extensions])
 
@@ -1865,6 +1889,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DEBUG free format (2)])
 AT_KEYWORDS([extensions])
@@ -1889,6 +1914,7 @@ OK
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([SOURCE FIXED/FREE directives])
 AT_KEYWORDS([extensions])
@@ -1918,6 +1944,7 @@ OK
 
 AT_CLEANUP
 
+
 AT_SETUP([Obsolete 85 keywords])
 AT_KEYWORDS([extensions])
 
@@ -1940,6 +1967,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 #  System routines
 
@@ -1988,6 +2016,7 @@ AT_CHECK([./caller], [1], [OKOK])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine C$NARG])
 AT_KEYWORDS([extensions])
 
@@ -2026,6 +2055,7 @@ AT_CHECK([$COMPILE_MODULE callee.cob], [0], , [])
 AT_CHECK([./caller], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine C$PARAMSIZE])
 AT_KEYWORDS([extensions])
@@ -2068,6 +2098,7 @@ AT_CHECK([./caller], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine C$JUSTIFY])
 AT_KEYWORDS([extensions])
 
@@ -2091,6 +2122,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine C$PRINTABLE])
 AT_KEYWORDS([extensions])
@@ -2120,6 +2152,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine C$MAKEDIR])
 AT_KEYWORDS([extensions])
 
@@ -2139,6 +2172,7 @@ AT_CHECK([./prog], [0])
 AT_CHECK([test -d "TMP" && rmdir "TMP"], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine C$GETPID])
 AT_KEYWORDS([extensions])
@@ -2164,6 +2198,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine C$TOUPPER])
 AT_KEYWORDS([extensions])
 
@@ -2188,6 +2223,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine C$TOLOWER])
 AT_KEYWORDS([extensions])
 
@@ -2211,6 +2247,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine CBL_OR])
 AT_KEYWORDS([extensions])
@@ -2238,6 +2275,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine CBL_NOR])
 AT_KEYWORDS([extensions])
 
@@ -2263,6 +2301,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine CBL_AND])
 AT_KEYWORDS([extensions])
@@ -2290,6 +2329,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine CBL_XOR])
 AT_KEYWORDS([extensions])
 
@@ -2315,6 +2355,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine CBL_IMP])
 AT_KEYWORDS([extensions])
@@ -2342,6 +2383,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine CBL_NIMP])
 AT_KEYWORDS([extensions])
 
@@ -2368,6 +2410,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routine CBL_NOT])
 AT_KEYWORDS([extensions])
 
@@ -2392,6 +2435,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routine CBL_EQ])
 AT_KEYWORDS([extensions])
@@ -2788,6 +2832,7 @@ AT_CHECK([diff prog.cob prog3.cob], [0], [], [])
 
 AT_CLEANUP
 
+
 AT_SETUP([System routines for directories])
 
 AT_DATA([prog.cob], [
@@ -2827,6 +2872,7 @@ AT_CHECK([./prog], [0], [], [])
 AT_CHECK([test -e abcd], [1], [], [])
 
 AT_CLEANUP
+
 
 AT_SETUP([System routines for files])
 
@@ -2966,6 +3012,7 @@ AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
 
+
 AT_SETUP([Conditional/define directives (2)])
 AT_KEYWORDS([extensions])
 
@@ -2989,6 +3036,7 @@ AT_CHECK([$COMPILE -DACTIVATE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
+
 
 AT_SETUP([Conditional/define directives (3)])
 AT_KEYWORDS([extensions])
@@ -3017,6 +3065,7 @@ AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
 
+
 AT_SETUP([Conditional/define directives (4)])
 AT_KEYWORDS([extensions])
 
@@ -3041,6 +3090,7 @@ AT_CHECK([$COMPILE -DACTIVATE2 prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Conditional/define directives (5)])
 AT_KEYWORDS([extensions])
