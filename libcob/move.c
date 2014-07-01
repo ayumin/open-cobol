@@ -647,9 +647,9 @@ cob_move_binary_to_display (cob_field *f1, cob_field *f2)
 		val2 = cob_binary_mget_sint64 (f1);
 		if (val2 < 0) {
 			sign = -1;
-			val = -(cob_u64_t)val2;
+			val = (cob_u64_t)-val2;
 		} else {
-			val = val2;
+			val = (cob_u64_t)val2;
 		}
 	} else {
 		val = cob_binary_mget_uint64 (f1);

@@ -323,7 +323,7 @@ cob_decimal_set_llint (cob_decimal *d, const cob_s64_t n)
 	negative = 0;
 	if (n < 0) {
 		negative = 1;
-		uval = -(cob_u64_t)n;
+		uval = (cob_u64_t)-n;
 	} else {
 		uval = (cob_u64_t)n;
 	}
@@ -1253,7 +1253,7 @@ cob_set_packed_int (cob_field *f, const int val)
 		return;
 	}
 	if (val < 0) {
-		n = -(cob_u32_t)val;
+		n = (cob_u32_t)-val;
 		sign = 1;
 	} else {
 		n = (cob_u32_t)val;
@@ -1468,7 +1468,7 @@ cob_decimal_set_binary (cob_decimal *d, cob_field *f)
 			val = cob_binary_get_sint64 (f);
 			if (val < 0) {
 				negative = 1;
-				uval = -(cob_u64_t)val;
+				uval = (cob_u64_t)-val;
 			} else {
 				uval = (cob_u64_t)val;
 			}
@@ -2266,7 +2266,7 @@ cob_cmp_llint (cob_field *f1, const cob_s64_t n)
 	negative = 0;
 	if (n < 0) {
 		negative = 1;
-		uval = -(cob_u64_t)n;
+		uval = (cob_u64_t)-n;
 	} else {
 		uval = (cob_u64_t)n;
 	}
@@ -2358,7 +2358,7 @@ cob_cmp_packed (cob_field *f, const cob_s64_t val)
 	}
 	/* Both positive or both negative */
 	if (val < 0) {
-		n = -(cob_u64_t)val;
+		n = (cob_u64_t)-val;
 	} else {
 		n = (cob_u64_t)val;
 	}
