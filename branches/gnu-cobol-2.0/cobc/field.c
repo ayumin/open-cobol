@@ -1134,7 +1134,7 @@ compute_size (struct cb_field *f)
 					}
 				}
 			} else {
-				c->offset = f->offset + size_check;
+				c->offset = f->offset + (int) size_check;
 				size_check += compute_size (c) * c->occurs_max;
 
 				/* Word alignment */
