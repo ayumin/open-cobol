@@ -186,11 +186,11 @@ struct local_filename {
 /* Structure for filename */
 struct filename {
 	struct filename		*next;
-	const char		*source;		/* foo.cob */
-	const char		*preprocess;		/* foo.i */
-	const char		*translate;		/* foo.c */
-	const char		*trstorage;		/* foo.c.h */
-	const char		*object;		/* foo.o */
+	const char		*source;		/* foo.cob (path from command line) */
+	const char		*preprocess;		/* foo.i (full path) */
+	const char		*translate;		/* foo.c (full path) */
+	const char		*trstorage;		/* foo.c.h (full path) */
+	const char		*object;		/* foo.o (full path) */
 	const char		*demangle_source;	/* foo */
 	const char		*listing_file;		/* foo.lst */
 	struct local_filename	*localfile;		/* foo.c.l[n].h */
