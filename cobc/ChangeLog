@@ -1,3 +1,10 @@
+2014-07-02  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* cobc.cpp [_MSC_VER]: filter output of cl.exe (instead of redirecting to NUL),
+	  errors are printed in non-verbose mode now; new: (read_buffer_line)
+	  (line_contains)
+	* cobc.cpp [_MSC_VER]: remove temporary object files after building
+
 2014-06-01  Sergey Kashyrin <ska@kiska.net>
 
     * codegen.cpp : Workaround for MSVC bug: http://support.microsoft.com/kb/315481

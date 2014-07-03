@@ -18,6 +18,33 @@
 
 ### GNU Cobol C++ Test Suite
 
+AT_SETUP([Compiler outputs])
+AT_KEYWORDS([runmisc cobc])
+
+AT_DATA([prog.cob],[
+        IDENTIFICATION DIVISION.
+        PROGRAM-ID. prog.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        01 BLA PIC X(5) VALUE 'bluBb'.
+        PROCEDURE DIVISION.
+        DISPLAY BLA NO ADVANCING END-DISPLAY
+        STOP RUN.
+])
+
+AT_CHECK([$COBC -C prog.cob], [0], [], [])
+AT_CHECK([$COBC -c prog.cpp], [0], [], [])
+AT_CHECK([$COBC prog.$OBJECT_EXT])
+AT_CHECK([$COBCRUN prog], [0], [bluBb], [])
+AT_CHECK([$COBC -S prog.cob], [0], [], [])
+#Currently breaking with MSC, deactivated
+#AT_CHECK([$COBC prog.$ASM_EXT]) 
+#AT_CHECK([$COBCRUN prog], [0], [bluBb], [])
+AT_CHECK([$COBC -E prog.cob], [0], [], [])
+AT_CHECK([test -f prog.i], [0], [], [])
+AT_CLEANUP
+
+
 AT_SETUP([Source file not found])
 AT_KEYWORDS([runmisc])
 
