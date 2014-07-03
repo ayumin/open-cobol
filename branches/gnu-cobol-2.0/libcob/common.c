@@ -157,6 +157,9 @@ static unsigned int		cob_line_trace;
 
 static char				*strbuff = NULL;
 
+static int		cob_process_id = 0;
+static int		cob_temp_iteration = 0;
+
 #if	defined(HAVE_SIGNAL_H) && defined(HAVE_SIG_ATOMIC_T)
 static volatile sig_atomic_t	sig_is_handled = 0;
 #endif
@@ -331,7 +334,7 @@ cob_sig_handler_ex (int sig)
 #ifdef	HAVE_RAISE
 	raise (sig);
 #else
-	kill (getpid(), sig);
+	kill (cob_sys_getpid(), sig);
 #endif
 	exit (sig);
 }
@@ -2056,7 +2059,7 @@ void
 cob_reg_sighnd	(void (*sighnd) (int))
 {
 	cob_ext_sighdl = sighnd;
-};
+}
 
 /* Switch */
 
@@ -2627,9 +2630,12 @@ cob_display_environment (const cob_field *f)
 void
 cob_display_env_value (const cob_field *f)
 {
-	char	*p;
 	char	*env2;
+#if !HAVE_SETENV
+	char	*p;
 	size_t	len;
+#endif
+	int		ret;
 
 	if (!cob_local_env) {
 		cob_set_exception (COB_EC_IMP_DISPLAY);
@@ -2641,11 +2647,16 @@ cob_display_env_value (const cob_field *f)
 	}
 	env2 = cob_malloc (f->size + 1U);
 	cob_field_to_string (f, env2, f->size);
+#if HAVE_SETENV
+	ret = setenv(cob_local_env, env2, 1);
+#else
 	len = strlen (cob_local_env) + strlen (env2) + 3U;
 	p = cob_fast_malloc (len);
 	sprintf (p, "%s=%s", cob_local_env, env2);
+	ret = putenv (p);
+#endif
 	free (env2);
-	if (putenv (p) != 0) {
+	if (ret != 0) {
 		cob_set_exception (COB_EC_IMP_DISPLAY);
 		return;
 	}
@@ -2843,6 +2854,68 @@ cob_putenv (char *name)
 		return ret;
 	}
 	return -1;
+}
+
+static const char *
+cob_gettmpdir (void)
+{
+	char	*tmpdir;
+	char	*tmp;
+#if !HAVE_SETENV
+	char	*put;
+#endif
+		
+	if ((tmpdir = getenv ("TMPDIR")) == NULL) {
+		tmp = NULL;
+#ifdef	_WIN32
+		if ((tmpdir = getenv ("TEMP")) == NULL &&
+		    (tmpdir = getenv ("TMP")) == NULL &&
+		    (tmpdir = getenv ("USERPROFILE")) == NULL) {
+			tmp = cob_fast_malloc (2U);
+			strcpy (tmp, ".");
+			tmpdir = tmp;
+		}
+#else
+		if ((tmpdir = getenv ("TMP")) == NULL &&
+		    (tmpdir = getenv ("TEMP")) == NULL) {
+			tmp = cob_fast_malloc (5U);
+		    strcpy (tmp, "/tmp");
+			tmpdir = tmp;
+		}
+#endif
+#if HAVE_SETENV
+		setenv("TMPDIR", tmpdir, 1);
+#else
+		put = cob_fast_malloc (strlen (tmpdir) + 10);
+		sprintf (put, "TMPDIR=%s", tmpdir);
+		putenv (cob_strdup(put));
+		free ((void *)put);
+#endif
+		if (tmp) {
+			free ((void *)tmp);
+			tmpdir = getenv ("TMPDIR");
+		}
+	}
+	return tmpdir;
+}
+
+void
+cob_temp_name (char *filename, const char *ext)
+{
+	/* Set temporary file name */
+	if (ext) {
+		snprintf (filename, (size_t)COB_FILE_MAX, "%s%ccob%d_%d%s",
+			cob_gettmpdir(), SLASH_INT, cob_sys_getpid(), cob_temp_iteration, ext);
+	} else {
+		snprintf (filename, (size_t)COB_FILE_MAX, "%s%ccobsort%d_%d",
+			cob_gettmpdir(), SLASH_INT, cob_sys_getpid(), cob_temp_iteration);
+	}
+}
+
+void
+cob_incr_temp_iteration (void)
+{
+	cob_temp_iteration++;
 }
 
 int
@@ -3337,7 +3410,10 @@ cob_sys_oc_nanosleep (const void *data)
 int
 cob_sys_getpid (void)
 {
-	return (int)getpid ();
+	if (!cob_process_id) {
+		cob_process_id = (int)getpid ();
+	}
+	return cob_process_id;
 }
 
 int

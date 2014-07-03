@@ -87,7 +87,7 @@ AH_TEMPLATE([HAVE_CURSES_FREEALL], [ncurses has _nc_freeall function])
 AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
 AH_TEMPLATE([HAVE_DESIGNATED_INITS], [Has designated initializers])
 AH_TEMPLATE([HAVE_NANO_SLEEP], [Has nanosleep function])
-AH_TEMPLATE([HAVE_RAISE], [Has raise function])
+#AH_TEMPLATE([HAVE_RAISE], [Has raise function])
 AH_TEMPLATE([HAVE_FINITE_IEEEFP_H],
 	[Declaration of finite function in ieeefp.h instead of math.h])
 
@@ -156,10 +156,10 @@ unset cob_keyw
 # Checks for library functions.
 AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([memmove memset setlocale fcntl strerror strcasecmp])
-AC_CHECK_FUNCS([strchr strrchr strdup strstr strtol gettimeofday localeconv])
-AC_CHECK_FUNCS([readlink getexecname canonicalize_file_name realpath])
-AC_CHECK_FUNCS([strcoll strxfrm])
+AC_CHECK_FUNCS([memmove memset setlocale fcntl strerror strcasecmp \
+	strchr strrchr strdup strstr strtol gettimeofday localeconv \
+	readlink getexecname canonicalize_file_name realpath \
+	strcoll strxfrm setenv raise])
 
 # Check for timezone
 AC_MSG_CHECKING([for timezone variable access])
@@ -417,13 +417,13 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
      fi
    fi])
 
-# Check for raise (optional)
-AC_MSG_CHECKING([for raise])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
-  [[raise (SIGINT);]])],
-  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
-  [AC_MSG_RESULT([no])],
-  [])
+# Check for raise (optional) --> done via AC_CHECK_FUNCS
+#AC_MSG_CHECKING([for raise])
+#AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+#  [[raise (SIGINT);]])],
+#  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
+#  [AC_MSG_RESULT([no])],
+#  [])
 
 # Check prototype for finite in math.h (alternative ieeefp.h)
 AC_MSG_CHECKING([prototype for finite in <math.h>])

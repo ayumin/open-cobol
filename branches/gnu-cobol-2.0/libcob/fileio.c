@@ -231,11 +231,6 @@ struct cobsort {
 
 static cob_global	*cobglobptr;
 
-#ifndef	_WIN32
-static int		cob_iteration;
-static pid_t		cob_process_id;
-#endif
-
 static unsigned int	eop_status;
 static unsigned int	check_eop_status;
 static unsigned int	cob_ls_uses_cr;
@@ -5715,47 +5710,20 @@ cob_new_item (struct cobsort *hp, const size_t size)
 }
 
 static FILE *
-cob_tmpfile (void)
+cob_srttmpfile (void)
 {
 	FILE		*fp;
-	const char	*s;
 	char		*filename;
 	int		fd;
-#ifdef	_WIN32
-	char		*tmpdir;
-#endif
 
 	filename = cob_malloc ((size_t)COB_FILE_BUFF);
-
+	cob_temp_name(filename, NULL);
+	cob_incr_temp_iteration();
 #ifdef	_WIN32
-	/* Get temporary directory */
-	tmpdir = cob_malloc ((size_t)COB_FILE_BUFF);
-	if ((s = getenv ("TMPDIR")) != NULL ||
-	    (s = getenv ("TMP")) != NULL ||
-	    (s = getenv ("TEMP")) != NULL) {
-		strncpy (tmpdir, s, (size_t)COB_FILE_MAX);
-	} else {
-		GetTempPath (COB_FILE_BUFF, tmpdir);
-	}
-	/* Get temporary file name */
-	GetTempFileName (tmpdir, "cob", 0, filename);
-	DeleteFile (filename);
-	free (tmpdir);
 	fd = open (filename,
 		    _O_CREAT | _O_TRUNC | _O_RDWR | _O_BINARY | _O_TEMPORARY,
 		    _S_IREAD | _S_IWRITE);
 #else
-	if (cob_process_id == 0) {
-		cob_process_id = getpid ();
-	}
-	if ((s = getenv ("TMPDIR")) == NULL &&
-	    (s = getenv ("TMP")) == NULL &&
-	    (s = getenv ("TEMP")) == NULL) {
-		s = "/tmp";
-	}
-	snprintf (filename, (size_t)COB_FILE_MAX, "%s/cobsort%d_%d",
-		  s, (int)cob_process_id, cob_iteration);
-	cob_iteration++;
 	fd = open (filename, O_CREAT | O_TRUNC | O_RDWR | O_BINARY, 0660);
 #endif
 	if (fd < 0) {
@@ -5772,10 +5740,10 @@ cob_tmpfile (void)
 }
 
 static int
-cob_get_temp_file (struct cobsort *hp, const int n)
+cob_get_sort_tempfile (struct cobsort *hp, const int n)
 {
 	if (hp->file[n].fp == NULL) {
-		hp->file[n].fp = cob_tmpfile ();
+		hp->file[n].fp = cob_srttmpfile ();
 		if (hp->file[n].fp == NULL) {
 			cob_runtime_error (_("SORT is unable to acquire temporary file"));
 			cob_stop_run (1);
@@ -5941,10 +5909,10 @@ cob_file_sort_process (struct cobsort *hp)
 	}
 	rewind (hp->file[0].fp);
 	rewind (hp->file[1].fp);
-	if (unlikely(cob_get_temp_file (hp, 2))) {
+	if (unlikely(cob_get_sort_tempfile (hp, 2))) {
 		return COBSORTFILEERR;
 	}
-	if (unlikely(cob_get_temp_file (hp, 3))) {
+	if (unlikely(cob_get_sort_tempfile (hp, 3))) {
 		return COBSORTFILEERR;
 	}
 	source = 0;
@@ -6027,10 +5995,10 @@ cob_file_sort_submit (cob_file *f, const unsigned char *p)
 	}
 	if (unlikely(hp->switch_to_file)) {
 		if (!hp->files_used) {
-			if (unlikely(cob_get_temp_file (hp, 0))) {
+			if (unlikely(cob_get_sort_tempfile (hp, 0))) {
 				return COBSORTFILEERR;
 			}
-			if (unlikely(cob_get_temp_file (hp, 1))) {
+			if (unlikely(cob_get_sort_tempfile (hp, 1))) {
 				return COBSORTFILEERR;
 			}
 			hp->files_used = 1;
@@ -6400,11 +6368,6 @@ cob_init_fileio (cob_global *lptr, runtime_env* runtimeptr)
 	struct	stat	st;
 
 	cobglobptr = lptr;
-
-#ifndef	_WIN32
-	cob_iteration = 0;
-	cob_process_id = 0;
-#endif
 	file_cache = NULL;
 	eop_status = 0;
 	check_eop_status = 0;

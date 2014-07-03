@@ -225,7 +225,6 @@ static char		*cobc_libs;		/* -l... */
 static char		*cobc_lib_paths;	/* -L... */
 static char		*cobc_include;		/* -I... */
 static char		*cobc_ldflags;		/* -Q / COB_LDFLAGS */
-static const char	*cobc_tmpdir;		/* temporary directory */
 
 static size_t		cobc_cflags_size;
 static size_t		cobc_libs_size;
@@ -272,11 +271,7 @@ static size_t		save_temps = 0;
 static size_t		save_all_src = 0;
 static size_t		save_c_src = 0;
 static size_t		verbose_output = 0;
-static size_t		cob_iteration = 0;
 static size_t		cob_optimize = 0;
-#ifndef _WIN32
-static pid_t		cob_process_id = 0;
-#endif
 
 #ifdef	_MSC_VER
 #if	_MSC_VER >= 1400
@@ -1483,7 +1478,7 @@ cobc_sig_handler (int sig)
 #ifdef	HAVE_RAISE
 		raise (sig);
 #else
-		kill (getpid (), sig);
+		kill (cob_sys_getpid (), sig);
 #endif
 		exit (sig);
 	}
@@ -1506,7 +1501,7 @@ cobc_sig_handler (int sig)
 #ifdef	HAVE_RAISE
 	raise (sig);
 #else
-	kill (getpid (), sig);
+	kill (cob_sys_getpid (), sig);
 #endif
 	exit (sig);
 }
@@ -2476,31 +2471,6 @@ file_extension (const char *filename)
 	return "";
 }
 
-static char *
-cobc_temp_name (const char *ext)
-{
-#ifdef	_WIN32
-	char	buff[COB_MEDIUM_BUFF];
-	char	temp[MAX_PATH];
-
-	GetTempPath (MAX_PATH, temp);
-	GetTempFileName (temp, "cob", 0, buff);
-	DeleteFile (buff);
-	/* Replace ".tmp" by EXT */
-	strcpy (buff + strlen (buff) - 4, ext);
-	return cobc_main_strdup (buff);
-#else
-	char	*buff;
-	size_t	size;
-
-	size = strlen (cobc_tmpdir) + strlen (ext) + 16U;
-	buff = cobc_main_malloc (size);
-	sprintf (buff, "%s/cob%d_%d%s", cobc_tmpdir, (int)cob_process_id,
-		 (int)cob_iteration, ext);
-	return buff;
-#endif
-}
-
 static struct filename *
 process_filename (const char *filename)
 {
@@ -2596,7 +2566,8 @@ process_filename (const char *filename)
 		   cb_compile_level == CB_LEVEL_PREPROCESS) {
 		fn->preprocess = cobc_stradd_dup (fbasename, ".i");
 	} else {
-		fn->preprocess = cobc_temp_name (".cob");
+		fn->preprocess = cobc_main_malloc(COB_FILE_MAX);
+		cob_temp_name ((char *)fn->preprocess, ".cob");
 	}
 
 	/* Set translate filename */
@@ -2608,7 +2579,8 @@ process_filename (const char *filename)
 		   cb_compile_level == CB_LEVEL_TRANSLATE) {
 		fn->translate = cobc_stradd_dup (fbasename, ".c");
 	} else {
-		fn->translate = cobc_temp_name (".c");
+		fn->translate = cobc_main_malloc(COB_FILE_MAX);
+		cob_temp_name ((char *)fn->translate, ".c");
 	}
 	fn->translate_len = strlen (fn->translate);
 
@@ -2623,9 +2595,10 @@ process_filename (const char *filename)
 	} else if (output_name && cb_compile_level == CB_LEVEL_ASSEMBLE) {
 		fn->object = cobc_main_strdup (output_name);
 	} else if (save_temps || cb_compile_level == CB_LEVEL_ASSEMBLE) {
-		fn->object = cobc_stradd_dup(fbasename, "."COB_OBJECT_EXT);
+		fn->object = cobc_stradd_dup(fbasename, "." COB_OBJECT_EXT);
 	} else {
-		fn->object = cobc_temp_name ("."COB_OBJECT_EXT);
+		fn->object = cobc_main_malloc(COB_FILE_MAX);
+		cob_temp_name ((char *)fn->object, "." COB_OBJECT_EXT);
 	}
 	fn->object_len = strlen (fn->object);
 	cobc_objects_len += fn->object_len + 8U;
@@ -2647,7 +2620,7 @@ process_filename (const char *filename)
 		fn->listing_file = cobc_stradd_dup (fbasename, ".xrf");
 	}
 
-	cob_iteration++;
+	cob_incr_temp_iteration();
 	return fn;
 }
 
@@ -2954,11 +2927,11 @@ process (const char *cmd, struct filename *fn)
 
 	/* building search_patterns */
 	for(i = fn->translate_len - 1; i >= 0; i--) {
-		if(fn->translate[i] == '\\') break;
+		if(fn->translate[i] == '\\' || fn->translate[i] == '/') break;
 	}
 
 	if(output_name) output_name_temp = file_basename(output_name);
-	else output_name_temp = fn->demangle_source;
+	else output_name_temp = (char *) fn->demangle_source;
 
 	search_pattern = (char*) cob_malloc(fn->translate_len - i + 1);
 	snprintf(search_pattern, fn->translate_len - i, "%s#", fn->translate + i + 1); 
@@ -4021,10 +3994,6 @@ main (int argc, char **argv)
 	textdomain (PACKAGE);
 #endif
 
-#ifndef _WIN32
-	cob_process_id = getpid ();
-#endif
-
 	/* Initialize variables */
 
 	/* Set up build time stamp */
@@ -4042,19 +4011,6 @@ main (int argc, char **argv)
 	cb_oc_build_stamp = cobc_main_strdup (cobc_buffer);
 
 	output_name = NULL;
-
-	if ((p = cobc_getenv ("TMPDIR")) != NULL) {
-		cobc_tmpdir = p;
-	} else if ((p = cobc_getenv ("TMP")) != NULL ||
-		   (p = cobc_getenv ("TEMP")) != NULL) {
-		cobc_tmpdir = p;
-		p = cobc_main_malloc (strlen (cobc_tmpdir) + 10);
-		sprintf (p, "TMPDIR=%s", cobc_tmpdir);
-		putenv (p);
-	} else {
-		cobc_tmpdir = "/tmp";
-		putenv ((char *)"TMPDIR=/tmp");
-	}
 
 	cobc_cc = cobc_getenv ("COB_CC");
 	if (cobc_cc == NULL) {

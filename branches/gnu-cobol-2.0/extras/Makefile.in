@@ -19,6 +19,7 @@
 # Makefile gnucobol/extras
 #
 # Copyright (C) 2012 Roger While
+# Copyright (C) 2014 Simon Sobisch
 #
 # This file is part of GNU Cobol.
 #
@@ -254,10 +255,12 @@ top_srcdir = @top_srcdir@
 extrasdir = @COB_LIBRARY_PATH@
 extras_DATA = CBL_OC_DUMP.$(COB_MODULE_EXT)
 EXTRA_DIST = CBL_OC_DUMP.cob
-CLEANFILES = CBL_OC_DUMP.$(COB_MODULE_EXT)
+CLEANFILES = $(extras_DATA)
+SUFFIXES = .cob .$(COB_MODULE_EXT)
 all: all-am
 
 .SUFFIXES:
+.SUFFIXES: .cob .$(COB_MODULE_EXT)
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -464,10 +467,9 @@ uninstall-am: uninstall-extrasDATA
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	uninstall uninstall-am uninstall-extrasDATA
 
-
-CBL_OC_DUMP.$(COB_MODULE_EXT): CBL_OC_DUMP.cob $(top_builddir)/cobc/cobc
+.cob.$(COB_MODULE_EXT):
 	. $(top_builddir)/tests/atconfig; . $(top_builddir)/tests/atlocal; \
-		cobc -m -Wall -std=mf -O $(top_srcdir)/extras/CBL_OC_DUMP.cob
+		cobc -m -Wall -std=mf -O -o $@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
