@@ -187,14 +187,14 @@ struct local_filename {
 /* Structure for filename */
 struct filename {
 	filename *		next;
-	const char *	source;				/* foo.cob */
-	const char *	preprocess;			/* foo.i */
-	const char *	translate;			/* foo.c */
-	const char *	trstorage;			/* foo.c.h */
+	const char *	source;				/* foo.cob (path from command line) */
+	const char *	preprocess;			/* foo.i (full path) */
+	const char *	translate;			/* foo.cpp (full path) */
+	const char *	trstorage;			/* foo.cpp.h (full path) */
 	const char *	object;				/* foo.o */
 	const char *	demangle_source;	/* foo */
 	const char *	listing_file;		/* foo.lst */
-	local_filename * localfile;			/* foo.c.l[n].h */
+	local_filename * localfile;			/* foo.cpp.l[n].h */
 	size_t			translate_len;		/* strlen translate */
 	size_t			object_len;			/* strlen object */
 	unsigned int	need_preprocess;	/* Needs preprocess */

@@ -118,8 +118,8 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
-/* Define to 1 if you have the <gmp.h> header file. */
-#undef HAVE_GMP_H
+/* Define to 1 if you have the <gmpxx.h> header file. */
+#undef HAVE_GMPXX_H
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
@@ -172,8 +172,8 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
-/* Define to 1 if you have the <mpir.h> header file. */
-#undef HAVE_MPIR_H
+/* Define to 1 if you have the <mpirxx.h> header file. */
+#undef HAVE_MPIRXX_H
 
 /* Has nanosleep function */
 #undef HAVE_NANO_SLEEP
