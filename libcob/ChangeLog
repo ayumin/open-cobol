@@ -1,3 +1,18 @@
+
+2014-06-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* common.c, common.h (cob_temp_name): new function, moved from
+	  cobc (cobc_temp_name)
+	* common.c (cob_temp_name) [_WIN32]: Use direct calls to getenv instead of
+	  additional calling WINAPI for temporary folder (GetTempPath);
+	  use identical logic as in non-win environments to build the name instead
+	  of calling WINAPI (GetTempFileName+DeleteFile)
+	* filio.c: renaming (cob_tmpfile) to (cob_srttmpfile) and
+	  (cob_get_temp_file) to (cob_get_sort_tempfile)
+	* filio.c (cob_srttmpfile): using new (cob_temp_name) to get the name
+	* common.c: use (cob_sys_getpid) everywhere instead of (getpid); use (setenv)
+	  if available
+
 2014-05-20  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* call.c : inverted preload list for WIN32 builds

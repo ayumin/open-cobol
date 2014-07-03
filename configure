@@ -2904,7 +2904,7 @@ fi
 
 
 
-
+#AH_TEMPLATE([HAVE_RAISE], [Has raise function])
 
 
 save_libs="$LIBS"
@@ -13005,43 +13005,10 @@ fi
 done
 
 
-for ac_func in memmove memset setlocale fcntl strerror strcasecmp
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-for ac_func in strchr strrchr strdup strstr strtol gettimeofday localeconv
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-for ac_func in readlink getexecname canonicalize_file_name realpath
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-for ac_func in strcoll strxfrm
+for ac_func in memmove memset setlocale fcntl strerror strcasecmp \
+	strchr strrchr strdup strstr strtol gettimeofday localeconv \
+	readlink getexecname canonicalize_file_name realpath \
+	strcoll strxfrm setenv raise
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -13785,30 +13752,13 @@ fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 
-# Check for raise (optional)
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for raise" >&5
-$as_echo_n "checking for raise... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <signal.h>
-int
-main ()
-{
-raise (SIGINT);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  $as_echo "#define HAVE_RAISE 1" >>confdefs.h
- { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+# Check for raise (optional) --> done via AC_CHECK_FUNCS
+#AC_MSG_CHECKING([for raise])
+#AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],
+#  [[raise (SIGINT);]])],
+#  [AC_DEFINE([HAVE_RAISE], [1]) AC_MSG_RESULT([yes])],
+#  [AC_MSG_RESULT([no])],
+#  [])
 
 # Check prototype for finite in math.h (alternative ieeefp.h)
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite in <math.h>" >&5

@@ -2,6 +2,7 @@
 # Makefile gnucobol/extras
 #
 # Copyright (C) 2012 Roger While
+# Copyright (C) 2014 Simon Sobisch
 #
 # This file is part of GNU Cobol.
 #
@@ -22,9 +23,11 @@ extrasdir = @COB_LIBRARY_PATH@
 extras_DATA = CBL_OC_DUMP.$(COB_MODULE_EXT)
 
 EXTRA_DIST = CBL_OC_DUMP.cob
-CLEANFILES = CBL_OC_DUMP.$(COB_MODULE_EXT)
+CLEANFILES = $(extras_DATA)
 
-CBL_OC_DUMP.$(COB_MODULE_EXT): CBL_OC_DUMP.cob $(top_builddir)/cobc/cobc
+SUFFIXES = .cob .$(COB_MODULE_EXT)
+.cob.$(COB_MODULE_EXT):
 	. $(top_builddir)/tests/atconfig; . $(top_builddir)/tests/atlocal; \
-		cobc -m -Wall -std=mf -O $(top_srcdir)/extras/CBL_OC_DUMP.cob
+		cobc -m -Wall -std=mf -O -o $@ $<
+
 

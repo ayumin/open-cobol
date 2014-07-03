@@ -1,9 +1,15 @@
+
 2014-07-02  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c [_MSC_VER]: filter output of cl.exe (instead of redirecting to NUL),
 	  errors are printed in non-verbose mode now; new: (read_buffer_line)
 	  (line_contains)
 	* cobc.c [_MSC_VER]: remove temporary object files after building
+
+2014-06-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobc.c: move cobc's (cobc_temp_name) to libcob as (cob_temp_name)
+	* cobc.c: use (cob_sys_getpid) everywhere instead of (getpid)
 
 2014-06-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 

@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
-bin_SCRIPTS=cob-config
+bin_SCRIPTS = cob-config
 bin_PROGRAMS = cobcrun
 cobcrun_SOURCES = cobcrun.c
 

@@ -1271,6 +1271,10 @@ COB_EXPIMP void	*cob_command_line		(int, int *, char ***,
 COB_EXPIMP char	*cob_getenv			(const char *);
 COB_EXPIMP int	cob_putenv			(char *);
 
+
+COB_EXPIMP void		cob_incr_temp_iteration (void);
+COB_EXPIMP void		cob_temp_name		(char *, const char *);
+
 #define	cobgetenv(x)			cob_getenv (x)
 #define	cobputenv(x)			cob_putenv (x)
 #define	cobtidy()			cob_tidy ()

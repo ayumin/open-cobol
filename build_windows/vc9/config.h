@@ -21,6 +21,9 @@
 /* Can not dlopen self */
 #define COB_NO_SELFOPEN 1
 
+/* Object extension */
+#define COB_OBJEXT ".obj"
+
 /* Enable CALL parameter checking */
 /* #undef COB_PARAM_CHECK */
 
@@ -196,7 +199,7 @@
 /* Has -Wno-pointer-sign */
 /* #undef HAVE_PSIGN_OPT */
 
-/* Has raise function */
+/* Define to 1 if you have the `raise' function. */
 #define HAVE_RAISE 1
 
 /* Define to 1 if you have the `readlink' function. */
@@ -204,6 +207,9 @@
 
 /* Define to 1 if you have the `realpath' function. */
 /* #undef HAVE_REALPATH */
+
+/* Define to 1 if you have the `setenv' function. */
+/* #undef HAVE_SETENV */
 
 /* Define to 1 if you have the `setlocale' function. */
 #define HAVE_SETLOCALE 1
