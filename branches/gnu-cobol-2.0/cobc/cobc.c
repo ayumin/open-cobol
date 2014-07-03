@@ -2671,7 +2671,6 @@ read_buffer_line(char* offset) {
  */
 static int 
 line_contains(char* line_start, char* line_end, char* search_patterns) {
-	char* temp;
 	int pattern_end, pattern_start;
 	char* line_pos;
 	
@@ -2940,7 +2939,6 @@ process (char *cmd)
 static int
 process (const char *cmd, struct filename *fn)
 {
-	int	ret;
 	FILE* pipe;
 	char* read_buffer;
 	char *line_start, *line_end;
@@ -2951,8 +2949,7 @@ process (const char *cmd, struct filename *fn)
 	/* if we are verbose, we don't need to filter anything */
 	if (verbose_output) {
 		cobc_cmd_print (cmd);
-		ret = system(cmd);
-		return ret;
+		return !!system(cmd);
 	}
 
 	/* building search_patterns */
@@ -2971,7 +2968,7 @@ process (const char *cmd, struct filename *fn)
 	/* Open pipe to catch output of cl.exe */
 	pipe = _popen(cmd, "r");
 
-	if(!pipe) return -1;
+	if(!pipe) return !!-1; /* checkme */
 	else {
 		/* prepare buffer and read from pipe */
 		read_buffer = (char*) cob_malloc(COB_FILE_BUFF);
@@ -2984,8 +2981,7 @@ process (const char *cmd, struct filename *fn)
 			line_end = read_buffer_line(line_start);
 
 			if(strcmp("EOF", line_end) == 0) {
-				ret = _pclose(pipe);
-				return ret;
+				return !!_pclose(pipe);
 			}
 			/* if non of the patterns was found, print line */
 			if(!line_contains(line_start, line_end, search_pattern)
@@ -3006,14 +3002,12 @@ process (const char *cmd, struct filename *fn)
 		}
 
 		free(read_buffer);
-		free(search_pattern);
-		free(search_pattern2);
 	}
+	free(search_pattern);
+	free(search_pattern2);
 
 	/* close pipe and get return code of cl.exe */
-	ret = _pclose(pipe);
-
-	return ret;
+	return !!_pclose(pipe);
 }
 
 #else
@@ -3381,6 +3375,9 @@ process_compile (struct filename *fn)
 #endif
 	}
 	size = strlen (name);
+#ifdef	_MSC_VER
+	size *= 2U;
+#endif
 
 	bufflen = cobc_cc_len + cobc_cflags_len
 			+ size + fn->translate_len
@@ -3504,6 +3501,9 @@ process_module_direct (struct filename *fn)
 	}
 
 	size = strlen (name);
+#ifdef	_MSC_VER
+	size *= 2U;
+#endif
 
 	bufflen = cobc_cc_len + cobc_cflags_len
 			+ cobc_export_dyn_len + cobc_shared_opt_len
@@ -3864,6 +3864,7 @@ main (int argc, char **argv)
 	int			day;
 	int			i;
 	char			month[32];
+
 #if	defined(HAVE_SIGNAL_H) && defined(HAVE_SIGACTION)
 	struct sigaction	sa;
 	struct sigaction	osa;
