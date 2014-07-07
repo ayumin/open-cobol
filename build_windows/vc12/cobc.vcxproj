@@ -293,8 +293,8 @@
     <ClInclude Include="..\..\cobc\tree.h" />
     <ClInclude Include="..\..\cobc\parser.h" />
     <ClInclude Include="..\..\cobc\ppparse.h" />
-    <ClInclude Include="..\..\libcob\cobgetopt.h" /
-    <ClInclude Include="..\..\libcob\common.h" />>
+    <ClInclude Include="..\..\libcob\cobgetopt.h" />
+    <ClInclude Include="..\..\libcob\common.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\version_cobc.rc" />
