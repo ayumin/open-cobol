@@ -5676,18 +5676,21 @@ cob_free_list (struct cobsort *hp)
 	}
 }
 
-static void *
+static struct cobitem *
 cob_new_item (struct cobsort *hp, const size_t size)
 {
 	struct cobitem		*q;
 	struct sort_mem_struct	*s;
-	void			*vp;
 
 	COB_UNUSED (size);
 
+	/* Creation of an empty item */
 	if (unlikely(hp->empty != NULL)) {
 		q = hp->empty;
 		hp->empty = q->next;
+		q->block_byte = 0;
+		q->next = NULL;
+		q->end_of_block = 0;
 		return (void *)q;
 	}
 	if (unlikely((hp->mem_used + hp->alloc_size) > hp->mem_size)) {
@@ -5699,14 +5702,17 @@ cob_new_item (struct cobsort *hp, const size_t size)
 		hp->mem_total += hp->chunk_size;
 		hp->mem_used = 0;
 	}
-	vp = (void *)(hp->mem_base->mem_ptr + hp->mem_used);
+	q = (struct cobitem *)(hp->mem_base->mem_ptr + hp->mem_used);
 	hp->mem_used += hp->alloc_size;
 	if (unlikely(hp->mem_total >= cob_sort_memory)) {
 		if ((hp->mem_used + hp->alloc_size) > hp->mem_size) {
 			hp->switch_to_file = 1;
 		}
 	}
-	return vp;
+	q->block_byte = 0;
+	q->next = NULL;
+	q->end_of_block = 0;
+	return q;
 }
 
 static FILE *
@@ -6144,6 +6150,7 @@ cob_file_sort_giving (cob_file *sort_file, const size_t varcnt, ...)
 			} else {
 				opt = 0;
 			}
+			fbase[i]->record->size = fbase[i]->record_max;
 			cob_copy_check (fbase[i], sort_file);
 			cob_write (fbase[i], fbase[i]->record, opt, NULL, 0);
 		}

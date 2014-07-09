@@ -1798,6 +1798,169 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
+AT_SETUP([SORT with SD, I/O SEQUENTIAL])
+AT_KEYWORDS([runmisc using giving])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT SORT-IN   ASSIGN "test.txt".
+       SELECT SORT-OUT  ASSIGN "result.txt".
+       SELECT SORT-WRK  ASSIGN "SORT-WRK".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD SORT-IN.
+       01 IN-REC        PIC X(6).
+       FD SORT-OUT.
+       01 OUT-REC       PIC X(6).
+       SD SORT-WRK.
+       01 WRK-REC       PIC X(6).
+       PROCEDURE        DIVISION.
+           
+      * We shouldn't use AT_DATA to create sequential record
+      * data, because AT_DATA needs a \n at the end
+           OPEN OUTPUT SORT-IN.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM "world " END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM "hello " END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           CLOSE SORT-IN.
+           
+           SORT SORT-WRK
+                ASCENDING KEY WRK-REC
+                USING  SORT-IN
+                GIVING SORT-OUT.
+             STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([./prog], [0], [], [])
+AT_CHECK([cat result.txt], [0], [                              hello world ], [])
+
+AT_CLEANUP
+
+
+AT_SETUP([SORT with SD, I/O LINE SEQUENTIAL])
+AT_KEYWORDS([runmisc using giving])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT SORT-IN   ASSIGN "test.txt"
+                        ORGANISATION LINE SEQUENTIAL.
+       SELECT SORT-OUT  ASSIGN "result.txt"
+                        ORGANISATION LINE SEQUENTIAL.
+       SELECT SORT-WRK  ASSIGN "SORT-WRK".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD SORT-IN.
+       01 IN-REC        PIC X(20).
+       FD SORT-OUT.
+       01 OUT-REC       PIC X(20).
+       SD SORT-WRK.
+       01 WRK-REC       PIC X(6).
+       PROCEDURE        DIVISION.
+           
+      * We shouldn't use AT_DATA to create sequential record
+      * data, because AT_DATA needs a \n at the end
+           OPEN OUTPUT SORT-IN.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM "world " END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM "hello " END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           WRITE IN-REC FROM SPACES   END-WRITE.
+           CLOSE SORT-IN.
+           
+           SORT SORT-WRK
+                ASCENDING KEY WRK-REC
+                USING  SORT-IN
+                GIVING SORT-OUT.
+             STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([./prog], [0], [], [])
+AT_CHECK([cat result.txt], [0], [
+
+
+
+
+hello
+world
+], [])
+
+AT_CLEANUP
+
+
+AT_SETUP([SORT with SD, I/O LINE SEQUENTIAL same file])
+AT_KEYWORDS([runmisc using giving])
+
+AT_DATA([test.txt], [
+bla
+world
+hello
+
+blubb
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT SORT-IN   ASSIGN "test.txt"
+                        ORGANISATION LINE SEQUENTIAL.
+       SELECT SORT-WRK  ASSIGN "dummy".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD SORT-IN.
+       01 IN-REC        PIC X(6).
+       SD SORT-WRK.
+       01 sort-entry    PIC X(6).
+       PROCEDURE        DIVISION.
+
+      * We shouldn't use : > to create sequential record
+      * data, because : > needs a \n at the end
+      *     OPEN OUTPUT SORT-IN.
+      *     WRITE IN-REC FROM SPACES   END-WRITE.
+      *     WRITE IN-REC FROM "world " END-WRITE.
+      *     WRITE IN-REC FROM "hello " END-WRITE.
+      *     WRITE IN-REC FROM SPACES   END-WRITE.
+      *     CLOSE SORT-IN.
+
+           SORT SORT-WRK
+                ASCENDING sort-entry
+                USING  SORT-IN
+                GIVING SORT-IN.
+             STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([./prog], [0], [], [])
+AT_CHECK([cat test.txt], [0], [
+
+bla
+blubb
+hello
+world
+], [])
+
+AT_CLEANUP
+
+
 AT_SETUP([SORT: table sort])
 AT_KEYWORDS([runmisc])
 
