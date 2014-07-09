@@ -1,4 +1,4 @@
-Cobxref - Cobol Cross Reference program / module for Open Cobol
+CobXRef - COBOL Cross Reference program / module for OpenCOBOL / GNU Cobol
 
 Documentation for Gamma release version 1.01.07            Dated 26 Sept 2010
 
@@ -12,7 +12,7 @@ Note: Param 1 MUST be first param, 2 through 7 can be in any order.
 
 1: SFN [Source File name] (Mandatory)
 
-2: -R	 If used will not print out source code. Otherwise cobxref will always do
+2: -R    If used will not print out source code. Otherwise cobxref will always do
          so prior to cross reference listings.
 
 3: -L    reports all in lowercase (defaults to uppercase or actual case used).
@@ -26,8 +26,8 @@ Note: Param 1 MUST be first param, 2 through 7 can be in any order.
 6: -G    Used in testing: Produces group print out in addition to normal so that
          comparing xref's with Microfocus or IBM can be more easily done.
 
-7: -H	 Displays program parameter info (same as when run without any params}
-   --H	 as -H
+7: -H    Displays program parameter info (same as when run without any params}
+   --H   as -H
 
 For normal usage just call as 'cobxref sourcefilename.t' or you can also call it
 using cobc with the -X option. This will also produce source listings followed by
@@ -46,7 +46,7 @@ you have the -Xref option.
 See additional notes in the readme file also details of any changes over prior
 releases see Changelog.
 
-If compiling from cobol source use the supplied shell script eg, comp-cobxref.sh
+If compiling from COBOL source use the supplied shell script eg, comp-cobxref.sh
 
 Note that for testing I use add to the cobc command line:
 -Wtruncate
@@ -68,11 +68,12 @@ the add1tocobol website.
 
 I have been testing this program against a range of my own code including a
 42,000 line program (work on a IBM z/370 etc, as well as some of the test
-programs & modules provided with open cobol.  I now think it is ready
-for general usage but please if you can, test it against another cross reference
+programs & modules provided with OpenCOBOL. I now think it is ready for general
+usage but please if you can, test it against another cross reference
 tool to see if it is producing the same results and advise of any discrepancies.
 
 
-Please provide any and all reports of bugs through the open cobol forum.
+Please provide any and all reports of bugs through the OpenCOBOL forum.
+
 
 Last updated 26 Sept 2010 (c) Vincent B Coen.
