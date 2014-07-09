@@ -1568,7 +1568,7 @@
               move zero to Global-Current-Level  *> Global only
      else
       if      wsFoundWord2 (1:3) = "CD " or = "SD " *> not these
-              move high-values to Global-Current-Level.
+              move 99 to Global-Current-Level.
 *> Clears Global-Active
 *>
 *> note that for CD & SD setting Global-current-* not needed
