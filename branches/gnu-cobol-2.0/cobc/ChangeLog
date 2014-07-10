@@ -1,4 +1,8 @@
 
+2014-07-10  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* typeck.c (cb_emit_sort_init): calculation of table key offset fixed
+
 2014-07-02  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c [_MSC_VER]: filter output of cl.exe (instead of redirecting to NUL),

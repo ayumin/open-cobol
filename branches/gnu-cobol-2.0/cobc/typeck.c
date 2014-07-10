@@ -8035,7 +8035,8 @@ cb_emit_sort_init (cb_tree name, cb_tree keys, cb_tree col)
 			cb_emit (CB_BUILD_FUNCALL_3 ("cob_table_sort_init_key",
 					CB_VALUE (l),
 					CB_PURPOSE (l),
-					cb_int (CB_FIELD_PTR (CB_VALUE(l))->offset)));
+					cb_int(CB_FIELD_PTR (CB_VALUE(l))->offset
+						   - CB_FIELD_PTR (CB_VALUE(l))->parent->offset)));
 		}
 		f = CB_FIELD (cb_ref (name));
 		cb_emit (CB_BUILD_FUNCALL_2 ("cob_table_sort", name,
