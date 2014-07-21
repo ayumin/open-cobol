@@ -107,9 +107,11 @@
 #define	COB_MAYSWAP_32(x)	(COB_BSWAP_32((unsigned int)(x)))
 #endif
 
-static	FILE	*fdbg = NULL;
-static	int	bDidReportInit = 0;
+#ifdef DEBUG
 #define LOG	fdbg == NULL ? 0 : reportLog
+static	FILE	*fdbg = NULL;
+#endif
+static	int	bDidReportInit = 0;
 
 #ifndef TRUE
 #define TRUE 1
@@ -118,6 +120,7 @@ static	int	bDidReportInit = 0;
 #define FALSE 0
 #endif
 
+#ifdef DEBUG
 /*
  * Log information to file for debugging 
  */
@@ -132,6 +135,7 @@ reportLog(const char *fmt, ...)
 	va_end (ap);
 	fflush(fdbg);
 }
+#endif
 
 #define ND1 COB_REPORT_HEADING|COB_REPORT_FOOTING|COB_REPORT_PAGE_HEADING|COB_REPORT_PAGE_FOOTING
 #define ND2 COB_REPORT_CONTROL_HEADING|COB_REPORT_CONTROL_HEADING_FINAL
@@ -263,21 +267,27 @@ set_next_info(cob_report *r, cob_report_line *l)
 		r->next_value = l->next_group_line;
 		r->next_line = TRUE;
 		r->next_just_set = TRUE;
+#ifdef DEBUG
 		LOG(" Save NEXT GROUP LINE %d\n",r->next_value);
+#endif
 	}
 	if(l->flags & COB_REPORT_NEXT_GROUP_PLUS) {
 		r->next_value = l->next_group_line;
 		r->next_line = FALSE;
 		r->next_line_plus = TRUE;
 		r->next_just_set = TRUE;
+#ifdef DEBUG
 		LOG(" Save NEXT GROUP PLUS %d\n",r->next_value);
+#endif
 	}
 	if(l->flags & COB_REPORT_NEXT_GROUP_PAGE) {
 		r->next_value = l->next_group_line;
 		r->next_line = FALSE;
 		r->next_page = TRUE;
 		r->next_just_set = TRUE;
+#ifdef DEBUG
 		LOG(" Save NEXT GROUP PAGE\n");
+#endif
 	}
 }
 
@@ -297,14 +307,18 @@ get_print_line(cob_report_line *l)
 static void
 reportInitialize()
 {
+#ifdef DEBUG
 	char	*env;
+#endif
 	if(bDidReportInit)
 		return;
 	bDidReportInit = 1;
-	if((env = getenv("OCREPORTDEBUG")) != NULL
-	&& (toupper(*env) == 'Y')) {
-		fdbg = fopen("/tmp/ocreport.log","w");
+#ifdef DEBUG
+	if (env = getenv("OCREPORTDEBUG")) {
+		if (toupper(*env) == 'Y')) {
+			fdbg = fopen("/tmp/ocreport.log","w");
 	}
+#endif
 }
 
 /*
@@ -316,7 +330,9 @@ cob_add_fields(cob_field *op1, cob_field *op2, cob_field *rslt)
 	cob_field_attr	attr1, attr2;
 	char		data1[30],data2[30];
 	cob_field	fld1,fld2;
+#ifdef DEBUG
 	char		wrk[32];
+#endif
 
 	/* Copy data to local PIC 9 DISPLAY fields */
 	/* As cob_add does not handle NUMERIC_EDITED very well */
@@ -328,10 +344,12 @@ cob_add_fields(cob_field *op1, cob_field *op2, cob_field *rslt)
 	memset(data1,'0',fld1.size);
 	cob_move(op1, &fld1);
 
+#ifdef DEBUG
 	if(fdbg) {
 		cob_field_to_string(op1, wrk, sizeof(wrk)-1);
 		LOG("    Add '%s' ",wrk);
 	}
+#endif
 
 	fld2.size	= op2->size;
 	attr2		= *op2->attr;
@@ -341,15 +359,18 @@ cob_add_fields(cob_field *op1, cob_field *op2, cob_field *rslt)
 	memset(data2,'0',fld2.size);
 	cob_move(op2, &fld2);
 
+#ifdef DEBUG
 	if(fdbg) {
 		cob_field_to_string(op2, wrk, sizeof(wrk)-1);
 		LOG("TO '%s' ",wrk);
 	}
+#endif
 
 	cob_add(&fld1,&fld2,0);
 
 	cob_move(&fld1, rslt);			/* Copy SUM back to result field */
 
+#ifdef DEBUG
 	if(fdbg) {
 		cob_field_to_string(&fld1, wrk, sizeof(wrk)-1);
 		LOG("GIVING '%s' ",wrk);
@@ -358,8 +379,10 @@ cob_add_fields(cob_field *op1, cob_field *op2, cob_field *rslt)
 			LOG("V9(%d)",rslt->attr->scale);
 		LOG("\n");
 	}
+#endif
 }
 
+#ifdef DEBUG
 static void
 dumpFlags(int flags, int ln, char *name)
 {
@@ -548,6 +571,7 @@ reportDump(const cob_report *r, const char *msg)
 	reportDumpLine(r,r->first_line,0);
 	LOG("\n");
 }
+#endif /* DEBUG */
 
 /*
  * Verify that each LINE # is within PAGE LIMITS
@@ -559,14 +583,18 @@ limitCheckOneLine(cob_report *r, cob_report_line *fl)
 
 	if((fl->line > 0 && r->def_lines > 0 && fl->line > r->def_lines)) {
 		fprintf(stderr,_("ERROR INITIATE %s LINE %d exceeds PAGE LIMIT %d\n"),r->report_name,fl->line,r->def_lines);
+#ifdef DEBUG
 		LOG("PAGE LIMITs is incorrect; LINE %d > LIMIT %d\n",fl->line,r->def_lines);
+#endif
 		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
 		r->initiate_done = FALSE;
 		return;
 	}
 	if((fl->next_group_line > 0 && r->def_lines > 0 && fl->next_group_line > r->def_lines)) {
 		fprintf(stderr,_("ERROR INITIATE %s NEXT GROUP %d exceeds PAGE LIMIT\n"),r->report_name,fl->next_group_line);
+#ifdef DEBUG
 		LOG("PAGE LIMITs is incorrect; NEXT GROUP %d > LIMIT %d\n",fl->next_group_line,r->def_lines);
+#endif
 		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
 		r->initiate_done = FALSE;
 		return;
@@ -574,14 +602,18 @@ limitCheckOneLine(cob_report *r, cob_report_line *fl)
 	for(rf = fl->fields; rf; rf = rf->next) {
 		if((rf->line && rf->line > r->def_lines)) {
 			fprintf(stderr,_("ERROR INITIATE %s LINE %d exceeds PAGE LIMIT\n"),r->report_name,rf->line);
+#ifdef DEBUG
 			LOG("PAGE LIMITs is incorrect; LINE %d > LIMIT %d\n",rf->line,r->def_lines);
+#endif
 			cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
 			r->initiate_done = FALSE;
 			return;
 		}
 		if((rf->next_group_line && rf->next_group_line > r->def_lines)) {
 			fprintf(stderr,_("ERROR INITIATE %s NEXT GROUP %d exceeds PAGE LIMIT\n"),r->report_name,rf->next_group_line);
+#ifdef DEBUG
 			LOG("PAGE LIMITs is incorrect; NEXT GROUP %d > LIMIT %d\n",rf->next_group_line,r->def_lines);
+#endif
 			cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
 			r->initiate_done = FALSE;
 			return;
@@ -709,14 +741,18 @@ report_line(cob_report *r, cob_report_line *l)
 			do_page_footing(r);
 		}
 		if(!r->next_just_set && r->next_line_plus) {
+#ifdef DEBUG
 			LOG(" Execute NEXT GROUP PLUS %d\n",r->next_value);
+#endif
 			opt = COB_WRITE_BEFORE | COB_WRITE_LINES | (r->next_value);
 			cob_write(f, f->record, opt, NULL, 0);
 			r->curr_line += r->next_value;
 			r->next_line_plus = FALSE;
 		} else
 		if(!r->next_just_set && r->next_line) {
+#ifdef DEBUG
 			LOG(" Execute NEXT GROUP LINE %d\n",r->next_value);
+#endif
 			if(r->curr_line > r->next_value) {
 				do_page_footing(r);
 				do_page_heading(r);
@@ -728,7 +764,9 @@ report_line(cob_report *r, cob_report_line *l)
 			r->next_line = FALSE;
 		} else
 		if(!r->next_just_set && r->next_page) {
+#ifdef DEBUG
 			LOG(" Execute NEXT GROUP PAGE\n");
+#endif
 			do_page_footing(r);
 			do_page_heading(r);
 			r->next_page = FALSE;
@@ -736,7 +774,9 @@ report_line(cob_report *r, cob_report_line *l)
 		if( !(l->flags & COB_REPORT_LINE_PLUS)
 		&&   (l->flags & COB_REPORT_LINE)) {
 			if(r->curr_line > l->line) {
+#ifdef DEBUG
 				LOG(" Eject Page %d from line %d for Line %d\n",r->curr_page,r->curr_line,l->line);
+#endif
 				do_page_footing(r);
 				if(r->in_report_footing) {
 					r->curr_page++;		/* Now on next page */
@@ -766,10 +806,12 @@ report_line(cob_report *r, cob_report_line *l)
 			return;
 		}
 		if(l->suppress) {
+#ifdef DEBUG
 			if(fdbg) {
 				reportDumpOneLine(r,l,0,1);
 				LOG("   ^^^ Suppressed ^^^\n\n");
 			}
+#endif
 			set_next_info(r,l);
 			return;
 		}
@@ -802,10 +844,12 @@ report_line(cob_report *r, cob_report_line *l)
 			}
 		}
 	}
+#ifdef DEBUG
 	if(fdbg) {
 		reportDumpOneLine(r,l,0,1);
 		LOG("\n");
 	}
+#endif
 	if(rec) {
 		opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		cob_write(f, f->record, opt, NULL, 0);
@@ -893,18 +937,22 @@ sum_all_detail(cob_report *r)
 {
 	cob_report_sum_ctr	*sc;
 	cob_report_sum		*rs;
+#ifdef DEBUG
 	int			bHasSum = FALSE;
+#endif
 
 	/*
 	 * Add up all SUM counter values
 	 */
 	for(sc = r->sum_counters; sc; sc = sc->next) {
 		for(rs = sc->sum; rs && !sc->subtotal; rs = rs->next) {
+#ifdef DEBUG
 			if(!bHasSum) {
 				bHasSum = TRUE;
 				LOG(" Do SUM detail counters:\n");
 			}
 			LOG(" .. %-20s ",sc->name);
+#endif
 			cob_add_fields(sc->counter,rs->f,sc->counter);
 		}
 	}
@@ -922,7 +970,9 @@ sum_this_counter(cob_report *r, cob_field *counter)
 	for(sc = r->sum_counters; sc; sc = sc->next) {
 		for(rs = sc->sum; rs; rs = rs->next) {
 			if(rs->f == counter) {
+#ifdef DEBUG
 				LOG("SUM %s forward ",sc->name);
+#endif
 				for(rs = sc->sum; rs; rs = rs->next) {
 					cob_add_fields(sc->counter,rs->f,sc->counter);
 				}
@@ -951,7 +1001,9 @@ zero_all_counters(cob_report *r, int	flag, cob_report_line *l)
 		for(rs = sc->sum; rs; rs = rs->next) {
 			if((flag & COB_REPORT_CONTROL_FOOTING_FINAL)) {
 				if(sc->control_final) {
+#ifdef DEBUG
 					LOG("ZERO SUM Counter %s for FOOTING FINAL\n",sc->name);
+#endif
 					cob_field_init(sc->counter);
 				}
 			} else if(sc->control) {
@@ -969,9 +1021,11 @@ zero_all_counters(cob_report *r, int	flag, cob_report_line *l)
 					if(rr->ref_line
 					&& (rr->ref_line->flags & flag)) {
 						sum_this_counter(r,sc->counter);
+#ifdef DEBUG
 						LOG("ZERO SUM counter %s for ",sc->name); 
 						dumpFlags(rr->ref_line->flags,0,(char*)rc->name); 
 						LOG("\n");
+#endif
 						cob_field_init(sc->counter);
 					}
 				}
@@ -993,7 +1047,9 @@ cob_report_initiate(cob_report *r)
 	reportInitialize();
 	if(r->initiate_done) {
 		fprintf(stderr,_("ERROR INITIATE %s was already done\n"),r->report_name);
+#ifdef DEBUG
 		LOG("REPORT was already INITIATEd\n");
+#endif
 		cob_set_exception (COB_EC_REPORT_ACTIVE);
 		return;
 	}
@@ -1005,8 +1061,10 @@ cob_report_initiate(cob_report *r)
 	|| (r->def_lines > 0 && !(r->def_lines >= r->def_heading))
 	|| (r->def_lines > 0 && !(r->def_lines >= r->def_footing))) {
 		fprintf(stderr,_("ERROR INITIATE %s PAGE LIMIT problem\n"),r->report_name);
+#ifdef DEBUG
 		LOG("PAGE LIMITs is incorrect\n");
 		reportDump(r,"INITIATE");
+#endif
 		cob_set_exception (COB_EC_REPORT_PAGE_LIMIT);
 		return;
 	}
@@ -1015,7 +1073,9 @@ cob_report_initiate(cob_report *r)
 	r->curr_line = 0;
 	r->incr_line = TRUE;
 	saveLineCounter(r);
+#ifdef DEBUG
 	reportDump(r,"INITIATE");
+#endif
 	r->initiate_done = TRUE;
 	limitCheck(r);
 	if(!r->initiate_done)	/* Problem during LIMIT check */
@@ -1069,13 +1129,17 @@ cob_report_terminate(cob_report *r, int ctl)
 	cob_report_line		*pl;
 
 	if(!r->initiate_done) {
+#ifdef DEBUG
 		LOG("INITIATE was never done!\n");
+#endif
 		fprintf(stderr,_("ERROR TERMINATE %s but No INITIATE was done\n"),r->report_name);
 		cob_set_exception (COB_EC_REPORT_INACTIVE);
 		return 0;
 	}
 	if(r->first_generate) {
+#ifdef DEBUG
 		LOG("No GENERATE was ever done!\n");
+#endif
 		return 0;
 	}
 	if(ctl > 0) {	 /* Continue Processing Footings from last point */
@@ -1084,71 +1148,95 @@ cob_report_terminate(cob_report *r, int ctl)
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_FOOTING) {
 					pl = get_print_line(rr->ref_line);
 					if(rr->ref_line->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFooting;	/* Continue Footings */
 					}
 					if(pl != rr->ref_line
 					&& pl->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFooting;	/* Continue Footings */
 					}
 				}
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_FOOTING_FINAL) {
 					pl = get_print_line(rr->ref_line);
 					if(rr->ref_line->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFootingFinal;	/* Continue Footings */
 					}
 					if(pl != rr->ref_line
 					&& pl->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFootingFinal;	/* Continue Footings */
 					}
 				}
 				if(rr->ref_line->flags & COB_REPORT_FOOTING) {
 					pl = get_print_line(rr->ref_line);
 					if(rr->ref_line->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintReportFooting;/* Continue Footings */
 					}
 					if(pl != rr->ref_line
 					&& pl->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintReportFooting;/* Continue Footings */
 					}
 				}
 			}
 		}
+#ifdef DEBUG
 		LOG("Could not find Declarative %d\n",ctl);
+#endif
 		pl = get_line_type(r, r->first_line,COB_REPORT_CONTROL_FOOTING_FINAL);
 		if(pl
 		&& pl->use_decl == ctl) {
+#ifdef DEBUG
 			LOG("  Continue after Final Declaratives %d\n",ctl);
+#endif
 			goto PrintFootingFinal;	/* Continue Footings */
 		}
 		pl = get_line_type(r, r->first_line,COB_REPORT_FOOTING);
 		if(pl
 		&& pl->use_decl == ctl) {
+#ifdef DEBUG
 			LOG("  Continue after Report Declaratives %d\n",ctl);
+#endif
 			goto PrintReportFooting;	/* Continue Footings */
 		}
 	} else {
 		reportInitialize();
+#ifdef DEBUG
 		reportDump(r,"TERMINATE");
+#endif
 		/* Do CONTROL FOOTING breaks */
 		for(rc = r->controls; rc; rc = rc->next) {
 			for(rr = rc->control_ref; rr; rr = rr->next) {
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_FOOTING) {
 					if(rr->ref_line->use_decl) {
+#ifdef DEBUG
 						LOG("  Return for %s Footing Declaratives %d\n",
 								rc->name,rr->ref_line->use_decl);
+#endif
 						return rr->ref_line->use_decl;
 					}
 					pl = get_print_line(rr->ref_line);
 					if(pl != rr->ref_line
 					&& pl->use_decl) {
+#ifdef DEBUG
 						LOG("  Return for %s Footing Declaratives %d.\n",
 								rc->name,pl->use_decl);
+#endif
 						return pl->use_decl;	/* Back for DECLARATIVES */
 					}
 PrintFooting:
@@ -1166,7 +1254,9 @@ PrintFooting:
 	pl = get_line_type(r, r->first_line,COB_REPORT_CONTROL_FOOTING_FINAL);
 	if(pl) {
 		if(pl->use_decl) {
+#ifdef DEBUG
 			LOG("  Return for Footing Final Declaratives %d.\n", pl->use_decl);
+#endif
 			return pl->use_decl;	/* Back for DECLARATIVES */
 		}
 PrintFootingFinal:
@@ -1179,7 +1269,9 @@ PrintFootingFinal:
 	pl = get_line_type(r, r->first_line,COB_REPORT_FOOTING);
 	if(pl) {
 		if(pl->use_decl) {
+#ifdef DEBUG
 			LOG("  Return for Report Footing Declaratives %d.\n", pl->use_decl);
+#endif
 			return pl->use_decl;	/* Back for DECLARATIVES */
 		}
 PrintReportFooting:
@@ -1227,7 +1319,9 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 	cob_report_control_ref	*rr;
 	cob_report_line		*pl;
 	int			maxctl,ln,num;
+#ifdef DEBUG
 	char			wrk[128];
+#endif
 
 	reportInitialize();
 	if(!r->initiate_done) {
@@ -1236,33 +1330,43 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 		return 0;
 	}
 
+#ifdef DEBUG
 	LOG("   Enter GENERATE with ctl == %d\n",ctl);
+#endif
 	if(ctl > 0) {	 /* Continue Processing Footings from last point */
 		for(rc = r->controls; rc; rc = rc->next) {
 			for(rr = rc->control_ref; rr; rr = rr->next) {
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_FOOTING) {
 					pl = get_print_line(rr->ref_line);
 					if(rr->ref_line->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFooting;	/* Continue Footings */
 					}
 					if(pl != rr->ref_line
 					&& pl->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						goto PrintFooting;	/* Continue Footings */
 					}
 				}
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_HEADING) {
 					pl = get_print_line(rr->ref_line);
 					if(rr->ref_line->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						if(r->first_generate)
 							goto PrintFirstHeading;
 						goto PrintHeading;	/* Continue Footings */
 					}
 					if(pl != rr->ref_line
 					&& pl->use_decl == ctl) {
+#ifdef DEBUG
 						LOG("  Continue after Declaratives %d\n",ctl);
+#endif
 						if(r->first_generate)
 							goto PrintFirstHeading;
 						goto PrintHeading;	/* Continue Headings */
@@ -1270,7 +1374,9 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 				}
 			}
 		}
+#ifdef DEBUG
 		LOG("Could not find Declarative %d\n",ctl);
+#endif
 	}
 
 	if(r->incr_line) {
@@ -1289,15 +1395,19 @@ cob_report_generate(cob_report *r, cob_report_line *l, int ctl)
 			for(rr = rc->control_ref; rr; rr = rr->next) {
 				if(rr->ref_line->flags & COB_REPORT_CONTROL_HEADING) {
 					if(rr->ref_line->use_decl) {
+#ifdef DEBUG
 						LOG("  Return first %s Heading Declaratives %d\n",
 								rc->name,rr->ref_line->use_decl);
+#endif
 						return rr->ref_line->use_decl;
 					}
 					pl = get_print_line(rr->ref_line);
 					if(pl != rr->ref_line
 					&& pl->use_decl) {
+#ifdef DEBUG
 						LOG("  Return first %s Heading Declaratives %d.\n",
 								rc->name,pl->use_decl);
+#endif
 						return pl->use_decl;	/* Back for DECLARATIVES */
 					}
 PrintFirstHeading:
@@ -1332,12 +1442,14 @@ PrintFirstHeading:
 		for(rc = r->controls; rc; rc = rc->next) {
 			rc->data_change = (cob_cmp(rc->f,rc->val) != 0);
 			if(rc->data_change) {	/* Data change, implies control break at lower levels */
+#ifdef DEBUG
 				LOG(" Control Break %s order %d changed from ",
 						rc->name,rc->sequence);
 				cob_field_to_string(rc->val, wrk, sizeof(wrk)-1);
 				LOG("'%s' to ",wrk);
 				cob_field_to_string(rc->f, wrk, sizeof(wrk)-1);
 				LOG("'%s'\n",wrk);
+#endif
 				cob_move(rc->f, rc->sf);	/* Save new CONTROL value */
 				cob_move(rc->val,rc->f);	/* Prev value for FOOTING */
 				if(rc->sequence > maxctl)
@@ -1350,8 +1462,10 @@ PrintFirstHeading:
 				if(rp->sequence < maxctl
 				&& !rp->data_change) {
 					rp->data_change = TRUE;
+#ifdef DEBUG
 					LOG(" Control Break %s order %d also ...\n",
 							rp->name,rp->sequence);
+#endif
 					cob_move(rp->f, rp->sf); /* Save CONTROL value */
 					cob_move(rp->val,rp->f); /* Prev value for FOOTING */
 				}
@@ -1363,15 +1477,19 @@ PrintFirstHeading:
 				for(rr = rc->control_ref; rr; rr = rr->next) {
 					if(rr->ref_line->flags & COB_REPORT_CONTROL_FOOTING) {
 						if(rr->ref_line->use_decl) {
+#ifdef DEBUG
 							LOG("  Return for %s Footing Declaratives %d\n",
 									rc->name,rr->ref_line->use_decl);
+#endif
 							return rr->ref_line->use_decl;
 						}
 						pl = get_print_line(rr->ref_line);
 						if(pl != rr->ref_line
 						&& pl->use_decl) {
+#ifdef DEBUG
 							LOG("  Return for %s Footing Declaratives %d.\n",
 									rc->name,pl->use_decl);
+#endif
 							return pl->use_decl;	/* Back for DECLARATIVES */
 						}
 PrintFooting:
@@ -1396,15 +1514,19 @@ PrintFooting:
 				for(rr = rc->control_ref; rr; rr = rr->next) {
 					if(rr->ref_line->flags & COB_REPORT_CONTROL_HEADING) {
 						if(rr->ref_line->use_decl) {
+#ifdef DEBUG
 							LOG("  Return for %s Heading Declaratives %d\n",
 									rc->name,rr->ref_line->use_decl);
+#endif
 							return rr->ref_line->use_decl;
 						}
 						pl = get_print_line(rr->ref_line);
 						if(pl != rr->ref_line
 						&& pl->use_decl) {
+#ifdef DEBUG
 							LOG("  Return for %s Heading Declaratives %d.\n",
 									rc->name,pl->use_decl);
+#endif
 							return pl->use_decl;	/* Back for DECLARATIVES */
 						}
 PrintHeading:
