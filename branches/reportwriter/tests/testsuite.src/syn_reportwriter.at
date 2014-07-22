@@ -116,18 +116,18 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_ONLY -std=mf -Wall prog.cob], [1], [],
-[prog.cob: 16: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 18: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 19: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 33: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 70: Error: 'CUSTOMER-REPORT' is not defined
-prog.cob: 70: Error: 'CUSTOMER-REPORT' is not a valid report name
-prog.cob: 77: Error: syntax error, unexpected FOREVER
-prog.cob: 78: Error: syntax error, unexpected Identifier
+[prog.cob: 17: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 19: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 20: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 34: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 71: Error: 'CUSTOMER-REPORT' is not defined
+prog.cob: 71: Error: 'CUSTOMER-REPORT' is not a valid report name
+prog.cob: 78: Error: syntax error, unexpected FOREVER
 prog.cob: 79: Error: syntax error, unexpected Identifier
-prog.cob: 82: Error: syntax error, unexpected END-READ
-prog.cob: 85: Error: 'CUSTOMER-REPORT' is not defined
-prog.cob: 85: Error: 'CUSTOMER-REPORT' is not a valid report name
+prog.cob: 80: Error: syntax error, unexpected Identifier
+prog.cob: 83: Error: syntax error, unexpected END-READ
+prog.cob: 86: Error: 'CUSTOMER-REPORT' is not defined
+prog.cob: 86: Error: 'CUSTOMER-REPORT' is not a valid report name
 ])
 
 AT_CLEANUP
@@ -173,13 +173,12 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_ONLY -std=mf -Wall prog.cob], [1], [],
-[prog.cob: 17: Error: Invalid COLUMN integer; Must be > 0
-prog.cob: 19: Warning: LINE PLUS 0 not implemented
-prog.cob: 22: Warning: LINE PLUS 0 not implemented
-prog.cob: 23: Error: Positive Integer value expected
+[prog.cob: 18: Error: Invalid COLUMN integer; Must be > 0
+prog.cob: 20: Warning: LINE PLUS 0 not implemented
+prog.cob: 23: Warning: LINE PLUS 0 not implemented
 prog.cob: 24: Error: Positive Integer value expected
-prog.cob: 12: Warning: NO DETAIL line defined in report rp
-prog.cob: 30: Error: 'rp-detail' is not defined
+prog.cob: 25: Error: Positive Integer value expected
+prog.cob: 31: Error: 'rp-detail' is not defined
 ])
 
 AT_CLEANUP
