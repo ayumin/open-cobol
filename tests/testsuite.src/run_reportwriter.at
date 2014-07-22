@@ -368,7 +368,7 @@ AT_DATA([prog.cob], [
 
            TERMINATE rp.
              CLOSE report-file.
-           END PROGRAM paglim.
+           END PROGRAM prog.
 ])
 
 AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [])
@@ -637,10 +637,10 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 44: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 26: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 28: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 29: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 45: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -1001,10 +1001,10 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 26: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 27: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 44: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -1382,10 +1382,10 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 24: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 26: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 27: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 43: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 44: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -1758,10 +1758,10 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 31: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 33: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 34: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 51: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 32: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 34: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 35: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 52: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -2120,13 +2120,13 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 25: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 27: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 28: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 39: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 26: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 28: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 29: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 40: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 prog.cob: In section 'USE-SALESMAN-TOTAL':
 prog.cob: In paragraph 'USE-SALESMAN-TOTAL-PROC':
-prog.cob: 126: Warning: Ignoring sign
+prog.cob: 127: Warning: Ignoring sign
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -2840,10 +2840,10 @@ AT_DATA([prog.cob], [
       
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 29: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 31: Warning: RECORD clause ignored for LINE SEQUENTIAL
-prog.cob: 32: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
-prog.cob: 62: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 30: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 32: Warning: RECORD clause ignored for LINE SEQUENTIAL
+prog.cob: 33: Warning: DATA RECORDS is obsolete in Micro Focus COBOL
+prog.cob: 63: Warning: LABEL RECORDS is obsolete in Micro Focus COBOL
 ])
 
 AT_CHECK([export DD_DATAIN=./inp_data
@@ -3072,13 +3072,13 @@ AT_DATA([prog.cob], [
            TERMINATE STUDENT-REPORT.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 16: Warning: RECORD clause ignored for LINE SEQUENTIAL
 ])
 
 AT_CHECK([export DD_STUDENT=./inp_data
 export DD_REPORT1=./report.txt
-./prog], [0], [Report Test 1 
-  000005     Hello                    Bye     7    
+./prog], [0], [Report Test 1 @&t@ 
+  000005     Hello                    Bye     7    @&t@
 ], [])
 
 
@@ -3358,7 +3358,7 @@ AT_DATA([prog.cob], [
                     MOVE 'NO' TO ARE-THERE-MORE-RECORDS.
 ])
 
-AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 15: Warning: RECORD clause ignored for LINE SEQUENTIAL
+AT_CHECK([$COMPILE -std=mf -Wall prog.cob], [0], [], [prog.cob: 16: Warning: RECORD clause ignored for LINE SEQUENTIAL
 ])
 
 AT_CHECK([export DD_CUSTORD=./inp_data
