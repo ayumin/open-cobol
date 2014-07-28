@@ -221,6 +221,48 @@ prog.cob: 9: Error: 'GROUP-ITEM2' cannot be larger than 268435456 bytes
 AT_CLEANUP
 
 
+AT_SETUP([Unreachable statement])
+AT_KEYWORDS([extensions])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT f ASSIGN TO 'f' LINE SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD  f.
+       01  f-rec PIC X.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       f-error SECTION.
+           USE AFTER ERROR ON f.
+           GOBACK
+           .
+       END DECLARATIVES.
+
+           DISPLAY "VALID"
+           END-DISPLAY.
+
+       P01.
+           GO TO P02.
+           DISPLAY "INVALID"
+           END-DISPLAY.
+       P02.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -Wunreachable prog.cob], [0], ,
+[prog.cob: In paragraph 'P01':
+prog.cob: 26: Warning: Unreachable statement 'DISPLAY'
+])
+
+AT_CLEANUP
+
+
 AT_SETUP([REPOSITORY])
 AT_KEYWORDS([misc])
 

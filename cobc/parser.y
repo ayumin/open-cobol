@@ -5326,6 +5326,7 @@ procedure_declaratives:
 	}
 	skip_statements = 0;
 	emit_statement (cb_build_comment ("END DECLARATIVES"));
+	check_unreached = 0;
   }
 ;
 
