@@ -1793,31 +1793,6 @@ AT_CHECK([./prog], [0],
 AT_CLEANUP
 
 
-AT_SETUP([Unreachable statement])
-AT_KEYWORDS([extensions])
-
-AT_DATA([prog.cob], [
-       IDENTIFICATION   DIVISION.
-       PROGRAM-ID.      prog.
-       DATA             DIVISION.
-       WORKING-STORAGE  SECTION.
-       PROCEDURE        DIVISION.
-       P01.
-           GO TO P02.
-           DISPLAY "INVALID"
-           END-DISPLAY.
-       P02.
-           STOP RUN.
-])
-
-AT_CHECK([$COMPILE -Wunreachable prog.cob], [0], ,
-[prog.cob: In paragraph 'P01':
-prog.cob: 9: Warning: Unreachable statement 'DISPLAY'
-])
-
-AT_CLEANUP
-
-
 AT_SETUP([DEBUG (1)])
 AT_KEYWORDS([extensions])
 

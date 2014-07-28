@@ -1,4 +1,9 @@
 
+2014-07-28  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* parser.y, parser.c: fix #88 false unreachable warning after
+		END DECLARATIVES without main section/paragraph
+
 2014-07-10  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* typeck.c (cb_emit_sort_init): calculation of table key offset fixed
