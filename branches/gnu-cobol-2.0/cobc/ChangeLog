@@ -3,6 +3,9 @@
 
 	* cobc.c, config.c: new option -cb_conf for overriding configuration
 	  options
+	* config.c, cobc.c, error.c (configuration_error): new function for errors
+	  concerning configuration options --conf / --cb_conf / configuration parsing,
+	  complete rewrite of configuration error messages
 
 2014-07-28  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 

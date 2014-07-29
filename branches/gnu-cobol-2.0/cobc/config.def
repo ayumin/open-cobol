@@ -18,7 +18,9 @@
    along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Definitions of variables in config/xxx.conf files */
+/* Definitions of variables in config/xxx.conf files
+   Possible override via -cb_conf=tag:value
+ */
 
 CB_CONFIG_STRING  (cb_config_name, "name")
 CB_CONFIG_INT (cb_tab_width, "tab-width")
