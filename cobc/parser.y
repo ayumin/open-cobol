@@ -243,6 +243,22 @@ begin_implicit_statement (void)
 					    CB_TREE (current_statement));
 }
 
+# if 0 /* activate only for debugging purposes for attribs */
+static
+void printBits(unsigned int num){
+	unsigned int size = sizeof(unsigned int);
+	unsigned int maxPow = 1<<(size*8-1);
+	int i=0;
+
+	for(;i<size*8;++i){
+		// print last bit and shift left.
+		fprintf(stderr, "%u ",num&maxPow ? 1 : 0);
+		num = num<<1;
+	}
+	fprintf(stderr, "\n");
+}
+#endif
+
 static void
 emit_entry (const char *name, const int encode, cb_tree using_list)
 {
@@ -591,9 +607,9 @@ bit_set_attr (const cb_tree onoff, const int attrval)
 
 static void
 check_attribs (cb_tree fgc, cb_tree bgc, cb_tree scroll,
-	       cb_tree timeout, cb_tree prompt, int attribs)
+	       cb_tree timeout, cb_tree prompt, int attrib)
 {
-	/* Attach attributes to current_statement */
+	/* Attach attribute to current_statement */
 	if (!current_statement->attr_ptr) {
 		current_statement->attr_ptr =
 			cobc_parse_malloc (sizeof(struct cb_attr_struct));
@@ -613,7 +629,17 @@ check_attribs (cb_tree fgc, cb_tree bgc, cb_tree scroll,
 	if (prompt) {
 		current_statement->attr_ptr->prompt = prompt;
 	}
-	current_statement->attr_ptr->dispattrs |= attribs;
+	current_statement->attr_ptr->dispattrs |= attrib;
+}
+
+static void
+remove_attrib (int attrib)
+{
+	/* Remove attribute from current_statement */
+	if (!current_statement->attr_ptr) {
+		return;
+	}
+	current_statement->attr_ptr->dispattrs ^= attrib;
 }
 
 static void
@@ -5638,6 +5664,10 @@ accept_statement:
   ACCEPT
   {
 	begin_statement ("ACCEPT", TERM_ACCEPT);
+	if (cb_accept_update) {
+		check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_UPDATE);
+	}
+
   }
   accept_body
   end_accept
@@ -5853,7 +5883,15 @@ accp_attr:
   {
 	check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_UNDERLINE);
   }
-| UPDATE
+| NO update_default
+  {
+	if (!cb_accept_update) {
+		cb_warning ("WITH NO UPDATE/DEFAULT is non-standard");
+	} else {
+		remove_attrib (COB_SCREEN_UPDATE);
+	}
+  }
+| update_default
   {
 	check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_UPDATE);
   }
@@ -5883,6 +5921,11 @@ accp_attr:
   }
 ;
 
+update_default:
+  UPDATE
+| DEFAULT
+;
+
 end_accept:
   /* empty */	%prec SHIFT_PREFER
   {
@@ -5891,6 +5934,13 @@ end_accept:
 | END_ACCEPT
   {
 	TERMINATOR_CLEAR ($-2, ACCEPT);
+# if 0 /* activate only for debugging purposes for attribs */
+	if (current_statement->attr_ptr) {
+		printBits (current_statement->attr_ptr->dispattrs);
+	} else {
+		fprintf(stderr, "No Attribs\n");
+	}
+#endif
   }
 ;
 

@@ -1,11 +1,19 @@
+
+2014-07-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* added accept-update (set to "no" in all configuration files)
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
 	* Move to GPL/LGPL 3
+	* add information about config options in config/xyz.conf while removing
+	  include of default.conf (every conf file now contains all configuration
+	  entries)
 
 2007-12-27  Roger While <simrw@sim-basis.de>
 
-	** Mark 1.0 RELEASE
+	* Mark 1.0 RELEASE
 
 2007-08-23  Roger While <simrw@sim-basis.de>
 
@@ -15,7 +23,7 @@
 2007-01-29  Roger While <simrw@sim-basis.de>
 
 	* Add odo-without-to, default OK, set to unconformable
-		for 85/2002
+	  for 85/2002
 
 2006-09-30  Roger While <simrw@sim-basis.de>
 

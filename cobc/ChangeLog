@@ -6,6 +6,10 @@
 	* config.c, cobc.c, error.c (configuration_error): new function for errors
 	  concerning configuration options --conf / --cb_conf / configuration parsing,
 	  complete rewrite of configuration error messages
+	* parser.y, parser.c: Added WITH DEFAULT as alias for WITH UPDATE
+	* config.def, parser.y, parser.c: new configuration option accept-update
+	  for setting WITH UPDATE/DEFAULT as standard, adding new extension
+	  WITH NO UPDATE/DEFAULT to disable this behaviour explicit
 
 2014-07-28  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
