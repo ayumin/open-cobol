@@ -405,6 +405,7 @@ static const struct option long_options[] = {
 	{"save-temps",		CB_OP_ARG, NULL, '_'},
 	{"std",			CB_RQ_ARG, NULL, '$'},
 	{"conf",		CB_RQ_ARG, NULL, '&'},
+	{"cb_conf",		CB_RQ_ARG, NULL, '%'},
 	{"debug",		CB_NO_ARG, NULL, 'd'},
 	{"ext",			CB_RQ_ARG, NULL, 'e'},
 	{"free",		CB_NO_ARG, &cb_source_format, CB_FORMAT_FREE},
@@ -1773,6 +1774,7 @@ cobc_print_usage (void)
 	puts (_("  -D <define>           DEFINE <define> to the COBOL compiler"));
 	puts (_("  -K <entry>            Generate CALL to <entry> as static"));
 	puts (_("  -conf=<file>          User defined dialect configuration - See -std="));
+	puts (_("  -cb_conf=tag:value    Override configuration entry"));
 	puts (_("  -list-reserved        Display reserved words"));
 	puts (_("  -list-intrinsics      Display intrinsic functions"));
 	puts (_("  -list-mnemonics       Display mnemonic names"));
@@ -1863,6 +1865,8 @@ process_command_line (const int argc, char **argv)
 	enum cob_exception_id	i;
 	struct stat		st;
 	char			ext[COB_MINI_BUFF];
+	struct cb_text_list	*cb_conf_override_list = NULL;
+	struct cb_text_list	*covl;
 
 #ifdef _WIN32
 	/* Translate command line arguments from WIN to UNIX style */
@@ -2058,6 +2062,15 @@ process_command_line (const int argc, char **argv)
 				cobc_free_mem ();
 				exit (1);
 			}
+			break;
+
+		case '%':
+			/* -cb_conf=<xx:yy> : Override configuration entry */
+			if (strlen (cob_optarg) > COB_SMALL_MAX) {
+				cobc_err_exit (COBC_INV_PAR , "-cb_conf");
+			}
+			/* postponed as we need full configuration loaded before */
+			CB_TEXT_LIST_ADD (cb_conf_override_list, cob_optarg);
 			break;
 
 		case 'd':
@@ -2322,6 +2335,16 @@ process_command_line (const int argc, char **argv)
 		if (cb_load_std ("default.conf") != 0) {
 			cobc_err_exit (_("Failed to load the initial config file"));
 		}
+	}
+	/* do postponed override of configuration entries here */
+	if (cb_conf_override_list) {
+		for (covl = cb_conf_override_list; covl; covl = covl->next) {
+			if (cb_config_entry ((char *)covl->text, NULL, 0) != 0) {
+				cobc_free_mem ();
+				exit (1);
+			}
+		}
+		/* Todo: free list */
 	}
 
 	/* Check valid tab width */

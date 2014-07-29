@@ -359,6 +359,7 @@ extern size_t			cobc_check_valid_name (const char *,
 #undef	CB_CONFIG_SUPPORT
 
 extern int		cb_load_std (const char *);
+extern int		cb_config_entry (char *, const char *, const int);
 extern int		cb_load_conf (const char *, const int, const int);
 
 #ifndef	HAVE_DESIGNATED_INITS

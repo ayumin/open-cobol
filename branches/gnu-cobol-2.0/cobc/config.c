@@ -111,7 +111,9 @@ read_string (const char *text)
 static void
 invalid_value (const char *fname, const int line, const char *name)
 {
-	fprintf (stderr, "%s:%d: ", fname, line);
+	if (fname) {
+		fprintf (stderr, "%s:%d: ", fname, line);
+	}
 	fprintf (stderr, _("Invalid value for '%s'"), name);
 	putc ('\n', stderr);
 	fflush (stderr);
@@ -120,7 +122,10 @@ invalid_value (const char *fname, const int line, const char *name)
 static void
 unsupported_value (const char *fname, const int line, const char *val)
 {
-	fprintf (stderr, "%s:%d: ", fname, line);
+
+	if (fname) {
+		fprintf (stderr, "%s:%d: ", fname, line);
+	}
 	fprintf (stderr, _("'%s' not supported"), val);
 	putc ('\n', stderr);
 	fflush (stderr);
@@ -135,19 +140,182 @@ cb_load_std (const char *name)
 }
 
 int
-cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
+cb_config_entry (char *buff, const char *fname, const int line)
 {
 	char			*s;
-	const unsigned char	*x;
-	char			*e;
 	const char		*name;
-	const char		*val;
-	void			*var;
-	FILE			*fp;
+	char			*e;
 	struct noreserve	*noresptr;
 	size_t			size;
+	const char		*val;
+	void			*var;
 	size_t			i;
 	size_t			j;
+	int			ret;
+
+	ret = 0;
+
+	/* Get tag */
+	s = strpbrk (buff, " \t:=");
+	if (!s) {
+		if (fname) {
+			fprintf (stderr, "%s:%d: ", fname, line);
+			fputs (_("Invalid line"), stderr);
+		} else {
+			fputs (_("Invalid option"), stderr);
+		}
+		putc ('\n', stderr);
+		fflush (stderr);
+		return -1;
+	}
+	*s = 0;
+	
+	/* Find entry */
+	for (i = 0; i < CB_CONFIG_SIZE; i++) {
+		if (strcmp (buff, config_table[i].name) == 0) {
+			break;
+		}
+	}
+	if (i == CB_CONFIG_SIZE) {
+		if (fname) {
+			fprintf (stderr, "%s:%d: ", fname, line);
+		}
+		fprintf (stderr, _("Unknown tag '%s'"), buff);
+		putc ('\n', stderr);
+		fflush (stderr);
+		return -1;
+	}
+
+	/* Get value */
+	for (s++; *s && strchr (" \t:=", *s); s++) {
+		;
+	}
+	e = s + strlen (s) - 1;
+	for (; e >= s && strchr (" \t\r\n", *e); e--) {
+		;
+	}
+	e[1] = 0;
+	config_table[i].val = s;
+
+	/* Set value */
+	name = config_table[i].name;
+	var = config_table[i].var;
+	val = config_table[i].val;
+	switch (config_table[i].type) {
+		case CB_ANY:
+			if (strcmp (name, "assign-clause") == 0) {
+				if (strcmp (val, "cobol2002") == 0) {
+					unsupported_value (fname, line, val);
+					ret = -1;
+				} else if (strcmp (val, "mf") == 0) {
+					cb_assign_clause = CB_ASSIGN_MF;
+				} else if (strcmp (val, "ibm") == 0) {
+					cb_assign_clause = CB_ASSIGN_IBM;
+				} else {
+					invalid_value (fname, line, name);
+					ret = -1;
+				}
+			} else if (strcmp (name, "binary-size") == 0) {
+				if (strcmp (val, "2-4-8") == 0) {
+					cb_binary_size = CB_BINARY_SIZE_2_4_8;
+				} else if (strcmp (val, "1-2-4-8") == 0) {
+					cb_binary_size = CB_BINARY_SIZE_1_2_4_8;
+				} else if (strcmp (val, "1--8") == 0) {
+					cb_binary_size = CB_BINARY_SIZE_1__8;
+				} else {
+					invalid_value (fname, line, name);
+					ret = -1;
+				}
+			} else if (strcmp (name, "binary-byteorder") == 0) {
+				if (strcmp (val, "native") == 0) {
+					cb_binary_byteorder = CB_BYTEORDER_NATIVE;
+				} else if (strcmp (val, "big-endian") == 0) {
+					cb_binary_byteorder = CB_BYTEORDER_BIG_ENDIAN;
+				} else {
+					invalid_value (fname, line, name);
+					ret = -1;
+				}
+			}
+			break;
+		case CB_INT:
+			for (j = 0; val[j]; j++) {
+				if (val[j] < '0' || val[j] > '9') {
+					invalid_value (fname, line, name);
+					ret = -1;
+					break;
+				}
+			}
+			*((int *)var) = atoi (val);
+			break;
+		case CB_STRING:
+			val = read_string (val);
+
+			if (strcmp (name, "include") == 0) {
+				/* Include another conf file */
+				return 1;
+			} else if (strcmp (name, "not-reserved") == 0) {
+				size = strlen (val);
+				noresptr = cobc_main_malloc (sizeof (struct noreserve) + size + 1U);
+				noresptr->noresword = (char *)noresptr + sizeof (struct noreserve);
+				memcpy (noresptr->noresword, val, size);
+				noresptr->next = cobc_nores_base;
+				cobc_nores_base = noresptr;
+			} else {
+				*((const char **)var) = val;
+			}
+			break;
+		case CB_BOOLEAN:
+			if (strcmp (val, "yes") == 0) {
+				*((int *)var) = 1;
+			} else if (strcmp (val, "no") == 0) {
+				*((int *)var) = 0;
+			} else {
+				invalid_value (fname, line, name);
+				ret = -1;
+			}
+			break;
+		case CB_SUPPORT:
+			if (strcmp (val, "ok") == 0) {
+				*((enum cb_support *)var) = CB_OK;
+			} else if (strcmp (val, "warning") == 0) {
+				*((enum cb_support *)var) = CB_WARNING;
+			} else if (strcmp (val, "archaic") == 0) {
+				*((enum cb_support *)var) = CB_ARCHAIC;
+			} else if (strcmp (val, "obsolete") == 0) {
+				*((enum cb_support *)var) = CB_OBSOLETE;
+			} else if (strcmp (val, "skip") == 0) {
+				*((enum cb_support *)var) = CB_SKIP;
+			} else if (strcmp (val, "ignore") == 0) {
+				*((enum cb_support *)var) = CB_IGNORE;
+			} else if (strcmp (val, "error") == 0) {
+				*((enum cb_support *)var) = CB_ERROR;
+			} else if (strcmp (val, "unconformable") == 0) {
+				*((enum cb_support *)var) = CB_UNCONFORMABLE;
+			} else {
+				invalid_value (fname, line, name);
+				ret = -1;
+			}
+			break;
+		default:
+			if (fname) {
+				fprintf (stderr, "%s:%d: ", fname, line);
+			}
+			fprintf (stderr, _("Invalid type for '%s'"), name);
+			putc ('\n', stderr);
+			fflush (stderr);
+			ret = -1;
+			break;
+	}
+	return ret;
+}
+
+int
+cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
+{
+	const unsigned char	*x;
+	const char		*name;
+	FILE			*fp;
+	size_t			i;
 	int			ret;
 	int			saveret;
 	int			line;
@@ -199,155 +367,21 @@ cb_load_conf (const char *fname, const int check_nodef, const int prefix_dir)
 			continue;
 		}
 
-		/* Get tag */
-		s = strpbrk (buff, " \t:=");
-		if (!s) {
-			fprintf (stderr, "%s:%d: ", fname, line);
-			fputs (_("Invalid line"), stderr);
-			putc ('\n', stderr);
-			fflush (stderr);
-			ret = -1;
-			continue;
-		}
-		*s = 0;
-
-		/* Find entry */
-		for (i = 0; i < CB_CONFIG_SIZE; i++) {
-			if (strcmp (buff, config_table[i].name) == 0) {
-				break;
-			}
-		}
-		if (i == CB_CONFIG_SIZE) {
-			fprintf (stderr, "%s:%d: ", fname, line);
-			fprintf (stderr, _("Unknown tag '%s'"), buff);
-			putc ('\n', stderr);
-			fflush (stderr);
-			ret = -1;
-			continue;
-		}
-
-		/* Get value */
-		for (s++; *s && strchr (" \t:=", *s); s++) {
-			;
-		}
-		e = s + strlen (s) - 1;
-		for (; e >= s && strchr (" \t\r\n", *e); e--) {
-			;
-		}
-		e[1] = 0;
-		config_table[i].val = s;
-
-		/* Set value */
-		name = config_table[i].name;
-		var = config_table[i].var;
-		val = config_table[i].val;
-		switch (config_table[i].type) {
-		case CB_ANY:
-			if (strcmp (name, "assign-clause") == 0) {
-				if (strcmp (val, "cobol2002") == 0) {
-					unsupported_value (fname, line, val);
-					ret = -1;
-				} else if (strcmp (val, "mf") == 0) {
-					cb_assign_clause = CB_ASSIGN_MF;
-				} else if (strcmp (val, "ibm") == 0) {
-					cb_assign_clause = CB_ASSIGN_IBM;
-				} else {
-					invalid_value (fname, line, name);
-					ret = -1;
-				}
-			} else if (strcmp (name, "binary-size") == 0) {
-				if (strcmp (val, "2-4-8") == 0) {
-					cb_binary_size = CB_BINARY_SIZE_2_4_8;
-				} else if (strcmp (val, "1-2-4-8") == 0) {
-					cb_binary_size = CB_BINARY_SIZE_1_2_4_8;
-				} else if (strcmp (val, "1--8") == 0) {
-					cb_binary_size = CB_BINARY_SIZE_1__8;
-				} else {
-					invalid_value (fname, line, name);
-					ret = -1;
-				}
-			} else if (strcmp (name, "binary-byteorder") == 0) {
-				if (strcmp (val, "native") == 0) {
-					cb_binary_byteorder = CB_BYTEORDER_NATIVE;
-				} else if (strcmp (val, "big-endian") == 0) {
-					cb_binary_byteorder = CB_BYTEORDER_BIG_ENDIAN;
-				} else {
-					invalid_value (fname, line, name);
-					ret = -1;
-				}
-			}
-			break;
-		case CB_INT:
-			for (j = 0; val[j]; j++) {
-				if (val[j] < '0' || val[j] > '9') {
-					invalid_value (fname, line, name);
-					ret = -1;
+		ret = cb_config_entry (buff, fname, line);
+		if (ret == 1) {
+			/* Include another conf file */
+			/* Find entry */
+			for (i = 0; i < CB_CONFIG_SIZE; i++) {
+				if (strcmp (buff, config_table[i].name) == 0) {
 					break;
 				}
 			}
-			*((int *)var) = atoi (val);
-			break;
-		case CB_STRING:
-			val = read_string (val);
-
-			if (strcmp (name, "include") == 0) {
-				/* Include another conf file */
-				saveret = ret;
-				if (cb_load_conf (val, 0, 1) != 0) {
-					fclose (fp);
-					return -1;
-				}
-				ret = saveret;
-			} else if (strcmp (name, "not-reserved") == 0) {
-				size = strlen (val);
-				noresptr = cobc_main_malloc (sizeof (struct noreserve) + size + 1U);
-				noresptr->noresword = (char *)noresptr + sizeof (struct noreserve);
-				memcpy (noresptr->noresword, val, size);
-				noresptr->next = cobc_nores_base;
-				cobc_nores_base = noresptr;
-			} else {
-				*((const char **)var) = val;
+			saveret = ret;
+			if (cb_load_conf (read_string(config_table[i].val), 0, 1) != 0) {
+				fclose (fp);
+				return -1;
 			}
-			break;
-		case CB_BOOLEAN:
-			if (strcmp (val, "yes") == 0) {
-				*((int *)var) = 1;
-			} else if (strcmp (val, "no") == 0) {
-				*((int *)var) = 0;
-			} else {
-				invalid_value (fname, line, name);
-				ret = -1;
-			}
-			break;
-		case CB_SUPPORT:
-			if (strcmp (val, "ok") == 0) {
-				*((enum cb_support *)var) = CB_OK;
-			} else if (strcmp (val, "warning") == 0) {
-				*((enum cb_support *)var) = CB_WARNING;
-			} else if (strcmp (val, "archaic") == 0) {
-				*((enum cb_support *)var) = CB_ARCHAIC;
-			} else if (strcmp (val, "obsolete") == 0) {
-				*((enum cb_support *)var) = CB_OBSOLETE;
-			} else if (strcmp (val, "skip") == 0) {
-				*((enum cb_support *)var) = CB_SKIP;
-			} else if (strcmp (val, "ignore") == 0) {
-				*((enum cb_support *)var) = CB_IGNORE;
-			} else if (strcmp (val, "error") == 0) {
-				*((enum cb_support *)var) = CB_ERROR;
-			} else if (strcmp (val, "unconformable") == 0) {
-				*((enum cb_support *)var) = CB_UNCONFORMABLE;
-			} else {
-				invalid_value (fname, line, name);
-				ret = -1;
-			}
-			break;
-		default:
-			fprintf (stderr, "%s:%d: ", fname, line);
-			fprintf (stderr, _("Invalid type for '%s'"), name);
-			putc ('\n', stderr);
-			fflush (stderr);
-			ret = -1;
-			break;
+			ret = saveret;
 		}
 	}
 	fclose (fp);
