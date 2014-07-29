@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
    Copyright (C) 2007-2012 Roger While
+   Copyright (C) 2014 Simon Sobisch
 
    This file is part of GNU Cobol.
 
@@ -128,6 +129,37 @@ cb_plex_error (const size_t sline, const char *fmt, ...)
 	}
 }
 
+/* Error for config.c */
+void
+configuration_error (const char *fname, const int line, const char *fmt, ...)
+{
+	va_list args;
+
+	if (!conf_error_displayed) {
+		conf_error_displayed = 1;
+		fputs (_("Configuration Error"), stderr);
+		putc ('\n', stderr);
+	}
+
+	if (fname) {
+		if (line) {
+			fprintf (stderr, "%s:%d: ", fname, line);
+		} else {
+			fprintf (stderr, "%s: ", fname);
+		}
+	} else {
+		fputs ("cb_conf: ", stderr);
+	}
+
+	va_start(args, fmt);
+	vfprintf (stderr, fmt, args);
+	va_end(args);
+
+	putc ('\n', stderr);
+	fflush (stderr);
+}
+
+/* Generic warning/error routines */
 void
 cb_warning_x (cb_tree x, const char *fmt, ...)
 {

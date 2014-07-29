@@ -53,6 +53,7 @@ AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
 
 AT_CLEANUP
 
+
 AT_SETUP([Comma separator without space])
 AT_KEYWORDS([runmisc])
 
@@ -65,10 +66,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [111])
 
 AT_CLEANUP
+
 
 AT_SETUP([LOCAL-STORAGE (1)])
 AT_KEYWORDS([runmisc])
@@ -104,6 +106,7 @@ AT_CHECK([$COMPILE -o prog caller.cob], [0], , [])
 AT_CHECK([./prog], [0], [abcabc000abc], [])
 
 AT_CLEANUP
+
 
 AT_SETUP([LOCAL-STORAGE (2)])
 AT_KEYWORDS([runmisc])
@@ -152,6 +155,7 @@ AT_CHECK([./prog], [0], [abc000], [])
 
 AT_CLEANUP
 
+
 AT_SETUP([EXTERNAL data item])
 AT_KEYWORDS([runmisc])
 
@@ -192,6 +196,7 @@ AT_CHECK([$COMPILE -o prog caller.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([EXTERNAL AS data item])
 AT_KEYWORDS([runmisc])
@@ -261,6 +266,7 @@ AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
 
+
 AT_SETUP([cobcrun validation])
 AT_KEYWORDS([runmisc])
 
@@ -321,12 +327,13 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], ,
+AT_CHECK([$COMPILE prog.cob], [0], ,
 [prog.cob: 8: Warning: Overlapping MOVE may produce unpredictable results
 ])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE with refmod])
 AT_KEYWORDS([runmisc])
@@ -346,10 +353,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE with refmod (variable)])
 AT_KEYWORDS([runmisc])
@@ -371,10 +379,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE with group refmod])
 AT_KEYWORDS([runmisc])
@@ -395,10 +404,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE indexes])
 AT_KEYWORDS([runmisc])
@@ -420,10 +430,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE X'00'])
 AT_KEYWORDS([runmisc])
@@ -457,10 +468,11 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_MODULE dump.c], [0], , [])
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [000102])
 
 AT_CLEANUP
+
 
 AT_SETUP([MOVE Z'literal'])
 AT_KEYWORDS([runmisc])
@@ -488,10 +500,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
+
 
 AT_SETUP([Floating continuation indicator])
 AT_KEYWORDS([runmisc])
@@ -509,10 +522,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OKOK])
 
 AT_CLEANUP
+
 
 AT_SETUP([Fixed continuation indicator])
 
@@ -547,12 +561,13 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ                       _
 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789                       _
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([Concatenation operator])
 AT_KEYWORDS([runmisc])
@@ -570,10 +585,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OKOK])
 
 AT_CLEANUP
+
 
 ## OCCURS clause
 
@@ -596,6 +612,7 @@ AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
 
 AT_CLEANUP
 
+
 ## Expressions
 
 AT_SETUP([Class check with reference modification])
@@ -616,10 +633,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Index and parenthesized expression])
 AT_KEYWORDS([runmisc])
@@ -639,10 +657,11 @@ AT_DATA([prog.cob], [
          STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
+
 
 AT_SETUP([Alphanumeric and binary numeric])
 AT_KEYWORDS([runmisc])
@@ -663,10 +682,11 @@ AT_DATA([prog.cob], [
          STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 ## CALL statement
 
@@ -695,6 +715,7 @@ AT_CHECK([$COMPILE -o prog caller.$OBJECT_EXT callee.$OBJECT_EXT], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([CALL m1. CALL m2. CALL m1.])
 AT_KEYWORDS([runmisc])
@@ -750,6 +771,7 @@ AT_CHECK([./caller], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([CALL binary literal parameter/LENGTH OF])
 AT_KEYWORDS([runmisc])
 
@@ -791,7 +813,7 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_MODULE dump.c], [0], , [])
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0],
 [00000001
 00000009
@@ -805,6 +827,7 @@ AT_CHECK([./prog], [0],
 ])
 
 AT_CLEANUP
+
 
 ## INSPECT
 
@@ -831,6 +854,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([INSPECT : No repeat conversion check])
 AT_KEYWORDS([runmisc])
 
@@ -853,6 +877,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT : CONVERTING TO figurative constant])
 AT_KEYWORDS([runmisc])
@@ -877,6 +902,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([INSPECT : CONVERTING NULL])
 AT_KEYWORDS([runmisc])
 
@@ -899,6 +925,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT : CONVERTING TO NULL])
 AT_KEYWORDS([runmisc])
@@ -923,6 +950,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([INSPECT : REPLACING figurative constant])
 AT_KEYWORDS([runmisc])
 
@@ -945,6 +973,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT : TALLYING BEFORE])
 AT_KEYWORDS([runmisc])
@@ -980,6 +1009,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([INSPECT : TALLYING AFTER])
 AT_KEYWORDS([runmisc])
 
@@ -1014,6 +1044,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([INSPECT : REPLACING TRAILING ZEROS BY SPACES])
 AT_KEYWORDS([runmisc])
 
@@ -1036,6 +1067,7 @@ AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([INSPECT : REPLACING complex])
 AT_KEYWORDS([runmisc])
@@ -1061,6 +1093,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 AT_CLEANUP
+
 
 AT_SETUP([SWITCHES (1)])
 AT_KEYWORDS([runmisc])
@@ -1118,6 +1151,7 @@ AT_CHECK([COB_SWITCH_1=ON COB_SWITCH_2=OFF ./prog], [0], [ONOFFOFFON])
 
 AT_CLEANUP
 
+
 AT_SETUP([SWITCHES (2)])
 AT_KEYWORDS([runmisc])
 
@@ -1149,6 +1183,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 ## PERFORM
 
 AT_SETUP([Nested PERFORM])
@@ -1168,10 +1203,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [XXXX])
 
 AT_CLEANUP
+
 
 ## EXIT PERFORM  see ISO/IEC 1989:2002(E) 14.8.13 Format 5
 
@@ -1192,10 +1228,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
+
 
 ## EXIT PERFORM  see ISO/IEC 1989:2002(E) 14.8.13 Format 5
 
@@ -1216,10 +1253,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [OKOK])
 
 AT_CLEANUP
+
 
 ## EXIT PARAGRAPH  see ISO/IEC 1989:2002(E) 14.8.13 Format 6
 
@@ -1247,10 +1285,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 ## EXIT SECTION  see ISO/IEC 1989:2002(E) 14.8.13 Format 6
 
@@ -1282,10 +1321,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([PERFORM UNTIL EXIT])
 AT_KEYWORDS([runmisc])
@@ -1312,10 +1352,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([PERFORM inline (1)])
 AT_KEYWORDS([runmisc])
@@ -1339,10 +1380,11 @@ AT_DATA([prog.cob], [
            .
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([PERFORM inline (2)])
 AT_KEYWORDS([runmisc])
@@ -1364,6 +1406,7 @@ AT_CHECK([$COMPILE -frelax-syntax -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0], [])
 
 AT_CLEANUP
+
 
 AT_SETUP([88 with FILLER])
 AT_KEYWORDS([runmisc])
@@ -1388,10 +1431,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Non-overflow after overflow])
 AT_KEYWORDS([runmisc])
@@ -1415,10 +1459,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 ## PERFORM statement
 
@@ -1437,6 +1482,7 @@ AT_DATA([prog.cob], [
 AT_CHECK([$COMPILE_ONLY prog.cob], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([STRING with subscript reference])
 AT_KEYWORDS([runmisc])
@@ -1459,10 +1505,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([UNSTRING DELIMITED ALL LOW-VALUE])
 AT_KEYWORDS([runmisc])
@@ -1493,10 +1540,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([UNSTRING DELIMITED ALL SPACE-2])
 AT_KEYWORDS([runmisc])
@@ -1557,10 +1605,11 @@ AT_DATA([prog.cob], [
            END-UNSTRING.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([UNSTRING DELIMITED POINTER])
 AT_KEYWORDS([runmisc])
@@ -1611,10 +1660,11 @@ AT_DATA([prog.cob], [
            .
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([UNSTRING DELIMITER IN])
 AT_KEYWORDS([runmisc])
@@ -1657,6 +1707,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([READ INTO AT-END sequence])
 AT_KEYWORDS([runmisc])
 
@@ -1688,10 +1739,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([First READ on empty SEQUENTIAL INDEXED file])
 AT_KEYWORDS([runmisc])
@@ -1727,10 +1779,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([REWRITE a RELATIVE file with RANDOM access])
 AT_KEYWORDS([runmisc])
@@ -1793,7 +1846,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -1997,7 +2050,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -2201,10 +2254,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([SORT nonexistent file])
 AT_KEYWORDS([runmisc])
@@ -2234,11 +2288,12 @@ AT_DATA([prog.cob], [
              STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 AT_CHECK([cat SORT-OUT], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([PIC ZZZ-, ZZZ+])
 AT_KEYWORDS([runmisc])
@@ -2287,10 +2342,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Larger REDEFINES lengths])
 AT_KEYWORDS([runmisc])
@@ -2343,6 +2399,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([PERFORM type OSVS])
 AT_KEYWORDS([runmisc])
 
@@ -2383,6 +2440,7 @@ AT_CHECK([$COMPILE -conf=test.conf -o prog prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([Sticky LINKAGE])
 AT_KEYWORDS([runmisc])
@@ -2435,6 +2493,7 @@ AT_CHECK([./caller], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([COB_PRE_LOAD test])
 AT_KEYWORDS([runmisc])
 
@@ -2459,6 +2518,7 @@ AT_CHECK([$COMPILE caller.cob], [0], , [])
 AT_CHECK([export COB_PRE_LOAD=callee; ./caller], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([COB_PRE_LOAD with entry points])
 AT_KEYWORDS([runmisc])
@@ -2538,7 +2598,6 @@ xxxxx
 AT_CLEANUP
 
 
-
 AT_SETUP([COB_LOAD_CASE=UPPER test])
 AT_KEYWORDS([runmisc])
 
@@ -2563,6 +2622,7 @@ AT_CHECK([$COMPILE caller.cob], [0], , [])
 AT_CHECK([export COB_LOAD_CASE=UPPER; ./caller], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([88 level with FALSE IS clause])
 AT_KEYWORDS([runmisc])
@@ -2591,7 +2651,8 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
-AT_SETUP([ALLOCATE/FREE with BASED item (1)])
+
+AT_SETUP([ALLOCATE / FREE with BASED item (1)])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -2618,7 +2679,7 @@ AT_CHECK([./prog], [0])
 AT_CLEANUP
 
 
-AT_SETUP([ALLOCATE/FREE with BASED item (2)])
+AT_SETUP([ALLOCATE / FREE with BASED item (2)])
 AT_KEYWORDS([runmisc])
 
 AT_DATA([prog.cob], [
@@ -2705,6 +2766,7 @@ AT_CHECK([./prog], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([Initialized value with defaultbyte])
 AT_KEYWORDS([runmisc])
 
@@ -2728,6 +2790,7 @@ AT_CHECK([$COMPILE -fdefaultbyte=A prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([CALL with OMITTED parameter])
 AT_KEYWORDS([runmisc])
@@ -2764,6 +2827,7 @@ AT_CHECK([$COMPILE -o caller caller.cob], [0], , [])
 AT_CHECK([./caller], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([ANY LENGTH (1)])
 AT_KEYWORDS([runmisc])
@@ -2806,6 +2870,7 @@ AT_CHECK([$COMPILE -o caller caller.cob], [0], , [])
 AT_CHECK([./caller], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([ANY LENGTH (2)])
 AT_KEYWORDS([runmisc])
@@ -2850,6 +2915,7 @@ AT_CHECK([./caller], [0])
 
 AT_CLEANUP
 
+
 AT_SETUP([BASED item non-ALLOCATED (debug)])
 AT_KEYWORDS([runmisc])
 
@@ -2865,12 +2931,13 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [1], ,
 [prog.cob: 8: libcob: BASED/LINKAGE item 'X' has NULL address
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([STOP RUN WITH NORMAL STATUS])
 AT_KEYWORDS([runmisc])
@@ -2884,10 +2951,11 @@ AT_DATA([prog.cob], [
            STOP RUN WITH NORMAL STATUS.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([STOP RUN WITH ERROR STATUS])
 AT_KEYWORDS([runmisc])
@@ -2901,10 +2969,11 @@ AT_DATA([prog.cob], [
            STOP RUN WITH ERROR STATUS.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [1])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES procedure referencing])
 AT_KEYWORDS([runmisc])
@@ -2940,10 +3009,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES procedure referencing (multiple)])
 AT_KEYWORDS([runmisc])
@@ -2983,10 +3053,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
+
 
 AT_SETUP([SYMBOLIC clause])
 AT_KEYWORDS([runmisc])
@@ -3019,7 +3090,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -3068,7 +3139,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -3573,7 +3644,10 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CHECK([$COMPILE -fnotrunc prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP
@@ -4078,7 +4152,10 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CHECK([$COMPILE -fnotrunc prog.cob], [0], , [])
 AT_CHECK([./prog], [0])
 
 AT_CLEANUP

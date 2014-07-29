@@ -1,4 +1,5 @@
 ## Copyright (C) 2007-2012 Roger While
+## Copyright (C) 2014 Simon Sobisch
 ## 
 ## This file is part of GNU Cobol.
 ## 
@@ -329,3 +330,67 @@ AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 AT_CHECK([$COMPILE_ONLY prog2.cob], [0])
 
 AT_CLEANUP
+
+
+AT_SETUP([cobc configuration])
+AT_KEYWORDS([misc])
+
+AT_DATA([test.conf], [
+include "default.conf"
+relax-level-hierarchy: yes
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01  A.
+            05 B.
+                10 C PIC X.
+           04 D.
+            05 E PIC X.
+       PROCEDURE        DIVISION.
+           STOP RUN.
+])
+
+# default configuration permits this extension
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
+[prog.cob: 9: Error: No previous data item of level 04
+])
+
+# check if override via -conf works and if include works
+AT_CHECK([$COMPILE_ONLY -conf=test.conf prog.cob], [0], [],
+[prog.cob: 9: Warning: No previous data item of level 04
+])
+
+# -cb_conf must override all
+AT_CHECK([$COMPILE_ONLY -cb_conf=relax-level-hierarchy:no -conf=test.conf prog.cob], [1], [],
+[prog.cob: 9: Error: No previous data item of level 04
+])
+
+# conf entries must be clean
+AT_CHECK([$COMPILE_ONLY -cb_conf=relax-level-hierarchyno prog.cob], [1], [],
+[Configuration Error
+cb_conf: Invalid configuration 'relax-level-hierarchyno'
+])
+AT_CHECK([$COMPILE_ONLY -cb_conf=assign-clause:cobol2002 prog.cob], [1], [],
+[Configuration Error
+cb_conf: Unsupported value 'cobol2002' for configuration tag 'assign-clause'
+])
+AT_CHECK([$COMPILE_ONLY -cb_conf=assign-clause:cobol-2002 prog.cob], [1], [],
+[Configuration Error
+cb_conf: Invalid value 'cobol-2002' for configuration tag 'assign-clause'
+])
+AT_CHECK([$COMPILE_ONLY -cb_conf=include:notthere.conf prog.cob], [1], [],
+[Configuration Error
+cb_conf: 'include' not supported with -cb_conf
+])
+AT_CHECK([$COMPILE_ONLY -conf=notthere.conf prog.cob], [1], [],
+[Configuration Error
+notthere.conf: No such file or directory
+])
+
+AT_CLEANUP
+
+

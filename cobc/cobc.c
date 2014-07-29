@@ -1867,6 +1867,9 @@ process_command_line (const int argc, char **argv)
 	char			ext[COB_MINI_BUFF];
 	struct cb_text_list	*cb_conf_override_list = NULL;
 	struct cb_text_list	*covl;
+	
+	int			ret = 0;
+	int			sub_ret;
 
 #ifdef _WIN32
 	/* Translate command line arguments from WIN to UNIX style */
@@ -2058,10 +2061,8 @@ process_command_line (const int argc, char **argv)
 			if (strlen (cob_optarg) > COB_SMALL_MAX) {
 				cobc_err_exit (COBC_INV_PAR , "-conf");
 			}
-			if (cb_load_conf (cob_optarg, 1, 0) != 0) {
-				cobc_free_mem ();
-				exit (1);
-			}
+			sub_ret = cb_load_conf (cob_optarg, 1, 0);
+			if (sub_ret != 0) ret = sub_ret;
 			break;
 
 		case '%':
@@ -2332,19 +2333,26 @@ process_command_line (const int argc, char **argv)
 
 	/* Load default configuration file if necessary */
 	if (cb_config_name == NULL) {
-		if (cb_load_std ("default.conf") != 0) {
-			cobc_err_exit (_("Failed to load the initial config file"));
+		sub_ret = cb_load_std ("default.conf");
+		if (sub_ret != 0) {
+#if 0 /* Simon: likely too verbose */
+			configuration_error ("default.conf", 0, _("Failed to load the initial config file"));
+#endif
+			ret = sub_ret;
 		}
 	}
-	/* do postponed override of configuration entries here */
+	/* Do postponed override of configuration entries here */
 	if (cb_conf_override_list) {
 		for (covl = cb_conf_override_list; covl; covl = covl->next) {
-			if (cb_config_entry ((char *)covl->text, NULL, 0) != 0) {
-				cobc_free_mem ();
-				exit (1);
-			}
+			sub_ret = cb_config_entry ((char *)covl->text, NULL, 0);
+			if (sub_ret != 0) ret = sub_ret;
 		}
 		/* Todo: free list */
+	}
+	/* Exit for configuration errors */
+	if (ret != 0) {
+		cobc_free_mem ();
+		exit (1);
 	}
 
 	/* Check valid tab width */
