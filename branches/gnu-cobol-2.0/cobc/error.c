@@ -36,6 +36,8 @@ static char		*errnamebuff = NULL;
 static struct cb_label	*last_section = NULL;
 static struct cb_label	*last_paragraph = NULL;
 
+static unsigned int conf_error_displayed = 0;
+
 static void
 print_error (const char *file, int line, const char *prefix,
 	     const char *fmt, va_list ap)
