@@ -1,7 +1,8 @@
 
 2014-07-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* added accept-update (set to "no" in all configuration files)
+	* added accept-update and accept-auto (set to "no" in all
+		configuration files)
 
 2010-06-28  Roger While <simrw@sim-basis.de>
 
