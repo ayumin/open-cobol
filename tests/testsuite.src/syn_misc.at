@@ -388,7 +388,7 @@ AT_DATA([prog2.cob], [
 
 AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 7: Error: 'MY-CRT-STATUS' is not defined
-])   
+])
 AT_CHECK([$COMPILE_ONLY prog2.cob], [0])
 
 AT_CLEANUP
@@ -414,9 +414,11 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY -cb_conf=accept-update:yes prog.cob], [0])
+AT_CHECK([$COMPILE_ONLY -cb_conf=accept-update:yes prog.cob], [0], [], [])
+)
 
 AT_CLEANUP
+
 
 AT_SETUP([ACCEPT WITH AUTO / TAB])
 AT_KEYWORDS([AUTO-SKIP AUTOTERMINATE misc extensions])
@@ -438,9 +440,159 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY -cb_conf=accept-auto:yes prog.cob], [0])
+AT_CHECK([$COMPILE_ONLY -cb_conf=accept-auto:yes prog.cob], [0], [], [])
 
 AT_CLEANUP
 
 
+AT_SETUP([Line and floating comments])
+AT_KEYWORDS([misc extensions])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+      *    DISPLAY 'COMMENT'             END-DISPLAY
+      /    DISPLAY 'COMMENTSLASH'        END-DISPLAY
+*          DISPLAY 'MFCOMMENTASTERISK'   END-DISPLAY
+/          DISPLAY 'MFCOMMENTSLASH'      END-DISPLAY
+ *         DISPLAY 'NOMFCOMMENTASTERISK' END-DISPLAY
+ /         DISPLAY 'NOMFCOMMENTSLASH'    END-DISPLAY
+        *> DISPLAY 'FLOATING'            END-DISPLAY
+ *>        DISPLAY 'NOFLOATING'          END-DISPLAY
+           STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog2.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+      *    DISPLAY 'COMMENT'             END-DISPLAY
+      /    DISPLAY 'COMMENTSLASH'        END-DISPLAY
+      $    DISPLAY 'COMMENTDOLLAR'       END-DISPLAY
+*          DISPLAY 'MFCOMMENTASTERISK'   END-DISPLAY
+/          DISPLAY 'MFCOMMENTSLASH'      END-DISPLAY
+ *         DISPLAY 'NOMFCOMMENTASTERISK' END-DISPLAY
+ /         DISPLAY 'NOMFCOMMENTSLASH'    END-DISPLAY
+        *> DISPLAY 'FLOATING'            END-DISPLAY
+        |  DISPLAY 'ACUFLOATING'         END-DISPLAY
+ |         DISPLAY 'NOACUFLOATING'       END-DISPLAY
+ *>        DISPLAY 'NOFLOATING'          END-DISPLAY
+           STOP RUN.
+])
+
+AT_DATA([prog3.cob], [
+IDENTIFICATION   DIVISION.
+PROGRAM-ID.      prog3.
+ENVIRONMENT DIVISION.
+CONFIGURATION SECTION.
+DATA             DIVISION.
+WORKING-STORAGE  SECTION.
+PROCEDURE        DIVISION.
+      * DISPLAY 'NOCOMMENT'           END-DISPLAY
+      / DISPLAY 'NOCOMMENTSLASH'      END-DISPLAY
+      $ DISPLAY 'NOCOMMENTDOLLAR'     END-DISPLAY
+*       DISPLAY 'NOMFCOMMENTASTERISK' END-DISPLAY
+/       DISPLAY 'NOMFCOMMENTSLASH'    END-DISPLAY
+ |      DISPLAY 'ACUFLOATING'         END-DISPLAY
+ *>     DISPLAY 'FLOATING'            END-DISPLAY
+        STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+
+AT_CHECK([./prog], [0],
+[MFCOMMENTASTERISK
+MFCOMMENTSLASH
+NOMFCOMMENTASTERISK
+NOMFCOMMENTSLASH
+NOFLOATING
+], [])
+
+AT_CHECK([$COMPILE_ONLY prog2.cob], [1], [],
+[prog2.cob: 11: Error: Invalid indicator '$' at column 7
+])
+
+
+AT_CHECK([$COMPILE -fmfcomment prog.cob], [0], [],
+[])
+
+AT_CHECK([./prog], [0],
+[NOMFCOMMENTASTERISK
+NOMFCOMMENTSLASH
+NOFLOATING
+], [])
+
+AT_CHECK([$COMPILE_ONLY -fmfcomment prog2.cob], [1], [],
+[prog2.cob: 11: Error: Invalid indicator '$' at column 7
+])
+
+
+AT_CHECK([$COMPILE -facucomment prog.cob], [0], [], [])
+
+AT_CHECK([./prog], [0],
+[MFCOMMENTASTERISK
+MFCOMMENTSLASH
+NOMFCOMMENTASTERISK
+NOMFCOMMENTSLASH
+NOFLOATING
+], [])
+
+AT_CHECK([$COMPILE -facucomment prog2.cob], [0], [], [])
+
+AT_CHECK([./prog2], [0],
+[MFCOMMENTASTERISK
+MFCOMMENTSLASH
+NOMFCOMMENTASTERISK
+NOMFCOMMENTSLASH
+NOACUFLOATING
+NOFLOATING
+], [])
+
+
+AT_CHECK([$COMPILE_ONLY -free prog3.cob], [1], [],
+[prog3.cob: 11: Warning: Spurious '$' detected - ignoring
+prog3.cob: 9: Error: syntax error, unexpected *
+prog3.cob: 9: Error: syntax error, unexpected Literal
+prog3.cob: 10: Error: syntax error, unexpected /
+prog3.cob: 10: Error: syntax error, unexpected Literal
+prog3.cob: 12: Error: syntax error, unexpected *
+prog3.cob: 12: Error: syntax error, unexpected Literal
+prog3.cob: 13: Error: syntax error, unexpected /
+prog3.cob: 13: Error: syntax error, unexpected Literal
+prog3.cob: 14: Error: Invalid symbol: | - Skipping word
+])
+AT_CHECK([$COMPILE_ONLY -free -fmfcomment prog3.cob], [1], [],
+[prog3.cob: 11: Warning: Spurious '$' detected - ignoring
+prog3.cob: 9: Error: syntax error, unexpected *
+prog3.cob: 9: Error: syntax error, unexpected Literal
+prog3.cob: 10: Error: syntax error, unexpected /
+prog3.cob: 10: Error: syntax error, unexpected Literal
+prog3.cob: 12: Error: syntax error, unexpected *
+prog3.cob: 12: Error: syntax error, unexpected Literal
+prog3.cob: 13: Error: syntax error, unexpected /
+prog3.cob: 13: Error: syntax error, unexpected Literal
+prog3.cob: 14: Error: Invalid symbol: | - Skipping word
+])
+AT_CHECK([$COMPILE_ONLY -free -facucomment prog3.cob], [1], [],
+[prog3.cob: 11: Warning: Spurious '$' detected - ignoring
+prog3.cob: 9: Error: syntax error, unexpected *
+prog3.cob: 9: Error: syntax error, unexpected Literal
+prog3.cob: 10: Error: syntax error, unexpected /
+prog3.cob: 10: Error: syntax error, unexpected Literal
+prog3.cob: 12: Error: syntax error, unexpected *
+prog3.cob: 12: Error: syntax error, unexpected Literal
+prog3.cob: 13: Error: syntax error, unexpected /
+prog3.cob: 13: Error: syntax error, unexpected Literal
+])
+
+AT_CLEANUP
 
