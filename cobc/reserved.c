@@ -1682,6 +1682,9 @@ static const struct cobc_reserved reserved_words[] = {
   { "SYSTEM-DEFAULT",		0, 0, SYSTEM_DEFAULT,		/* 2002 */
 				0, 0
   },
+  { "TAB",			0, 1, TAB,			/* Extension */
+				0, CB_CS_ACCEPT
+  },
   { "TABLE",			0, 0, -1,			/* 2002 */
 				0, 0
   },

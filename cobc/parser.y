@@ -1181,6 +1181,7 @@ check_headers_present (const unsigned int lev1, const unsigned int lev2,
 %token SYMBOLIC
 %token SYNCHRONIZED
 %token SYSTEM_DEFAULT		"SYSTEM-DEFAULT"
+%token TAB
 %token TALLYING
 %token TAPE
 %token TERMINATE
@@ -5667,6 +5668,9 @@ accept_statement:
 	if (cb_accept_update) {
 		check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_UPDATE);
 	}
+	if (cb_accept_auto) {
+		check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_AUTO);
+	}
 
   }
   accept_body
@@ -5819,6 +5823,12 @@ accp_attr:
   {
 	check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_AUTO);
   }
+| TAB
+  {
+	if (cb_accept_auto) {
+		remove_attrib (COB_SCREEN_AUTO);
+	}
+  }
 | BELL
   {
 	check_attribs (NULL, NULL, NULL, NULL, NULL, COB_SCREEN_BELL);
@@ -5885,9 +5895,7 @@ accp_attr:
   }
 | NO update_default
   {
-	if (!cb_accept_update) {
-		cb_warning ("WITH NO UPDATE/DEFAULT is non-standard");
-	} else {
+	if (cb_accept_update) {
 		remove_attrib (COB_SCREEN_UPDATE);
 	}
   }

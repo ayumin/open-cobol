@@ -20,7 +20,7 @@
 
 
 AT_SETUP([cobc configuration])
-AT_KEYWORDS([misc])
+AT_KEYWORDS([misc extensions])
 
 AT_DATA([test.conf], [
 include "default.conf"
@@ -285,7 +285,7 @@ AT_CLEANUP
 
 
 AT_SETUP([Unreachable statement])
-AT_KEYWORDS([extensions])
+AT_KEYWORDS([misc extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -353,7 +353,7 @@ AT_CLEANUP
 
 
 AT_SETUP([CRT STATUS])
-AT_KEYWORDS([SPECIAL-NAMES, misc])
+AT_KEYWORDS([SPECIAL-NAMES misc])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -394,8 +394,8 @@ AT_CHECK([$COMPILE_ONLY prog2.cob], [0])
 AT_CLEANUP
 
 
-AT_SETUP([ACCEPT WITH NO UPDATE / DEFAULT (extension)])
-AT_KEYWORDS([misc])
+AT_SETUP([ACCEPT WITH ( NO ) UPDATE / DEFAULT])
+AT_KEYWORDS([misc extensions])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -414,12 +414,33 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [0], [],
-[prog.cob: 13: Warning: WITH NO UPDATE/DEFAULT is non-standard
-prog.cob: 14: Warning: WITH NO UPDATE/DEFAULT is non-standard
-])   
 AT_CHECK([$COMPILE_ONLY -cb_conf=accept-update:yes prog.cob], [0])
 
 AT_CLEANUP
+
+AT_SETUP([ACCEPT WITH AUTO / TAB])
+AT_KEYWORDS([AUTO-SKIP AUTOTERMINATE misc extensions])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       01 X             PIC X.
+       PROCEDURE        DIVISION.
+           ACCEPT X                       END-ACCEPT.
+           ACCEPT X WITH    AUTO          END-ACCEPT.
+           ACCEPT X WITH    AUTO-SKIP     END-ACCEPT.
+           ACCEPT X WITH    AUTOTERMINATE END-ACCEPT.
+           ACCEPT X WITH    TAB           END-ACCEPT.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -cb_conf=accept-auto:yes prog.cob], [0])
+
+AT_CLEANUP
+
 
 
