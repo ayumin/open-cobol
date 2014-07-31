@@ -302,6 +302,14 @@ DEFNUM_LITERAL	[+-]?[0-9]*[\.]*[0-9]+
 	skip_to_eol ();
 }
 
+^......"$"		{
+	/* Allow $ in column 7 for acucomment in fixed format */
+	if (cb_source_format == CB_FORMAT_FREE) {
+		cb_plex_warning (newline_count, _("Spurious '$' detected - ignoring"));
+		skip_to_eol ();
+	}
+}
+
 ^[ ]*"$"		{
 	cb_plex_warning (newline_count, _("Spurious '$' detected - ignoring"));
 	skip_to_eol ();
@@ -1127,20 +1135,22 @@ start:
 
 	/* Check for directives/floating comment */
 	ipchar = 0;
+	i = 0;
 	for (; *bp; bp++) {
 		if (*bp != ' ') {
-			if (*bp == '$' || (*bp == '>' && bp[1] == '>')) {
+			if ((*bp == '$' && !(cb_source_format == CB_FORMAT_FIXED && i == 0)) ||
+			    (*bp == '>' && bp[1] == '>'                                    )   ) {
 				/* Directive */
 				ipchar = 1;
-#if	1 /* RXWRXW - Float comment */
-			} else if (*bp == '*' && bp[1] == '>') {
-				/* Floating comment line */
+			} else if ((*bp == '*' && bp[1] == '>'      ) ||
+			           (cb_flag_acucomment && *bp == '|')   ) {
+				/* Float comment */
 				newline_count++;
 				goto start;
-#endif
 			}
 			break;
 		}
+		i = 1;
 	}
 	if (ipchar) {
 		/* Directive - pass complete line with NL to ppparse */
@@ -1175,6 +1185,9 @@ start:
 	/* Fixed format */
 
 	/* Check the indicator (column 7) */
+	if (cb_flag_acucomment && buff[6] == '$') {
+		buff[6] = '*';
+	}
 	switch (buff[6]) {
 	case ' ':
 		break;
