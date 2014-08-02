@@ -51,11 +51,10 @@
 #endif
 
 #include "tarstamp.h"
+#include "lib/gettext.h"
 
 #include "cobc.h"
 #include "tree.h"
-
-#include "libcob.h"
 
 #include "libcob/cobgetopt.h"
 
