@@ -803,7 +803,6 @@ struct cb_file {
 	/* SELECT */
 	cb_tree			assign;			/* ASSIGN */
 	cb_tree			file_status;		/* FILE STATUS */
-	cb_tree			sharing;		/* SHARING */
 	cb_tree			key;			/* RECORD KEY */
 	struct cb_alt_key	*alt_key_list;		/* ALTERNATE RECORD KEY */
 	/* FD/SD */
@@ -825,8 +824,10 @@ struct cb_file {
 	int			organization;		/* ORGANIZATION */
 	int			access_mode;		/* ACCESS MODE */
 	int			lock_mode;		/* LOCK MODE */
+        int			share_mode;             /* SHARING */
 	int			special;		/* Special file */
 	int			same_clause;		/* SAME clause */
+        unsigned int            flag_lock_many  : 1;    /* LOCK MODE ... MULIPLE RECORDS */
 	unsigned int		flag_finalized	: 1;	/* Is finalized */
 	unsigned int		flag_external	: 1;	/* Is EXTERNAL */
 	unsigned int		flag_ext_assign	: 1;	/* ASSIGN EXTERNAL */
@@ -877,6 +878,7 @@ struct cb_reference {
 	unsigned int		flag_optional	: 1;	/* Definition optional */
 	unsigned int		flag_filler_ref	: 1;	/* Ref to FILLER */
 	unsigned int		flag_duped	: 1;	/* Duplicate name */
+	unsigned int		flag_is_key	: 1;	/* Is RELATIVE KEY */
 };
 
 #define CB_REFERENCE(x)		(CB_TREE_CAST (CB_TAG_REFERENCE, struct cb_reference, x))
@@ -1663,7 +1665,7 @@ extern int		validate_move (cb_tree, cb_tree, const unsigned int);
 extern cb_tree		cb_build_move (cb_tree, cb_tree);
 extern void		cb_emit_move (cb_tree, cb_tree);
 
-extern void		cb_emit_open (cb_tree, cb_tree, cb_tree);
+extern void		cb_emit_open (cb_tree, cb_tree, cb_tree, cb_tree);
 
 extern void		cb_emit_perform (cb_tree, cb_tree);
 extern cb_tree		cb_build_perform_once (cb_tree);
