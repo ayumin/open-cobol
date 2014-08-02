@@ -2724,13 +2724,13 @@ alternative_record_key_clause:
 	}
   }
 |
-  ALTERNATE RECORD _key _is reference '=' split_key_list flag_duplicates suppress_clause
+  ALTERNATE RECORD _key _is reference TOK_EQUAL split_key_list flag_duplicates suppress_clause
   {
 	struct cb_alt_key *p;
 	struct cb_alt_key *l;
 	cb_tree composite_key;
 
-	p = cobc_malloc (sizeof (struct cb_alt_key));
+	p = cobc_parse_malloc (sizeof (struct cb_alt_key));
 	// generate field (in w-s) for composite-key
 	composite_key = cb_build_field($5);
 	if (composite_key == cb_error_node) {
@@ -2862,11 +2862,11 @@ lock_with:
 | WITH LOCK ON lock_records
 | WITH LOCK ON MULTIPLE lock_records
   {
-	current_file->lock_mode |= COB_LOCK_MULTIPLE;
+	current_file->flag_lock_many = 1;
   }
 | WITH ROLLBACK
   {
-	current_file->lock_mode |= COB_LOCK_MULTIPLE;
+	current_file->flag_lock_many = 1;
 	PENDING ("WITH ROLLBACK");
   }
 ;
@@ -2938,7 +2938,7 @@ record_key_clause:
 /* RELATIVE KEY clause */
 
 relative_key_clause:
-  RELATIVE _key _is reference
+  RELATIVE _key _is relative_key_reference
   {
 	check_repeated ("RELATIVE KEY", SYN_CLAUSE_10);
 	current_file->key = $4;
@@ -2970,9 +2970,9 @@ sharing_clause:
 ;
 
 sharing_option:
-  ALL _other        { current_file->sharing = COB_SHARE_ALL; }
-| NO _other         { current_file->sharing = COB_SHARE_EXCLUSIVE; }
-| READ ONLY         { current_file->sharing = COB_SHARE_READ_ONLY; }
+  ALL _other        { current_file->share_mode = COB_SHARE_ALL; }
+| NO _other         { current_file->share_mode = COB_SHARE_EXCLUSIVE; }
+| READ ONLY         { current_file->share_mode = COB_SHARE_READ_ONLY; }
 ;
 
 
@@ -7569,42 +7569,30 @@ open_body:
   open_mode open_sharing file_name_list open_option
   {
 	cb_tree l;
-	cb_tree x;
 
 	if ($2 && $4) {
 		cb_error_x (CB_TREE (current_statement),
 			    _("SHARING and LOCK clauses are mutually exclusive"));
 	}
-	if ($4) {
-		x = $4;
-	} else {
-		x = $2;
-	}
 	for (l = $3; l; l = CB_CHAIN (l)) {
 		if (CB_VALID_TREE (CB_VALUE (l))) {
 			begin_implicit_statement ();
-			cb_emit_open (CB_VALUE (l), $1, x);
+			cb_emit_open (CB_VALUE (l), $1, $2, $4);
 		}
 	}
   }
 | open_body open_mode open_sharing file_name_list open_option
   {
 	cb_tree l;
-	cb_tree x;
 
 	if ($3 && $5) {
 		cb_error_x (CB_TREE (current_statement),
 			    _("SHARING and LOCK clauses are mutually exclusive"));
 	}
-	if ($5) {
-		x = $5;
-	} else {
-		x = $3;
-	}
 	for (l = $4; l; l = CB_CHAIN (l)) {
 		if (CB_VALID_TREE (CB_VALUE (l))) {
 			begin_implicit_statement ();
-			cb_emit_open (CB_VALUE (l), $2, x);
+			cb_emit_open (CB_VALUE (l), $2, $3, $5);
 		}
 	}
   }
@@ -7634,7 +7622,7 @@ open_sharing_option:
 open_option:
   /* empty */			{ $$ = NULL; }
 | _with NO REWIND		{ $$ = NULL; }
-| _with LOCK			{ $$ = cb_int (COB_LOCK_OPEN_EXCLUSIVE); }
+| _with LOCK			{ $$ = cb_int (COB_LOCK_EXCLUSIVE); }
 | REVERSED
   {
 	(void)cb_verify (CB_OBSOLETE, "REVERSED");
@@ -9727,6 +9715,16 @@ opt_reference:
   {
 	$$ = $1;
 	CB_REFERENCE($$)->flag_optional = 1;
+	CB_ADD_TO_CHAIN ($$, current_program->reference_list);
+  }
+;
+
+
+relative_key_reference:
+  WORD
+  {
+	$$ = $1;
+	CB_REFERENCE($$)->flag_is_key = 1;
 	CB_ADD_TO_CHAIN ($$, current_program->reference_list);
   }
 ;
