@@ -2131,6 +2131,8 @@ build_file (cb_tree name)
 	p->access_mode = COB_ACCESS_SEQUENTIAL;
 	p->handler = CB_LABEL (cb_standard_error_handler);
 	p->handler_prog = current_program;
+	p->lock_mode = COB_LOCK_MANUAL;
+	p->share_mode = COB_SHARE_ALL;
 	return p;
 }
 
@@ -2183,11 +2185,14 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 	if (f->special || f->flag_line_adv) {
 		f->organization = COB_ORG_LINE_SEQUENTIAL;
 	}
-	if (f->flag_fileid && !f->assign) {
-		f->assign = cb_build_alphanumeric_literal (f->name,
+	if (!f->assign) {
+		if (f->flag_fileid) {
+			f->assign = cb_build_alphanumeric_literal (f->name,
 							   strlen (f->name));
+		} else {
+			cb_error (_("ASSIGN clause is missing '%s'"), f->name);
+		}
 	}
-
 	if (f->key && f->organization == COB_ORG_INDEXED &&
 	    (l = cb_ref (f->key)) != cb_error_node) {
 		v = cb_field_founder (CB_FIELD_PTR (l));
@@ -2203,6 +2208,7 @@ finalize_file (struct cb_file *f, struct cb_field *records)
 	}
 	if (f->alt_key_list) {
 		for (cbak = f->alt_key_list; cbak; cbak = cbak->next) {
+			if (cbak->component_list != NULL) continue;
 			l = cb_ref (cbak->key);
 			if (l == cb_error_node) {
 				continue;
@@ -2590,6 +2596,17 @@ end:
 		}
 	} else if (CB_LABEL_P (candidate) && r->flag_alter_code) {
 		CB_LABEL (candidate)->flag_alter = 1;
+	}
+	if (r->flag_is_key) {
+		if (CB_TREE_CATEGORY (candidate) != CB_CATEGORY_NUMERIC) {
+			cb_error (_("RELATIVE KEY %s is not numeric"), CB_FIELD (candidate)->name);
+			goto error;
+		}
+		if ((CB_FIELD (candidate)->storage != CB_STORAGE_WORKING) &&
+		    (CB_FIELD (candidate)->storage != CB_STORAGE_LOCAL)) {
+			cb_error (_("RELATIVE KEY %s declared outside WORKING STORAGE"), CB_FIELD (candidate)->name);
+			goto error;
+		}
 	}
 
 	r->value = candidate;
