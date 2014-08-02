@@ -1,0 +1,4271 @@
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2012 Roger While
+## Copyright (C) 2014 Simon Sobisch
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite :: fileio related run-time 
+
+
+## ==================================================================
+## The SELECT clause
+## ==================================================================
+
+## ------------------------------------------------------------------
+## If ORGANIZATION is unspecified ORGANIZATION SEQUENTIAL is default.
+## If ACCESS MODE is unspecified ACCESS MODE SEQUENTIAL is default.
+## ------------------------------------------------------------------
+
+AT_SETUP([File defaults: ORG:SEQ & ACC:SEQ])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           OPEN OUTPUT file1.
+           MOVE "A" TO file1-rec.
+           WRITE file1-rec.
+           CLOSE file1.
+           OPEN INPUT file1.
+           READ file1.
+           IF file1-rec NOT = "A"
+              display "FAILED".
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ==================================================================
+## File Naming strategies
+## ==================================================================
+
+
+
+
+## ------------------------------------------------------------------
+## File name defaulted                                                              
+## ------------------------------------------------------------------
+
+AT_SETUP([File external name: defaulted])
+AT_KEYWORDS([file])
+
+AT_DATA([fexists_signed.c], [
+
+#include <string.h>
+#include <stdio.h>
+#include <malloc.h>
+
+/*
+ *      Check file is present and correct by comparing
+ *      its content to a given signature.
+ */
+
+int fexists_signed (char *fid, char *signature, int cb_signature)
+{
+  char *bfr;
+  FILE *f;
+  int res = -1;
+  f = fopen(fid, "r");
+  if (f != NULL) {
+     bfr = (char *)malloc(cb_signature);
+     if (1 == fread(bfr, cb_signature, 1, f)) {
+        if (!memcmp(signature, bfr, cb_signature)) {
+           res = 0;
+        }
+     }
+     free(bfr);
+  }
+  return(res);
+}
+])
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+      * 
+      * Must be run as: unset COB_FILE_PATH && ./prog
+      *
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec.
+          2  file1-date pic x(8).
+          2  file1-time pic x(8).
+       WORKING-STORAGE SECTION.
+       77 erc PIC 9(8) COMP.
+       77 cb PIC 9(8) COMP VALUE 16.
+       PROCEDURE DIVISION.
+           ACCEPT file1-date FROM DATE YYYYMMDD.
+           ACCEPT file1-time FROM TIME.
+           OPEN OUTPUT file1.
+           WRITE file1-rec.
+           CLOSE file1.
+           CALL "fexists_signed" USING
+                BY REFERENCE "./file1" file1-rec
+                BY VALUE cb
+                RETURNING erc.
+           IF (erc <> 0)
+              DISPLAY "FAILED file1".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE fexists_signed.c], [0], , [])
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([unset COB_FILE_PATH && ./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## File named pathed in ASSIGN, in FD, in WS.                                        
+## Modify conf else VALUE OF FILE_ID warns at compile-time
+## ------------------------------------------------------------------
+
+AT_SETUP([File external name: pathed])
+AT_KEYWORDS([file])
+
+
+AT_DATA([test.conf], [
+include "mf.conf"
+filename-mapping: yes
+value-of-clause: ok
+])
+
+AT_DATA([fexists_signed.c], [
+
+#include <string.h>
+#include <stdio.h>
+#include <malloc.h>
+
+/*
+ *      Check file is present and correct by comparing
+ *      its content to a given signature.
+ */
+
+int fexists_signed (char *fid, char *signature, int cb_signature)
+{
+  char *bfr;
+  FILE *f;
+  int res = -1;
+  f = fopen(fid, "r");
+  if (f != NULL) {
+     bfr = (char *)malloc(cb_signature);
+     if (1 == fread(bfr, cb_signature, 1, f)) {
+        if (!memcmp(signature, bfr, cb_signature)) {
+           res = 0;
+        }
+     }
+     free(bfr);
+  }
+  return(res);
+}
+])
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN "./file1.dat".
+       SELECT file2 ASSIGN DISK.     
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec. 
+          2  file1-date pic x(8).
+          2  file1-time pic x(8).
+       FD file2 VALUE OF FILE-ID "./file2.dat".
+       1  file2-rec. 
+          2  file2-date pic x(8).
+          2  file2-time pic x(8).
+       FD file3 VALUE OF FILE-ID file3-fid.
+       1  file3-rec. 
+          2  file3-date pic x(8).
+          2  file3-time pic x(8).
+       WORKING-STORAGE SECTION.
+       77 erc PIC 9(8) COMP.
+       77 cb PIC 9(8) COMP VALUE 16.
+       77 file3-fid pic x(11) value "./file3.dat".
+       PROCEDURE DIVISION.
+           ACCEPT file1-date FROM DATE YYYYMMDD.
+           ACCEPT file1-time FROM TIME.
+           OPEN OUTPUT file1.
+           WRITE file1-rec.
+           CLOSE file1.
+           CALL "fexists_signed" USING
+                BY REFERENCE "./file1.dat" file1-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file1".
+      *
+           ACCEPT file2-date FROM DATE YYYYMMDD.
+           ACCEPT file2-time FROM TIME.
+           OPEN OUTPUT file2.
+           WRITE file2-rec.
+           CLOSE file2.
+           CALL "fexists_signed" USING 
+                BY REFERENCE "./file2.dat" file2-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file2".
+      *
+           ACCEPT file3-date FROM DATE YYYYMMDD.
+           ACCEPT file3-time FROM TIME.
+           OPEN OUTPUT file3.
+           WRITE file3-rec.
+           CLOSE file3.
+           CALL "fexists_signed" USING
+                BY REFERENCE "./file3.dat" file3-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file3".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE fexists_signed.c], [0], , [])
+AT_CHECK([$COMPILE -conf=test.conf prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## File named unpathed in ASSIGN, in FD, in WS.                                        
+## Modify conf else VALUE OF FILE_ID warns at compile-time
+## ------------------------------------------------------------------
+
+AT_SETUP([File external name: unpathed])
+AT_KEYWORDS([file])
+
+
+AT_DATA([test.conf], [
+include "mf.conf"
+filename-mapping: yes
+value-of-clause: ok
+])
+
+AT_DATA([fexists_pathed.c], [
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <malloc.h>
+
+/*
+ *      Check file exists and is correct by comparing its content
+ *      to a given signature.
+ */
+
+int fexists_pathed (char *fid, char *signature, int cb_signature)
+{
+  char *bfr;
+  char path[[1024]];
+  FILE *f;
+  int res = -1;
+  strcpy(path, getenv("COB_FILE_PATH"));
+  strcat(path, "/");                       // NYI Windows?
+  strcat(path, fid);
+  f = fopen(path, "r");
+  if (f != NULL) {
+     bfr = (char *)malloc(cb_signature);
+     if (1 == fread(bfr, cb_signature, 1, f)) {
+        if (!memcmp(signature, bfr, cb_signature)) {
+           res = 0;
+        }
+     }
+     free(bfr);
+  }
+  return(res);
+}
+
+])
+
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN "file1.dat".
+       SELECT file2 ASSIGN DISK.     
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec. 
+          2  file1-date pic x(8).
+          2  file1-time pic x(8).
+       FD file2 VALUE OF FILE-ID "file2.dat".
+       1  file2-rec. 
+          2  file2-date pic x(8).
+          2  file2-time pic x(8).
+       FD file3 VALUE OF FILE-ID file3-fid.
+       1  file3-rec. 
+          2  file3-date pic x(8).
+          2  file3-time pic x(8).
+       WORKING-STORAGE SECTION.
+       77 erc PIC 9(8) COMP.
+       77 cb PIC 9(8) COMP VALUE 16.
+       77 file3-fid pic x(11) value "file3.dat".
+       PROCEDURE DIVISION.
+           ACCEPT file1-date FROM DATE YYYYMMDD.
+           ACCEPT file1-time FROM TIME.
+           OPEN OUTPUT file1.
+           WRITE file1-rec.
+           CLOSE file1.
+           CALL "fexists_pathed" USING
+                BY REFERENCE "file1.dat" file1-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file1".
+      *
+           ACCEPT file2-date FROM DATE YYYYMMDD.
+           ACCEPT file2-time FROM TIME.
+           OPEN OUTPUT file2.
+           WRITE file2-rec.
+           CLOSE file2.
+           CALL "fexists_pathed" USING 
+                BY REFERENCE "file2.dat" file2-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file2".
+      *
+           ACCEPT file3-date FROM DATE YYYYMMDD.
+           ACCEPT file3-time FROM TIME.
+           OPEN OUTPUT file3.
+           WRITE file3-rec.
+           CLOSE file3.
+           CALL "fexists_pathed" USING
+                BY REFERENCE "file3.dat" file3-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file3".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE fexists_pathed.c], [0], , [])
+AT_CHECK([$COMPILE -conf=test.conf prog.cob], [0], , [])
+AT_CHECK([mkdir -m 777 ./temp], [0])
+AT_CHECK([COB_FILE_PATH="./temp" ./prog], [0])
+AT_CHECK([rm -f ./temp/file?.dat; rmdir ./temp], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## File named using environmental variable in ASSIGN, in FD, in WS.                                        
+## Modify conf else VALUE OF FILE_ID warns at compile-time
+## ------------------------------------------------------------------
+
+AT_SETUP([File external name: use environmental variable])
+AT_KEYWORDS([file])
+
+
+AT_DATA([test.conf], [
+include "mf.conf"
+filename-mapping: yes
+value-of-clause: ok
+])
+
+AT_DATA([fexists_pathed.c], [
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <malloc.h>
+
+/*
+ *      Check file exists and is correct by comparing its content
+ *      to a given signature.
+ */
+
+int fexists_pathed (char *fid, char *signature, int cb_signature)
+{
+  char *bfr;
+  char path[[1024]];
+  FILE *f;
+  int res = -1;
+  strcpy(path, getenv("COB_FILE_PATH"));
+  strcat(path, "/");                       // NYI Windows?
+  strcpy(path, getenv("DIR"));
+  strcat(path, "/");                       // NYI Windows?
+  strcat(path, fid);
+  f = fopen(path, "r");
+  if (f != NULL) {
+     bfr = (char *)malloc(cb_signature);
+     if (1 == fread(bfr, cb_signature, 1, f)) {
+        if (!memcmp(signature, bfr, cb_signature)) {
+           res = 0;
+        }
+     }
+     free(bfr);
+  }
+  return(res);
+}
+
+])
+
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN "${DIR}/file1.dat".
+       SELECT file2 ASSIGN DISK.     
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec. 
+          2  file1-date pic x(8).
+          2  file1-time pic x(8).
+       FD file2 VALUE OF FILE-ID "${DIR}/file2.dat".
+       1  file2-rec. 
+          2  file2-date pic x(8).
+          2  file2-time pic x(8).
+       FD file3 VALUE OF FILE-ID file3-fid.
+       1  file3-rec. 
+          2  file3-date pic x(8).
+          2  file3-time pic x(8).
+       WORKING-STORAGE SECTION.
+       77 erc PIC 9(8) COMP.
+       77 cb PIC 9(8) COMP VALUE 16.
+       77 file3-fid pic x(16) value "${DIR}/file3.dat".
+       PROCEDURE DIVISION.
+           ACCEPT file1-date FROM DATE YYYYMMDD.
+           ACCEPT file1-time FROM TIME.
+           OPEN OUTPUT file1.
+           WRITE file1-rec.
+           CLOSE file1.
+           CALL "fexists_pathed" USING
+                BY REFERENCE "file1.dat" file1-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file1".
+      *
+           ACCEPT file2-date FROM DATE YYYYMMDD.
+           ACCEPT file2-time FROM TIME.
+           OPEN OUTPUT file2.
+           WRITE file2-rec.
+           CLOSE file2.
+           CALL "fexists_pathed" USING 
+                BY REFERENCE "file2.dat" file2-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file2".
+      *
+           ACCEPT file3-date FROM DATE YYYYMMDD.
+           ACCEPT file3-time FROM TIME.
+           OPEN OUTPUT file3.
+           WRITE file3-rec.
+           CLOSE file3.
+           CALL "fexists_pathed" USING
+                BY REFERENCE "file3.dat" file3-rec 
+                BY VALUE cb 
+                RETURNING erc.
+           IF (erc <> 0) 
+              DISPLAY "FAILED file3".
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_MODULE fexists_pathed.c], [0], , [])
+AT_CHECK([$COMPILE -conf=test.conf prog.cob], [0], , [])
+AT_CHECK([mkdir -m 777 ./temp], [0])
+AT_CHECK([DIR="./temp" COB_FILE_PATH="./temp" ./prog], [0])
+AT_CHECK([rm -f ./temp/file?.dat; rmdir ./temp], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## File name mapping - BCE test.
+## Edited to ensure assumption that file will be in cwd is correct.
+## ------------------------------------------------------------------
+
+AT_SETUP([File external name: ASSIGN FID])
+AT_KEYWORDS([file])
+
+AT_DATA([test.conf], [
+include "mf.conf"
+filename-mapping: yes
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "FILENAME".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -conf=test.conf -o prog prog.cob], [0], , [])
+AT_CHECK([unset COB_FILE_PATH && DD_FILENAME="x" ./prog], [0])
+AT_CHECK([test -f "x"], [0])
+AT_CHECK([unset COB_FILE_PATH && dd_FILENAME="y" ./prog], [0])
+AT_CHECK([test -f "y"], [0])
+AT_CHECK([unset COB_FILE_PATH && FILENAME="z" ./prog], [0])
+AT_CHECK([test -f "z"], [0])
+AT_CHECK([unset COB_FILE_PATH && ./prog], [0])
+AT_CHECK([test -f "FILENAME"], [0])
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## File name mapping IBM. BCE test.
+## [Ensure that file will be in cwd ... unset COB_FILE_PATH.]
+## ------------------------------------------------------------------
+
+
+AT_SETUP([File external name: IBM])
+AT_KEYWORDS([file])
+
+AT_DATA([test.conf], [
+include "cobol2002.conf"
+assign-clause: ibm
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN DA-S-FILENAME.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -conf=test.conf -o prog prog.cob], [0], ,
+[prog.cob: 7: Warning: ASSIGN interpreted as FILENAME
+])
+AT_CHECK([unset COB_FILE_PATH && ./prog], [0])
+AT_CHECK([test -f FILENAME], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## File name mapping via environmental variable.
+## ------------------------------------------------------------------
+AT_SETUP([ASSIGN expansion])
+AT_KEYWORDS([file])
+
+AT_DATA([test.conf], [
+include "cobol2002.conf"
+filename-mapping: yes
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "$DIR/FILENAME".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -conf=test.conf -o prog prog.cob], [0], , [])
+AT_CHECK([DIR="." ./prog], [0])
+AT_CHECK([test -f "./FILENAME" && rm -f "./FILENAME"], [0])
+
+AT_CLEANUP
+
+## ------------------------------------------------------------------
+## File name mapping via $COB_FILE_PATH
+## ------------------------------------------------------------------
+AT_SETUP([File external name: use $COB_FILE_PATH])
+AT_KEYWORDS([file])
+
+AT_DATA([test.conf], [
+include "cobol2002.conf"
+filename-mapping: yes
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "FILENAMEX".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -conf=test.conf -o prog prog.cob], [0], , [])
+AT_CHECK([COB_FILE_PATH=".." ./prog], [0])
+AT_CHECK([test -f "../FILENAMEX" && rm -f "../FILENAMEX"], [0])
+
+AT_CLEANUP
+
+
+## ==================================================================
+## ORGANIZATION SEQUENTIAL files.
+## ==================================================================
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN + WRITE + READ + CLOSE
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ Basic IO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK ORGANIZATION SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           DELETE FILE file1.
+           OPEN OUTPUT file1.
+           MOVE "A" TO file1-rec.
+           WRITE file1-rec.
+           CLOSE file1.
+           OPEN INPUT file1.
+           READ file1.
+           IF (file1-rec <> "A")
+              display "FAILED".
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION LINE SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN + WRITE + READ + CLOSE
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:LINE-SEQ ACC:SEQ Basic IO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK ORGANIZATION LINE SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           DELETE FILE file1.
+           OPEN OUTPUT file1.
+           MOVE "A" TO file1-rec.
+           WRITE file1-rec.
+           CLOSE file1.
+           OPEN INPUT file1.
+           READ file1.
+           IF (file1-rec <> "A")
+              display "FAILED".
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION LINE SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN + WRITE + CLOSE with external check
+## ------------------------------------------------------------------
+AT_SETUP([File ORG:LINE-SEQ ACC:SEQ write])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN OUTPUT TEST-FILE.
+           MOVE "a"    TO TEST-REC.
+           WRITE TEST-REC
+           END-WRITE.
+           MOVE "ab"   TO TEST-REC.
+           WRITE TEST-REC AFTER 1 LINES
+           END-WRITE.
+           MOVE "abc"  TO TEST-REC.
+           WRITE TEST-REC BEFORE 2 LINES
+           END-WRITE.
+           MOVE "abcd" TO TEST-REC.
+           WRITE TEST-REC
+           END-WRITE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog])
+AT_CHECK([cat TEST-FILE], [0], 
+[a
+
+ababc
+
+abcd
+])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION LINE SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN + READ + CLOSE with external data feed
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:LINE-SEQ ACC:SEQ read short & long])
+AT_KEYWORDS([file])
+
+AT_DATA([TEST-FILE],
+[a
+ab
+abc
+abcd
+abcde
+abcdef
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN INPUT TEST-FILE.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           READ TEST-FILE
+           END-READ.
+           DISPLAY "(" TEST-REC ")"
+           END-DISPLAY.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0],
+[(a   )
+(ab  )
+(abc )
+(abcd)
+(abcd)
+(abcd)
+])
+
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## READ INTO ... AT END.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ READ INTO AT-END])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "./TEST-FILE".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC     PIC X(10).
+       WORKING-STORAGE  SECTION.
+       01  X            PIC X(10).
+       PROCEDURE        DIVISION.
+           OPEN  OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           OPEN  INPUT  TEST-FILE.
+           READ  TEST-FILE INTO X
+               AT END MOVE ALL ZERO TO X
+           END-READ.
+           CLOSE TEST-FILE.
+           IF X NOT = "0000000000"
+              DISPLAY "Expected zeros - Got " X
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## DISRUPTIVE REWRITE.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ Disruptive REWRITE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+           program-id.  prog.
+       environment division.
+       configuration section.
+       input-output section.
+       file-control.
+           select file1 assign disk.
+       data division.
+       file section.
+       fd   file1.
+       1    file1-rec.
+            2  file1-serial-1 pic 9(6).
+            2  file1-xseen pic 9(4).
+            2  file1-serial-2 pic 9(6).
+       working-storage section.
+       77  w-count pic 9(6) value 0.
+       77  w-eof pic 9 value 0.
+           88  eof value 1.
+       77  w-abort pic 9 value 0.
+           88  abort value 1.
+       procedure division.
+           open output file1.
+           perform varying w-count from 1 by 1
+              until w-count > 20
+                 move w-count to file1-serial-1
+                 move 0 to file1-xseen
+                 add 100 w-count giving file1-serial-2
+                 write file1-rec
+           end-perform.
+           close file1.
+           open i-o file1.
+           move 0 to w-eof.
+           perform 
+              varying w-count from 1 by 1
+              until eof or abort
+              read file1
+                 at end move 1 to w-eof 
+                 not at end 
+                    if (file1-serial-1 <> w-count)
+                       display "FAIL 1: " w-count " :: " file1-serial-1
+                       move 1 to w-abort
+                    else if (file1-serial-2 <> (100 + w-count))
+                       display "FAIL 2: " w-count " :: " file1-serial-2
+                       move 1 to w-abort
+                    else if (file1-xseen <> 0)
+                       display "FAIL 3: " w-count " :: " file1-xseen
+                       move 1 to w-abort
+                    else if (w-count = 5 or 10 or 15 or 20)
+                       add 1000 w-count giving file1-serial-2
+                       add 1 to file1-xseen
+                       rewrite file1-rec
+                    end-if 
+              end-read
+           end-perform.
+           if not ((w-count = 22) and eof)
+              display "FAIL 4".
+           close file1.
+           open input file1.
+           move 0 to w-eof w-abort.
+           perform 
+              varying w-count from 1 by 1
+              until eof or abort
+              read file1
+                 at end move 1 to w-eof
+                 not at end 
+                    if (file1-serial-1 <> w-count) 
+                       move 1 to w-abort
+                    else if (w-count = 5 or 10 or 15 or 20)
+                       if not ((file1-serial-2 = (1000 + w-count)) and
+                               (file1-xseen = 1)) 
+                          move 1 to w-abort
+                       end-if
+                    else
+                       if not ((file1-serial-2 = (100 + w-count)) and
+                               (file1-xseen = 0)) 
+                          move 1 to w-abort
+                       end-if
+                    end-if   
+              end-read
+           end-perform.
+           if abort       
+              display "FAIL 5".
+           close file1.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM SELECT.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ File lock SELECT EXCLUSIVE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           lock mode is exclusive
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM OPEN.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ File lock OPEN EXCLUSIVE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1 with lock.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM SHARING.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ File lock SHARE NO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           sharing no
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK SHARE WITH READERS FROM SHARING.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ File lock SHARE READ ONLY])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           sharing read only
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open i-o file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           open input file1.
+           if fs not = "00"
+              display "FAILED: " fs
+           else
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## -------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## CHECK SUCCESSOR IS BLOCKED FROM EXCLUSIVE OPEN ON FILE ALREADY OPEN       
+## -------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ Preceding file lock])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "00"
+              display "FAILED: " fs
+              stop run
+           end-if.
+           close file1 
+           open input file1 with lock.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ==================================================================
+## ORGANIZATION RELATIVE files.
+## ==================================================================
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS SEQUENTIAL
+## OPEN + WRITE + READ + CLOSE
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:REL ACC:SEQ Basic IO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK ORGANIZATION RELATIVE.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           DELETE FILE file1.
+           OPEN OUTPUT file1.
+           MOVE "A" TO file1-rec.
+           WRITE file1-rec.
+           CLOSE file1.
+           OPEN INPUT file1.
+           READ file1.
+           IF (file1-rec <> "A")
+              display "FAILED".
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS RANDOM
+## OPEN + WRITE + READ + CLOSE
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:REL ACC:RAN Basic IO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+          ORGANIZATION RELATIVE
+          ACCESS RANDOM RELATIVE KEY file1-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       WORKING-STORAGE SECTION.
+       77  file1-key pic 99.
+       PROCEDURE DIVISION.
+           DELETE FILE file1.
+           OPEN OUTPUT file1.
+           MOVE 1 to file1-key.
+           MOVE "A" TO file1-rec.
+           WRITE file1-rec.
+           MOVE 2 to file1-key.
+           MOVE "B" TO file1-rec.
+           WRITE file1-rec.
+           MOVE 3 to file1-key.
+           MOVE "C" TO file1-rec.
+           WRITE file1-rec.
+           CLOSE file1.
+           OPEN INPUT file1.
+           MOVE 2 to file1-key.
+           READ file1.
+           IF (file1-rec <> "B")
+              display "FAILED".
+           MOVE 1 to file1-key.
+           READ file1.
+           IF (file1-rec <> "A")
+              display "FAILED".
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS DYNAMIC
+## Test START on sparsely populated file.
+## ------------------------------------------------------------------
+
+
+AT_SETUP([File ORG:REL ACC:DYN Sparse start])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL TEST-FILE
+              ASSIGN      "TESTFILE"
+              ACCESS       DYNAMIC
+              ORGANIZATION RELATIVE
+              STATUS       TESTSTAT
+              RELATIVE KEY TESTKEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC     PIC X(4).
+       WORKING-STORAGE  SECTION.
+       01  TESTKEY      USAGE BINARY-LONG.
+       01  TESTSTAT     PIC XX.
+           88  V-OK     VALUE "00" "05".
+           88  V-ZERO   VALUE "00".
+       PROCEDURE        DIVISION.
+           DELETE FILE TEST-FILE.
+           OPEN  I-O   TEST-FILE.
+           IF NOT V-OK
+              DISPLAY "OPEN " TESTSTAT
+              END-DISPLAY
+              GOBACK
+           END-IF.
+           MOVE 3 TO TESTKEY.
+           MOVE "0003" TO TEST-REC.
+           WRITE TEST-REC INVALID KEY
+                 DISPLAY "WRITE " TESTSTAT
+                 END-DISPLAY
+           END-WRITE.
+           MOVE 2 TO TESTKEY.
+           MOVE "0002" TO TEST-REC.
+           WRITE TEST-REC INVALID KEY
+                 DISPLAY "WRITE " TESTSTAT
+                 END-DISPLAY
+           END-WRITE.
+           MOVE 99 TO TESTKEY.
+           START TEST-FILE KEY < TESTKEY
+           END-START.
+           IF NOT V-ZERO
+              DISPLAY "START " TESTSTAT
+              END-DISPLAY
+           END-IF.
+           IF TESTKEY NOT = 99
+              DISPLAY "TESTKEY " TESTKEY
+              END-DISPLAY
+           END-IF.
+           MOVE  SPACE TO TEST-REC.
+           READ  TEST-FILE NEXT
+           END-READ.
+           IF NOT V-ZERO
+              DISPLAY "READ " TESTSTAT
+              END-DISPLAY
+           END-IF.
+           IF TEST-REC NOT = "0003"
+              DISPLAY "READ RECORD " TEST-REC
+              END-DISPLAY
+           END-IF.
+           CLOSE TEST-FILE.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS DYNAMIC
+## Test START for boundary conditions.
+## ------------------------------------------------------------------
+
+
+AT_SETUP([File ORG:REL ACC:DYN START boundaries])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN TO DISK
+                    ORGANIZATION RELATIVE       
+                    ACCESS DYNAMIC RELATIVE KEY file1-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic 999. 
+       WORKING-STORAGE SECTION.
+       77  file1-key pic 9(6).
+       PROCEDURE DIVISION.
+          OPEN OUTPUT file1.
+          CLOSE file1.
+          OPEN I-O file1.
+          MOVE 10 TO file1-key file1-rec.
+          WRITE file1-rec.
+          MOVE 11 TO file1-key file1-rec.
+          WRITE file1-rec.
+          MOVE 12 TO file1-key file1-rec.
+          WRITE file1-rec.
+          MOVE 13 TO file1-key file1-rec.
+          WRITE file1-rec.
+      *
+          MOVE 0 TO file1-key.
+          START file1 KEY > file1-key.
+          READ file1 NEXT.
+          IF (file1-rec <> 10)
+             DISPLAY "FAILED: START key > 0".
+      *
+          MOVE 99 TO file1-key.
+          START file1 KEY < file1-key.
+          READ file1 NEXT.
+          IF (file1-rec <> 13)
+             DISPLAY "FAILED: START key < 99".
+      *
+          MOVE 0 TO file1-key.
+          START file1 FIRST.
+          READ file1 NEXT.
+          IF (file1-rec <> 10)
+             DISPLAY "FAILED: START key FIRST".
+      *
+          MOVE 0 TO file1-key.
+          START file1 LAST.
+          READ file1 NEXT.
+          IF (file1-rec <> 13)
+             DISPLAY "FAILED: START key LAST".
+      *
+          MOVE 0 TO file1-key.
+          START file1 KEY >= file1-key.
+          READ file1 NEXT.
+          IF (file1-rec <> 10)
+             DISPLAY "FAILED: START key >= 0".
+      *
+          MOVE 99 TO file1-key.
+          START file1 KEY <= file1-key.
+          READ file1 NEXT.
+          IF (file1-rec <> 13)
+             DISPLAY "FAILED: START key <= 99".
+      *
+          CLOSE file1.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS RANDOM
+## Test WRITE + READ + REWRITE           
+## ------------------------------------------------------------------
+
+
+AT_SETUP([File ORG:REL ACC:RAN READ + REWRITE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS RELATIVE
+                        ACCESS MODE  IS RANDOM
+                        RELATIVE KEY IS TEST-KEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X.
+       WORKING-STORAGE  SECTION.
+       01 TEST-KEY      PIC 9.
+       PROCEDURE        DIVISION.
+      *
+           OPEN OUTPUT TEST-FILE.
+           MOVE 1 TO TEST-KEY.
+           MOVE "A" TO TEST-REC.
+           WRITE TEST-REC
+           END-WRITE.
+           MOVE 2 TO TEST-KEY.
+           MOVE "B" TO TEST-REC.
+           WRITE TEST-REC
+           END-WRITE.
+           CLOSE TEST-FILE.
+      *
+           OPEN I-O TEST-FILE.
+           MOVE 1 TO TEST-KEY.
+           READ TEST-FILE
+           END-READ.
+           MOVE 2 TO TEST-KEY.
+           MOVE "C" TO TEST-REC.
+           REWRITE TEST-REC
+           END-REWRITE.
+           CLOSE TEST-FILE.
+      *
+           OPEN INPUT TEST-FILE.
+           MOVE 1 TO TEST-KEY.
+           READ TEST-FILE
+           END-READ.
+           IF TEST-REC NOT = "A"
+              DISPLAY "Expected 'A' - Got " TEST-REC
+              END-DISPLAY
+           END-IF.
+           MOVE 2 TO TEST-KEY.
+           READ TEST-FILE
+           END-READ.
+           IF TEST-REC NOT = "C"
+              DISPLAY "Expected 'C' - Got " TEST-REC
+              END-DISPLAY
+           END-IF.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ==================================================================
+## ORGANIZATION INDEXED files.
+## ==================================================================
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN + WRITE + READ + CLOSE
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ Basic IO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT fileX ASSIGN DISK ORGANIZATION INDEXED
+           RECORD KEY fileX-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD fileX.
+       1  fileX-rec.
+          2 fileX-key pic x(6).
+          2 fileX-data pic x(10).
+       PROCEDURE DIVISION.
+           DELETE FILE fileX.
+           OPEN OUTPUT fileX.
+           MOVE ALL "A" TO fileX-rec.
+           WRITE fileX-rec.
+           CLOSE fileX.
+           OPEN INPUT fileX.
+           READ fileX.
+           IF (fileX-rec <> ALL "A")
+              display "FAILED".
+           CLOSE fileX.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN + READ on empty file
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ READ on empty])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS  INDEXED
+                        ACCESS MODE  IS  SEQUENTIAL
+                        RECORD KEY   IS  TEST-KEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-KEY      PIC X(10).
+       PROCEDURE        DIVISION.
+           OPEN  OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           OPEN  INPUT  TEST-FILE.
+           READ  TEST-FILE
+                 AT END
+                   CONTINUE
+                 NOT AT END
+                   DISPLAY "NOT OK"
+                   END-DISPLAY
+           END-READ.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN + READ on missing OPTIONAL file
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ READ on missing OPTIONAL])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select optional file1 assign "fileX"
+           organization is indexed
+           record key is file1-key
+           status f-status.
+       data division.
+       file section.
+       fd  file1.
+       1   file1-key pic x.
+       working-storage section.
+       77  f-status pic xx.
+       procedure division.
+           delete file file1.
+           open input file1.
+           if (f-status <> "05")
+              display "FAILED OPEN: fs=" f-status.
+           read file1 at end
+              if (f-status <> "10")
+                 display "FAILED READ AT END: fs=" f-status.
+           if (f-status <> "10")
+              display "FAILED READ NO AT END: fs=" f-status.
+           close file1.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM SELECT.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ File lock SELECT EXCLUSIVE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           lock mode is exclusive
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM OPEN.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ File lock OPEN EXCLUSIVE])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1 with lock.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK EXCLUSIVE FROM SHARING.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ File lock SHARE NO])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           sharing no
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## OPEN WITH FILE LOCK SHARE WITH READERS FROM SHARING.       
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ File lock SHARE READ ONLY])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           sharing read only
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open i-o file1.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           open input file1.
+           if fs not = "00"
+              display "FAILED: " fs
+           else
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## -------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## CHECK SUCCESSOR IS BLOCKED FROM EXCLUSIVE OPEN ON FILE ALREADY OPEN       
+## -------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ Preceding file lock])
+AT_KEYWORDS([file])
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk 
+           organization indexed
+           record key file1-key.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       procedure division.
+           open output file1.
+           close file1.
+           open input file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open input file1.
+           if fs not = "00"
+              display "FAILED: " fs
+              stop run
+           end-if.
+           close file1 
+           open input file1 with lock.
+           if fs not = "61"
+              display "FAILED: " fs
+              close file1 
+           end-if.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS RANDOM
+## DETECT LOCKED RECORD DRIVEN BY: LOCK MODE AUTOMATIC 
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:RAN AUTOMATIC locked record])
+AT_KEYWORDS([file])
+
+AT_XFAIL_IF(true)
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           lock mode is automatic
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           move "X" to file1-key.
+           write file1-rec.
+           close file1.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1.
+           if fs not = "XX"
+              display "FAILED: " fs
+           end-if.
+           close file1 
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS DYNAMIC
+## Test START for boundary conditions.
+## ------------------------------------------------------------------
+
+
+AT_SETUP([File ORG:IDX ACC:DYN START boundaries])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN TO "./file1X"
+                    ORGANIZATION INDEXED       
+                    ACCESS DYNAMIC RECORD KEY file1-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec.
+          2  file1-key pic 999. 
+          2  file1-data pic 999. 
+       PROCEDURE DIVISION.
+          OPEN OUTPUT file1.
+          CLOSE file1.
+          OPEN I-O file1.
+          MOVE 10 TO file1-key file1-data.
+          WRITE file1-rec.
+          MOVE 11 TO file1-key file1-data.
+          WRITE file1-rec.
+          MOVE 12 TO file1-key file1-data.
+          WRITE file1-rec.
+          MOVE 13 TO file1-key file1-data.
+          WRITE file1-rec.
+      *
+          MOVE 0 TO file1-key.
+          START file1 KEY > file1-key.
+          READ file1 NEXT.
+          IF (file1-data <> 10)
+             DISPLAY "FAILED: START key > 0".
+      *
+          MOVE 99 TO file1-key.
+          START file1 KEY < file1-key.
+          READ file1 NEXT.
+          IF (file1-data <> 13)
+             DISPLAY "FAILED: START key < 99".
+      *
+          MOVE 999 TO file1-key.
+          START file1 FIRST.
+          READ file1 NEXT.
+          IF (file1-data <> 10)
+             DISPLAY "FAILED: START key FIRST".
+      *
+          MOVE 0 TO file1-key.
+          START file1 LAST.
+          READ file1 NEXT.
+          IF (file1-data <> 13)
+             DISPLAY "FAILED: START key LAST".
+      *
+          MOVE 0 TO file1-key.
+          START file1 KEY >= file1-key.
+          READ file1 NEXT.
+          IF (file1-data <> 10)
+             DISPLAY "FAILED: START key >= 0".
+      *
+          MOVE 99 TO file1-key.
+          START file1 KEY <= file1-key.
+          READ file1 NEXT.
+          IF (file1-data <> 13)
+             DISPLAY "FAILED: START key <= 99".
+
+          CLOSE file1.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS DYNAMIC
+## Split keys: create file and read by split alternate-key
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:DYN Split-keys])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select optional file1 assign "fileX"
+           organization indexed
+           access dynamic
+           record key file1-key1
+           alternate record file1-key2 =
+              file1-k1 file1-k2 file1-k3
+           status f-status.
+       data division.
+       file section.
+       fd  file1.
+       1   file1-rec.
+        2  file1-key1 pic xx.
+        2  file1-k1 pic x.
+        2  filler pic x.
+        2  file1-k2 pic x.
+        2  filler pic x.
+        2  file1-k3 pic x.
+        2  filler pic x.
+ 
+       working-storage section.
+       77  f-status pic xx.
+       1   1-data.
+           2  filler pic x(8) value "70A-a-0-".
+           2  filler pic x(8) value "71B-b-1-".
+           2  filler pic x(8) value "72C-c-2-".
+           2  filler pic x(8) value "73D-d-3-".
+           2  filler pic x(8) value "74E-e-4-".
+           2  filler pic x(8) value "75F-f-5-".
+           2  filler pic x(8) value "76G-g-6-".
+           2  filler pic x(8) value "77H-h-7-".
+           2  filler pic x(8) value "78I-i-8-".
+           2  filler pic x(8) value "79J-j-9-".
+       1   filler redefines 1-data.
+           2  1-rec occurs 10 indexed by ix-1.
+            3 1-key  pic xx.
+            3 1-k1   pic x.
+            3 filler pic x.
+            3 1-k2   pic x.
+            3 filler pic x.
+            3 1-k3   pic x.
+            3 filler pic x.
+       procedure division.
+           delete file file1. 
+           open output file1.
+           perform varying ix-1 from 1 by 2 until ix-1 > 10
+              write file1-rec from 1-rec(ix-1)
+           end-perform.
+           perform varying ix-1 from 2 by 2 until ix-1 > 10
+              write file1-rec from 1-rec(ix-1)
+           end-perform.
+           close file1. 
+           open input file1.
+           move spaces to file1-rec.
+           start file1 key >= file1-key2.
+           perform varying ix-1 from 1 by 1 until ix-1 > 10
+              read file1 next
+              if (file1-rec <> 1-rec(ix-1))
+                 display "FAILED READ"
+              end-if
+           end-perform.
+           read file1 next.
+           if (f-status <> "10")
+              display "FAILED AT END fs=" f-status.
+           close file1.    
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS DYNAMIC
+## Partial keys: create file and read using partial-keys.
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:DYN Partial-keys])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select optional file1 assign "fileX"
+           organization indexed
+           access dynamic
+           record key file1-key1
+           alternate record file1-key2
+           alternate record file1-key3 duplicates
+           status f-status.
+       data division.
+       file section.
+       fd  file1.
+       1   file1-rec.
+        2  file1-key1.
+         3 file1-key1-1 pic x(3).
+         3 file1-key1-2 pic x(3).
+        2  file1-key2.
+         3 file1-key2-1 pic x(3).
+         3 file1-key2-2 pic x(3).
+        2  file1-key3.         
+         3 file1-key3-1 pic x(3).
+         3 file1-key3-2 pic x(3).
+        2  file1-serial pic 99.
+ 
+       working-storage section.
+       77  f-status pic xx.
+       77  w-serial pic 99 value 0.
+       procedure division.
+           delete file file1. 
+           open i-o file1.
+           move "AAAAAAaaaaaaXX----" to file1-rec.
+           perform x01-write-file1.
+           move "AAAAABaaaaabXX----" to file1-rec.
+           perform x01-write-file1.
+           move "AAAABBaaaabbXX----" to file1-rec.
+           perform x01-write-file1.
+           move "AAABBBaaabbbXXX---" to file1-rec.
+           perform x01-write-file1.
+           move "AABBBBaabbbbXXX---" to file1-rec.
+           perform x01-write-file1.
+           move "ABBBBBabbbbbXXX---" to file1-rec.
+           perform x01-write-file1.
+           move "BBBBBBbbbbbbXXX---" to file1-rec.
+           perform x01-write-file1.
+      *      
+           move "AAB" to file1-key1-1.
+           move "~~~" to file1-key1-2.
+           start file1 key = file1-key1-1.
+           read file1 next.
+           if (f-status <> "00") or
+              (file1-serial <> 4)
+              display "FAILED fs=" f-status.
+           move "AAB" to file1-key1-1.
+           move "~~~" to file1-key1-2.
+           start file1 key < file1-key1-1.
+           read file1 previous.
+           if (f-status <> "00") or
+              (file1-serial <> 3)
+              display "FAILED fs=" f-status.
+           move "AAA" to file1-key1-1.
+           move "~~~" to file1-key1-2.
+           start file1 key > file1-key1-1.
+           read file1 next.
+           if (f-status <> "00") or
+              (file1-serial <> 4)
+              display "FAILED fs=" f-status.
+      *      
+           move "aab" to file1-key2-1.
+           move "~~~" to file1-key2-2.
+           start file1 key = file1-key2-1.
+           read file1 next.
+           if (f-status <> "00") or
+              (file1-serial <> 4)
+              display "FAILED fs=" f-status.
+           move "aab" to file1-key2-1.
+           move "~~~" to file1-key2-2.
+           start file1 key < file1-key2-1.
+           read file1 previous.
+           if (f-status <> "00") or
+              (file1-serial <> 3)
+              display "FAILED fs=" f-status.
+           move "aaa" to file1-key2-1.
+           move "~~~" to file1-key2-2.
+           start file1 key > file1-key2-1.
+           read file1 next.
+           if (f-status <> "00") or
+              (file1-serial <> 4)
+              display "FAILED fs=" f-status.
+      *
+           move "XX-" to file1-key3-1.
+           start file1 key > file1-key3-1.
+           read file1 next.
+      *>>  NYI Return file-status "02" if duplicates exist
+      *>>  if (f-status <> "02") or
+           if (f-status <> "00") or
+              (file1-serial <> 3)
+              display "FAILED fs=" f-status.
+           close file1.    
+           stop run.
+      *
+       x01-write-file1.
+           move w-serial to file1-serial.
+           write file1-rec.
+           add 1 to w-serial.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS RANDOM
+## Write records to file with 3 keys declared.            
+## Check files with sub-set of keys can access file.
+## Check that ia record added by file with only primary key declared
+## gets indexed for 2nd and 3rd keys.
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:RAN Implicit Indexes])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN TO "./fileX"
+                    ORGANIZATION INDEXED       
+                    ACCESS RANDOM
+                    RECORD KEY file1-key1
+                    ALTERNATE RECORD KEY file1-key2
+                    ALTERNATE RECORD KEY file1-key3.
+       SELECT file2 ASSIGN TO "./fileX"
+                    ORGANIZATION INDEXED       
+                    ACCESS RANDOM
+                    RECORD KEY file2-key1
+                    ALTERNATE RECORD KEY file2-key2.
+       SELECT file3 ASSIGN TO "./fileX"
+                    ORGANIZATION INDEXED       
+                    ACCESS RANDOM
+                    RECORD KEY file3-key1.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec.
+          2  file1-key1 pic 999. 
+          2  file1-key2 pic 999. 
+          2  file1-key3 pic 999. 
+          2  file1-data pic 999. 
+       FD file2.
+       1  file2-rec.
+          2  file2-key1 pic 999. 
+          2  file2-key2 pic 999. 
+          2  file2-key3 pic 999. 
+          2  file2-data pic 999. 
+       FD file3.
+       1  file3-rec.
+          2  file3-key1 pic 999. 
+          2  file3-key2 pic 999. 
+          2  file3-key3 pic 999. 
+          2  file3-data pic 999. 
+       WORKING-STORAGE SECTION.
+       77 ix pic 9(6).
+       PROCEDURE DIVISION.
+          OPEN OUTPUT file1.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             MOVE ix TO file1-key1 file1-data
+             ADD 100 TO ix GIVING file1-key2
+             ADD 200 TO ix GIVING file1-key3
+             WRITE file1-rec
+          END-PERFORM.
+          CLOSE file1.
+      *
+          OPEN INPUT file1.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             MOVE ix TO file1-key1
+             READ file1 KEY file1-key1 
+             IF (file1-data <> ix)
+                DISPLAY "FAILED 1-1"
+             END-IF
+          END-PERFORM.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             ADD 100 TO ix GIVING file1-key2
+             READ file1 KEY file1-key2 
+             IF (file1-data <> ix)
+                DISPLAY "FAILED 1-2"
+             END-IF
+          END-PERFORM.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             ADD 200 TO ix GIVING file1-key3
+             READ file1 KEY file1-key3 
+             IF (file1-data <> ix)
+                DISPLAY "FAILED 1-3"
+             END-IF
+          END-PERFORM.
+          CLOSE file1.
+      *
+          OPEN INPUT file2.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             MOVE ix TO file2-key1
+             READ file2 KEY file2-key1 
+             IF (file2-data <> ix)
+                DISPLAY "FAILED 2-1"
+             END-IF
+          END-PERFORM.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             ADD 100 TO ix GIVING file2-key2
+             READ file2 KEY file2-key2 
+             IF (file2-data <> ix)
+                DISPLAY "FAILED 2-2"
+             END-IF
+          END-PERFORM.
+          CLOSE file2.
+      *
+          OPEN INPUT file3.
+          PERFORM VARYING ix FROM 1 BY 1
+             UNTIL ix > 10
+             MOVE ix TO file3-key1
+             READ file3 KEY file3-key1 
+             IF (file3-data <> ix)
+                DISPLAY "FAILED 3-1"
+             END-IF
+          END-PERFORM.
+          CLOSE file3.
+      *
+      *   Insert rec via file with only 1 index declared
+          OPEN I-O file3.
+          MOVE 20 TO ix.
+          MOVE ix TO file3-key1 file3-data
+          ADD 100 TO ix GIVING file3-key2
+          ADD 200 TO ix GIVING file3-key3
+          WRITE file3-rec
+          CLOSE file3
+      *
+      *   Check new rec is visible in other files
+          OPEN INPUT file1.
+          MOVE 20 TO file1-key1.
+          READ file1 KEY file1-key1.
+          IF (file1-data <> 20)  
+             DISPLAY "FAILED 1-4".
+          MOVE SPACES TO file1-rec.
+          MOVE 120 TO file1-key2.
+          READ file1 KEY file1-key2.
+          IF (file1-data <> 20)  
+             DISPLAY "FAILED 1-5".
+          MOVE SPACES TO file1-rec.
+          MOVE 220 TO file1-key3.
+          READ file1 KEY file1-key3.
+          IF (file1-data <> 20)  
+             DISPLAY "FAILED 1-6".
+          CLOSE file1. 
+      *
+          OPEN INPUT file2.
+          MOVE 20 TO file2-key1.
+          READ file2 KEY file2-key1.
+          IF (file2-data <> 20)  
+             DISPLAY "FAILED 2-3".
+          MOVE SPACES TO file2-rec.
+          MOVE 120 TO file2-key2.
+          READ file2 KEY file2-key2.
+          IF (file2-data <> 20)  
+             DISPLAY "FAILED 2-4".
+          CLOSE file2. 
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ==================================================================
+## FILE STATUS.
+## ==================================================================
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS DYNAMIC
+## Optional file not present. START <
+## ------------------------------------------------------------------
+
+AT_SETUP([FS ORG:REL ACC:DYN No-file START <])
+AT_KEYWORDS([file])
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL TEST-FILE
+              ASSIGN      "./TESTFILE"
+              ACCESS       DYNAMIC
+              ORGANIZATION RELATIVE
+              STATUS       TESTSTAT
+              RELATIVE KEY TESTKEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC     PIC X(4).
+       WORKING-STORAGE  SECTION.
+       01  TESTKEY      USAGE BINARY-LONG.
+       01  TESTSTAT     PIC XX.
+           88  V-OK     VALUE "00" "05".
+       PROCEDURE        DIVISION.
+           DELETE FILE TEST-FILE.
+           OPEN  I-O   TEST-FILE.
+           IF NOT V-OK
+              DISPLAY "OPEN " TESTSTAT
+              END-DISPLAY
+              STOP RUN
+           END-IF.
+           MOVE 99 TO TESTKEY.
+           START TEST-FILE KEY < TESTKEY
+           END-START.
+           IF TESTSTAT NOT = "23"
+              DISPLAY "START " TESTSTAT
+              END-DISPLAY
+           END-IF.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS DYNAMIC
+## Optional file not present. START >
+## ------------------------------------------------------------------
+
+AT_SETUP([FS ORG:REL ACC:DYN No-file START >])
+AT_KEYWORDS([file])
+
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL TEST-FILE
+              ASSIGN      "./TESTFILE"
+              ACCESS       DYNAMIC
+              ORGANIZATION RELATIVE
+              STATUS       TESTSTAT
+              RELATIVE KEY TESTKEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC     PIC X(4).
+       WORKING-STORAGE  SECTION.
+       01  TESTKEY      USAGE BINARY-LONG.
+       01  TESTSTAT     PIC XX.
+           88  V-OK     VALUE "00" "05".
+       PROCEDURE        DIVISION.
+           DELETE FILE TEST-FILE.
+           OPEN  I-O   TEST-FILE.
+           IF NOT V-OK
+              DISPLAY "OPEN " TESTSTAT
+              END-DISPLAY
+              STOP RUN
+           END-IF.
+           MOVE 99 TO TESTKEY.
+           START TEST-FILE KEY > TESTKEY
+           END-START.
+           IF TESTSTAT NOT = "23"
+              DISPLAY "START " TESTSTAT
+              END-DISPLAY
+           END-IF.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+
+
+
+
+
+
+## ==================================================================
+## FILE MISCELLANEOUS.
+## ==================================================================
+
+
+
+## ------------------------------------------------------------------
+## FILE-STATUS shared in common between child module and parent.
+## ------------------------------------------------------------------
+
+AT_SETUP([FILE-STATUS common parent+child COBOL modules])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL file1
+           ASSIGN DISK
+           STATUS f-status.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1 GLOBAL.
+       1  file1-rec pic x(10).
+       WORKING-STORAGE SECTION.
+       77  f-status pic xx.
+       PROCEDURE DIVISION.
+           MOVE "xx" to f-status.
+           CALL "prog2".
+           IF (f-status <> "00")
+              DISPLAY "FAILED: fs= " f-status
+           ELSE
+              CLOSE file1
+           END-IF.
+           STOP RUN.
+      *
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog2.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+           OPEN OUTPUT file1.
+           EXIT PROGRAM.
+       END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## File IO in CALLed child module on FILE opened in parent module.
+## File ORGANIZATION RELATIVE, ACCESS DYNAMIC
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:REL ACC:DYN ref'd from COBOL module])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL file1
+           ASSIGN DISK
+           ORGANIZATION RELATIVE
+           ACCESS MODE DYNAMIC
+           RELATIVE KEY file1-key
+           STATUS f-status.
+       DATA DIVISION. 
+       FILE SECTION.
+       FD file1 GLOBAL.
+       1  file1-rec pic x(10).
+       WORKING-STORAGE SECTION.
+       77  file1-key GLOBAL pic 9(6).
+       77  f-status GLOBAL pic xx.
+       PROCEDURE DIVISION.
+           DELETE FILE file1.
+           OPEN I-O file1.
+           IF NOT (f-status = "00" or "05")
+              DISPLAY "FAILED: OPEN fs=" f-status
+              STOP RUN
+           END-IF.
+           MOVE ALL "X" TO file1-rec.
+           MOVE 1 TO file1-key.
+           WRITE file1-rec.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: WRITE fs=" f-status
+              STOP RUN
+           END-IF.
+           CALL "prog2".
+           MOVE 1 TO file1-key.
+           READ file1.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: READ in parent MODULE fs=" f-status 
+           END-IF.
+           IF (file1-rec <> ALL "Z")
+              DISPLAY "FAILED: READ incorrect record-data"
+           END-IF.
+           CLOSE file1.
+           STOP RUN.
+      *
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog2.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+           MOVE 1 TO file1-key.
+           READ file1.    
+           IF (f-status <> "00")
+              DISPLAY "FAILED: READ in child MODULE fs=" f-status
+           END-IF.
+           MOVE ALL "Z" TO file1-rec.
+           REWRITE file1-rec.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: REWRITE in child MODULE fs=" f-status
+           END-IF.
+           EXIT PROGRAM.
+       END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+
+
+
+
+## ------------------------------------------------------------------
+## File IO in CALLed child module on FILE opened in parent module.
+## File ORGANIZATION INDEXED, ACCESS DYNAMIC
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:DYN ref'd from COBOL module])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT OPTIONAL fileX
+           ASSIGN DISK
+           ORGANIZATION INDEXED
+           ACCESS MODE DYNAMIC
+           RECORD KEY fileX-key
+           STATUS f-status.
+       DATA DIVISION. 
+       FILE SECTION.
+       FD fileX GLOBAL.
+       1  fileX-rec.
+          2   fileX-key pic 9(4).
+          2   fileX-data pic x(10).
+       WORKING-STORAGE SECTION.
+       77  f-status GLOBAL pic xx.
+       PROCEDURE DIVISION.
+           DELETE FILE fileX.
+           OPEN I-O fileX.
+           IF NOT (f-status = "00" or "05")
+              DISPLAY "FAILED: OPEN fs=" f-status
+              STOP RUN
+           END-IF.
+           MOVE ALL "X" TO fileX-data.
+           MOVE 1 TO fileX-key.
+           WRITE fileX-rec.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: WRITE fs=" f-status
+              STOP RUN
+           END-IF.
+           CALL "prog2".
+           MOVE 1 TO fileX-key.
+           READ fileX.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: READ in parent MODULE fs=" f-status
+           END-IF.
+           IF (fileX-data <> ALL "Z")
+              DISPLAY "FAILED: READ incorrect record-data"
+           END-IF.
+           CLOSE fileX.
+           STOP RUN.
+      *
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog2.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+           MOVE 1 TO fileX-key.
+           READ fileX.    
+           IF (f-status <> "00")
+              DISPLAY "FAILED: READ in child MODULE fs=" f-status
+           END-IF.
+           MOVE ALL "Z" TO fileX-data.
+           REWRITE fileX-rec.
+           IF (f-status <> "00")
+              DISPLAY "FAILED: REWRITE in child MODULE fs=" f-status
+           END-IF.
+           EXIT PROGRAM.
+       END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## File DECLARATIVES SECTION.                                       
+## ------------------------------------------------------------------
+
+AT_SETUP([DECLARATIVES procedure referencing])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "./TEST-FILE".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(10).
+       WORKING-STORAGE  SECTION.
+       01 Z             USAGE BINARY-LONG VALUE 0.
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P0101.
+           ADD 1 TO Z.
+       END DECLARATIVES.
+       MP01 SECTION.
+       MP0101.
+           OPEN INPUT TEST-FILE.
+           PERFORM P0101.
+           IF Z NOT = 2
+              DISPLAY Z
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## File DECLARATIVES SECTION.                                       
+## ------------------------------------------------------------------
+
+AT_SETUP([DECLARATIVES procedure referencing (multiple)])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN "./TEST-FILE".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(10).
+       WORKING-STORAGE  SECTION.
+       01 Z             USAGE BINARY-LONG VALUE 0.
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P0101.
+           ADD 1 TO Z.
+       P02 SECTION.
+           USE AFTER ERROR PROCEDURE ON OUTPUT.
+       P0201.
+           ADD 1 TO Z.
+       END DECLARATIVES.
+       MP01 SECTION.
+       MP0101.
+           OPEN  INPUT  TEST-FILE.
+           PERFORM P01 THRU P02.
+           IF Z NOT = 3
+              DISPLAY Z
+              END-DISPLAY
+           END-IF.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+## ==================================================================
+## SPECIAL FILES. KEYBOARD, DISPLAY, pipes, etc
+## ==================================================================
+
+
+
+
+## ------------------------------------------------------------------
+## File ASSIGN KEYBOARD and ASSIGN DISPLAY                         
+## ------------------------------------------------------------------
+
+AT_SETUP([ASSIGN to KEYBOARD/DISPLAY])
+AT_KEYWORDS([file])
+
+AT_DATA([TEST-FILE],
+[a
+ab
+abc
+abcd
+abcde
+abcdef
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN  KEYBOARD
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       SELECT TEST-OUT  ASSIGN  DISPLAY
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(80).
+       FD TEST-OUT.
+       01 TEST-REC-OUT  PIC X(80).
+       PROCEDURE        DIVISION.
+       A00.
+           OPEN INPUT  TEST-FILE.
+           OPEN OUTPUT TEST-OUT.
+       A01.
+           READ TEST-FILE AT END
+                GO TO Z99
+           END-READ.
+           WRITE TEST-REC-OUT FROM TEST-REC
+           END-WRITE.
+           GO TO A01.
+       Z99.
+           CLOSE TEST-FILE.
+           CLOSE TEST-OUT.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([cat TEST-FILE | ./prog], [0],
+[a
+ab
+abc
+abcd
+abcde
+abcdef
+])
+
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## Input Pipe and Output Pipe                                            
+## ------------------------------------------------------------------
+
+AT_SETUP([READ INPUT pipe & WRITE OUTPUT pipe])
+AT_KEYWORDS([file])
+
+AT_DATA([test-data-in],
+[NAME
+STREET
+TOWN
+COUNTRY
+])
+
+AT_DATA([provider], [
+cat $1
+])
+
+AT_DATA([consumer], [
+cat
+])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       configuration section.
+       input-output section.
+       file-control.
+           select pipe-in
+               organization line sequential
+               access sequential
+               assign to w-command
+               status is f-status.  
+           select pipe-out
+               organization line sequential
+               access sequential
+               assign to w-command
+               status is f-status.  
+       data division.
+       file section.
+       fd  pipe-in.
+       1   pipe-msg-in pic x(132).
+       fd  pipe-out.
+       1   pipe-msg-out pic x(132).
+       working-storage section.
+       77  f-status pic xx.
+           88  f-status-ok value "00".
+       77  w-command pic x(100).
+       procedure division.
+           move "< sh ./provider ./test-data-in"
+             to w-command.
+           open input pipe-in.
+           if not f-status-ok
+              display "FAILED: OPEN INPUT"
+              stop run
+           end-if.
+           move "> sh ./consumer > ./test-data-out"
+             to w-command.
+           open output pipe-out.
+           if not f-status-ok
+              display "FAILED: OPEN OUTPUT"
+              stop run
+           end-if.
+           perform until not f-status-ok     
+              read pipe-in
+              if f-status-ok
+                 perform x01-100-map
+                 write pipe-msg-out
+              end-if
+           end-perform.
+           close pipe-in.
+           close pipe-out.
+           stop run.
+      *
+       x01-100-map.
+           move "*** Jacques Tati ***" to pipe-msg-out.
+           if (pipe-msg-in = "COUNTRY")
+              move "Country: FRANCE" to pipe-msg-out.
+           if (pipe-msg-in = "TOWN")
+              move "Town: DEAUVILLE" to pipe-msg-out.
+           if (pipe-msg-in = "NAME")
+              move "Name: M. Hulot" to pipe-msg-out.
+           if (pipe-msg-in = "STREET")
+              move "Street: Rue des Anglais" to pipe-msg-out.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat test-data-out], [0],
+[Name: M. Hulot
+Street: Rue des Anglais
+Town: DEAUVILLE
+Country: FRANCE
+])
+
+AT_CLEANUP
+
+
+
+
+
+
+## ------------------------------------------------------------------
+## SORT file from KEYBOARD to DISPLAY                         
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT KEYBOARD to DISPLAY])
+AT_KEYWORDS([file])
+
+AT_DATA([TEST-FILE],
+[9
+22
+11
+0
+00
+8
+77
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN  KEYBOARD
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       SELECT TEST-OUT  ASSIGN  DISPLAY
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       SELECT SORT-FILE ASSIGN DISK.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(80).
+       FD TEST-OUT.
+       01 TEST-REC-OUT  PIC X(80).
+       SD SORT-FILE.
+       01 SORT-REC      PIC X(80).
+       PROCEDURE        DIVISION.
+       A00.
+           SORT SORT-FILE
+                ON ASCENDING SORT-REC
+                USING        TEST-FILE
+                GIVING       TEST-OUT.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([cat TEST-FILE | ./prog], [0],
+[0
+00
+11
+22
+77
+8
+9
+])
+
+AT_CLEANUP
+
+
+
+
+
+## ==================================================================
+## SORT/ MERGE FILES. 
+## ==================================================================
+
+
+
+
+## ------------------------------------------------------------------
+## SORT non-existant file
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT nonexistent file])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT SORT-IN   ASSIGN "./SORT-IN".
+       SELECT SORT-OUT  ASSIGN "./SORT-OUT".
+       SELECT SORT-WRK  ASSIGN "./SORT-WRK".
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD SORT-IN.
+       01 IN-REC        PIC X(100).
+       FD SORT-OUT.
+       01 OUT-REC       PIC X(100).
+       SD SORT-WRK.
+       01 WRK-REC       PIC X(100).
+       PROCEDURE        DIVISION.
+           SORT SORT-WRK
+                ASCENDING KEY WRK-REC
+                USING  SORT-IN
+                GIVING SORT-OUT.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat ./SORT-OUT], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## SORT USING input-file GIVING output-file
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT USING ... GIVING ...])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN "./file1" STATUS IS f-status.
+       SELECT file2 ASSIGN "./file2" STATUS IS f-status.
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x(14). 
+       FD file2.
+       1  file2-rec pic x(14).
+       SD file3.
+       1  file3-rec.
+          2  file3-key pic 9(4).
+          2  file3-data pic x(10).
+       WORKING-STORAGE SECTION.
+       77 f-status pic xx.
+       1  1-values.
+          2  filler pic x(14) value "0001A--------A".
+          2  filler pic x(14) value "0002B--------B".
+          2  filler pic x(14) value "0003C--------C".
+          2  filler pic x(14) value "0004D--------D".
+          2  filler pic x(14) value "0005E--------E".
+          2  filler pic x(14) value "0006F--------F".
+          2  filler pic x(14) value "0007G--------G".
+          2  filler pic x(14) value "0008H--------H".
+          2  filler pic x(14) value "0009I--------I".
+          2  filler pic x(14) value "0010J--------J".
+          2  filler pic x(14) value "0011K--------K".
+          2  filler pic x(14) value "0012L--------L".
+          2  filler pic x(14) value "0013M--------M".
+          2  filler pic x(14) value "0014N--------N".
+          2  filler pic x(14) value "0015O--------O".
+          2  filler pic x(14) value "0016P--------P".
+          2  filler pic x(14) value "0017Q--------Q".
+          2  filler pic x(14) value "0018R--------R".
+          2  filler pic x(14) value "0019S--------S".
+          2  filler pic x(14) value "0020T--------T".
+          2  filler pic x(14) value "0021U--------U".
+          2  filler pic x(14) value "0022V--------V".
+          2  filler pic x(14) value "0023W--------W".
+          2  filler pic x(14) value "0024X--------X".
+          2  filler pic x(14) value "0025Y--------Y".
+          2  filler pic x(14) value "0026Z--------Z".
+       1  filler redefines 1-values.
+          2  1-record occurs 26 times indexed by ix-1.
+           3 1-key pic 9(4).
+           3 1-data pic x(10).
+       PROCEDURE DIVISION.
+          OPEN OUTPUT file1.
+          PERFORM VARYING ix-1 FROM 1 BY 2 UNTIL ix-1 > 26
+             MOVE 1-record(ix-1) TO file1-rec
+             WRITE file1-rec
+          END-PERFORM.
+          PERFORM VARYING ix-1 FROM 2 BY 2 UNTIL ix-1 > 26
+             MOVE 1-record (ix-1)TO file1-rec
+             WRITE file1-rec
+          END-PERFORM.
+          CLOSE file1.
+          SORT file3 ON ASCENDING file3-key
+             USING file1
+             GIVING file2.
+          OPEN INPUT file2.
+          PERFORM VARYING ix-1 FROM 1 BY 1
+             UNTIL (ix-1 > 26) OR (f-status <> "00")
+             READ file2
+             IF (file2-rec <> 1-record(ix-1))       
+                MOVE "99" to f-status
+             END-IF 
+          END-PERFORM.
+          IF (f-status <> "00")
+             DISPLAY "FAILED"
+          ELSE
+             READ file2
+             IF (f-status <> "10")
+                DISPLAY "FAILED" 
+             END-IF
+          END-IF.
+          CLOSE file2.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## SORT USING input-file GIVING output-file
+## ------------------------------------------------------------------
+
+
+AT_SETUP([SORT INPUT PROC + OUTPUT PROC])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       SD file1.
+       1  file1-rec.
+          2  file1-key pic 9(4).
+          2  file1-data pic x(10).
+       WORKING-STORAGE SECTION.
+       77 w-eof pic 9 value 0.
+       1  1-values.
+          2  filler pic x(14) value "0001A--------A".
+          2  filler pic x(14) value "0002B--------B".
+          2  filler pic x(14) value "0003C--------C".
+          2  filler pic x(14) value "0004D--------D".
+          2  filler pic x(14) value "0005E--------E".
+          2  filler pic x(14) value "0006F--------F".
+          2  filler pic x(14) value "0007G--------G".
+          2  filler pic x(14) value "0008H--------H".
+          2  filler pic x(14) value "0009I--------I".
+          2  filler pic x(14) value "0010J--------J".
+          2  filler pic x(14) value "0011K--------K".
+          2  filler pic x(14) value "0012L--------L".
+          2  filler pic x(14) value "0013M--------M".
+          2  filler pic x(14) value "0014N--------N".
+          2  filler pic x(14) value "0015O--------O".
+          2  filler pic x(14) value "0016P--------P".
+          2  filler pic x(14) value "0017Q--------Q".
+          2  filler pic x(14) value "0018R--------R".
+          2  filler pic x(14) value "0019S--------S".
+          2  filler pic x(14) value "0020T--------T".
+          2  filler pic x(14) value "0021U--------U".
+          2  filler pic x(14) value "0022V--------V".
+          2  filler pic x(14) value "0023W--------W".
+          2  filler pic x(14) value "0024X--------X".
+          2  filler pic x(14) value "0025Y--------Y".
+          2  filler pic x(14) value "0026Z--------Z".
+       1  filler redefines 1-values.
+          2  1-record occurs 26 times indexed by ix-1.
+           3 1-key pic 9(4).
+           3 1-data pic x(10).
+       PROCEDURE DIVISION.
+       a01-main.
+          SORT file1 ON ASCENDING file1-key
+             INPUT PROCEDURE a02-release-to-sort
+             OUTPUT PROCEDURE a03-return-from-sort.
+          STOP RUN.
+      *
+       a02-release-to-sort.
+          PERFORM VARYING ix-1 FROM 1 BY 2 UNTIL ix-1 > 26
+             RELEASE file1-rec from 1-record(ix-1)
+          END-PERFORM.
+          PERFORM VARYING ix-1 FROM 2 BY 2 UNTIL ix-1 > 26
+             RELEASE file1-rec from 1-record(ix-1)
+          END-PERFORM.
+      *
+       a03-return-from-sort.
+          PERFORM VARYING ix-1 FROM 1 BY 1
+             UNTIL (ix-1 > 26) OR (w-eof = 1)
+             RETURN file1 RECORD
+               AT END MOVE 1 TO w-eof       
+             END-RETURN
+             IF (file1-rec <> 1-record(ix-1))       
+                MOVE 1 TO w-eof
+             END-IF 
+          END-PERFORM.
+          IF (w-eof = 1)
+             DISPLAY "FAILED" 
+          ELSE
+             RETURN file1 RECORD 
+               AT END CONTINUE
+               NOT AT END DISPLAY "FAILED"
+             END-RETURN
+          END-IF.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## SORT file on 2 keys                                        
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT on key-1 ASC key2 DESC])
+AT_KEYWORDS([file])
+
+AT_DATA([file1],
+[A1
+A2
+A3
+Z9
+A4
+B1
+B2
+A0
+C1
+C2
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ORGANIZATION LINE SEQUENTIAL 
+                    ASSIGN "./file1".
+       SELECT file2 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file2".
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic xxx.
+       FD file2.
+       1  file2-rec pic xxx.
+       SD file3.
+       1  file3-rec.
+          2  file3-key1 pic x.
+          2  file3-key2 pic 9.
+          2  file3-dot pic x.
+       PROCEDURE DIVISION.
+          SORT file3 ON ASCENDING file3-key1
+                        DESCENDING file3-key2
+             USING file1
+             GIVING file2.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat file2], [0],
+[A4
+A3
+A2
+A1
+A0
+B2
+B1
+C2
+C1
+Z9
+])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## SORT file ORGANIZATION LINE SEQUENTIAL variable length records               
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT ORG LINE SEQUENTIAL variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([file1],
+[A1XXXX
+A2XXX
+A3XX
+Z9XXXXXXXXXX
+A4X
+B1XXXXXXX
+B2XXXXXX
+A0XXXXX
+C1XXXXXXXXX
+C2XXXXXXXX
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file1".
+       SELECT file2 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file2".
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x(12).
+       FD file2.
+       1  file2-rec pic x(12).
+       SD file3.
+       1  file3-rec.
+          2  file3-key1 pic x.
+          2  file3-key2 pic 9.
+          2  filler pic x(10).
+       PROCEDURE DIVISION.
+          SORT file3 ON ASCENDING file3-key1
+                        DESCENDING file3-key2
+             USING file1
+             GIVING file2.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat file2], [0],
+[A4X
+A3XX
+A2XXX
+A1XXXX
+A0XXXXX
+B2XXXXXX
+B1XXXXXXX
+C2XXXXXXXX
+C1XXXXXXXXX
+Z9XXXXXXXXXX
+])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## SORT file ORGANIZATION SEQUENTIAL variable length records               
+## ------------------------------------------------------------------
+
+AT_SETUP([SORT ORG SEQUENTIAL variable rsz])
+AT_KEYWORDS([file])
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ORGANIZATION SEQUENTIAL
+                    ASSIGN "./file1".
+       SELECT file2 ORGANIZATION SEQUENTIAL
+                    ASSIGN "./file2".
+       SELECT file3 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1 RECORD VARYING FROM 3 TO 12 DEPENDING rsz.
+       1  file1-rec pic x(12). 
+       FD file2 RECORD VARYING FROM 3 TO 12 DEPENDING rsz.
+       1  file2-rec pic x(12).
+       SD file3 RECORD VARYING FROM 3 TO 12 DEPENDING rsz.
+       1  file3-rec.
+          2  file3-key1 pic x.
+          2  file3-key2 pic 9.    
+          2  filler pic x(10).
+       WORKING-STORAGE SECTION.
+       77 rsz pic 99.
+       1  1-data.
+          2  filler pic x(14) VALUE "03A4X".
+          2  filler pic x(14) VALUE "04A3XX".
+          2  filler pic x(14) VALUE "05A2XXX".
+          2  filler pic x(14) VALUE "06A1XXXX".
+          2  filler pic x(14) VALUE "07A0XXXXX".
+          2  filler pic x(14) VALUE "08B2XXXXXX".
+          2  filler pic x(14) VALUE "09B1XXXXXXX".
+          2  filler pic x(14) VALUE "10C2XXXXXXXX".
+          2  filler pic x(14) VALUE "11C1XXXXXXXXX".
+          2  filler pic x(14) VALUE "12Z9XXXXXXXXXX".
+      *
+       1  filler redefines 1-data.
+          2  filler occurs 10 times indexed by ix-1.
+           3 1-rsz pic 99.
+           3 1-rec pic x(12).
+
+       PROCEDURE DIVISION.
+          OPEN OUTPUT file1.
+          PERFORM VARYING ix-1 FROM 1 BY 2 UNTIL ix-1 > 10
+             MOVE 1-rsz(ix-1) TO rsz
+             MOVE 1-rec(ix-1) TO file1-rec
+             WRITE file1-rec
+          END-PERFORM.
+          PERFORM VARYING ix-1 FROM 2 BY 2 UNTIL ix-1 > 10
+             MOVE 1-rsz(ix-1) TO rsz
+             MOVE 1-rec(ix-1) TO file1-rec
+             WRITE file1-rec
+          END-PERFORM.
+          CLOSE file1.
+          SORT file3 ON ASCENDING file3-key1
+                        DESCENDING file3-key2
+             USING file1
+             GIVING file2.
+          OPEN INPUT file2.
+          PERFORM VARYING ix-1 FROM 1 BY 1 UNTIL ix-1 > 10
+             READ file2
+      *>> fileio-sort currently returns constant length records
+             MOVE 1-rsz(ix-1) TO rsz
+      *>> END-OF-DETOUR
+             IF (1-rsz(ix-1) <> rsz) or
+                (1-rec(ix-1) <> file2-rec)
+                DISPLAY "FAILED"
+             END-IF
+          END-PERFORM.
+          CLOSE file2.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## MERGE files ORGANIZATION LINE SEQUENTIAL variable length records               
+## ------------------------------------------------------------------
+
+AT_SETUP([MERGE ORG LINE SEQUENTIAL variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([file1],
+[A1XXXX
+A2XXX
+A3XX
+Z9XXXXXXXXXX
+A4X
+B1XXXXXXX
+B2XXXXXX
+A0XXXXX
+C1XXXXXXXXX
+C2XXXXXXXX
+])
+
+AT_DATA([file2],
+[A1****
+A2***
+A3**
+Z9**********
+A4*
+B1*******
+B2******
+A0*****
+C1*********
+C2********
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file1".
+       SELECT file2 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file2".
+       SELECT file3 ORGANIZATION LINE SEQUENTIAL
+                    ASSIGN "./file3".
+       SELECT file4 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x(12).
+       FD file2.
+       1  file2-rec pic x(12).
+       FD file3.
+       1  file3-rec pic x(12).
+       SD file4.
+       1  file4-rec.
+          2  file4-key1 pic x.
+          2  file4-key2 pic 9.
+          2  filler pic x(10).
+       PROCEDURE DIVISION.
+          MERGE file4 ON ASCENDING file4-key1
+                        DESCENDING file4-key2
+             USING file1 file2
+             GIVING file3.
+          STOP RUN.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat file3], [0],
+[A4X
+A4*
+A3XX
+A3**
+A2XXX
+A2***
+A1XXXX
+A1****
+A0XXXXX
+A0*****
+B2XXXXXX
+B2******
+B1XXXXXXX
+B1*******
+C2XXXXXXXX
+C2********
+C1XXXXXXXXX
+C1*********
+Z9XXXXXXXXXX
+Z9**********
+])
+
+AT_CLEANUP
+
+
+
+
+
+## ==================================================================
+## FILEIO ASSOCIATED CALL ROUTINES. 
+## ==================================================================
+
+
+
+
+## ------------------------------------------------------------------
+## FILEIO CALL ROUTINES FOR BYTE-STREAMS
+## ------------------------------------------------------------------
+
+AT_SETUP([FILE CALL BYTE-STREAM])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.      
+       data division.            
+       working-storage section.
+       77  fh pic 9 comp-5.
+       77  rb pic x(8) comp-x.
+       77  cb-bfr pic x(4) comp-x value 16.
+       1   w-filename-int pic x(5) value "file1".
+       1   bfr pic x(16).
+     
+       procedure division.        
+           call "CBL_CREATE_FILE"
+              using w-filename-int, 3, 0, 0, fh.       
+           if (return-code <> 0)
+              display "FAILED 1.0: CBL_CREATE_FILE (res="
+                      return-code ")"
+              stop run.
+      *
+           move 0 to rb.
+           move "GNU-COBOL" to bfr.
+           call "CBL_WRITE_FILE"
+              using fh, rb, cb-bfr, 0, bfr.
+           if (return-code <> 0)
+              display "FAILED 1.1: CBL_WRITE_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CLOSE_FILE"
+              using fh.       
+           if (return-code <> 0)
+              display "FAILED 1.3: CBL_CLOSE_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_OPEN_FILE"
+              using w-filename-int, 1, 0, 0, fh.       
+           if (return-code <> 0)
+              display "FAILED 2.0: CBL_OPEN_FILE (res=" return-code ")"
+              stop run.
+      *
+           move 0 to rb.
+           call "CBL_READ_FILE"
+              using fh, rb, cb-bfr, x"80", bfr.
+           if (return-code <> 0)
+              display "FAILED 2.1: CBL_READ_FILE (res=" return-code ")"
+              stop run.
+           if (bfr <> "GNU-COBOL")
+              display "FAILED 2.3: CBL_READ_FILE (bad data)"
+              stop run.
+           if (rb <> cb-bfr)
+              display "FAILED 2.4: CBL_READ_FILE (bad offset returned)"
+              stop run.
+      *
+           call "CBL_CLOSE_FILE"
+              using fh.       
+           if (return-code <> 0)
+              display "FAILED 2.5: CBL_CLOSE_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_OPEN_FILE"
+              using w-filename-int, 3, 0, 0, fh.       
+           if (return-code <> 0)
+              display "FAILED 3.0: CBL_OPEN_FILE (res=" return-code ")"
+              stop run.
+           move cb-bfr to rb.
+           move "JULY-2014" to bfr.
+           call "CBL_WRITE_FILE"
+              using fh, rb, cb-bfr, 0, bfr.
+           if (return-code <> 0)
+              display "FAILED 3.1: CBL_WRITE_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CLOSE_FILE"
+              using fh.       
+           if (return-code <> 0)
+              display "FAILED 3.2: CBL_CLOSE_FILE (res=" return-code ")"
+              stop run.
+      *
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+AT_CHECK([cat ./file1], [0],
+[GNU-COBOL       JULY-2014       ])
+
+AT_CLEANUP
+
+
+
+
+
+## ------------------------------------------------------------------
+## FILEIO CALL ROUTINES DIRECTORY + FILE MANIPULATION 1
+## ------------------------------------------------------------------
+
+AT_SETUP([FILE CALL directory + file ops 1]) 
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.      
+       data division.            
+       working-storage section.
+       77  fh pic 9 comp-5.
+       77  rb pic x(8) comp-x.
+       77  cb-bfr pic x(4) comp-x value 16.
+       1   w-dirname-1 pic x(4) value "tmp1".
+       1   w-dirname-2 pic x(4) value "tmp2".
+       1   w-filename-1 pic x(10) value "../file1-A".
+       1   w-filename-2 pic x(7) value "file1-B".
+       1   w-filename-3 pic x(12) value "tmp2/file1-C".
+       1   bfr pic x(16).
+       1   w-finfo pic x(16).
+     
+       procedure division.        
+           call "CBL_CREATE_DIR" using w-dirname-1.       
+           if (return-code <> 0)
+              display "FAILED 1.0: CBL_CREATE_DIR (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CHANGE_DIR" using w-dirname-1.       
+           if (return-code <> 0)
+              display "FAILED 1.1: CBL_CHANGE_DIR (res=" return-code ")"
+              stop run.
+              .
+      *
+           call "CBL_COPY_FILE" using w-filename-1, w-filename-2.
+           if (return-code <> 0)
+              display "FAILED 1.2: CBL_COPY_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CHECK_FILE_EXIST" using w-filename-2, w-finfo.
+           if (return-code <> 0)
+              display "FAILED 1.3: CBL_CHECK_FILE_EXIST (res="
+                      return-code ")"
+              stop run.
+      *
+      *    Create a sub-directory - but remain in parent directory.
+           call "CBL_CREATE_DIR" using w-dirname-2.       
+           if (return-code <> 0)
+              display "FAILED 2.0: CBL_CREATE_DIR (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_COPY_FILE" using w-filename-2, w-filename-3.
+           if (return-code <> 0)
+              display "FAILED 2.1: CBL_COPY_FILE (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_DELETE_DIR" using w-dirname-2.                 
+           if (return-code = 0)
+              display "FAILED 2.2: CBL_DELETE_DIR EXPECTED TO FAIL"
+              stop run.
+      *
+           call "CBL_DELETE_FILE" using w-filename-3.                 
+           if (return-code <> 0)
+              display "FAILED 2.3: CBL_DELETE_FILE (res="
+                      return-code ")"                   
+              stop run.
+      *
+           call "CBL_DELETE_DIR" using w-dirname-2.                 
+           if (return-code <> 0)
+              display "FAILED 2.4: CBL_DELETE_DIR (res=" return-code ")"
+              stop run.
+      *
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([touch file1-A], [0])
+AT_CHECK([./prog], [0])
+AT_CHECK([test -f ./tmp1/file1-B], [0])
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## FILEIO CALL ROUTINES DIRECTORY + FILE MANIPULATION 2
+## ------------------------------------------------------------------
+
+AT_SETUP([FILE CALL directory + file ops 2]) 
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.      
+       data division.            
+       working-storage section.
+       77  fh pic 9 comp-5.
+       77  rb pic x(8) comp-x.
+       77  cb-bfr pic x(4) comp-x value 16.
+       1   w-dirname-1 pic x(4) value "tmp1".
+       1   w-dirname-2 pic x(9) value "tmp1/tmp2".
+       1   w-dirname-3 pic x(14) value "tmp1/tmp2/tmp3".
+       1   w-filename pic x(20) value "tmp1/tmp2/tmp3/file1".
+       1   w-finfo pic x(16).
+     
+       procedure division.        
+           call "CBL_CREATE_DIR" using w-dirname-1.       
+           if (return-code <> 0)
+              display "FAILED 1: CBL_CREATE_DIR (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CREATE_DIR" using w-dirname-2.       
+           if (return-code <> 0)
+              display "FAILED 2: CBL_CREATE_DIR (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CREATE_DIR" using w-dirname-3.       
+           if (return-code <> 0)
+              display "FAILED 3: CBL_CREATE_DIR (res=" return-code ")"
+              stop run.
+      *
+           call "CBL_CREATE_FILE"
+              using w-filename, 1, 0, 0, fh.
+           if (return-code <> 0)
+              display "FAILED 4: CBL_CREATE_FILE (res="
+                      return-code ")"
+              stop run.
+      *
+           call "CBL_CHECK_FILE_EXIST" using w-filename, w-finfo.
+           if (return-code <> 0)
+              display "FAILED 5: CBL_CHECK_FILE_EXIST (res="
+                      return-code ")"
+              stop run.
+      *
+      *    Should fail 'cos directory is NOT empty.
+           call "CBL_DELETE_DIR" using w-dirname-1.
+           if (return-code = 0)
+              display "FAILED 6: CBL_DELETE_DIR EXPECTED TO FAIL"
+              stop run.
+      *
+      *    Remove all files (including sub-directories) in t-m-p-1
+           accept w-finfo.
+           call "CBL_PURGE_DIR" using w-dirname-1.                 
+           if (return-code <> 0)
+              display "FAILED 7: CBL_PURGE_DIR (res=" return-code ")"
+              stop run.
+      *
+      *    Should succeed 'cos directory is NOW empty.
+           call "CBL_DELETE_DIR" using w-dirname-1.
+           if (return-code <> 0) 
+              display "FAILED 8: CBL_DELETE_DIR (res=" return-code ")"
+              stop run.
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog prog.cob], [0], , [])
+AT_CHECK([./prog], [0])
+
+AT_CLEANUP
+
+
