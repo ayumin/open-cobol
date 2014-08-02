@@ -32,32 +32,6 @@
 
 #include "libcob.h"
 
-#ifdef	ENABLE_NLS
-#include "lib/gettext.h"
-#define _(s)		gettext(s)
-#define N_(s)		gettext_noop(s)
-#else
-#define _(s)		s
-#define N_(s)		s
-#endif
-
-/* Defines for access() */
-#ifndef	F_OK
-#define	F_OK		0
-#endif
-
-#ifndef	X_OK
-#define	X_OK		1
-#endif
-
-#ifndef	W_OK
-#define	W_OK		2
-#endif
-
-#ifndef	R_OK
-#define	R_OK		4
-#endif
-
 #define COBC_ABORT()			cobc_abort(__FILE__, __LINE__)
 #define COBC_DUMB_ABORT()		cobc_dumb_abort(__FILE__, __LINE__)
 
