@@ -1,0 +1,737 @@
+## Copyright (C) 2003,2004,2005,2006,2007 Keisuke Nishida
+## Copyright (C) 2007-2012 Roger While
+## Copyright (C) 2014 Simon Sobisch
+## 
+## This file is part of GNU Cobol.
+## 
+## The GNU Cobol compiler is free software: you can redistribute it
+## and/or modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+## 
+## GNU Cobol is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+### GNU Cobol Test Suite :: fileio related syntax   
+
+## ==================================================================
+## The SELECT clause
+## ==================================================================
+
+## ------------------------------------------------------------------
+## Each file described in the DATA DIVISION must be named once in
+## a SELECT clause.
+## ------------------------------------------------------------------
+
+AT_SETUP([Missing SELECT])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file2 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       FD file2.
+       1  file2-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 10: Error: 'file1' is not defined
+prog.cob: 10: Error: 'file1' is not a file name
+])
+AT_CLEANUP
+
+
+AT_SETUP([Duplicated SELECT])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.    
+       SELECT file2 ASSIGN DISK.    
+       SELECT file1 ASSIGN DISK.    
+       DATA DIVISION.   
+       FILE SECTION.    
+       FD file1.
+       1  file1-rec pic x.
+       FD file2.
+       1  file2-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 9: Error: Redefinition of 'file1'
+prog.cob: 7: Error: 'file1' previously defined here
+])
+AT_CLEANUP
+
+## ------------------------------------------------------------------
+## Each file named in a SELECT clause must be described once in the
+## DATA DIVISION.
+## ------------------------------------------------------------------
+
+AT_SETUP([Missing FD])
+AT_KEYWORDS([file])
+
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.
+       SELECT file2 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file2.
+       1  file2-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: NOT DETECTED AT COMPILE TIME
+])
+AT_CLEANUP
+
+
+
+AT_SETUP([Duplicated FD])
+AT_KEYWORDS([file])
+ 
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK.
+       SELECT file2 ASSIGN DISK.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       FD file2.
+       1  file2-rec pic x.
+       FD file1.
+       1  file1-rec-2 pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: NOT DETECTED AT COMPILE TIME
+])
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## File SELECT clause must contain ASSIGN            
+## ------------------------------------------------------------------
+
+AT_SETUP([Missing ASSIGN])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 12: Error: ASSIGN clause is missing 'file1'
+])
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## File VALUE OF FILE-ID data-name :: data-name must be declared         
+
+## NYI  JOE subject to review
+## ------------------------------------------------------------------
+
+AT_SETUP([Missing declaration of FILE-ID])
+AT_KEYWORDS([file])
+
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1 VALUE OF FILE-ID fid-file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: NOT DETECTED AT COMPILE TIME
+])
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## File VALUE OF FILE-ID data-name :: data-name must be declared         
+## NYI JOE ORIGINAL related test ..
+## ------------------------------------------------------------------
+
+AT_SETUP([Implicit declaration of FILE-ID])
+AT_KEYWORDS([file])
+
+AT_DATA([test.conf], [
+include "cobol2002.conf"
+assign-clause: mf
+])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN FILENAME.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           MOVE "TEST-FILE" TO FILENAME.
+           OPEN OUTPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -conf=test.conf -o prog prog.cob], [0], ,
+[prog.cob: 12: Warning: 'FILENAME' will be implicitly defined
+])
+AT_CLEANUP
+
+
+
+
+
+
+## ------------------------------------------------------------------
+## File STATUS field must be defined in the DATA DIVISION as PIC XX            
+## ------------------------------------------------------------------
+
+AT_SETUP([Missing FILE STATUS field])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+          STATUS fs.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 8: Error: 'fs' is not defined
+])
+AT_CLEANUP
+
+
+AT_SETUP([FILE STATUS field subordinate to FD])
+AT_KEYWORDS([file])
+
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+          STATUS fs.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec.
+          2    filler pic x.
+          2    fs pic xx.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: NOT DETECTED AT COMPILE TIME
+])
+AT_CLEANUP
+
+
+AT_SETUP([FILE STATUS field PIC XX or PIC 99 ])
+AT_KEYWORDS([file])
+
+AT_XFAIL_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+          STATUS fs.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       WORKING-STORAGE SECTION.
+       77      fs pic xxxxx.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: NOT DETECTED AT COMPILE TIME
+])
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## If ORGANIZATION is LINE SEQUENTIAL OPEN I-O is illegal
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG: SEQUENTIAL, OPEN I-O])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK ORGANIZATION LINE SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           OPEN I-O file1.
+           CLOSE file1.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 13: Error: OPEN I-O not allowed on LINE SEQUENTIAL files
+])
+
+
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## If ORGANIZATION is SEQUENTIAL ACCESS MODE RANDOM is illegal
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG: SEQUENTIAL, ACCESS RANDOM])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK ORGANIZATION SEQUENTIAL
+           ACCESS RANDOM.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 7: Error: ORGANIZATION clause invalid
+])
+
+
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## File ORGANIZATION RELATIVE, ACCESS RANDOM : RELATIVE KEY must be
+## numeric.
+## ------------------------------------------------------------------
+
+AT_SETUP([RELATIVE KEY not numeric])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+           ORGANIZATION RELATIVE
+           ACCESS MODE RANDOM
+           RELATIVE KEY file1-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec pic x.
+       WORKING-STORAGE SECTION.
+       77  file1-key PIC XXXX.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 17: Error: RELATIVE KEY file1-key is not numeric
+])
+AT_CLEANUP
+
+
+
+## ------------------------------------------------------------------
+## File ORGANIZATION RELATIVE, ACCESS RANDOM : RELATIVE KEY must not
+## be defined in a record description entry associated with the file.
+## ------------------------------------------------------------------
+
+AT_SETUP([RELATIVE KEY declared outside W-S])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prog.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT file1 ASSIGN DISK
+           ORGANIZATION RELATIVE
+           ACCESS MODE RANDOM
+           RELATIVE KEY file1-key.
+       DATA DIVISION.
+       FILE SECTION.
+       FD file1.
+       1  file1-rec. 
+          2  file1-key pic 9.
+          2  file1-data pic x.
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 18: Error: RELATIVE KEY file1-key declared outside WORKING STORAGE
+])
+AT_CLEANUP
+
+
+
+
+## ==================================================================
+## FILE MISCELLANEOUS.
+## ==================================================================
+
+
+## ------------------------------------------------------------------
+## File IO in CALLed child module on FILE opened in parent module.
+## Implies existing non-empty file ... compile only.
+## ------------------------------------------------------------------
+
+AT_SETUP([File RELATIVE referenced from COBOL module])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN      "TESTFILE"
+              ACCESS       DYNAMIC
+              ORGANIZATION RELATIVE
+              STATUS       TESTSTAT
+              RELATIVE KEY TESTKEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE    GLOBAL.
+       01  TEST-REC     PIC X(4).
+       WORKING-STORAGE  SECTION.
+       01  GLOBVALS.
+           03  TESTKEY  PIC 9(4).
+           03  TESTSTAT PIC XX.
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           CALL  "prog2"
+           END-CALL.
+           CLOSE TEST-FILE.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            READ TEST-FILE
+                 INVALID KEY
+                 DISPLAY "NOK"
+                 END-DISPLAY
+            END-READ.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY -o prog prog.cob], [0], , [])
+AT_CLEANUP
+
+
+## ------------------------------------------------------------------
+## File IO in CALLed child module on FILE opened in parent module.
+## Implies existing non-empty file ... compile only.
+## ------------------------------------------------------------------
+
+AT_SETUP([File INDEXED referenced from COBOL module])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN      "TESTFILE"
+              ACCESS       DYNAMIC
+              ORGANIZATION INDEXED
+              STATUS       TESTSTAT
+              RECORD KEY   TESTKEY.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE    GLOBAL.
+       01  TEST-REC.
+           03  TESTKEY  PIC X(4).
+       WORKING-STORAGE  SECTION.
+       01  GLOBVALS.
+           03  TESTSTAT PIC XX.
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           CALL  "prog2"
+           END-CALL.
+           CLOSE TEST-FILE.
+           STOP RUN.
+        IDENTIFICATION   DIVISION.
+        PROGRAM-ID.      prog2.
+        DATA DIVISION.
+        WORKING-STORAGE SECTION.
+        PROCEDURE        DIVISION.
+            READ TEST-FILE
+                 INVALID KEY
+                 DISPLAY "NOK"
+                 END-DISPLAY
+            END-READ.
+            EXIT PROGRAM.
+        END PROGRAM prog2.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY -o prog prog.cob], [0], , [])
+AT_CLEANUP
+
+
+
+
+AT_SETUP([START on SEQUENTIAL file])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           START TEST-FILE KEY EQUAL TEST-REC
+           END-START.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: 15: Error: START not allowed on SEQUENTIAL files
+])
+
+
+AT_CLEANUP
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (1)])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+           GO TO PP02.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'P01':
+prog.cob: In paragraph 'P02':
+prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
+])
+
+AT_CLEANUP
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (2)])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+           PERFORM PP02.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'P01':
+prog.cob: In paragraph 'P02':
+prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
+])
+
+AT_CLEANUP
+
+
+AT_SETUP([DECLARATIVES Invalid procedure reference (3)])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE ASSIGN       "./TEST-FILE"
+                        ORGANIZATION IS LINE SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+       DECLARATIVES.
+       P01 SECTION.
+           USE AFTER ERROR PROCEDURE ON TEST-FILE.
+       P02.
+           DISPLAY "OK"
+           END-DISPLAY.
+       END DECLARATIVES.
+       PP01 SECTION.
+       PP02.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
+           GO TO P02.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+[prog.cob: In section 'PP01':
+prog.cob: In paragraph 'PP02':
+prog.cob: 25: Error: Invalid reference to 'P02' (In DECLARATIVES)
+])
+
+AT_CLEANUP
+
