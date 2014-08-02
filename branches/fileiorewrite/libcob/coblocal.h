@@ -34,15 +34,6 @@
 #define	finite		_finite
 #endif
 
-#if	defined(ENABLE_NLS) && defined(COB_NLS_RUNTIME)
-#include "lib/gettext.h"
-#define _(s)		gettext(s)
-#define N_(s)		gettext_noop(s)
-#else
-#define _(s)		s
-#define N_(s)		s
-#endif
-
 
 #if	defined(_WIN32) || defined(__CYGWIN__)
 #define COB_HIDDEN	extern
@@ -245,11 +236,11 @@ typedef struct runtime_env {
 /* Local function prototypes */
 COB_HIDDEN void		cob_init_numeric	(cob_global *);
 COB_HIDDEN void		cob_init_termio		(cob_global *);
-COB_HIDDEN void		cob_init_fileio		(cob_global *, runtime_env* runtimeptr);
-COB_HIDDEN void		cob_init_call		(cob_global *, runtime_env* runtimeptr);
+COB_HIDDEN void		cob_init_fileio		(cob_global *, runtime_env *);
+COB_HIDDEN void		cob_init_call		(cob_global *, runtime_env *);
 COB_HIDDEN void		cob_init_intrinsic	(cob_global *);
 COB_HIDDEN void		cob_init_strings	(void);
-COB_HIDDEN void		cob_init_move		(cob_global *, runtime_env* runtimeptr);
+COB_HIDDEN void		cob_init_move		(cob_global *, runtime_env *);
 COB_HIDDEN void		cob_init_screenio	(cob_global *);
 
 COB_HIDDEN void		cob_exit_screen		(void);
