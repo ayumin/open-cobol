@@ -142,7 +142,7 @@ static size_t			cob_local_env_size;
 static struct cob_external	*basext;
 
 static size_t			sort_nkeys;
-static cob_file_key		*sort_keys;
+static cob_file_key_t  	*sort_keys;
 static const unsigned char	*sort_collate;
 
 static const char		*cob_current_program_id;
@@ -200,6 +200,12 @@ static struct handlerlist {
 	struct handlerlist	*next;
 	int			(*proc)(char *s);
 } *hdlrs;
+
+
+/* Local variables */
+
+static progid_t progid;
+
 
 /* Local functions */
 
@@ -916,7 +922,7 @@ sort_compare (const void *data1, const void *data2)
 			cmp = common_cmps (f1.data, f2.data, f1.size, sort_collate);
 		}
 		if (cmp != 0) {
-			return (sort_keys[i].flag == COB_ASCENDING) ? cmp : -cmp;
+			return sort_keys[i].tf_ascending ? cmp : -cmp;
 		}
 	}
 	return 0;
@@ -1261,6 +1267,34 @@ cob_trace_section (const char *para, const char *source, const int line)
 	}
 }
 
+
+void
+cob_set_progid (
+	  char *prog
+	, char *source
+	, char *packver
+	, int   patchlev
+	, char *compile_date
+	, char *compile_host)
+{
+	progid.program_name = prog;
+	progid.source_file_name = (source == NULL) ? (char *)"ANON" : source;
+	progid.version = packver;
+	progid.patch = patchlev;
+	progid.compile_date = compile_date;
+	progid.compile_host = compile_host;
+}
+
+
+
+progid_t
+cob_get_progid (void)
+{
+	return(progid);
+}
+
+
+
 void
 cob_ready_trace (void)
 {
@@ -1400,10 +1434,6 @@ cob_runtime_error (const char *fmt, ...)
 void
 cob_fatal_error (const int fatal_error)
 {
-	const char	*msg;
-	unsigned char	*file_status;
-	char		*filename;
-	int		status;
 
 	switch (fatal_error) {
 	case COB_FERROR_NONE:
@@ -1437,79 +1467,8 @@ cob_fatal_error (const int fatal_error)
 		cob_runtime_error (_("Invalid recursive COBOL CALL"));
 		break;
 	case COB_FERROR_FILE:
-		file_status = cobglobptr->cob_error_file->file_status;
-		status = COB_D2I(file_status[0]) * 10 + COB_D2I(file_status[1]);
-		switch (status) {
-		case COB_STATUS_10_END_OF_FILE:
-			msg = _("End of file");
-			break;
-		case COB_STATUS_14_OUT_OF_KEY_RANGE:
-			msg = _("Key out of range");
-			break;
-		case COB_STATUS_21_KEY_INVALID:
-			msg = _("Key order not ascending");
-			break;
-		case COB_STATUS_22_KEY_EXISTS:
-			msg = _("Record key already exists");
-			break;
-		case COB_STATUS_23_KEY_NOT_EXISTS:
-			msg = _("Record key does not exist");
-			break;
-		case COB_STATUS_30_PERMANENT_ERROR:
-			msg = _("Permanent file error");
-			break;
-		case COB_STATUS_35_NOT_EXISTS:
-			msg = _("File does not exist");
-			break;
-		case COB_STATUS_37_PERMISSION_DENIED:
-			msg = _("Permission denied");
-			break;
-		case COB_STATUS_41_ALREADY_OPEN:
-			msg = _("File already open");
-			break;
-		case COB_STATUS_42_NOT_OPEN:
-			msg = _("File not open");
-			break;
-		case COB_STATUS_43_READ_NOT_DONE:
-			msg = _("READ must be executed first");
-			break;
-		case COB_STATUS_44_RECORD_OVERFLOW:
-			msg = _("Record overflow");
-			break;
-		case COB_STATUS_46_READ_ERROR:
-			msg = _("Failed to read");
-			break;
-		case COB_STATUS_47_INPUT_DENIED:
-			msg = _("READ/START not allowed");
-			break;
-		case COB_STATUS_48_OUTPUT_DENIED:
-			msg = _("WRITE not allowed");
-			break;
-		case COB_STATUS_49_I_O_DENIED:
-			msg = _("DELETE/REWRITE not allowed");
-			break;
-		case COB_STATUS_51_RECORD_LOCKED:
-			msg = _("Record locked by another file connector");
-			break;
-		case COB_STATUS_57_I_O_LINAGE:
-			msg = _("LINAGE values invalid");
-			break;
-		case COB_STATUS_61_FILE_SHARING:
-			msg = _("File sharing conflict");
-			break;
-		case COB_STATUS_91_NOT_AVAILABLE:
-			msg = _("Runtime library is not configured for this operation");
-			break;
-		default:
-			msg = _("Unknown file error");
-			break;
-		}
-		filename = cob_malloc ((size_t)COB_FILE_BUFF);
-		cob_field_to_string (cobglobptr->cob_error_file->assign,
-				     filename, (size_t)COB_FILE_MAX);
-		cob_runtime_error (_("%s (Status = %02d) File : '%s'"),
-				   msg, status, filename);
-		free (filename);
+        // handled by fileio
+		cob_runtime_error (_("Failure in fileio subsystem"));
 		break;
 	case COB_FERROR_FUNCTION:
 		cob_runtime_error (_("Attempt to use non-implemented function"));
@@ -2232,7 +2191,7 @@ void
 cob_table_sort_init (const size_t nkeys, const unsigned char *collating_sequence)
 {
 	sort_nkeys = 0;
-	sort_keys = cob_malloc (nkeys * sizeof (cob_file_key));
+	sort_keys = cob_malloc (nkeys * sizeof (cob_file_key_t));
 	if (collating_sequence) {
 		sort_collate = collating_sequence;
 	} else {
@@ -2241,11 +2200,11 @@ cob_table_sort_init (const size_t nkeys, const unsigned char *collating_sequence
 }
 
 void
-cob_table_sort_init_key (cob_field *field, const int flag,
+cob_table_sort_init_key (cob_field *field, const int tf_ascending,
 			 const unsigned int offset)
 {
 	sort_keys[sort_nkeys].field = field;
-	sort_keys[sort_nkeys].flag = flag;
+	sort_keys[sort_nkeys].tf_ascending = tf_ascending;
 	sort_keys[sort_nkeys].offset = offset;
 	sort_nkeys++;
 }
