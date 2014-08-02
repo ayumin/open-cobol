@@ -29,8 +29,11 @@
 #include <ctype.h>
 #include <time.h>
 #include <limits.h>
-
 #include "tarstamp.h"
+
+#ifdef HAVE_UTSNAME_H
+#include <sys/utsname.h>
+#endif
 
 #include "cobc.h"
 #include "tree.h"
@@ -5062,20 +5065,20 @@ output_file_allocation (struct cb_file *f)
 	if (f->organization == COB_ORG_RELATIVE ||
 	    f->organization == COB_ORG_INDEXED) {
 		if (f->flag_global) {
-			output_storage ("static cob_file_key\t*%s%s = NULL;\n",
+			output_storage ("static cob_file_key_t\t*%s%s = NULL;\n",
 				CB_PREFIX_KEYS, f->cname);
 		} else {
-			output_local ("static cob_file_key\t*%s%s = NULL;\n",
+			output_local ("static cob_file_key_t\t*%s%s = NULL;\n",
 				CB_PREFIX_KEYS, f->cname);
 		}
 	}
 	if (f->flag_global) {
-		output_storage ("static cob_file\t\t*%s%s = NULL;\n",
+		output_storage ("static cob_file_t\t\t*%s%s = NULL;\n",
 			CB_PREFIX_FILE, f->cname);
 		output_storage ("static unsigned char\t%s%s_status[4];\n",
 			CB_PREFIX_FILE, f->cname);
 	} else {
-		output_local ("static cob_file\t\t*%s%s = NULL;\n",
+		output_local ("static cob_file_t\t\t*%s%s = NULL;\n",
 			CB_PREFIX_FILE, f->cname);
 		output_local ("static unsigned char\t%s%s_status[4];\n",
 			CB_PREFIX_FILE, f->cname);
@@ -5109,26 +5112,36 @@ output_file_initialization (struct cb_file *f)
 {
 	struct cb_alt_key	*l;
 	int			nkeys;
-	int			features;
+	int			i_keycomp;
+	struct cb_key_component *key_component;
+
+	/*
+	 *  Emit code to initialise the cob_file_t with static compile-time
+         *  information from cb_file.
+	 *  fileio.c will initialise its "private" fields (when the object prog
+	 *  is executed) in cob_initialise_file(). 
+         */
 
 	nkeys = 1;
 	if (f->flag_external) {
-		output_line ("%s%s = cob_external_addr (\"%s\", sizeof(cob_file));",
+		output_line ("%s%s = cob_external_addr (\"%s\", sizeof(cob_file_t));",
 			     CB_PREFIX_FILE, f->cname, f->cname);
 		output_line ("if (cob_glob_ptr->cob_initial_external)");
 		output_indent ("{");
 		if (f->linage) {
-			output_line ("%s%s->linorkeyptr = cob_cache_malloc (sizeof(cob_linage));", CB_PREFIX_FILE, f->cname);
+			output_line ("%s%s->linage = cob_cache_malloc (sizeof(cob_linage_t));", CB_PREFIX_FILE, f->cname);
 		}
 	} else {
 		output_line ("if (!%s%s)", CB_PREFIX_FILE, f->cname);
 		output_indent ("{");
-		output_line ("%s%s = cob_cache_malloc (sizeof(cob_file));", CB_PREFIX_FILE, f->cname);
+		output_line ("%s%s = cob_cache_malloc (sizeof(cob_file_t));", CB_PREFIX_FILE, f->cname);
 		if (f->linage) {
-			output_line ("%s%s->linorkeyptr = cob_cache_malloc (sizeof(cob_linage));", CB_PREFIX_FILE, f->cname);
+			output_line ("%s%s->linage = cob_cache_malloc (sizeof(cob_linage_t));", CB_PREFIX_FILE, f->cname);
 		}
 		output_indent ("}");
 	}
+	output_line ("cob_initialise_file(%s%s);", CB_PREFIX_FILE, f->cname);
+
 	/* Output RELATIVE/RECORD KEY's */
 	if (f->organization == COB_ORG_RELATIVE
 	 || f->organization == COB_ORG_INDEXED) {
@@ -5137,7 +5150,7 @@ output_file_initialization (struct cb_file *f)
 		}
 		output_line ("if (!%s%s)", CB_PREFIX_KEYS, f->cname);
 		output_indent ("{");
-		output_line ("%s%s = cob_cache_malloc (sizeof (cob_file_key) * %d);",
+		output_line ("%s%s = cob_cache_malloc (sizeof (cob_file_key_t) * %d);",
 			     CB_PREFIX_KEYS, f->cname, nkeys);
 		output_indent ("}");
 		nkeys = 1;
@@ -5146,7 +5159,7 @@ output_file_initialization (struct cb_file *f)
 		output_param (f->key, -1);
 		output (";\n");
 		output_prefix ();
-		output ("%s%s->flag = 0;\n", CB_PREFIX_KEYS, f->cname);
+		output ("%s%s->tf_duplicates = 0;\n", CB_PREFIX_KEYS, f->cname);
 		output_prefix ();
 		if (f->key) {
 			output ("%s%s->offset = %d;\n", CB_PREFIX_KEYS, f->cname,
@@ -5161,11 +5174,29 @@ output_file_initialization (struct cb_file *f)
 			output_param (l->key, -1);
 			output (";\n");
 			output_prefix ();
-			output ("(%s%s + %d)->flag = %d;\n", CB_PREFIX_KEYS,
+			output ("(%s%s + %d)->tf_duplicates = %d;\n", CB_PREFIX_KEYS,
 				f->cname, nkeys, l->duplicates);
 			output_prefix ();
+                        output ("(%s%s + %d)->tf_suppress = %d;\n", CB_PREFIX_KEYS, f->cname,
+                                nkeys, l->tf_suppress);
+                        output_prefix ();
+                        output ("(%s%s + %d)->char_suppress = %d;\n", CB_PREFIX_KEYS, f->cname,
+                                nkeys, l->char_suppress);
+                        output_prefix ();
 			output ("(%s%s + %d)->offset = %d;\n", CB_PREFIX_KEYS,
 				f->cname, nkeys, cb_code_field (l->key)->offset);
+                        if (l->component_list != NULL) {
+                                for (key_component = l->component_list, i_keycomp = 0;
+                                     key_component != NULL;
+                                     key_component = key_component->next, ++i_keycomp) {
+                                        output_prefix ();
+                                        output ("(%s%s + %d)->component[%d] = ", CB_PREFIX_KEYS, f->cname, nkeys, i_keycomp);
+                                        output_param (key_component->component, -1);
+                                        output (";\n");
+                                }
+                                output_prefix ();
+                                output ("(%s%s + %d)->count_components = %d;\n", CB_PREFIX_KEYS, f->cname, nkeys, i_keycomp);
+                        }
 			nkeys++;
 		}
 	}
@@ -5190,7 +5221,7 @@ output_file_initialization (struct cb_file *f)
 	output_param (CB_TREE (f->record), -1);
 	output (";\n");
 	output_prefix ();
-	output ("%s%s->variable_record = ", CB_PREFIX_FILE, f->cname);
+	output ("%s%s->record_size = ", CB_PREFIX_FILE, f->cname);
 	if (f->record_depending) {
 		output_param (f->record_depending, -1);
 	} else {
@@ -5214,83 +5245,52 @@ output_file_initialization (struct cb_file *f)
 	output_line ("%s%s->file = NULL;", CB_PREFIX_FILE, f->cname);
 
 	if (f->linage) {
-		output_line ("lingptr = %s%s->linorkeyptr;",
+		output_line ("lingptr = %s%s->linage;",
 				CB_PREFIX_FILE, f->cname);
 		output_prefix ();
-		output ("lingptr->linage = ");
+		output ("lingptr->cob_linage = ");
 		output_param (f->linage, -1);
 		output (";\n");
 		output_prefix ();
-		output ("lingptr->linage_ctr = ");
+		output ("lingptr->cob_control = ");
 		output_param (f->linage_ctr, -1);
 		output (";\n");
 		if (f->latfoot) {
 			output_prefix ();
-			output ("lingptr->latfoot = ");
+			output ("lingptr->cob_foot = ");
 			output_param (f->latfoot, -1);
 			output (";\n");
 		} else {
-			output_line ("lingptr->latfoot = NULL;");
+			output_line ("lingptr->cob_foot = NULL;");
 		}
 		if (f->lattop) {
 			output_prefix ();
-			output ("lingptr->lattop = ");
+			output ("lingptr->cob_top = ");
 			output_param (f->lattop, -1);
 			output (";\n");
 		} else {
-			output_line ("lingptr->lattop = NULL;");
+			output_line ("lingptr->cob_top = NULL;");
 		}
 		if (f->latbot) {
 			output_prefix ();
-			output ("lingptr->latbot = ");
+			output ("lingptr->cob_bot = ");
 			output_param (f->latbot, -1);
 			output (";\n");
 		} else {
-			output_line ("lingptr->latbot = NULL;");
+			output_line ("lingptr->cob_bot = NULL;");
 		}
-		output_line ("lingptr->lin_lines = 0;");
-		output_line ("lingptr->lin_foot = 0;");
-		output_line ("lingptr->lin_top = 0;");
-		output_line ("lingptr->lin_bot = 0;");
 	}
-
-	output_line ("%s%s->fd = -1;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->organization = %d;", CB_PREFIX_FILE, f->cname,
-		     f->organization);
-	output_line ("%s%s->access_mode = %d;", CB_PREFIX_FILE, f->cname,
-		     f->access_mode);
-	output_line ("%s%s->lock_mode = %d;", CB_PREFIX_FILE, f->cname,
-		     f->lock_mode);
-	output_line ("%s%s->open_mode = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_optional = %d;", CB_PREFIX_FILE, f->cname,
-		     f->optional);
-	output_line ("%s%s->last_open_mode = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_operation = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_nonexistent = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_end_of_file = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_begin_of_file = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_first_read = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_read_done = 0;", CB_PREFIX_FILE, f->cname);
-	features = 0;
-	if (f->file_status) {
-		features |= COB_SELECT_FILE_STATUS;
-	}
-	if (f->linage) {
-		features |= COB_SELECT_LINAGE;
-	}
-	if (f->flag_ext_assign) {
-		features |= COB_SELECT_EXTERNAL;
-	}
-	if (f->special) {
-		/* Special assignment */
-		features |= f->special;
-	}
-	output_line ("%s%s->flag_select_features = %d;", CB_PREFIX_FILE, f->cname,
-		     features);
-	output_line ("%s%s->flag_needs_nl = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->flag_needs_top = 0;", CB_PREFIX_FILE, f->cname);
-	output_line ("%s%s->file_version = %d;", CB_PREFIX_FILE, f->cname,
-		     COB_FILE_VERSION);
+	output_line ("%s%s->organization = %d;", CB_PREFIX_FILE, f->cname, f->organization);
+	output_line ("%s%s->access_mode = %d;", CB_PREFIX_FILE, f->cname, f->access_mode);
+	output_line ("%s%s->lock_mode = %d;", CB_PREFIX_FILE, f->cname, f->lock_mode);
+	output_line ("%s%s->flag_optional = %d;", CB_PREFIX_FILE, f->cname, f->optional);
+        output_line ("%s%s->flag_select_features = %d;", CB_PREFIX_FILE, f->cname,
+                     ((f->file_status ? COB_SELECT_FILE_STATUS : 0) |
+                     (f->linage ? COB_SELECT_LINAGE : 0) |
+                     (f->flag_ext_assign ? COB_SELECT_EXTERNAL : 0) |
+                     (f->special ? f->special : 0)));
+	output_line ("%s%s->file_version = %d;", CB_PREFIX_FILE, f->cname, COB_FILE_VERSION);
+        output_line ("cob_assign_file(%s%s);", CB_PREFIX_FILE, f->cname);
 	if (f->flag_external) {
 		output_indent ("}");
 	}
@@ -5867,7 +5867,7 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 		}
 		if (i) {
 			output_local ("\n/* LINAGE pointer */\n");
-			output_local ("static cob_linage\t\t*lingptr;\n");
+			output_local ("static cob_linage_t\t\t*lingptr;\n");
 		}
 	}
 
@@ -6683,7 +6683,7 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 					CB_PREFIX_FILE, fl->cname);
 			if (!fl->flag_external) {
 				if (fl->linage) {
-					output_line ("cob_cache_free (%s%s->linorkeyptr);",
+					output_line ("cob_cache_free (%s%s->linage);",
 						     CB_PREFIX_FILE, fl->cname);
 				}
 				if (fl->organization == COB_ORG_RELATIVE ||
@@ -7299,6 +7299,41 @@ output_entry_function (struct cb_program *prog, cb_tree entry,
 	output ("}\n\n");
 }
 
+
+
+static void
+output_compiler_facts (struct cb_program *prog)
+{
+	char compile_host[COB_NORMAL_BUFF];
+	char compile_date[20];
+	time_t t;
+
+#ifdef HAVE_UTSNAME_H
+	struct utsname sysinfo;
+	uname (&sysinfo);
+	sprintf(compile_host, "%s %s %s %s %s %s"
+		, sysinfo.sysname, sysinfo.nodename
+		, sysinfo.release, sysinfo.version, sysinfo.machine
+		#ifdef _GNU_SOURCE
+	     	    , sysinfo.domainname
+		else
+		    , ""
+		#endif
+	);
+#else
+	strcpy(compile_host, "Unknown");
+#endif
+	t = time (NULL);
+	strftime (compile_date, sizeof(compile_date), "%Y-%m-%d %H:%M:%S", localtime(&t));
+	output_line
+		("cob_set_progid (\"%s\", COB_SOURCE_FILE, COB_PACKAGE_VERSION, COB_PATCH_LEVEL, \"%s\", \"%s\");"
+			, prog->source_name, compile_date, compile_host);
+}
+
+
+
+
+
 static void
 output_main_function (struct cb_program *prog)
 {
@@ -7306,6 +7341,7 @@ output_main_function (struct cb_program *prog)
 	output_line ("int");
 	output_line ("main (int argc, char **argv)");
 	output_indent ("{");
+	output_compiler_facts(prog);
 	output_line ("cob_init (argc, argv);");
 	output_line ("cob_stop_run (%s ());", prog->program_id);
 	output_indent ("}\n");
