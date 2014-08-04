@@ -4902,7 +4902,7 @@ cb_emit_delete_file (cb_tree file)
 		current_statement->flag_callback = 1;
 	}
 
-	cb_emit (CB_BUILD_FUNCALL_2 ("cob_delete_file", file,
+	cb_emit (CB_BUILD_FUNCALL_2 ("cob_erase", file,
 				     CB_FILE(file)->file_status));
 }
 
@@ -7183,50 +7183,50 @@ cb_emit_move (cb_tree src, cb_tree dsts)
 /* OPEN statement */
 
 void
-cb_emit_open (cb_tree file, cb_tree mode, cb_tree sharing)
+cb_emit_open (cb_tree file, cb_tree mode, cb_tree share_mode, cb_tree lock_mode)
 {
-	struct cb_file	*f;
+        struct cb_file  *f;
 
-	if (file == cb_error_node) {
-		return;
-	}
-	file = cb_ref (file);
-	if (file == cb_error_node) {
-		return;
-	}
-	current_statement->file = file;
-	f = CB_FILE (file);
+        if (file == cb_error_node) {
+                return;
+        }
+        file = cb_ref (file);
+        if (file == cb_error_node) {
+                return;
+        }
+        current_statement->file = file;
+        f = CB_FILE (file);
 
-	if (f->organization == COB_ORG_SORT) {
-		cb_error_x (CB_TREE (current_statement),
-			    _("Operation not allowed on SORT files"));
-		return;
-	} else if (f->organization == COB_ORG_LINE_SEQUENTIAL &&
-		   mode == cb_int (COB_OPEN_I_O)) {
-		cb_error_x (CB_TREE (current_statement),
-			    _("OPEN I-O not allowed on LINE SEQUENTIAL files"));
-		return;
-	}
-	if (sharing == NULL) {
-		if (f->sharing) {
-			sharing = f->sharing;
-		} else {
-			sharing = cb_int0;
-		}
-	}
+        if (f->organization == COB_ORG_SORT) {
+                cb_error_x (CB_TREE (current_statement),
+                            _("Operation not allowed on SORT files"));
+                return;
+        } else if (f->organization == COB_ORG_LINE_SEQUENTIAL &&
+                   mode == cb_int (COB_OPEN_I_O)) {
+                cb_error_x (CB_TREE (current_statement),
+                            _("OPEN I-O not allowed on LINE SEQUENTIAL files"));
+                return;
+        }
 
-	cb_emit (CB_BUILD_FUNCALL_4 ("cob_open", file, mode,
-		 sharing, f->file_status));
+	cb_emit (CB_BUILD_FUNCALL_6 (
+		  "cob_open"
+		, file
+		, mode 
+		, (share_mode == NULL) ? cb_int(f->share_mode) : share_mode
+		, (lock_mode == NULL) ? cb_int(f->lock_mode) : lock_mode
+		, f->flag_lock_many ? cb_int1 : cb_int0 
+		, f->file_status));
 
-	/* Check for file debugging */
-	if (current_program->flag_debugging &&
-	    !current_statement->flag_in_debug &&
-	    f->flag_fl_debug) {
-		cb_emit (cb_build_debug (cb_debug_name, f->name, NULL));
-		cb_emit (cb_build_move (cb_space, cb_debug_contents));
-		cb_emit (cb_build_debug_call (f->debug_section));
-	}
+        /* Check for file debugging */
+        if (current_program->flag_debugging &&
+            !current_statement->flag_in_debug &&
+            f->flag_fl_debug) {
+                cb_emit (cb_build_debug (cb_debug_name, f->name, NULL));
+                cb_emit (cb_build_move (cb_space, cb_debug_contents));
+                cb_emit (cb_build_debug_call (f->debug_section));
+        }
 }
+
 
 /* PERFORM statement */
 
@@ -7984,7 +7984,7 @@ cb_emit_sort_init (cb_tree name, cb_tree keys, cb_tree col)
 			cb_emit (CB_BUILD_FUNCALL_4 ("cob_file_sort_init_key",
 					cb_ref (name),
 					CB_VALUE (l),
-					CB_PURPOSE (l),
+					cb_int (CB_PURPOSE_INT (l) == COB_ASCENDING),
 					cb_int (CB_FIELD_PTR (CB_VALUE(l))->offset)));
 		}
 	} else {
@@ -7996,7 +7996,7 @@ cb_emit_sort_init (cb_tree name, cb_tree keys, cb_tree col)
 		for (l = keys; l; l = CB_CHAIN (l)) {
 			cb_emit (CB_BUILD_FUNCALL_3 ("cob_table_sort_init_key",
 					CB_VALUE (l),
-					CB_PURPOSE (l),
+					cb_int (CB_PURPOSE_INT (l) == COB_ASCENDING),
 					cb_int (CB_FIELD_PTR (CB_VALUE(l))->offset)));
 		}
 		f = CB_FIELD (cb_ref (name));
@@ -8095,6 +8095,15 @@ check_valid_key (const struct cb_file *cbf, const struct cb_field *f)
 			return 1;
 		}
 		return 0;
+	}
+	/*
+	 *  Pass if field f refs a declared key for target file.
+ 	 *  This will pass split-keys which are virtual record fields.
+         */
+	for (cbak = cbf->alt_key_list; cbak; cbak = cbak->next) {
+		if (CB_FIELD_PTR (cbak->key) == f) {
+			return 0;
+		}
 	}
 
 	ff = cb_field_founder (f);
