@@ -29,6 +29,9 @@ extern "C" {
 #endif
 
 #include <libcob/common.h>
+#include <libcob/fileio.h>
+#include <libcob/fileio-call.h>
+#include <libcob/fileio-sort.h>
 
 #ifdef __cplusplus
 }
