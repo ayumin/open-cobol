@@ -50,7 +50,7 @@ static const char *me = "COB_fileio-misc";
 #endif
 
 
-#define STOPPER 0xFFFFFFFF             // MinGW no MAXINT declared
+#define STOPPER (int)0xEFFFFFFF       // MinGW no MAXINT declared`
 
 
 
