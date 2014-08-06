@@ -364,7 +364,7 @@ const char *cob_fileio_status_msg(
 	  char status_key[]);
 
 extern
-void cob_default_error_handle(void);
+void cob_fileio_error_handler(void);
 
 extern
 void cob_fileio_report_io_error(

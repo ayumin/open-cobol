@@ -975,7 +975,7 @@ int cob_sys_rename_file(
 int cob_sys_report_io_exception(void)
 {
 	if (COB_EXC_THROWN)
-		cob_default_error_handle();
+		cob_fileio_error_handler();
 	return(0);
 }
 
