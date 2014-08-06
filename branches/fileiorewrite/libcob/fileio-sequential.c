@@ -658,7 +658,7 @@ int cob_fileio_line_sequential_read(
 			if (n == '\n')
 				break;
 		}
-		if (likely(cb_rec < f->record->size)) {
+		if (likely(cb_rec < f->record_max)) {
 			*pb_rec++ = n;
 			cb_rec++;
 		}

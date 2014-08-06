@@ -428,7 +428,7 @@ typedef struct {
 
 
 struct __idx_file {
-	cob_file_t		*cob_file;                   // corresponding file (SELECT/FD) in COBOL program
+	cob_file_t      *cob_file;                   // corresponding file (SELECT/FD) in COBOL program
 	char             fid_db[FILENAME_MAX];       // fully-pathed external root-name of DB
 	int              cb_key_max;                 // size of largest key
 	int              c_dset;                     // number of keys in DB - dset[c_dset]
@@ -648,6 +648,9 @@ static int _bdb_map_errno(
 #ifdef WITH_FILEIO_TRACE
 
 // Assist funcs for trace/diagnostics
+
+
+static char *_bdb_lock_str(DB_LOCK *lock);
 
 static void _bdb_log_key(
 	  idx_file_t *f_idx
@@ -1096,7 +1099,11 @@ int cob_fileio_isam_read(
 		return(-1);
 	if (0 != (res = _bdb_lock_record(f, opt))) 
 		THROW_EXC_BDB(COB_IOEXC_REC_LOCKED, res);
+	if (f->record_max > f_idx->dbt_record.size)
+		memset(f->record->data, ' ', f->record_max);
 	memcpy(f->record->data, f_idx->dbt_record.data, f_idx->dbt_record.size);
+	if (f->record_size != NULL)
+		cob_set_int(f->record_size, f_idx->dbt_record.size);
 
 #ifdef WITH_FILEIO_TRACE
 	_bdb_log_key(f_idx
@@ -1197,8 +1204,12 @@ int cob_fileio_isam_read_next(
 		CC_THROW_EXC_BDB(stat, res);
 	if (0 != (res = _bdb_lock_record(f, opt))) 
 		CC_THROW_EXC_BDB(COB_IOEXC_REC_LOCKED, res);
-
+	if (f->record_max > f_idx->dbt_record.size)
+		memset(f->record->data, ' ', f->record_max);
 	memcpy(f->record->data, f_idx->dbt_record.data, f_idx->dbt_record.size);
+	if (f->record_size != NULL)
+		cob_set_int(f->record_size, f_idx->dbt_record.size);
+        
 	_bdb_set_fpi_key(&f_idx->fpi, ix_dset, f_idx->dbt_key);
 	_bdb_set_fpi_primary_key(f_idx, (char *)f->record->data);
 
@@ -1242,7 +1253,7 @@ int cob_fileio_isam_write(
 	// via the primary-dset is all that's required.
 	MAKE_DBT(f_idx->dbt_key, f_idx->pb_key_bfr, CB_KEY(0));
 	_bdb_compose_key(&PDSET, (char *)f->record->data, f_idx->dbt_key.data);
-	MAKE_DBT(f_idx->dbt_record, f->record->data, f->record_max);
+	MAKE_DBT(f_idx->dbt_record, f->record->data, cb_rec);
 	if ((f->access_mode == COB_ACCESS_SEQUENTIAL)
 		&& (-1 == memcmp(f_idx->dbt_key.data
 		               , f_idx->key_p_w
@@ -1334,7 +1345,7 @@ int cob_fileio_isam_rewrite(
 
 	memcpy(f_idx->pb_record_bfr, f_idx->dbt_record.data, f_idx->dbt_record.size);
 	CLOSE_CURSOR;
-	MAKE_DBT(f_idx->dbt_record, f->record->data, f->record_max);
+	MAKE_DBT(f_idx->dbt_record, f->record->data, cb_rec);
 
 	// N.B. we lock outside of the transaction
 	if (0 != (res = _bdb_lock(f_idx, f_idx->dbt_key.data, 0, &db_lock)))
@@ -2560,10 +2571,6 @@ static int _bdb_get_current_record(
 
 
 
-
-
-
-
 /*
  *	Check the lock-mode for file f and,
  *	if warranted, take a lock as indicated by cob_lock.
@@ -2574,6 +2581,8 @@ static int _bdb_get_current_record(
  *		COB_READ_WAIT_LOCK
  *		COB_READ_IGNORE_LOCK
  *	are mutually exclusive (although bit-masked values).
+ *	If successful: the lock is added to the list of locks
+ *	on the file.
  *	Return 0 on success otherwise BDB return code.
  */
 
@@ -2605,7 +2614,7 @@ static int _bdb_lock_record(
 	if (cob_lock & COB_READ_IGNORE_LOCK) {
 		return(0);
 	}
-	_bdb_compose_key(&PDSET, f_idx->pb_record_bfr, f_idx->pb_key_bfr);
+	_bdb_compose_key(&PDSET, f_idx->dbt_record.data, f_idx->pb_key_bfr);
 	if (f->lock_mode == COB_LOCK_MANUAL) {
 		if (cob_lock & COB_READ_LOCK) 
 			res = _bdb_lock(f_idx, f_idx->pb_key_bfr, 0, &db_lock);
@@ -2641,8 +2650,7 @@ static int _bdb_lock_record(
  *	The locking service supported by BDB is used.
  *	At this level, locks are implemented independently of
  *	the associated file-data.
- *	If successful: the lock is added to the list of locks
- *	on the file and 0 returned.
+ *	If successful returns 0.
  *	Otherwise returns the non-zero result-code from BDB. 
 */ 
 
@@ -2675,7 +2683,7 @@ static int _bdb_lock(
 	                      , ret_lock);
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 4)
-		fprintf(stderr, "%s: res=%d lock=0x%.*x)\n", me, res, sizeof(DB_LOCK), *ret_lock);
+		fprintf(stderr, "%s: res=%d lock=0x%s)\n", me, res, _bdb_lock_str(ret_lock));
 #endif
 	return(res);
 
@@ -2774,7 +2782,7 @@ static int _bdb_unlock(DB_LOCK *db_lock)
 #endif
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 3)
-		fprintf(stderr, "%s: _bdb_unlock(0x%.*x)\n", me, sizeof(DB_LOCK), *db_lock);
+		fprintf(stderr, "%s: _bdb_unlock(0x%s)\n", me, _bdb_lock_str(db_lock));
 #endif
 
 	return(bdb_env->lock_put(bdb_env, db_lock));
@@ -2868,6 +2876,26 @@ static int _bdb_map_errno(
 #ifdef WITH_FILEIO_TRACE
 
 // Development + diagnostic aids
+
+static char *_bdb_lock_str(DB_LOCK *lock) {
+	int i;
+	char *pb_bfr;
+	unsigned char *pb_lock;
+	static char *bfr = NULL;
+
+	if (bfr == NULL) {
+		bfr = cob_malloc(sizeof(DB_LOCK) * 3);
+	}
+	pb_bfr = bfr;
+	pb_lock = (unsigned char *)lock;
+	for (i = 0; i < sizeof(DB_LOCK); ++i, ++pb_lock, pb_bfr += 3) {
+		sprintf(pb_bfr, "%2.2x ",  *pb_lock);
+	}
+	*pb_bfr = '\0';
+	return(bfr);
+}
+
+
 
 static void _bdb_log_key(
 	  idx_file_t *f_idx
