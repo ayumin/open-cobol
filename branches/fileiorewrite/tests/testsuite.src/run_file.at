@@ -946,6 +946,164 @@ AT_CLEANUP
 
 
 
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
+## VARIABLE LENGTH RECORDS.
+## WRITE: w-rsz bytes written.
+## READ:  actual record is read; w-rsz set to actual RSZ.
+## READ:  date is MOVED to fd record - truncation + space fill   
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:SEQ ACC:SEQ IO with variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk.
+       data division.
+       file section.
+       fd file1 record varying from 10 to 20 depending w-rsz.
+           1  file1-rec.
+              2    file1-x occurs 20 pic x.
+       working-storage section.
+           77  w-rsz pic 99.
+           77  w-sub pic 99.
+           1   1-template pic x(20) value "+12345678++12345678+".
+           1   filler redefines 1-template.
+               2   1-x occurs 20 pic x.
+       procedure division.
+           open output file1.
+           perform varying w-rsz from 20 by -1 until w-rsz < 10
+              write file1-rec from 1-template
+           end-perform.
+           close file1.
+           open input file1.
+      *    w-rsz should not influence READ
+           move 15 to w-rsz.
+           perform varying w-sub from 20 by -1 until w-sub < 10
+              read file1 at end
+                 display "FAILED EOF"
+                 stop run
+              end-read
+              display w-rsz ": >" file1-rec "<"
+              if (w-rsz not = w-sub)
+                 display "FAILED BAD RSZ"
+                 stop run
+              end-if
+              if (file1-x(w-rsz) not = 1-x(w-rsz))
+                 display "FAILED BAD DATA"
+                 stop run
+              end-if
+           end-perform.
+           close file1.
+           stop run.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0], 
+[20: >+12345678++12345678+<
+19: >+12345678++12345678 <
+18: >+12345678++1234567  <
+17: >+12345678++123456   <
+16: >+12345678++12345    <
+15: >+12345678++1234     <
+14: >+12345678++123      <
+13: >+12345678++12       <
+12: >+12345678++1        <
+11: >+12345678++         <
+10: >+12345678+          <
+])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION LINE SEQUENTIAL, ACCESS SEQUENTIAL
+## VARIABLE LENGTH RECORDS.
+## WRITE: w-rsz bytes written.
+## READ:  actual record is read; w-rsz set to actual RSZ.
+## READ:  date is MOVED to fd record - truncation + space fill   
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:LINE SEQ ACC:SEQ IO with variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+          organization line sequential.
+       data division.
+       file section.
+       fd file1 record varying from 10 to 20 depending w-rsz.
+           1  file1-rec.
+              2    file1-x occurs 20 pic x.
+       working-storage section.
+           77  w-rsz pic 99.
+           77  w-sub pic 99.
+           1   1-template pic x(20) value "+12345678++12345678+".
+           1   filler redefines 1-template.
+               2   1-x occurs 20 pic x.
+       procedure division.
+           open output file1.
+           perform varying w-rsz from 20 by -1 until w-rsz < 10
+              write file1-rec from 1-template
+           end-perform.
+           close file1.
+           open input file1.
+      *    w-rsz should not influence READ
+           move 15 to w-rsz.
+           perform varying w-sub from 20 by -1 until w-sub < 10
+              read file1 at end
+                 display "FAILED EOF"
+                 stop run
+              end-read
+              display w-rsz ": >" file1-rec "<"
+              if (w-rsz not = w-sub)
+                 display "FAILED BAD RSZ"
+                 stop run
+              end-if
+              if (file1-x(w-rsz) not = 1-x(w-rsz))
+                 display "FAILED BAD DATA"
+                 stop run
+              end-if
+           end-perform.
+           close file1.
+           stop run.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0], 
+[20: >+12345678++12345678+<
+19: >+12345678++12345678 <
+18: >+12345678++1234567  <
+17: >+12345678++123456   <
+16: >+12345678++12345    <
+15: >+12345678++1234     <
+14: >+12345678++123      <
+13: >+12345678++12       <
+12: >+12345678++1        <
+11: >+12345678++         <
+10: >+12345678+          <
+])
+
+AT_CLEANUP
+
+
+
+
 ## ------------------------------------------------------------------
 ## ORGANIZATION SEQUENTIAL, ACCESS SEQUENTIAL
 ## DISRUPTIVE REWRITE.       
@@ -1473,6 +1631,86 @@ AT_CLEANUP
 
 
 
+
+## ------------------------------------------------------------------
+## ORGANIZATION RELATIVE, ACCESS SEQUENTIAL
+## VARIABLE LENGTH RECORDS.
+## WRITE: w-rsz bytes written.
+## READ:  actual record is read; w-rsz set to actual RSZ.
+## READ:  date is MOVED to fd record - truncation + space fill   
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:REL ACC:SEQ IO with variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       identification division.
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+          organization relative.
+       data division.
+       file section.
+       fd file1 record varying from 10 to 20 depending w-rsz.
+           1  file1-rec.
+              2    file1-x occurs 20 pic x.
+       working-storage section.
+           77  w-rsz pic 99.
+           77  w-sub pic 99.
+           1   1-template pic x(20) value "+12345678++12345678+".
+           1   filler redefines 1-template.
+               2   1-x occurs 20 pic x.
+       procedure division.
+           open output file1.
+           perform varying w-rsz from 20 by -1 until w-rsz < 10
+              write file1-rec from 1-template
+           end-perform.
+           close file1.
+           open input file1.
+      *    w-rsz should not influence READ
+           move 15 to w-rsz.
+           perform varying w-sub from 20 by -1 until w-sub < 10
+              read file1 at end
+                 display "FAILED EOF"
+                 stop run
+              end-read
+              display w-rsz ": >" file1-rec "<"
+              if (w-rsz not = w-sub)
+                 display "FAILED BAD RSZ"
+                 stop run
+              end-if
+              if (file1-x(w-rsz) not = 1-x(w-rsz))
+                 display "FAILED BAD DATA"
+                 stop run
+              end-if
+           end-perform.
+           close file1.
+           stop run.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0], 
+[20: >+12345678++12345678+<
+19: >+12345678++12345678 <
+18: >+12345678++1234567  <
+17: >+12345678++123456   <
+16: >+12345678++12345    <
+15: >+12345678++1234     <
+14: >+12345678++123      <
+13: >+12345678++12       <
+12: >+12345678++1        <
+11: >+12345678++         <
+10: >+12345678+          <
+])
+
+AT_CLEANUP
+
+
+
+
+
 ## ------------------------------------------------------------------
 ## ORGANIZATION RELATIVE, ACCESS DYNAMIC
 ## Test START on sparsely populated file.
@@ -1857,6 +2095,93 @@ AT_CLEANUP
 
 
 
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
+## VARIABLE LENGTH RECORDS.
+## WRITE: w-rsz bytes written.
+## READ:  actual record is read; w-rsz set to actual RSZ.
+## READ:  date is MOVED to fd record - truncation + space fill   
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:SEQ IO with variable rsz])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       program-id. prog.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+          organization indexed
+          record key file1-key
+          access random.
+       data division.
+       file section.
+       fd file1 record varying from 12 to 22 depending w-rsz.
+           1  file1-rec.
+              2    file1-key pic 99.
+              2    file1-data.
+               3   file1-x occurs 20 pic x.
+       working-storage section.
+           77  w-rsz pic 99.
+           1   1-template pic x(20) value "+12345678++12345678+".
+           1   filler redefines 1-template.
+               2   1-x occurs 20 pic x.
+       procedure division.
+           open output file1.
+           move 1 to file1-key.
+           perform varying w-rsz from 22 by -1 until w-rsz < 12
+              move 1-template to file1-data
+              write file1-rec
+              add 1 to file1-key
+           end-perform.
+           close file1.
+           open input file1.
+      *    w-rsz should not influence READ
+           move 15 to w-rsz.
+           perform varying file1-key from 1 by 1 until file1-key > 11
+              read file1 at end
+                 display "FAILED EOF"
+                 stop run
+              end-read
+              subtract 2 from w-rsz
+              display w-rsz ": >" file1-data "<"
+              if (w-rsz not = (21 - file1-key))
+                 display "FAILED BAD RSZ"
+                 stop run
+              end-if
+              if (file1-x(w-rsz) not = 1-x(w-rsz))
+                 display "FAILED BAD DATA"
+                 stop run
+              end-if
+           end-perform.
+           close file1.
+           stop run.
+
+
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], , [])
+AT_CHECK([./prog], [0],
+[20: >+12345678++12345678+<
+19: >+12345678++12345678 <
+18: >+12345678++1234567  <
+17: >+12345678++123456   <
+16: >+12345678++12345    <
+15: >+12345678++1234     <
+14: >+12345678++123      <
+13: >+12345678++12       <
+12: >+12345678++1        <
+11: >+12345678++         <
+10: >+12345678+          <
+])
+
+AT_CLEANUP
+
+
+
+
 ## ------------------------------------------------------------------
 ## ORGANIZATION INDEXED, ACCESS SEQUENTIAL
 ## OPEN WITH FILE LOCK EXCLUSIVE FROM SELECT.       
@@ -2221,7 +2546,7 @@ AT_CLEANUP
 AT_SETUP([File ORG:IDX ACC:RAN AUTOMATIC locked record])
 AT_KEYWORDS([file])
 
-AT_XFAIL_IF(true)
+AT_SKIP_IF(true)
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2246,10 +2571,100 @@ AT_DATA([prog1.cob], [
            open output file1.
            move "X" to file1-key.
            write file1-rec.
+           if fs not = "00"
+              display "FAILED 1::w fs=" fs.
            close file1.
            open i-o file1.
            move "X" to file1-key.
            read file1.
+           if fs not = "00"
+              display "FAILED 1::r fs=" fs.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           lock mode is automatic
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1.
+           if fs not = "61"
+              display "FAILED 2::r " fs.
+           close file1 
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS RANDOM
+## READ UNLOCKED RECORD DRIVEN BY: LOCK MODE AUTOMATIC 
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:RAN AUTOMATIC locked record])
+AT_KEYWORDS([file])
+
+AT_SKIP_IF(true)
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           lock mode is automatic
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           move "X" to file1-key.
+           write file1-rec.
+           if fs not = "00"
+              display "FAILED 1::w fs=" fs.
+           close file1.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1.
+           if fs not = "00"
+              display "FAILED 1::r fs=" fs.
+           rewrite file1-rec.
+           if fs not = "00"
+              display "FAILED 1::rw fs=" fs.
            call "system" using "./prog2". 
            close file1.
            stop run.
@@ -2276,8 +2691,91 @@ AT_DATA([prog2.cob], [
            open i-o file1.
            move "X" to file1-key.
            read file1.
-           if fs not = "XX"
-              display "FAILED: " fs
+           if fs not = "00"
+              display "FAILED 2::r " fs
+           end-if.
+           close file1 
+           stop run.
+])
+
+AT_CHECK([$COMPILE -o prog1 prog1.cob], [0], , [])
+AT_CHECK([$COMPILE -o prog2 prog2.cob], [0], , [])
+AT_CHECK([./prog1], [0])
+
+AT_CLEANUP
+
+
+
+
+## ------------------------------------------------------------------
+## ORGANIZATION INDEXED, ACCESS RANDOM
+## DETECT LOCKED RECORD DRIVEN BY: LOCK MODE MANUAL 
+## ------------------------------------------------------------------
+
+AT_SETUP([File ORG:IDX ACC:RAN MANUAL locked record])
+AT_KEYWORDS([file])
+
+AT_SKIP_IF(true)
+
+AT_DATA([prog1.cob], [
+       identification division.
+       program-id. prog1.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           lock mode is manual
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open output file1.
+           move "X" to file1-key.
+           write file1-rec.
+           if fs not = "00"
+              display "FAILED 1::w fs=" fs.
+           close file1.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1 with lock.
+           if fs not = "00"
+              display "FAILED 1::r fs=" fs.
+           call "system" using "./prog2". 
+           close file1.
+           stop run.
+])
+AT_DATA([prog2.cob], [
+       identification division.
+       program-id. prog2.
+       environment division.
+       input-output section.
+       file-control.
+       select file1 assign disk
+           access mode is random
+           organization indexed
+           record key file1-key
+           status is fs.
+       data division.
+       file section.
+       fd file1.
+       1    file1-rec.
+        2   file1-key pic x.
+       working-storage section.
+       1    fs pic xx.
+       procedure division.
+           open i-o file1.
+           move "X" to file1-key.
+           read file1.
+           if fs not = "61"
+              display "FAILED 2::r " fs
            end-if.
            close file1 
            stop run.
@@ -4236,29 +4734,34 @@ AT_DATA([prog.cob], [
                       return-code ")"
               stop run.
       *
+           call "CBL_CLOSE_FILE" using fh.
+           if (return-code <> 0)
+              display "FAILED 5: CBL_CLOSE_FILE (res="
+                      return-code ")"
+              stop run.
+      *
            call "CBL_CHECK_FILE_EXIST" using w-filename, w-finfo.
            if (return-code <> 0)
-              display "FAILED 5: CBL_CHECK_FILE_EXIST (res="
+              display "FAILED 6: CBL_CHECK_FILE_EXIST (res="
                       return-code ")"
               stop run.
       *
       *    Should fail 'cos directory is NOT empty.
            call "CBL_DELETE_DIR" using w-dirname-1.
            if (return-code = 0)
-              display "FAILED 6: CBL_DELETE_DIR EXPECTED TO FAIL"
+              display "FAILED 7: CBL_DELETE_DIR EXPECTED TO FAIL"
               stop run.
       *
-      *    Remove all files (including sub-directories) in t-m-p-1
-           accept w-finfo.
+      *    Remove all files (including sub-directories) in tmp1
            call "CBL_PURGE_DIR" using w-dirname-1.                 
            if (return-code <> 0)
-              display "FAILED 7: CBL_PURGE_DIR (res=" return-code ")"
+              display "FAILED 8: CBL_PURGE_DIR (res=" return-code ")"
               stop run.
       *
       *    Should succeed 'cos directory is NOW empty.
            call "CBL_DELETE_DIR" using w-dirname-1.
            if (return-code <> 0) 
-              display "FAILED 8: CBL_DELETE_DIR (res=" return-code ")"
+              display "FAILED 9: CBL_DELETE_DIR (res=" return-code ")"
               stop run.
            stop run.
 ])
