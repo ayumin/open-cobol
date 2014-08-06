@@ -353,7 +353,7 @@ COB_EXPIMP void cob_commit(void);
 
 COB_EXPIMP void cob_rollback(void);
 
-
+COB_EXPIMP void cob_display_file_exception(void);
 
 
 

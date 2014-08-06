@@ -50,7 +50,7 @@ static const char *me = "COB_fileio-misc";
 #endif
 
 
-#define STOPPER (int)0xEFFFFFFF       // MinGW no MAXINT declared`
+#define STOPPER (int)0xEFFFFFFF             // MinGW no MAXINT declared
 
 
 
@@ -490,7 +490,6 @@ const char *cob_fileio_status_msg(char status_key[])
 		no = 90;
 	else
 		no = INT_STATUS_KEY(status_key);
-
 	for (ix = 0; status_keys[ix].no != STOPPER; ++ix) {
 		if (status_keys[ix].no == no) {
 			return(status_keys[ix].descrp);
@@ -504,14 +503,14 @@ const char *cob_fileio_status_msg(char status_key[])
 
 
 
-void cob_default_error_handle(void)
+void cob_fileio_error_handler(void)
 {
 	char *pb_txt;
 	char txt[800];
 
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 0)
-		fprintf(stderr, "%s: cob_default_error_handle()\n", me);
+		fprintf(stderr, "%s: cob_fileio_error_handler()\n", me);
 #endif
 
 	if (!COB_EXC_THROWN) {

@@ -1467,7 +1467,7 @@ cob_fatal_error (const int fatal_error)
 		cob_runtime_error (_("Invalid recursive COBOL CALL"));
 		break;
 	case COB_FERROR_FILE:
-        // handled by fileio
+       		cob_display_file_exception();
 		cob_runtime_error (_("Failure in fileio subsystem"));
 		break;
 	case COB_FERROR_FUNCTION:

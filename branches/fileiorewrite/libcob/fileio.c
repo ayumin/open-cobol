@@ -1182,6 +1182,19 @@ void cob_rollback(void)
 
 
 
+/*
+ *	Expose fileio error-handler to external code.
+ *	The error-handler displays info describing the last
+ *	encountered fileio exception.
+ */
+void cob_display_file_exception(void)
+{
+	 cob_fileio_error_handler();
+}
+
+
+
+
 
 /*
  *	Reset file state ready for OPEN
@@ -1351,7 +1364,7 @@ static int _fileio_illegal_io(
 
 	cob_fileio_throw_rts(f, COB_IOEXC_ILLEGAL);
 	cob_fileio_save_status(f, NULL);
-    cob_default_error_handle();
+	cob_fileio_error_handler();
 	return(-1);
 }
 
