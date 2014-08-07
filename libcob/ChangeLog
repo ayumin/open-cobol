@@ -1,11 +1,12 @@
+
+2014-08-05  Louis Krupp <lkrupp@users.sf.net>
+
+	* screenio.c : compilation fails if configured without curses (bug #90)
+
 2014-07-09  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* fileio.c (cob_file_sort_giving): initialize record buffer size before 
 	  cob_copy_check, solving bug #66
-
-201?-??-??  Sergey Kashyrin <ska@kiska.net>
-
-	* fileio.c (cob_new_item): cleanup
 
 2014-06-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
@@ -70,6 +71,10 @@
 2013-??-??  Sergey Kashyrin <ska@kiska.net>
 
 	* fileio.c : Bugfix in cob_sys_copy_file (now using file_open_buff)
+
+201?-??-??  Sergey Kashyrin <ska@kiska.net>
+
+	* fileio.c (cob_new_item): cleanup
 
 2010-09-03  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
