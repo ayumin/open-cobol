@@ -1,3 +1,8 @@
+
+2014-08-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* atlocal.in : unset all environmental vars that are used by libcob
+
 2014-04-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* testsuite.src/*.at : Added check for cobc's exit code and stderr
