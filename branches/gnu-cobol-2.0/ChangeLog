@@ -1,3 +1,12 @@
+
+2014-08-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* configure.ac : add new parameter --with-curses for explicit
+	  selection of used curses library (including "no");
+	  better check of matching version header/library for GMP and BDB;
+	  additional output of configuration summary to config.log;
+	  respect --quite (don't echo or printf to stdout)
+
 2014-06-20  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* New folder build_windows
@@ -15,7 +24,7 @@
 2014-04-11  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* configure.ac : bugfix for systems with prototype for finite function
-		in ieeefp.h instead of math.h
+	  in ieeefp.h instead of math.h
 
 2013-09-29  Brian Tiffin & Simon Sobisch <sf-mensch@users.sf.net>
 
