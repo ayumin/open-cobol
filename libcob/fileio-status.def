@@ -28,56 +28,57 @@
 
 
 // SUCCESS
-COB_STATUS (00, COB_STATUS_00_SUCCESS, "Successful")
-COB_STATUS (02, COB_STATUS_02_SUCCESS_DUPLICATE, "Successful with duplicate")
-COB_STATUS (04, COB_STATUS_04_SUCCESS_INCOMPLETE, "Successful with wrong record length")
-COB_STATUS (05, COB_STATUS_05_SUCCESS_OPTIONAL, "Successful with optional file missing") 
-COB_STATUS (07, COB_STATUS_07_SUCCESS_NO_UNIT, "Successful but not REEL/UNIT")
+COB_STATUS (00, COB_STATUS_00_SUCCESS, _("Successful"))
+COB_STATUS (02, COB_STATUS_02_SUCCESS_DUPLICATE, _("Successful with duplicate"))
+COB_STATUS (04, COB_STATUS_04_SUCCESS_INCOMPLETE, _("Successful with wrong record length"))
+COB_STATUS (05, COB_STATUS_05_SUCCESS_OPTIONAL, _("Successful with optional file missing")) 
+COB_STATUS (07, COB_STATUS_07_SUCCESS_NO_UNIT, _("Successful but not REEL/UNIT"))
 
 // COB_EC_I_O_AT_END 
-COB_STATUS (10, COB_STATUS_10_END_OF_FILE, "End of file")
-COB_STATUS (14, COB_STATUS_14_OUT_OF_KEY_RANGE, "Relative record number bigger than declared relative key")
+COB_STATUS (10, COB_STATUS_10_END_OF_FILE, _("End of file"))
+COB_STATUS (14, COB_STATUS_14_OUT_OF_KEY_RANGE, _("Relative record number bigger than declared relative key"))
 
 // COB_EC_I_O_INVALID_KEY
-COB_STATUS (21, COB_STATUS_21_KEY_INVALID, "Key order not ascending")
-COB_STATUS (22, COB_STATUS_22_KEY_EXISTS, "Record key already exists")
-COB_STATUS (23, COB_STATUS_23_KEY_NOT_EXISTS, "Record key does not exist")
-COB_STATUS (24, COB_STATUS_24_BOUNDARY_VIOLATION, "Boundary violation")
+COB_STATUS (21, COB_STATUS_21_KEY_INVALID, _("Key order not ascending"))
+COB_STATUS (22, COB_STATUS_22_KEY_EXISTS, _("Record key already exists"))
+COB_STATUS (23, COB_STATUS_23_KEY_NOT_EXISTS, _("Record key does not exist"))
+COB_STATUS (24, COB_STATUS_24_BOUNDARY_VIOLATION, _("Boundary violation"))
 
 
 // COB_EC_I_O_PERMANENT_ERROR
-COB_STATUS (30, COB_STATUS_30_PERMANENT_ERROR, "Permanent error")
-COB_STATUS (31, COB_STATUS_31_INCONSISTENT_FILENAME, "Illegal file-name")
-COB_STATUS (34, COB_STATUS_34_BOUNDARY_VIOLATION, "Boundary violation")
-COB_STATUS (35, COB_STATUS_35_NOT_EXISTS, "File does not exist")
-COB_STATUS (37, COB_STATUS_37_PERMISSION_DENIED, "Wrong permissions or file does not support mode specified in OPEN")
-COB_STATUS (38, COB_STATUS_38_CLOSED_WITH_LOCK, "File is locked")
-COB_STATUS (39, COB_STATUS_39_CONFLICT_ATTRIBUTE, "Physical attributes do not match those declared")
+COB_STATUS (30, COB_STATUS_30_PERMANENT_ERROR, _("Permanent error"))
+COB_STATUS (31, COB_STATUS_31_INCONSISTENT_FILENAME, _("Illegal file-name"))
+COB_STATUS (34, COB_STATUS_34_BOUNDARY_VIOLATION, _("Boundary violation"))
+COB_STATUS (35, COB_STATUS_35_NOT_EXISTS, _("File does not exist"))
+COB_STATUS (37, COB_STATUS_37_PERMISSION_DENIED, _("Wrong permissions or file does not support mode specified in OPEN"))
+COB_STATUS (38, COB_STATUS_38_CLOSED_WITH_LOCK, _("File is locked"))
+COB_STATUS (39, COB_STATUS_39_CONFLICT_ATTRIBUTE, _("Physical attributes do not match those declared"))
 
 // COB_EC_I_O_LOGIC_ERROR
-COB_STATUS (41, COB_STATUS_41_ALREADY_OPEN, "File is already open")
-COB_STATUS (42, COB_STATUS_42_NOT_OPEN, "File is not open")
-COB_STATUS (43, COB_STATUS_43_READ_NOT_DONE, "Prior READ is required")
-COB_STATUS (44, COB_STATUS_44_RECORD_OVERFLOW, "Boundary violation: incorrect record length")
-COB_STATUS (45, COB_STATUS_45_RSZ_MISMATCH, "Record length is different to original record")
-COB_STATUS (46, COB_STATUS_46_READ_ERROR, "Failed to read - no next record")
-COB_STATUS (47, COB_STATUS_47_INPUT_DENIED, "READ/START on file not opened for input")
-COB_STATUS (48, COB_STATUS_48_OUTPUT_DENIED, "WRITE on file not opened for output")
-COB_STATUS (49, COB_STATUS_49_I_O_DENIED, "DELETE/REWRITE on file not opened I-O")
+COB_STATUS (41, COB_STATUS_41_ALREADY_OPEN, _("File is already open"))
+COB_STATUS (42, COB_STATUS_42_NOT_OPEN, _("File is not open"))
+COB_STATUS (43, COB_STATUS_43_READ_NOT_DONE, _("Prior READ is required"))
+COB_STATUS (44, COB_STATUS_44_RECORD_OVERFLOW, _("Boundary violation: incorrect record length"))
+COB_STATUS (45, COB_STATUS_45_RSZ_MISMATCH, _("Record length is different to original record"))
+COB_STATUS (46, COB_STATUS_46_READ_ERROR, _("Failed to read - no next record"))
+COB_STATUS (47, COB_STATUS_47_INPUT_DENIED, _("READ/START on file not opened for input"))
+COB_STATUS (48, COB_STATUS_48_OUTPUT_DENIED, _("WRITE on file not opened for output"))
+COB_STATUS (49, COB_STATUS_49_I_O_DENIED, _("DELETE/REWRITE on file not opened I-O"))
 
 // COB_EC_I_O_RECORD_OPERATION
-COB_STATUS (51, COB_STATUS_51_RECORD_LOCKED, "Record locked by another file connector")
-COB_STATUS (52, COB_STATUS_52_EOP, "A page overflow condition occurred")
-COB_STATUS (57, COB_STATUS_57_I_O_LINAGE, "LINAGE values invalid")
+COB_STATUS (51, COB_STATUS_51_RECORD_LOCKED, _("Record locked by another file connector"))
+COB_STATUS (52, COB_STATUS_52_EOP, _("A page overflow condition occurred"))
+COB_STATUS (57, COB_STATUS_57_I_O_LINAGE, _("LINAGE values invalid"))
 
 // COB_EC_I_O_FILE_SHARING
-COB_STATUS (61, COB_STATUS_61_FILE_SHARING, "File sharing conflict") 
+COB_STATUS (61, COB_STATUS_61_FILE_SHARING, _("File sharing conflict")) 
 
 // COB_EC_I_O_EXT
-COB_STATUS (80, COB_STATUS_80_RTS, "Extended status-key: status-key-2 stores NATIVE error number")
+COB_STATUS (80, COB_STATUS_80_RTS, _("Extended status-key: status-key-2 stores NATIVE error number"))
 
 // COB_EC_I_O_IMP
-COB_STATUS (90, COB_STATUS_90_RTS, "Extended status-key: status-key-2 stores COBOL RTS error number")
+COB_STATUS (90, COB_STATUS_90_RTS, _("Extended status-key: status-key-2 stores COBOL RTS error number"))
+
 
 
 
