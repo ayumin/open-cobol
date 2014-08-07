@@ -72,197 +72,197 @@
 
 // COB_IO_EXCEPTION (code, state, status, tag, def) 
 
-COB_IO_EXCEPTION (  1, 2, "31", COB_IOEXC_FNAME_VOID, "File name is empty")
+COB_IO_EXCEPTION (  1, 2, "31", COB_IOEXC_FNAME_VOID, _("File name is empty"))
 
-COB_IO_EXCEPTION (  2, 2, "31", COB_IOEXC_FNAME_BAD, "Illegal file name")
+COB_IO_EXCEPTION (  2, 2, "31", COB_IOEXC_FNAME_BAD, _("Illegal file name"))
 
-COB_IO_EXCEPTION (  3, 2, "31", COB_IOEXC_FNAME_2BIG, "File name too long")
+COB_IO_EXCEPTION (  3, 2, "31", COB_IOEXC_FNAME_2BIG, _("File name too long"))
 
-COB_IO_EXCEPTION (  4, 1, "30", COB_IOEXC_DISK_FULL, "Disk space exhausted")
+COB_IO_EXCEPTION (  4, 1, "30", COB_IOEXC_DISK_FULL, _("Disk space exhausted"))
 
-COB_IO_EXCEPTION (  5, 2, "30", COB_IOEXC_DIR_FULL, "No room in directory")
+COB_IO_EXCEPTION (  5, 2, "30", COB_IOEXC_DIR_FULL, _("No room in directory"))
 
-COB_IO_EXCEPTION (  6, 2, "31", COB_IOEXC_DIR_NFOUND, "Directory does not exist")
+COB_IO_EXCEPTION (  6, 2, "31", COB_IOEXC_DIR_NFOUND, _("Directory does not exist"))
 
-COB_IO_EXCEPTION (  7, 2, "41", COB_IOEXC_FILE_2XOPEN, "Attempt to open a file which is already open")
+COB_IO_EXCEPTION (  7, 2, "41", COB_IOEXC_FILE_2XOPEN, _("Attempt to open a file which is already open"))
 
-COB_IO_EXCEPTION (  8, 2, "42", COB_IOEXC_FILE_NOPEN, "Attempt to close a file which is not open")
+COB_IO_EXCEPTION (  8, 2, "42", COB_IOEXC_FILE_NOPEN, _("Attempt to close a file which is not open"))
 
-COB_IO_EXCEPTION (  9, 2, "35", COB_IOEXC_FILE_MISSING, "File not found")
+COB_IO_EXCEPTION (  9, 2, "35", COB_IOEXC_FILE_MISSING, _("File not found"))
 
-COB_IO_EXCEPTION ( 10, 2, "38", COB_IOEXC_FILE_LOCKED, "File is locked by previous CLOSE")
+COB_IO_EXCEPTION ( 10, 2, "38", COB_IOEXC_FILE_LOCKED, _("File is locked by previous CLOSE"))
 
-COB_IO_EXCEPTION ( 11, 2, "30", COB_IOEXC_FILE_2MANY, "Too many files open simultaneously")
+COB_IO_EXCEPTION ( 11, 2, "30", COB_IOEXC_FILE_2MANY, _("Too many files open simultaneously"))
 
-COB_IO_EXCEPTION ( 12, 1, "30", COB_IOEXC_FILE_ISADIR, "File is a directory")
+COB_IO_EXCEPTION ( 12, 1, "30", COB_IOEXC_FILE_ISADIR, _("File is a directory"))
 
-COB_IO_EXCEPTION ( 13, 1, "30", COB_IOEXC_DEV_FULL, "No space on device")
+COB_IO_EXCEPTION ( 13, 1, "30", COB_IOEXC_DEV_FULL, _("No space on device"))
 
-COB_IO_EXCEPTION ( 14, 2, "30", COB_IOEXC_FSYS_READ_ONLY, "File system is read only")
+COB_IO_EXCEPTION ( 14, 2, "30", COB_IOEXC_FSYS_READ_ONLY, _("File system is read only"))
 
-COB_IO_EXCEPTION ( 15, 2, "30", COB_IOEXC_FILE_NPERM, "File permission denied")
+COB_IO_EXCEPTION ( 15, 2, "30", COB_IOEXC_FILE_NPERM, _("File permission denied"))
 
-COB_IO_EXCEPTION ( 16, 2, "30", COB_IOEXC_FILE_EXISTS, "File must not already exist")
+COB_IO_EXCEPTION ( 16, 2, "30", COB_IOEXC_FILE_EXISTS, _("File must not already exist"))
 
-COB_IO_EXCEPTION ( 17, 2, "37", COB_IOEXC_FILE_ACCESS, "File access denied: incompatible OPEN mode")
+COB_IO_EXCEPTION ( 17, 2, "37", COB_IOEXC_FILE_ACCESS, _("File access denied: incompatible OPEN mode"))
 
-COB_IO_EXCEPTION ( 18, 2, "23", COB_IOEXC_FILE_NOPT, "Failed with optional file missing")
+COB_IO_EXCEPTION ( 18, 2, "23", COB_IOEXC_FILE_NOPT, _("Failed with optional file missing"))
 
-COB_IO_EXCEPTION ( 19, 2, "30", COB_IOEXC_FILE_DELETE, "Attempt to delete open file")
+COB_IO_EXCEPTION ( 19, 2, "30", COB_IOEXC_FILE_DELETE, _("Attempt to delete open file"))
 
-COB_IO_EXCEPTION ( 20, 2, "61", COB_IOEXC_FSHARE_LOCK, "The file cannot be SHARED")
+COB_IO_EXCEPTION ( 20, 2, "61", COB_IOEXC_FSHARE_LOCK, _("The file cannot be SHARED"))
 
-COB_IO_EXCEPTION ( 21, 2, "61", COB_IOEXC_FAIL_LOCK, "The file could not be locked")
+COB_IO_EXCEPTION ( 21, 2, "61", COB_IOEXC_FAIL_LOCK, _("The file could not be locked"))
 
 
 
 
-COB_IO_EXCEPTION ( 30, 2, "42", COB_IOEXC_CLOSED, "File not open when access tried")
+COB_IO_EXCEPTION ( 30, 2, "42", COB_IOEXC_CLOSED, _("File not open when access tried"))
 
-COB_IO_EXCEPTION ( 31, 2, "47", COB_IOEXC_S_ON_XIP, "Attempt to start on a file not opened for input")
+COB_IO_EXCEPTION ( 31, 2, "47", COB_IOEXC_S_ON_XIP, _("Attempt to start on a file not opened for input"))
 
-COB_IO_EXCEPTION ( 32, 2, "47", COB_IOEXC_R_ON_XIP, "Attempt to read from a file not opened for input")
+COB_IO_EXCEPTION ( 32, 2, "47", COB_IOEXC_R_ON_XIP, _("Attempt to read from a file not opened for input"))
 
-COB_IO_EXCEPTION ( 33, 2, "48", COB_IOEXC_W_ON_XOP, "Attempt to write to a file not opened for output")
+COB_IO_EXCEPTION ( 33, 2, "48", COB_IOEXC_W_ON_XOP, _("Attempt to write to a file not opened for output"))
 
-COB_IO_EXCEPTION ( 34, 2, "49", COB_IOEXC_U_ON_XIO, "Attempt to rewrite to a file not opened I-O")
+COB_IO_EXCEPTION ( 34, 2, "49", COB_IOEXC_U_ON_XIO, _("Attempt to rewrite to a file not opened I-O"))
 
-COB_IO_EXCEPTION ( 35, 2, "49", COB_IOEXC_D_ON_XIO, "Attempt to delete from a file not opened I-O")
+COB_IO_EXCEPTION ( 35, 2, "49", COB_IOEXC_D_ON_XIO, _("Attempt to delete from a file not opened I-O"))
 
-COB_IO_EXCEPTION ( 36, 2, "10", COB_IOEXC_R_XEOF, "Attempt to READ beyond end of file")
+COB_IO_EXCEPTION ( 36, 2, "10", COB_IOEXC_R_XEOF, _("Attempt to READ beyond end of file"))
 
-COB_IO_EXCEPTION ( 37, 2, "10", COB_IOEXC_R_XBOF, "Attempt to READ beyond beginning of file")
+COB_IO_EXCEPTION ( 37, 2, "10", COB_IOEXC_R_XBOF, _("Attempt to READ beyond beginning of file"))
 
-COB_IO_EXCEPTION ( 38, 2, "47", COB_IOEXC_XMODE_S, "Wrong access mode for START")
+COB_IO_EXCEPTION ( 38, 2, "47", COB_IOEXC_XMODE_S, _("Wrong access mode for START"))
 
-COB_IO_EXCEPTION ( 39, 2, "47", COB_IOEXC_XMODE_R, "Wrong access mode for READ")
+COB_IO_EXCEPTION ( 39, 2, "47", COB_IOEXC_XMODE_R, _("Wrong access mode for READ"))
 
-COB_IO_EXCEPTION ( 40, 2, "48", COB_IOEXC_XMODE_W, "Wrong access mode for WRITE")
+COB_IO_EXCEPTION ( 40, 2, "48", COB_IOEXC_XMODE_W, _("Wrong access mode for WRITE"))
 
-COB_IO_EXCEPTION ( 41, 2, "49", COB_IOEXC_XMODE_U, "Wrong access mode for REWRITE")
+COB_IO_EXCEPTION ( 41, 2, "49", COB_IOEXC_XMODE_U, _("Wrong access mode for REWRITE"))
 
-COB_IO_EXCEPTION ( 42, 2, "49", COB_IOEXC_XMODE_D, "Wrong access mode for DELETE")
+COB_IO_EXCEPTION ( 42, 2, "49", COB_IOEXC_XMODE_D, _("Wrong access mode for DELETE"))
 
-COB_IO_EXCEPTION ( 43, 2, "30", COB_IOEXC_PIPE_BROKEN, "Attempt to write on broken pipe")
+COB_IO_EXCEPTION ( 43, 2, "30", COB_IOEXC_PIPE_BROKEN, _("Attempt to write on broken pipe"))
 
-COB_IO_EXCEPTION ( 44, 2, "61", COB_IOEXC_REC_LOCKED, "Record is locked")
+COB_IO_EXCEPTION ( 44, 2, "61", COB_IOEXC_REC_LOCKED, _("Record is locked"))
 
-COB_IO_EXCEPTION ( 45, 2, "43", COB_IOEXC_SEQ_U_NOREAD, "REWRITE in sequential mode not preceded by successful READ")
+COB_IO_EXCEPTION ( 45, 2, "43", COB_IOEXC_SEQ_U_NOREAD, _("REWRITE in sequential mode not preceded by successful READ"))
 
-COB_IO_EXCEPTION ( 46, 2, "43", COB_IOEXC_SEQ_D_NOREAD, "DELETE in sequential mode not preceded by successful READ")
+COB_IO_EXCEPTION ( 46, 2, "43", COB_IOEXC_SEQ_D_NOREAD, _("DELETE in sequential mode not preceded by successful READ"))
 
-COB_IO_EXCEPTION ( 47, 2, "46", COB_IOEXC_SEQ_READ_BOF, "Sequential read beyond start of file")
+COB_IO_EXCEPTION ( 47, 2, "46", COB_IOEXC_SEQ_READ_BOF, _("Sequential read beyond start of file"))
 
-COB_IO_EXCEPTION ( 48, 2, "46", COB_IOEXC_SEQ_READ_EOF, "Sequential read beyond end of file")
+COB_IO_EXCEPTION ( 48, 2, "46", COB_IOEXC_SEQ_READ_EOF, _("Sequential read beyond end of file"))
 
-COB_IO_EXCEPTION ( 49, 2, "30", COB_IOEXC_SEQ_RANDOM, "Random read on sequential file")
+COB_IO_EXCEPTION ( 49, 2, "30", COB_IOEXC_SEQ_RANDOM, _("Random read on sequential file"))
 
-COB_IO_EXCEPTION ( 50, 2, "48", COB_IOEXC_SEQ_W_IO, "Attempt to write in sequential mode on file opened I-O")
+COB_IO_EXCEPTION ( 50, 2, "48", COB_IOEXC_SEQ_W_IO, _("Attempt to write in sequential mode on file opened I-O"))
 
-COB_IO_EXCEPTION ( 51, 2, "23", COB_IOEXC_NOREC, "No record found for given key")
+COB_IO_EXCEPTION ( 51, 2, "23", COB_IOEXC_NOREC, _("No record found for given key"))
 
-COB_IO_EXCEPTION ( 52, 2, "30", COB_IOEXC_RSZ, "Physical rsz exceeds max logical rsz")
+COB_IO_EXCEPTION ( 52, 2, "30", COB_IOEXC_RSZ, _("Physical rsz exceeds max logical rsz"))
 
-COB_IO_EXCEPTION ( 53, 2, "30", COB_IOEXC_RECSHORT, "Read part record error: EOF before EOR")
+COB_IO_EXCEPTION ( 53, 2, "30", COB_IOEXC_RECSHORT, _("Read part record error: EOF before EOR"))
 
-COB_IO_EXCEPTION ( 54, 2, "30", COB_IOEXC_LSEQ_CORRUPT, "Malformed line sequential-file")
+COB_IO_EXCEPTION ( 54, 2, "30", COB_IOEXC_LSEQ_CORRUPT, _("Malformed line sequential-file"))
 
-COB_IO_EXCEPTION ( 55, 2, "30", COB_IOEXC_W_EXTEND, "Attempt to write in non-sequential mode on file opened EXTEND")
+COB_IO_EXCEPTION ( 55, 2, "30", COB_IOEXC_W_EXTEND, _("Attempt to write in non-sequential mode on file opened EXTEND"))
 
-COB_IO_EXCEPTION ( 56, 2, "44", COB_IOEXC_VAR_RSZ, "Variable length record size beyond limits")
+COB_IO_EXCEPTION ( 56, 2, "44", COB_IOEXC_VAR_RSZ, _("Variable length record size beyond limits"))
 
-COB_IO_EXCEPTION ( 57, 2, "30", COB_IOEXC_LSEQ_REWRITE, "Attempt to REWRITE to a line-sequential file")
+COB_IO_EXCEPTION ( 57, 2, "30", COB_IOEXC_LSEQ_REWRITE, _("Attempt to REWRITE to a line-sequential file"))
 
-COB_IO_EXCEPTION ( 58, 2, "57", COB_IOEXC_SEQ_LINAGE, "Invalid LINAGE on (line)sequential file")
+COB_IO_EXCEPTION ( 58, 2, "57", COB_IOEXC_SEQ_LINAGE, _("Invalid LINAGE on (line)sequential file"))
 
-COB_IO_EXCEPTION ( 59, 2, "52", COB_IOEXC_LSEQ_PAGE, "A page overflow condition occured")
+COB_IO_EXCEPTION ( 59, 2, "52", COB_IOEXC_LSEQ_PAGE, _("A page overflow condition occured"))
 
-COB_IO_EXCEPTION ( 60, 2, "44", COB_IOEXC_REWRITE_RSZ, "Attempt to REWRITE to a record of different size")
+COB_IO_EXCEPTION ( 60, 2, "44", COB_IOEXC_REWRITE_RSZ, _("Attempt to REWRITE to a record of different size"))
 
-COB_IO_EXCEPTION ( 61, 2, "22", COB_IOEXC_WRITE_DUP, "Attempt to WRITE record that already exists")
+COB_IO_EXCEPTION ( 61, 2, "22", COB_IOEXC_WRITE_DUP, _("Attempt to WRITE record that already exists"))
 
-COB_IO_EXCEPTION ( 62, 2, "14", COB_IOEXC_REL_KEY_2BIG, "Record number would overflow RELATIVE KEY")
+COB_IO_EXCEPTION ( 62, 2, "14", COB_IOEXC_REL_KEY_2BIG, _("Record number would overflow RELATIVE KEY"))
 
 
 
 
-COB_IO_EXCEPTION ( 80, 1, "39", COB_IOEXC_ISAM_NINDEX, "No index for key declared in COBOL file")
+COB_IO_EXCEPTION ( 80, 1, "39", COB_IOEXC_ISAM_NINDEX, _("No index for key declared in COBOL file"))
 
-COB_IO_EXCEPTION ( 81, 2, "22", COB_IOEXC_ISAM_DUP, "Attempt to write record containing a duplicate key")
+COB_IO_EXCEPTION ( 81, 2, "22", COB_IOEXC_ISAM_DUP, _("Attempt to write record containing a duplicate key"))
 
-COB_IO_EXCEPTION ( 82, 1, "30", COB_IOEXC_ISAM_DROP, "Failed to delete existing index files")
+COB_IO_EXCEPTION ( 82, 1, "30", COB_IOEXC_ISAM_DROP, _("Failed to delete existing index files"))
 
-COB_IO_EXCEPTION ( 83, 1, "30", COB_IOEXC_ISAM_BAD_DICT, "Index dictionary corrupt")
+COB_IO_EXCEPTION ( 83, 1, "30", COB_IOEXC_ISAM_BAD_DICT, _("Index dictionary corrupt"))
 
-COB_IO_EXCEPTION ( 84, 1, "30", COB_IOEXC_ISAM_CREATE, "Failed to create new index file")
+COB_IO_EXCEPTION ( 84, 1, "30", COB_IOEXC_ISAM_CREATE, _("Failed to create new index file"))
 
-COB_IO_EXCEPTION ( 85, 1, "30", COB_IOEXC_ISAM_OPEN, "Failed to open index file")
+COB_IO_EXCEPTION ( 85, 1, "30", COB_IOEXC_ISAM_OPEN, _("Failed to open index file"))
 
-COB_IO_EXCEPTION ( 86, 1, "30", COB_IOEXC_ISAM_FAILED, "Error encountered in isam handler")
+COB_IO_EXCEPTION ( 86, 1, "30", COB_IOEXC_ISAM_FAILED, _("Error encountered in isam handler"))
 
-COB_IO_EXCEPTION ( 87, 2, "21", COB_IOEXC_ISAM_KEY_ASC, "Attempt to write record with key less than predecessor")
+COB_IO_EXCEPTION ( 87, 2, "21", COB_IOEXC_ISAM_KEY_ASC, _("Attempt to write record with key less than predecessor"))
 
-COB_IO_EXCEPTION ( 88, 1, "30", COB_IOEXC_ISAM_DIVORCED, "Index/data file divorced from its data/index file")
+COB_IO_EXCEPTION ( 88, 1, "30", COB_IOEXC_ISAM_DIVORCED, _("Index/data file divorced from its data/index file"))
 
-COB_IO_EXCEPTION ( 89, 1, "30", COB_IOEXC_ISAM_ILLEGAL, "Unexpected request caught by isam handler")
+COB_IO_EXCEPTION ( 89, 1, "30", COB_IOEXC_ISAM_ILLEGAL, _("Unexpected request caught by isam handler"))
 
-COB_IO_EXCEPTION ( 90, 1, "30", COB_IOEXC_ISAM_TRANS_BEGIN, "Failed to begin BDB transaction")
+COB_IO_EXCEPTION ( 90, 1, "30", COB_IOEXC_ISAM_TRANS_BEGIN, _("Failed to begin BDB transaction"))
 
-COB_IO_EXCEPTION ( 91, 1, "30", COB_IOEXC_ISAM_TRANS_COMMIT, "Failed to commit BDB transaction")
+COB_IO_EXCEPTION ( 91, 1, "30", COB_IOEXC_ISAM_TRANS_COMMIT, _("Failed to commit BDB transaction"))
 
-COB_IO_EXCEPTION ( 99, 1, "30", COB_IOEXC_ISAM_CREATE_DICT, "Failed to create index dictionary")
+COB_IO_EXCEPTION ( 99, 1, "30", COB_IOEXC_ISAM_CREATE_DICT, _("Failed to create index dictionary"))
 
-COB_IO_EXCEPTION (100, 2, "30", COB_IOEXC_ISAM_ODBC_HANDLE, "Failed to initialise ODBC Connection handle")
+COB_IO_EXCEPTION (100, 2, "30", COB_IOEXC_ISAM_ODBC_HANDLE, _("Failed to initialise ODBC Connection handle"))
 
-COB_IO_EXCEPTION (101, 2, "30", COB_IOEXC_ISAM_ODBC_CONNECT, "Failed to connect ODBC database")
+COB_IO_EXCEPTION (101, 2, "30", COB_IOEXC_ISAM_ODBC_CONNECT, _("Failed to connect ODBC database"))
 
-COB_IO_EXCEPTION (102, 2, "30", COB_IOEXC_ISAM_TOO_MANY_DB_CONNECTIONS, "Too many ODBC server connections opened")
+COB_IO_EXCEPTION (102, 2, "30", COB_IOEXC_ISAM_TOO_MANY_DB_CONNECTIONS, _("Too many ODBC server connections opened"))
 
 // spare COB_IO_EXCEPTION (103,
 
-COB_IO_EXCEPTION (104, 2, "30", COB_IOEXC_ISAM_ODBC_NO_DB_NAME, "Missing ODBC database name: $COB_ODBC_DB")
+COB_IO_EXCEPTION (104, 2, "30", COB_IOEXC_ISAM_ODBC_NO_DB_NAME, _("Missing ODBC database name: $COB_ODBC_DB"))
 
-COB_IO_EXCEPTION (105, 2, "30", COB_IOEXC_ISAM_ODBC_CONTROLS, "ODBC Key Dictionary missing or corrupt")
+COB_IO_EXCEPTION (105, 2, "30", COB_IOEXC_ISAM_ODBC_CONTROLS, _("ODBC Key Dictionary missing or corrupt"))
 
-COB_IO_EXCEPTION (106, 2, "30", COB_IOEXC_ISAM_ODBC_PREPARE, "ODBC failed to prepare statement")
+COB_IO_EXCEPTION (106, 2, "30", COB_IOEXC_ISAM_ODBC_PREPARE, _("ODBC failed to prepare statement"))
 
-COB_IO_EXCEPTION (107, 2, "30", COB_IOEXC_ISAM_ODBC_BIND, "ODBC failed to bind param to statement")
+COB_IO_EXCEPTION (107, 2, "30", COB_IOEXC_ISAM_ODBC_BIND, _("ODBC failed to bind param to statement"))
 
-COB_IO_EXCEPTION (108, 2, "30", COB_IOEXC_ISAM_ODBC_NO_CON_STRING, "Missing ODBC ConnectionString $COB_ODBC_CONNECTOR")
+COB_IO_EXCEPTION (108, 2, "30", COB_IOEXC_ISAM_ODBC_NO_CON_STRING, _("Missing ODBC ConnectionString $COB_ODBC_CONNECTOR"))
 
-COB_IO_EXCEPTION (109, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_AND_SERVER_NAME, "ODBC DSN or server name - NOT both")
+COB_IO_EXCEPTION (109, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_AND_SERVER_NAME, _("ODBC DSN or server name - NOT both"))
 
-COB_IO_EXCEPTION (110, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_OR_SERVER_NAME, "ODBC requires DSN or server name: $COB_ODBC_DSN or  $COB_ODBC_SERVER")
-
-
+COB_IO_EXCEPTION (110, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_OR_SERVER_NAME, _("ODBC requires DSN or server name: $COB_ODBC_DSN or  $COB_ODBC_SERVER"))
 
 
 
-COB_IO_EXCEPTION (200, 2, "30", COB_IOEXC_FILE_NOGET, "PUT or ERASE without a previous GET")
-
-COB_IO_EXCEPTION (201, 1, "30", COB_IOEXC_SORT_OP, "Illegal sort operation")
 
 
+COB_IO_EXCEPTION (200, 2, "30", COB_IOEXC_FILE_NOGET, _("PUT or ERASE without a previous GET"))
 
-COB_IO_EXCEPTION (250, 1, "30", COB_IOEXC_INTERNAL, "Internal error: unexpected value or state")
-COB_IO_EXCEPTION (251, 1, "30", COB_IOEXC_NYI, "Internal error: feature configured but not yet implemented")
-COB_IO_EXCEPTION (252, 1, "30", COB_IOEXC_ILLEGAL, "Internal error: unexpected illegal IO call")
-COB_IO_EXCEPTION (253, 1, "30", COB_IOEXC_NIMPL, "Feature is not supported")
-COB_IO_EXCEPTION (254, 1, "30", COB_IOEXC_NCONFIG, "Feature is supported but not configured")
-COB_IO_EXCEPTION (255, 1, "30", COB_IOEXC_ERROR, "Exception reported by operating system or associated software")
+COB_IO_EXCEPTION (201, 1, "30", COB_IOEXC_SORT_OP, _("Illegal sort operation"))
+
+
+
+COB_IO_EXCEPTION (250, 1, "30", COB_IOEXC_INTERNAL, _("Internal error: unexpected value or state"))
+COB_IO_EXCEPTION (251, 1, "30", COB_IOEXC_NYI, _("Internal error: feature configured but not yet implemented"))
+COB_IO_EXCEPTION (252, 1, "30", COB_IOEXC_ILLEGAL, _("Internal error: unexpected illegal IO call"))
+COB_IO_EXCEPTION (253, 1, "30", COB_IOEXC_NIMPL, _("Feature is not supported"))
+COB_IO_EXCEPTION (254, 1, "30", COB_IOEXC_NCONFIG, _("Feature is supported but not configured"))
+COB_IO_EXCEPTION (255, 1, "30", COB_IOEXC_ERROR, _("Exception reported by operating system or associated software"))
 
 
 // Extension for SUCCESS codes - not really RTS errors at all
 
-COB_IO_EXCEPTION (1000, 0, "00", COB_IOEXC_OK, "Successful")
+COB_IO_EXCEPTION (1000, 0, "00", COB_IOEXC_OK, _("Successful"))
 
-COB_IO_EXCEPTION (1001, 0, "02", COB_IOEXC_OK_DUPLICATE, "Successful with duplicate")
+COB_IO_EXCEPTION (1001, 0, "02", COB_IOEXC_OK_DUPLICATE, _("Successful with duplicate"))
 
-COB_IO_EXCEPTION (1002, 0, "04", COB_IOEXC_OK_RSZ, "Successful with wrong record length")
+COB_IO_EXCEPTION (1002, 0, "04", COB_IOEXC_OK_RSZ, _("Successful with wrong record length"))
 
-COB_IO_EXCEPTION (1003, 0, "05", COB_IOEXC_OK_NOFILE, "Successful with optional file missing")
+COB_IO_EXCEPTION (1003, 0, "05", COB_IOEXC_OK_NOFILE, _("Successful with optional file missing"))
 
-COB_IO_EXCEPTION (1004, 0, "07", COB_IOEXC_OK_REEL, "Successful but not REEL/UNIT")
+COB_IO_EXCEPTION (1004, 0, "07", COB_IOEXC_OK_REEL, _("Successful but not REEL/UNIT"))
 
 
 
