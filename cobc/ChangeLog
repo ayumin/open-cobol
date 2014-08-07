@@ -1,3 +1,14 @@
+
+2014-06-19  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobc.c : Fixing compilers (like MSC) that don't HAVE_DESIGNATED_INITS
+		cobc_init_reserved() has to be called before process_command_line()
+
+2014-05-14  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* cobc.c : Catch and treat error when no disc space is available for 
+		output files
+
 2014-04-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* parser.* : Added extension "GOBACK/EXIT PROGRAM RETURNING/GIVING x"
