@@ -63,7 +63,7 @@ AH_TEMPLATE([WITH_SEQRA_EXTFH], [Compile with an external SEQ/RAN handler])
 AH_TEMPLATE([WITH_CISAM], [Use CISAM as ISAM handler])
 AH_TEMPLATE([WITH_DISAM], [Use DISAM as ISAM handler])
 AH_TEMPLATE([WITH_VBISAM], [Use VBISAM as ISAM handler])
-AH_TEMPLATE([COB_EXPERIMENTAL], [Enable experimemental code (Developers only!)])
+AH_TEMPLATE([COB_EXPERIMENTAL], [Enable experimental code (Developers only!)])
 AH_TEMPLATE([COB_PARAM_CHECK], [Enable CALL parameter checking])
 AH_TEMPLATE([COB_EXPORT_DYN], [Compile/link option for exporting symbols])
 AH_TEMPLATE([COB_PIC_FLAGS], [Compile/link option for PIC code])
@@ -82,6 +82,7 @@ AH_TEMPLATE([COB_KEYWORD_INLINE], [Keyword for inline])
 AH_TEMPLATE([COB_NO_SELFOPEN], [Can not dlopen self])
 AH_TEMPLATE([COB_STRFTIME], [Can use strftime for timezone])
 AH_TEMPLATE([COB_LI_IS_LL], [long int is long long])
+AH_TEMPLATE([WITH_CURSES], [curses library for extended SCREEN I/O])
 AH_TEMPLATE([HAVE_COLOR_SET], [curses has color_set function])
 AH_TEMPLATE([HAVE_CURSES_FREEALL], [ncurses has _nc_freeall function])
 AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
@@ -223,6 +224,21 @@ fi
 
 # Configure options.
 
+AC_ARG_WITH([curses],
+  [  --with-curses           (GNU Cobol) Used curses library for extended SCREEN I/O (default=check)],
+  [case "$with_curses" in
+    ncursesw | ncurses | pdcurses | curses | check | no)
+		USE_NCURSES="$with_curses"
+		;;
+    *)
+		AC_MSG_ERROR([Wrong value for --with-curses, must be one of the following
+  ncursesw, ncurses, pdcurses, curses  (use only the specified library)
+  check  (use whatever curses libary is usable, disable if no curses usable)
+  no  (disable curses usage)])
+		;;
+  esac],
+  [USE_NCURSES="check"])
+
 AC_ARG_WITH([seqra-extfh],
   [  --with-seqra-extfh      (GNU Cobol) Use external SEQ/RAN file handler],
   [ if test "$with_seqra_extfh" = "yes"
@@ -321,7 +337,7 @@ AC_ARG_ENABLE([experimental],
   [])
 
 AC_ARG_ENABLE([param-check],
-  [  --enable-param-check    (GNU Cobol) Enable CALL parameter checking],
+  [  --enable-param-check    (GNU Cobol) Enable CALL parameter checking (default no)],
   [if test "$enable_param_check" = "yes"
    then
 	AC_DEFINE([COB_PARAM_CHECK], [1])
@@ -361,6 +377,7 @@ AC_ARG_WITH([varseq],
 AC_DEFINE_UNQUOTED([WITH_VARSEQ], [$with_varseq])
 
 # Checks for gmp.
+AC_MSG_NOTICE([Checks for GMP ...])
 AC_CHECK_HEADERS([gmp.h], [], AC_MSG_ERROR([gmp.h (GMP) is required]), [])
 
 AC_CHECK_LIB([gmp], [__gmpz_init],
@@ -370,27 +387,57 @@ AC_CHECK_LIB([gmp], [__gmpz_init],
 # Check just major/minor levels between header and library
 MYOLDLIBS=$LIBS
 LIBS="$MYOLDLIBS -lgmp"
-AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-	#include <string.h>
-	#include <gmp.h>]], [[
-	char	dbver[16];
-	printf("checking matching GMP version ... ");
-	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
-			__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
-	if (!memcmp (dbver, gmp_version, strlen (dbver))) {
-		printf("yes\n");
+# get GMP version from header
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+	#include <stdio.h>
+	#include <gmp.h>
+	int main (int argc, char **argv)
+	{
+		(void)argv;
+		if (argc > 1)
+			printf ("%d.%d\n", __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
 		return 0;
 	}
-	printf("no\n");
-	printf("\tHeader  has version %d.%d.%d\n",
-		__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR,
-		__GNU_MP_VERSION_PATCHLEVEL);
-	printf("\tLibrary has version %s\n", gmp_version);
-	return 1;
 	]])],
-	[],
-	[AC_MSG_ERROR([Unable to use GMP - Please check config.log])],
+	[COB_GMP_HEADER=`./conftest$ac_exeext x`],
+	[AC_MSG_ERROR([Unable to extract GMP version information from gmp.h])],
 	[])
+if test "x$COB_GMP_HEADER" = "x"
+then
+	AC_MSG_ERROR([Unable to extract GMP version information])
+fi
+
+# get GMP version from lib
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+	#include <stdio.h>
+	#include <gmp.h>
+	int main (int argc, char **argv)
+	{
+		(void)argv;
+		if (argc > 1)
+			puts (gmp_version);
+		return 0;
+	}
+	]])],
+	[COB_GMP_LIB=`./conftest$ac_exeext x`],
+	[AC_MSG_ERROR([Unable to extract GMP version information from gmp_version])],
+	[])
+if test "x$COB_GMP_LIB" = "x"
+then
+	AC_MSG_ERROR([Unable to extract GMP version information])
+fi
+
+AC_MSG_CHECKING([matching GMP version])
+COB_GMP_LIB_MAJOR=$(echo $COB_GMP_LIB | cut -d. -f1)
+COB_GMP_LIB_MINOR=$(echo $COB_GMP_LIB | cut -d. -f2)
+
+if test "$COB_GMP_HEADER" == "$COB_GMP_LIB_MAJOR.$COB_GMP_LIB_MINOR"
+then
+	AC_MSG_RESULT([yes ($COB_GMP_HEADER)])
+else
+	AC_MSG_RESULT([no ($COB_GMP_HEADER / $COB_GMP_LIB)])
+	AC_MSG_ERROR([Unable to use GMP - Please check config.log])
+fi
 LIBS=$MYOLDLIBS
 
 
@@ -473,63 +520,112 @@ fi
 AM_LANGINFO_CODESET
 
 # Checks for ncurses/pdcurses/curses.
-USE_NCURSES="no"
+AC_MSG_NOTICE([Checks for curses ...])
 
-AC_CHECK_LIB([ncursesw], [initscr], [], [], [])
-if test "x$ac_cv_lib_ncursesw_initscr" = "xyes"
+if test "$USE_NCURSES" = "ncursesw" -o "$USE_NCURSES" = "check"
 then
-  AC_CHECK_HEADERS([ncursesw/ncurses.h], [USE_NCURSES="ncursesw"], [], [])
-  if test "$USE_NCURSES" = "no"
+  AC_CHECK_LIB([ncursesw], [initscr], [], [], [])
+  if test "x$ac_cv_lib_ncursesw_initscr" = "xyes"
   then
-    AC_CHECK_HEADERS([ncursesw/curses.h], [USE_NCURSES="ncursesw"], [], [])
-  fi
-  if test "$USE_NCURSES" != "no"
-  then
-    LIBCOB_LIBS="$LIBCOB_LIBS -lncursesw"
+    AC_CHECK_HEADERS([ncursesw/ncurses.h], [USE_NCURSES="ncursesw"],
+      [AC_CHECK_HEADERS([ncursesw/curses.h], [USE_NCURSES="ncursesw"],
+        [if test "$USE_NCURSES" = "ncursesw"
+         then
+           USE_NCURSES="missing_header"
+         fi], [])], [])      
+    if test "$USE_NCURSES" = "ncursesw"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lncursesw"
+    fi
+  else
+    if test "$USE_NCURSES" = "ncursesw"
+    then
+      USE_NCURSES="missing_lib"
+    fi
   fi
 fi
 
-if test "$USE_NCURSES" = "no"
+if test "$USE_NCURSES" = "ncurses" -o "$USE_NCURSES" = "check"
 then
   AC_CHECK_LIB([ncurses], [initscr], [], [], [])
   if test "x$ac_cv_lib_ncurses_initscr" = "xyes"
   then
-    AC_CHECK_HEADERS([ncurses.h], [USE_NCURSES="ncurses"], [], [])
-    if test "$USE_NCURSES" = "no"
-    then
-      AC_CHECK_HEADERS([ncurses/ncurses.h], [USE_NCURSES="ncurses"], [], [])
-    fi
-    if test "$USE_NCURSES" = "no"
-    then
-      AC_CHECK_HEADERS([curses.h], [USE_NCURSES="ncurses"], [], [])
-    fi
-    if test "$USE_NCURSES" != "no"
+    AC_CHECK_HEADERS([ncurses.h], [USE_NCURSES="ncurses"],
+      [AC_CHECK_HEADERS([ncurses/ncurses.h], [USE_NCURSES="ncurses"],
+         [AC_CHECK_HEADERS([curses.h], [USE_NCURSES="ncurses"],
+           [if test "$USE_NCURSES" = "ncurses"
+            then
+              USE_NCURSES="missing_header"
+            fi], [])], [])], [])
+    if test "$USE_NCURSES" = "ncurses"
     then
       LIBCOB_LIBS="$LIBCOB_LIBS -lncurses"
     fi
   else
-    AC_CHECK_LIB([pdcurses], [initscr], [], [], [])
-    if test "x$ac_cv_lib_pdcurses_initscr" = "xyes"
+    if test "$USE_NCURSES" = "ncurses"
     then
-      AC_CHECK_HEADERS([pdcurses.h], [USE_NCURSES="pdcurses"],
-        [AC_CHECK_HEADERS([curses.h], [USE_NCURSES="pdcurses"], [], [])], [])
-      if test "$USE_NCURSES" != "no"
-      then
-        LIBCOB_LIBS="$LIBCOB_LIBS -lpdcurses"
-      fi
-    else
-      AC_CHECK_LIB([curses], [initscr], [], [], [])
-      if test "x$ac_cv_lib_curses_initscr" = "xyes"
-      then
-        AC_CHECK_HEADERS([curses.h], [USE_NCURSES="curses"], [], [])
-        if test "$USE_NCURSES" != "no"
-        then
-          LIBCOB_LIBS="$LIBCOB_LIBS -lcurses"
-        fi
-      fi
+      USE_NCURSES="missing_lib"
     fi
   fi
 fi
+
+
+if test "$USE_NCURSES" = "pdcurses" -o "$USE_NCURSES" = "check"
+then
+  AC_CHECK_LIB([pdcurses], [initscr], [], [], [])
+  if test "x$ac_cv_lib_pdcurses_initscr" = "xyes"
+  then
+    AC_CHECK_HEADERS([pdcurses.h], [USE_NCURSES="pdcurses"],
+      [AC_CHECK_HEADERS([curses.h], [USE_NCURSES="pdcurses"],
+         [if test "$USE_NCURSES" = "pdcurses"
+          then
+            USE_NCURSES="missing_header"
+          fi], [])], [])
+    if test "$USE_NCURSES" = "pdcurses"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lpdcurses"
+    fi
+  else
+    if test "$USE_NCURSES" = "pdcurses"
+    then
+      USE_NCURSES="missing_lib"
+    fi
+  fi
+fi
+
+if test "$USE_NCURSES" = "curses" -o "$USE_NCURSES" = "check"
+then
+  AC_CHECK_LIB([curses], [initscr], [], [], [])
+  if test "x$ac_cv_lib_curses_initscr" = "xyes"
+  then
+    AC_CHECK_HEADERS([curses.h], [USE_NCURSES="curses"],
+      [if test "$USE_NCURSES" = "pdcurses"
+       then
+         USE_NCURSES="missing_header"
+       fi], [])
+    if test "$USE_NCURSES" != "no"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lcurses"
+    fi
+  fi
+else
+  if test "$USE_NCURSES" = "curses"
+  then
+    USE_NCURSES="missing_lib"
+  fi
+fi
+
+case "$USE_NCURSES" in
+  check)
+	USE_NCURSES="not_found"
+	;;
+  missing_lib)
+	AC_MSG_ERROR([[Not able to link configured library $with_curses]])
+	;;
+  missing_header)
+	AC_MSG_ERROR([[No header found for configured library $with_curses]])
+	;;
+esac
 
 if test "$USE_NCURSES" = "ncurses" -o "$USE_NCURSES" = "ncursesw"
 then
@@ -549,7 +645,7 @@ then
     [])
 fi
 
-if test "$USE_NCURSES" != "no"
+if test "$USE_NCURSES" != "no" -a "$USE_NCURSES" != "not_found"
 then
 	AC_MSG_CHECKING([for curses color_set function])
 	AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -575,26 +671,11 @@ fi
 # Checks for db.
 if test "$with_db" = "yes"
 then
-	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-		#include <db.h>]], [[
-		printf("checking for Berkeley DB db.h version >= 4.1 ... ");
-		#if (defined(DB_VERSION_MAJOR) && defined(DB_VERSION_MINOR))
-		#if (DB_VERSION_MAJOR > 4) || ((DB_VERSION_MAJOR == 4) && (DB_VERSION_MINOR > 0))
-		printf("yes (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 0;
-		#else
-		printf("no (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 1;
-		#endif
-		#else
-		printf("no (version numbers not found)\n");
-		return 1;
-		#endif]])],
-		[],
-		[AC_MSG_ERROR([Berkeley DB db.h is missing or has incompatible version])],
-		[])
+	AC_MSG_NOTICE([Checks for Berkeley DB ...])
 
-	# BDB header is valid. Extract major/minor number pair
+	AC_CHECK_HEADERS([db.h], [], AC_MSG_ERROR([Berkeley DB db.h is missing]), [])
+
+	# BDB header exists. Extract major/minor number pair
 	COB_BDB_HEADER=''
 	AC_RUN_IFELSE([AC_LANG_SOURCE([[
 		#include <stdio.h>
@@ -608,11 +689,26 @@ then
 		}
 		]])],
 		[COB_BDB_HEADER=`./conftest$ac_exeext x`],
-		[AC_MSG_ERROR([Unable to extract version information])],
+		[AC_MSG_ERROR([Unable to extract Berkeley DB version information from db.h])],
 		[])
 	if test "x$COB_BDB_HEADER" = "x"
 	then
-		AC_MSG_ERROR([Unable to extract version information])
+		AC_MSG_ERROR([Unable to extract Berkeley DB version information])
+	fi
+	AC_MSG_CHECKING([for Berkeley DB db.h version >= 4.1])
+	COB_BDB_HEADER_MAJOR=$(echo $COB_BDB_HEADER | cut -d. -f1)
+	if test $COB_BDB_HEADER_MAJOR -gt 4
+	then
+		AC_MSG_RESULT([yes ($COB_BDB_HEADER)])
+	else
+		COB_BDB_HEADER_MINOR=$(echo $COB_BDB_HEADER | cut -d. -f2)
+		if test $COB_BDB_HEADER_MAJOR -eq 4 -a $COB_BDB_HEADER_MINOR -ge 1
+		then
+			AC_MSG_RESULT([yes ($COB_BDB_HEADER)])
+		else
+			AC_MSG_RESULT([no ($COB_BDB_HEADER)])
+			AC_MSG_ERROR([Berkeley DB db.h has incompatible version])
+		fi
 	fi
 	MYOLDLIBS="$LIBS"
 	cob_got_db=no
@@ -1022,63 +1118,68 @@ AC_CONFIG_COMMANDS([chmod3], [chmod +x tests/atlocal])
 
 AC_OUTPUT
 
-echo "GNU Cobol Configuration:"
-echo " CC                ${CC}"
-echo " CFLAGS            ${CFLAGS}"
-echo " COB_CFLAGS        ${COB_CFLAGS}"
-echo " LDFLAGS           ${LDFLAGS}"
-echo " COB_LDFLAGS       ${COB_LDFLAGS}"
+AC_MSG_NOTICE([GNU Cobol Configuration:])
+AC_MSG_NOTICE([ CC                ${CC}])
+AC_MSG_NOTICE([ CFLAGS            ${CFLAGS}])
+AC_MSG_NOTICE([ COB_CFLAGS        ${COB_CFLAGS}])
+AC_MSG_NOTICE([ LDFLAGS           ${LDFLAGS}])
+AC_MSG_NOTICE([ COB_LDFLAGS       ${COB_LDFLAGS}])
 if test "x$COBC_LIBS" != "x"
 then
-  echo " COBC_LIBS         ${COBC_LIBS}"
+  AC_MSG_NOTICE([ COBC_LIBS         ${COBC_LIBS}])
 fi
-echo " COB_LIBS          ${COB_LIBS}"
-echo " COB_CONFIG_DIR    ${COB_CONFIG_DIR}"
-echo " COB_COPY_DIR      ${COB_COPY_DIR}"
-echo " COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}"
-echo " COB_MODULE_EXT    ${COB_MODULE_EXT}"
-echo " COB_OBJECT_EXT    ${COB_OBJECT_EXT}"
-echo " COB_SHARED_OPT    ${COB_SHARED_OPT}"
-echo " COB_PIC_FLAGS     ${COB_PIC_FLAGS}"
-echo " COB_EXPORT_DYN    ${COB_EXPORT_DYN}"
+AC_MSG_NOTICE([ COB_LIBS          ${COB_LIBS}])
+AC_MSG_NOTICE([ COB_CONFIG_DIR    ${COB_CONFIG_DIR}])
+AC_MSG_NOTICE([ COB_COPY_DIR      ${COB_COPY_DIR}])
+AC_MSG_NOTICE([ COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}])
+AC_MSG_NOTICE([ COB_MODULE_EXT    ${COB_MODULE_EXT}])
+AC_MSG_NOTICE([ COB_OBJECT_EXT    ${COB_OBJECT_EXT}])
+AC_MSG_NOTICE([ COB_SHARED_OPT    ${COB_SHARED_OPT}])
+AC_MSG_NOTICE([ COB_PIC_FLAGS     ${COB_PIC_FLAGS}])
+AC_MSG_NOTICE([ COB_EXPORT_DYN    ${COB_EXPORT_DYN}])
 if test "x$striplib" != "x"
 then
-  echo " COB_STRIP_CMD     ${striplib}"
+  AC_MSG_NOTICE([ COB_STRIP_CMD     ${striplib}])
 fi
 if test "${DEFINE_DL}" = "yes" 
 then
-  echo " Dynamic loading:  System"
+  AC_MSG_NOTICE([ Dynamic loading:  System])
 else
-  echo " Dynamic loading:  Libtool"
+  AC_MSG_NOTICE([ Dynamic loading:  Libtool])
 fi
-echo " Use gettext for international messages:      ${USE_NLS}"
-echo " Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
-if test "$USE_NCURSES" != "no"
-then
-  echo " Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"
-else
-  echo " screen I/O (no curses found):                NO"
-fi
+AC_MSG_NOTICE([ Use gettext for international messages:      ${USE_NLS}])
+AC_MSG_NOTICE([ Use fcntl for file locking:                  ${ac_cv_func_fcntl}])
+case "$USE_NCURSES" in
+  not_found)
+    AC_MSG_NOTICE([ screen I/O (no curses found):                NO])
+	;;
+  no)
+    AC_MSG_NOTICE([ screen I/O (disabled)       :                NO])
+	;;
+  *)
+    AC_MSG_NOTICE([ Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}])
+	;;
+esac
 if test "$with_seqra_extfh" = "yes"
 then
-  echo " Use external SEQ/RAN file handler            yes"
+  AC_MSG_NOTICE([ Use external SEQ/RAN file handler            yes])
 fi
 if test "$with_index_extfh" = "yes"
 then
-  echo " Use external ISAM file handler               yes"
+  AC_MSG_NOTICE([ Use external ISAM file handler               yes])
 elif test "$with_cisam" = "yes"
 then
-  echo " Use CISAM for ISAM I/O                       yes"
+  AC_MSG_NOTICE([ Use CISAM for ISAM I/O                       yes])
 elif test "$with_disam" = "yes"
 then
-  echo " Use DISAM for ISAM I/O                       yes"
+  AC_MSG_NOTICE([ Use DISAM for ISAM I/O                       yes])
 elif test "$with_vbisam" = "yes"
 then
-  echo " Use VBISAM for ISAM I/O                      yes"
+  AC_MSG_NOTICE([ Use VBISAM for ISAM I/O                      yes])
 elif test "$with_db" = "yes"
 then
-  echo " Use Berkeley DB for ISAM I/O:                yes"
+  AC_MSG_NOTICE([ Use Berkeley DB for ISAM I/O:                yes])
 else
-  echo " ISAM I/O (no handler configured):            NO"
+  AC_MSG_NOTICE([ ISAM I/O (no handler configured):            NO])
 fi
 unset DEFINE_DL
