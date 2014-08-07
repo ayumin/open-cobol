@@ -90,7 +90,8 @@ struct cob_inp_struct {
 /* Local variables */
 
 static cob_global		*cobglobptr;
-
+static cob_u32_t		cob_legacy;
+static char*			cob_legacy_env;
 
 /* Local variables when screenio activated */
 
@@ -103,8 +104,6 @@ static size_t			cob_has_color;
 static int			global_return;
 static int			cob_current_y;
 static int			cob_current_x;
-static cob_u32_t		cob_legacy;
-static char*			cob_legacy_env;
 static short			fore_color;
 static short			back_color;
 #endif
