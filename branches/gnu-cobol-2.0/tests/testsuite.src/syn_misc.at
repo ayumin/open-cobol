@@ -415,7 +415,6 @@ AT_DATA([prog.cob], [
 ])
 
 AT_CHECK([$COMPILE_ONLY -cb_conf=accept-update:yes prog.cob], [0], [], [])
-)
 
 AT_CLEANUP
 
