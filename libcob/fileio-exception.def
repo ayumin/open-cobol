@@ -1,0 +1,271 @@
+/*
+   Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
+   Copyright (C) 2007-2012 Roger While
+
+   This file is part of GNU Cobol.
+
+   The GNU Cobol runtime library is free software: you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   GNU Cobol is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+   OpenCOBOL fileio module. Re-engineered by BCS/JR. 2013
+ */
+
+
+
+
+
+/*
+ *	When fileio encounters an exception, it notes the context:
+ *		... the action being performed (e.g. OPEN)
+ *		... the module owning the code (e.g ISAM handler)
+ *		... the native errno (if any) which may relate to OS, BDB, VBISAM, CISAM, etc.
+ *	The exception object is loaded with the unique fileio_exception.code which
+ *	identifies the exception.
+ *
+ *	The fileio_exception.code is looked-up in this table to obtain the 
+ *	2-char status (FILE STATUS-KEY). However, the actual STATUS-KEY returned
+ *	to COBOL may be modified by configuration:
+ *
+ *		WITH_FILE_STATUS_ANSI85 :: status is returned in STATUS-KEY. This may
+ *			result in a loss of precision. For all errors not associated with
+ *			another status value: value "30" "Permanent Error - no more
+ *			information" is returned.
+ *
+ *		WITH_FILE_STATUS_RM :: as above but some status values are translated to "9N"
+ *			where N is a predefined single character.
+ *
+ *		WITH_FILE_STATUS_EXTENDED :: instead of returning "30", 9/nnn is returned.
+ *			nnn is the binary value of the fileio_exception.code. Status values other
+ *			than "30" are returned as usual. This is the default methodology.
+ *
+ *		WITH_FILE_STATUS_NATIVE :: using WITH_FILE_STATUS_EXTENDED, an error detected
+ *			in the software outside of fileio (e.g. OS, BDB, ISAM) which cannot be 
+ *			interpreted as a specific fileio_exception.code would be reported as:
+ *			9/COB_IOEXC_ERROR (9/255). Using this config these errors are reported
+ *			as 8/nnn where nnn is the native error number.
+ *
+ *	Declare the exception codes for COBOL fileio.
+ *		code .... internal code identifying exception.
+ *		state ... 0:COB_IO_STATE_SUCCESS, 1:COB_IO_STATE_FATAL, 2:COB_IO_STATE_RECOVERABLE
+ *		status .. map to file status-code (2X)
+ *		tag ..... compile-time identifier for exception
+ *		def ..... (english) description of exception
+ *
+ *	Ref: http://supportline.microfocus.com/documentation/books/sx20books/fhscod.htm
+ *	Ref: http://supportline.microfocus.com/documentation/books/sx20books/empubb15.htm
+ *	Ref: http://www.simotime.com/vsmfsk01.htm
+ */
+
+
+// COB_IO_EXCEPTION (code, state, status, tag, def) 
+
+COB_IO_EXCEPTION (  1, 2, "31", COB_IOEXC_FNAME_VOID, "File name is empty")
+
+COB_IO_EXCEPTION (  2, 2, "31", COB_IOEXC_FNAME_BAD, "Illegal file name")
+
+COB_IO_EXCEPTION (  3, 2, "31", COB_IOEXC_FNAME_2BIG, "File name too long")
+
+COB_IO_EXCEPTION (  4, 1, "30", COB_IOEXC_DISK_FULL, "Disk space exhausted")
+
+COB_IO_EXCEPTION (  5, 2, "30", COB_IOEXC_DIR_FULL, "No room in directory")
+
+COB_IO_EXCEPTION (  6, 2, "31", COB_IOEXC_DIR_NFOUND, "Directory does not exist")
+
+COB_IO_EXCEPTION (  7, 2, "41", COB_IOEXC_FILE_2XOPEN, "Attempt to open a file which is already open")
+
+COB_IO_EXCEPTION (  8, 2, "42", COB_IOEXC_FILE_NOPEN, "Attempt to close a file which is not open")
+
+COB_IO_EXCEPTION (  9, 2, "35", COB_IOEXC_FILE_MISSING, "File not found")
+
+COB_IO_EXCEPTION ( 10, 2, "38", COB_IOEXC_FILE_LOCKED, "File is locked by previous CLOSE")
+
+COB_IO_EXCEPTION ( 11, 2, "30", COB_IOEXC_FILE_2MANY, "Too many files open simultaneously")
+
+COB_IO_EXCEPTION ( 12, 1, "30", COB_IOEXC_FILE_ISADIR, "File is a directory")
+
+COB_IO_EXCEPTION ( 13, 1, "30", COB_IOEXC_DEV_FULL, "No space on device")
+
+COB_IO_EXCEPTION ( 14, 2, "30", COB_IOEXC_FSYS_READ_ONLY, "File system is read only")
+
+COB_IO_EXCEPTION ( 15, 2, "30", COB_IOEXC_FILE_NPERM, "File permission denied")
+
+COB_IO_EXCEPTION ( 16, 2, "30", COB_IOEXC_FILE_EXISTS, "File must not already exist")
+
+COB_IO_EXCEPTION ( 17, 2, "37", COB_IOEXC_FILE_ACCESS, "File access denied: incompatible OPEN mode")
+
+COB_IO_EXCEPTION ( 18, 2, "23", COB_IOEXC_FILE_NOPT, "Failed with optional file missing")
+
+COB_IO_EXCEPTION ( 19, 2, "30", COB_IOEXC_FILE_DELETE, "Attempt to delete open file")
+
+COB_IO_EXCEPTION ( 20, 2, "61", COB_IOEXC_FSHARE_LOCK, "The file cannot be SHARED")
+
+COB_IO_EXCEPTION ( 21, 2, "61", COB_IOEXC_FAIL_LOCK, "The file could not be locked")
+
+
+
+
+COB_IO_EXCEPTION ( 30, 2, "42", COB_IOEXC_CLOSED, "File not open when access tried")
+
+COB_IO_EXCEPTION ( 31, 2, "47", COB_IOEXC_S_ON_XIP, "Attempt to start on a file not opened for input")
+
+COB_IO_EXCEPTION ( 32, 2, "47", COB_IOEXC_R_ON_XIP, "Attempt to read from a file not opened for input")
+
+COB_IO_EXCEPTION ( 33, 2, "48", COB_IOEXC_W_ON_XOP, "Attempt to write to a file not opened for output")
+
+COB_IO_EXCEPTION ( 34, 2, "49", COB_IOEXC_U_ON_XIO, "Attempt to rewrite to a file not opened I-O")
+
+COB_IO_EXCEPTION ( 35, 2, "49", COB_IOEXC_D_ON_XIO, "Attempt to delete from a file not opened I-O")
+
+COB_IO_EXCEPTION ( 36, 2, "10", COB_IOEXC_R_XEOF, "Attempt to READ beyond end of file")
+
+COB_IO_EXCEPTION ( 37, 2, "10", COB_IOEXC_R_XBOF, "Attempt to READ beyond beginning of file")
+
+COB_IO_EXCEPTION ( 38, 2, "47", COB_IOEXC_XMODE_S, "Wrong access mode for START")
+
+COB_IO_EXCEPTION ( 39, 2, "47", COB_IOEXC_XMODE_R, "Wrong access mode for READ")
+
+COB_IO_EXCEPTION ( 40, 2, "48", COB_IOEXC_XMODE_W, "Wrong access mode for WRITE")
+
+COB_IO_EXCEPTION ( 41, 2, "49", COB_IOEXC_XMODE_U, "Wrong access mode for REWRITE")
+
+COB_IO_EXCEPTION ( 42, 2, "49", COB_IOEXC_XMODE_D, "Wrong access mode for DELETE")
+
+COB_IO_EXCEPTION ( 43, 2, "30", COB_IOEXC_PIPE_BROKEN, "Attempt to write on broken pipe")
+
+COB_IO_EXCEPTION ( 44, 2, "61", COB_IOEXC_REC_LOCKED, "Record is locked")
+
+COB_IO_EXCEPTION ( 45, 2, "43", COB_IOEXC_SEQ_U_NOREAD, "REWRITE in sequential mode not preceded by successful READ")
+
+COB_IO_EXCEPTION ( 46, 2, "43", COB_IOEXC_SEQ_D_NOREAD, "DELETE in sequential mode not preceded by successful READ")
+
+COB_IO_EXCEPTION ( 47, 2, "46", COB_IOEXC_SEQ_READ_BOF, "Sequential read beyond start of file")
+
+COB_IO_EXCEPTION ( 48, 2, "46", COB_IOEXC_SEQ_READ_EOF, "Sequential read beyond end of file")
+
+COB_IO_EXCEPTION ( 49, 2, "30", COB_IOEXC_SEQ_RANDOM, "Random read on sequential file")
+
+COB_IO_EXCEPTION ( 50, 2, "48", COB_IOEXC_SEQ_W_IO, "Attempt to write in sequential mode on file opened I-O")
+
+COB_IO_EXCEPTION ( 51, 2, "23", COB_IOEXC_NOREC, "No record found for given key")
+
+COB_IO_EXCEPTION ( 52, 2, "30", COB_IOEXC_RSZ, "Physical rsz exceeds max logical rsz")
+
+COB_IO_EXCEPTION ( 53, 2, "30", COB_IOEXC_RECSHORT, "Read part record error: EOF before EOR")
+
+COB_IO_EXCEPTION ( 54, 2, "30", COB_IOEXC_LSEQ_CORRUPT, "Malformed line sequential-file")
+
+COB_IO_EXCEPTION ( 55, 2, "30", COB_IOEXC_W_EXTEND, "Attempt to write in non-sequential mode on file opened EXTEND")
+
+COB_IO_EXCEPTION ( 56, 2, "44", COB_IOEXC_VAR_RSZ, "Variable length record size beyond limits")
+
+COB_IO_EXCEPTION ( 57, 2, "30", COB_IOEXC_LSEQ_REWRITE, "Attempt to REWRITE to a line-sequential file")
+
+COB_IO_EXCEPTION ( 58, 2, "57", COB_IOEXC_SEQ_LINAGE, "Invalid LINAGE on (line)sequential file")
+
+COB_IO_EXCEPTION ( 59, 2, "52", COB_IOEXC_LSEQ_PAGE, "A page overflow condition occured")
+
+COB_IO_EXCEPTION ( 60, 2, "44", COB_IOEXC_REWRITE_RSZ, "Attempt to REWRITE to a record of different size")
+
+COB_IO_EXCEPTION ( 61, 2, "22", COB_IOEXC_WRITE_DUP, "Attempt to WRITE record that already exists")
+
+COB_IO_EXCEPTION ( 62, 2, "14", COB_IOEXC_REL_KEY_2BIG, "Record number would overflow RELATIVE KEY")
+
+
+
+
+COB_IO_EXCEPTION ( 80, 1, "39", COB_IOEXC_ISAM_NINDEX, "No index for key declared in COBOL file")
+
+COB_IO_EXCEPTION ( 81, 2, "22", COB_IOEXC_ISAM_DUP, "Attempt to write record containing a duplicate key")
+
+COB_IO_EXCEPTION ( 82, 1, "30", COB_IOEXC_ISAM_DROP, "Failed to delete existing index files")
+
+COB_IO_EXCEPTION ( 83, 1, "30", COB_IOEXC_ISAM_BAD_DICT, "Index dictionary corrupt")
+
+COB_IO_EXCEPTION ( 84, 1, "30", COB_IOEXC_ISAM_CREATE, "Failed to create new index file")
+
+COB_IO_EXCEPTION ( 85, 1, "30", COB_IOEXC_ISAM_OPEN, "Failed to open index file")
+
+COB_IO_EXCEPTION ( 86, 1, "30", COB_IOEXC_ISAM_FAILED, "Error encountered in isam handler")
+
+COB_IO_EXCEPTION ( 87, 2, "21", COB_IOEXC_ISAM_KEY_ASC, "Attempt to write record with key less than predecessor")
+
+COB_IO_EXCEPTION ( 88, 1, "30", COB_IOEXC_ISAM_DIVORCED, "Index/data file divorced from its data/index file")
+
+COB_IO_EXCEPTION ( 89, 1, "30", COB_IOEXC_ISAM_ILLEGAL, "Unexpected request caught by isam handler")
+
+COB_IO_EXCEPTION ( 90, 1, "30", COB_IOEXC_ISAM_TRANS_BEGIN, "Failed to begin BDB transaction")
+
+COB_IO_EXCEPTION ( 91, 1, "30", COB_IOEXC_ISAM_TRANS_COMMIT, "Failed to commit BDB transaction")
+
+COB_IO_EXCEPTION ( 99, 1, "30", COB_IOEXC_ISAM_CREATE_DICT, "Failed to create index dictionary")
+
+COB_IO_EXCEPTION (100, 2, "30", COB_IOEXC_ISAM_ODBC_HANDLE, "Failed to initialise ODBC Connection handle")
+
+COB_IO_EXCEPTION (101, 2, "30", COB_IOEXC_ISAM_ODBC_CONNECT, "Failed to connect ODBC database")
+
+COB_IO_EXCEPTION (102, 2, "30", COB_IOEXC_ISAM_TOO_MANY_DB_CONNECTIONS, "Too many ODBC server connections opened")
+
+// spare COB_IO_EXCEPTION (103,
+
+COB_IO_EXCEPTION (104, 2, "30", COB_IOEXC_ISAM_ODBC_NO_DB_NAME, "Missing ODBC database name: $COB_ODBC_DB")
+
+COB_IO_EXCEPTION (105, 2, "30", COB_IOEXC_ISAM_ODBC_CONTROLS, "ODBC Key Dictionary missing or corrupt")
+
+COB_IO_EXCEPTION (106, 2, "30", COB_IOEXC_ISAM_ODBC_PREPARE, "ODBC failed to prepare statement")
+
+COB_IO_EXCEPTION (107, 2, "30", COB_IOEXC_ISAM_ODBC_BIND, "ODBC failed to bind param to statement")
+
+COB_IO_EXCEPTION (108, 2, "30", COB_IOEXC_ISAM_ODBC_NO_CON_STRING, "Missing ODBC ConnectionString $COB_ODBC_CONNECTOR")
+
+COB_IO_EXCEPTION (109, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_AND_SERVER_NAME, "ODBC DSN or server name - NOT both")
+
+COB_IO_EXCEPTION (110, 2, "30", COB_IOEXC_ISAM_ODBC_DSN_OR_SERVER_NAME, "ODBC requires DSN or server name: $COB_ODBC_DSN or  $COB_ODBC_SERVER")
+
+
+
+
+
+COB_IO_EXCEPTION (200, 2, "30", COB_IOEXC_FILE_NOGET, "PUT or ERASE without a previous GET")
+
+COB_IO_EXCEPTION (201, 1, "30", COB_IOEXC_SORT_OP, "Illegal sort operation")
+
+
+
+COB_IO_EXCEPTION (250, 1, "30", COB_IOEXC_INTERNAL, "Internal error: unexpected value or state")
+COB_IO_EXCEPTION (251, 1, "30", COB_IOEXC_NYI, "Internal error: feature configured but not yet implemented")
+COB_IO_EXCEPTION (252, 1, "30", COB_IOEXC_ILLEGAL, "Internal error: unexpected illegal IO call")
+COB_IO_EXCEPTION (253, 1, "30", COB_IOEXC_NIMPL, "Feature is not supported")
+COB_IO_EXCEPTION (254, 1, "30", COB_IOEXC_NCONFIG, "Feature is supported but not configured")
+COB_IO_EXCEPTION (255, 1, "30", COB_IOEXC_ERROR, "Exception reported by operating system or associated software")
+
+
+// Extension for SUCCESS codes - not really RTS errors at all
+
+COB_IO_EXCEPTION (1000, 0, "00", COB_IOEXC_OK, "Successful")
+
+COB_IO_EXCEPTION (1001, 0, "02", COB_IOEXC_OK_DUPLICATE, "Successful with duplicate")
+
+COB_IO_EXCEPTION (1002, 0, "04", COB_IOEXC_OK_RSZ, "Successful with wrong record length")
+
+COB_IO_EXCEPTION (1003, 0, "05", COB_IOEXC_OK_NOFILE, "Successful with optional file missing")
+
+COB_IO_EXCEPTION (1004, 0, "07", COB_IOEXC_OK_REEL, "Successful but not REEL/UNIT")
+
+
+
+
+
+
