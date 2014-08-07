@@ -32,6 +32,9 @@ COMPILE="${COBC} -x ${FLAGS}"
 COMPILE_ONLY="${COBC} -fsyntax-only ${FLAGS}"
 COMPILE_MODULE="${COBC} -m ${FLAGS}"
 
+# unset all environmental vars that are used by libcob
+for cobenv in $($COBCRUN --runtime-env | grep COB_ | cut -d: -f1); do unset $cobenv; done
+
 PATH="${abs_top_builddir}/cobc:${abs_top_builddir}/bin:${abs_top_builddir}/libcob/.libs:${PATH}"
 export PATH
 export COB_CFLAGS="-I${abs_top_srcdir} -I${abs_top_srcdir}/libcob @COB_CFLAGS@"
