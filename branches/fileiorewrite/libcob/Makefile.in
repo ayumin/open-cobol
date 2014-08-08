@@ -100,9 +100,14 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libcob_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libcob_la_OBJECTS = libcob_la-common.lo libcob_la-move.lo \
-	libcob_la-numeric.lo libcob_la-strings.lo libcob_la-fileio.lo \
-	libcob_la-call.lo libcob_la-intrinsic.lo libcob_la-termio.lo \
-	libcob_la-screenio.lo libcob_la-cobgetopt.lo
+	libcob_la-numeric.lo libcob_la-strings.lo libcob_la-call.lo \
+	libcob_la-intrinsic.lo libcob_la-termio.lo \
+	libcob_la-screenio.lo libcob_la-cobgetopt.lo \
+	libcob_la-fileio.lo libcob_la-fileio-call.lo \
+	libcob_la-fileio-isam-bdb.lo libcob_la-fileio-isam-xisam.lo \
+	libcob_la-fileio-isam-odbc.lo libcob_la-fileio-misc.lo \
+	libcob_la-fileio-relative.lo libcob_la-fileio-sequential.lo \
+	libcob_la-fileio-sort.lo libcob_la-fileio-stats.lo
 libcob_la_OBJECTS = $(am_libcob_la_OBJECTS)
 libcob_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libcob_la_CFLAGS) \
@@ -148,7 +153,6 @@ COB_COPY_DIR = @COB_COPY_DIR@
 COB_EXPORT_DYN = @COB_EXPORT_DYN@
 COB_FIX_LIB = @COB_FIX_LIB@
 COB_FIX_LIBTOOL = @COB_FIX_LIBTOOL@
-COB_HAS_ISAM = @COB_HAS_ISAM@
 COB_KEYWORD_INLINE = @COB_KEYWORD_INLINE@
 COB_LDFLAGS = @COB_LDFLAGS@
 COB_LIBRARY_PATH = @COB_LIBRARY_PATH@
@@ -281,14 +285,17 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libcob.la
 libcob_la_SOURCES = common.c move.c numeric.c strings.c \
-	fileio.c call.c intrinsic.c termio.c screenio.c cobgetopt.c
+	call.c intrinsic.c termio.c screenio.c cobgetopt.c \
+        fileio.c fileio-call.c fileio-isam-bdb.c fileio-isam-xisam.c fileio-isam-odbc.c \
+        fileio-misc.c fileio-relative.c fileio-sequential.c fileio-sort.c \
+        fileio-stats.c
 
 libcob_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)
 libcob_la_LIBADD = $(LIBCOB_LIBS)
 libcob_la_LDFLAGS = $(COB_FIX_LIBTOOL) -version-info 4:0:0 -no-undefined
 AM_LDFLAGS = $(COB_FIX_LIB)
 EXTRA_DIST = coblocal.h system.def
-pkginclude_HEADERS = common.h cobgetopt.h exception.def
+pkginclude_HEADERS = common.h cobgetopt.h exception.def fileio.h fileio-call.h fileio-sort.h fileio-exception.def fileio-status.def 
 all: all-am
 
 .SUFFIXES:
@@ -366,6 +373,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-call.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-cobgetopt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-common.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-call.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-isam-bdb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-isam-odbc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-isam-xisam.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-misc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-relative.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-sequential.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-sort.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio-stats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-fileio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-intrinsic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcob_la-move.Plo@am__quote@
@@ -423,13 +439,6 @@ libcob_la-strings.lo: strings.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-strings.lo `test -f 'strings.c' || echo '$(srcdir)/'`strings.c
 
-libcob_la-fileio.lo: fileio.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio.Tpo -c -o libcob_la-fileio.lo `test -f 'fileio.c' || echo '$(srcdir)/'`fileio.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio.Tpo $(DEPDIR)/libcob_la-fileio.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio.c' object='libcob_la-fileio.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio.lo `test -f 'fileio.c' || echo '$(srcdir)/'`fileio.c
-
 libcob_la-call.lo: call.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-call.lo -MD -MP -MF $(DEPDIR)/libcob_la-call.Tpo -c -o libcob_la-call.lo `test -f 'call.c' || echo '$(srcdir)/'`call.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-call.Tpo $(DEPDIR)/libcob_la-call.Plo
@@ -464,6 +473,76 @@ libcob_la-cobgetopt.lo: cobgetopt.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cobgetopt.c' object='libcob_la-cobgetopt.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-cobgetopt.lo `test -f 'cobgetopt.c' || echo '$(srcdir)/'`cobgetopt.c
+
+libcob_la-fileio.lo: fileio.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio.Tpo -c -o libcob_la-fileio.lo `test -f 'fileio.c' || echo '$(srcdir)/'`fileio.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio.Tpo $(DEPDIR)/libcob_la-fileio.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio.c' object='libcob_la-fileio.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio.lo `test -f 'fileio.c' || echo '$(srcdir)/'`fileio.c
+
+libcob_la-fileio-call.lo: fileio-call.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-call.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-call.Tpo -c -o libcob_la-fileio-call.lo `test -f 'fileio-call.c' || echo '$(srcdir)/'`fileio-call.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-call.Tpo $(DEPDIR)/libcob_la-fileio-call.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-call.c' object='libcob_la-fileio-call.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-call.lo `test -f 'fileio-call.c' || echo '$(srcdir)/'`fileio-call.c
+
+libcob_la-fileio-isam-bdb.lo: fileio-isam-bdb.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-isam-bdb.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-isam-bdb.Tpo -c -o libcob_la-fileio-isam-bdb.lo `test -f 'fileio-isam-bdb.c' || echo '$(srcdir)/'`fileio-isam-bdb.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-isam-bdb.Tpo $(DEPDIR)/libcob_la-fileio-isam-bdb.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-isam-bdb.c' object='libcob_la-fileio-isam-bdb.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-isam-bdb.lo `test -f 'fileio-isam-bdb.c' || echo '$(srcdir)/'`fileio-isam-bdb.c
+
+libcob_la-fileio-isam-xisam.lo: fileio-isam-xisam.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-isam-xisam.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-isam-xisam.Tpo -c -o libcob_la-fileio-isam-xisam.lo `test -f 'fileio-isam-xisam.c' || echo '$(srcdir)/'`fileio-isam-xisam.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-isam-xisam.Tpo $(DEPDIR)/libcob_la-fileio-isam-xisam.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-isam-xisam.c' object='libcob_la-fileio-isam-xisam.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-isam-xisam.lo `test -f 'fileio-isam-xisam.c' || echo '$(srcdir)/'`fileio-isam-xisam.c
+
+libcob_la-fileio-isam-odbc.lo: fileio-isam-odbc.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-isam-odbc.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-isam-odbc.Tpo -c -o libcob_la-fileio-isam-odbc.lo `test -f 'fileio-isam-odbc.c' || echo '$(srcdir)/'`fileio-isam-odbc.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-isam-odbc.Tpo $(DEPDIR)/libcob_la-fileio-isam-odbc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-isam-odbc.c' object='libcob_la-fileio-isam-odbc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-isam-odbc.lo `test -f 'fileio-isam-odbc.c' || echo '$(srcdir)/'`fileio-isam-odbc.c
+
+libcob_la-fileio-misc.lo: fileio-misc.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-misc.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-misc.Tpo -c -o libcob_la-fileio-misc.lo `test -f 'fileio-misc.c' || echo '$(srcdir)/'`fileio-misc.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-misc.Tpo $(DEPDIR)/libcob_la-fileio-misc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-misc.c' object='libcob_la-fileio-misc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-misc.lo `test -f 'fileio-misc.c' || echo '$(srcdir)/'`fileio-misc.c
+
+libcob_la-fileio-relative.lo: fileio-relative.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-relative.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-relative.Tpo -c -o libcob_la-fileio-relative.lo `test -f 'fileio-relative.c' || echo '$(srcdir)/'`fileio-relative.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-relative.Tpo $(DEPDIR)/libcob_la-fileio-relative.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-relative.c' object='libcob_la-fileio-relative.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-relative.lo `test -f 'fileio-relative.c' || echo '$(srcdir)/'`fileio-relative.c
+
+libcob_la-fileio-sequential.lo: fileio-sequential.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-sequential.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-sequential.Tpo -c -o libcob_la-fileio-sequential.lo `test -f 'fileio-sequential.c' || echo '$(srcdir)/'`fileio-sequential.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-sequential.Tpo $(DEPDIR)/libcob_la-fileio-sequential.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-sequential.c' object='libcob_la-fileio-sequential.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-sequential.lo `test -f 'fileio-sequential.c' || echo '$(srcdir)/'`fileio-sequential.c
+
+libcob_la-fileio-sort.lo: fileio-sort.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-sort.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-sort.Tpo -c -o libcob_la-fileio-sort.lo `test -f 'fileio-sort.c' || echo '$(srcdir)/'`fileio-sort.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-sort.Tpo $(DEPDIR)/libcob_la-fileio-sort.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-sort.c' object='libcob_la-fileio-sort.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-sort.lo `test -f 'fileio-sort.c' || echo '$(srcdir)/'`fileio-sort.c
+
+libcob_la-fileio-stats.lo: fileio-stats.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -MT libcob_la-fileio-stats.lo -MD -MP -MF $(DEPDIR)/libcob_la-fileio-stats.Tpo -c -o libcob_la-fileio-stats.lo `test -f 'fileio-stats.c' || echo '$(srcdir)/'`fileio-stats.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcob_la-fileio-stats.Tpo $(DEPDIR)/libcob_la-fileio-stats.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fileio-stats.c' object='libcob_la-fileio-stats.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcob_la_CFLAGS) $(CFLAGS) -c -o libcob_la-fileio-stats.lo `test -f 'fileio-stats.c' || echo '$(srcdir)/'`fileio-stats.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -629,8 +708,7 @@ info: info-am
 info-am:
 
 install-data-am: install-pkgincludeHEADERS
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+
 install-dvi: install-dvi-am
 
 install-dvi-am:
@@ -677,37 +755,23 @@ ps-am:
 
 uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
 
-.MAKE: install-am install-data-am install-strip
+.MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
-	install-data-hook install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-pkgincludeHEADERS install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-pkgincludeHEADERS
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-pkgincludeHEADERS install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
 
-
-install-data-hook:
-	rm -f $(includedir)/libcob/byteswap.h
-	rm -f $(includedir)/libcob/call.h
-	rm -f $(includedir)/libcob/fileio.h
-	rm -f $(includedir)/libcob/termio.h
-	rm -f $(includedir)/libcob/screenio.h
-	rm -f $(includedir)/libcob/move.h
-	rm -f $(includedir)/libcob/numeric.h
-	rm -f $(includedir)/libcob/strings.h
-	rm -f $(includedir)/libcob/intrinsic.h
-	rm -f $(includedir)/libcob/codegen.h
-	rm -f $(includedir)/libcob/system.def
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

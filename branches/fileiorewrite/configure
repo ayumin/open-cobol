@@ -573,7 +573,7 @@ PACKAGE_TARNAME='gnu-cobol'
 PACKAGE_VERSION='2.0'
 PACKAGE_STRING='GNU Cobol 2.0'
 PACKAGE_BUGREPORT='open-cobol-list@lists.sourceforge.net'
-PACKAGE_URL='http://www.opencobol.org'
+PACKAGE_URL='http://sourceforge.net/projects/open-cobol/'
 
 ac_unique_file="libcob.h"
 # Factoring default headers for most tests.
@@ -618,7 +618,6 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 COB_PATCH_LEVEL
-COB_HAS_ISAM
 COB_KEYWORD_INLINE
 COB_FIX_LIBTOOL
 COB_FIX_LIB
@@ -780,16 +779,24 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 enable_rpath
-with_seqra_extfh
-with_cisam
-with_disam
-with_vbisam
-with_index_extfh
-with_db
+with_curses
+with_relative
+with_sequential
+with_indexed
+with_file_status
 with_dl
 enable_debug
 enable_experimental
 enable_param_check
+enable_ignore_number_zone
+enable_treat_null_as_zero
+enable_relative_fixed
+enable_fileio_trace
+enable_fileio_stats
+enable_fileio_log
+enable_fileio_sharing
+enable_fileio_exchange
+enable_odbc_dynamic_connection
 with_patch_level
 with_varseq
 enable_nls
@@ -1435,9 +1442,18 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-rpath         do not hardcode runtime library paths
-  --enable-debug          (GNU Cobol) Enable -g C compiler debug option
-  --enable-experimental   (GNU Cobol) Enable experimental code (Developers only!)
-  --enable-param-check    (GNU Cobol) Enable CALL parameter checking
+  --enable-debug                (GNU Cobol) Enable -g C compiler debug option
+  --enable-experimental         (GNU Cobol) Enable experimental code (Developers only!)
+  --enable-param-check    (GNU Cobol) Enable CALL parameter checking (default no)
+  --enable-ignore-number-zone   (GNU Cobol) disregard top 4 bits of numeric character
+  --enable-treat-null-as-zero   (GNU Cobol) interpret nulls in numeric fields as zeros
+  --enable-relative-fixed       (GNU Cobol) use fixed length records on relative format
+  --enable-fileio-trace         (GNU Cobol) enable code to generate diagnostic trace of file io
+  --enable-fileio-stats         (GNU Cobol) enable code to generate file io statistics
+  --enable-fileio-log           (GNU Cobol) enable code to generate file io log
+  --enable-fileio-sharing       (GNU Cobol) enable code to control file sharing
+  --enable-fileio-exchange      (GNU Cobol) enable code to call external file-handler
+  --enable-odbc_dynamic_connection (GNU Cobol) extract ODBC SERVER and DB names from COBOL file-name
   --disable-nls           do not use Native Language Support
 
 Optional Packages:
@@ -1449,15 +1465,14 @@ Optional Packages:
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
-  --with-seqra-extfh      (GNU Cobol) Use external SEQ/RAN file handler
-  --with-cisam            (GNU Cobol) Use CISAM for ISAM I/O (Experimental)
-  --with-disam            (GNU Cobol) Use DISAM for ISAM I/O (Experimental)
-  --with-vbisam           (GNU Cobol) Use VBISAM for ISAM I/O (Experimental)
-  --with-index-extfh      (GNU Cobol) Use external ISAM file handler
-  --with-db               (GNU Cobol) Use Berkeley DB >= 4.1 for ISAM I/O (default)
-  --with-dl               (GNU Cobol) Use system dynamic loader (default)
-  --with-patch-level      (GNU Cobol) Define a patch level (default 0)
-  --with-varseq           (GNU Cobol) Define variable sequential format (default 0)
+  --with-curses           (GNU Cobol) Used curses library for extended SCREEN I/O (default=check)
+  --with-relative         (GNU Cobol) RELATIVE Handler [default=yes]
+  --with-sequential       (GNU Cobol) SEQUENTIAL Handler [default=yes]
+  --with-indexed          (GNU Cobol) INDEXED Handler :: yes | no | cisam | disam | vbisam | bdb | bdb1 | odbc | odbc_dsn [default=bdb]
+  --with-file-status      (GNU Cobol) File-status codes :: ansi85 | ext\ended\ | native | rm [default=ext]
+  --with-dl               (GNU Cobol) Use system dynamic loader [default=yes]
+  --with-patch-level      (GNU Cobol) Define a patch level [default=0]
+  --with-varseq           (GNU Cobol) Define variable sequential format [default=0]
   --with-libiconv-prefix[=DIR]  search for libiconv in DIR/include and DIR/lib
   --without-libiconv-prefix     don't search for libiconv in includedir and libdir
   --with-libintl-prefix[=DIR]  search for libintl in DIR/include and DIR/lib
@@ -1477,7 +1492,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <open-cobol-list@lists.sourceforge.net>.
-GNU Cobol home page: <http://www.opencobol.org>.
+GNU Cobol home page: <http://sourceforge.net/projects/open-cobol/>.
 General help using GNU software: <http://www.gnu.org/gethelp/>.
 _ACEOF
 ac_status=$?
@@ -2873,6 +2888,26 @@ fi
 
 
 # Autoheader templates
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13209,22 +13244,88 @@ fi
 # Configure options.
 
 
-# Check whether --with-seqra-extfh was given.
-if test "${with_seqra_extfh+set}" = set; then :
-  withval=$with_seqra_extfh;  if test "$with_seqra_extfh" = "yes"
-    then
-	$as_echo "#define WITH_SEQRA_EXTFH 1" >>confdefs.h
-
-    fi
+# Check whether --with-curses was given.
+if test "${with_curses+set}" = set; then :
+  withval=$with_curses; case "$with_curses" in
+    ncursesw | ncurses | pdcurses | curses | check | no)
+		USE_NCURSES="$with_curses"
+		;;
+    *)
+		as_fn_error $? "Wrong value for --with-curses, must be one of the following
+  ncursesw, ncurses, pdcurses, curses  (use only the specified library)
+  check  (use whatever curses libary is usable, disable if no curses usable)
+  no  (disable curses usage)" "$LINENO" 5
+		;;
+  esac
+else
+  USE_NCURSES="check"
 fi
 
 
 
-# Check whether --with-cisam was given.
-if test "${with_cisam+set}" = set; then :
-  withval=$with_cisam;  if test "$with_cisam" = "yes"
-    then
-	for ac_header in isam.h
+# Check whether --with-relative was given.
+if test "${with_relative+set}" = set; then :
+  withval=$with_relative;  case "$with_relative" in
+		yes )
+			WITH_RELATIVE=1
+			$as_echo "#define WITH_RELATIVE 1" >>confdefs.h
+
+			;;
+		no )
+			WITH_RELATIVE_NONE=1
+			$as_echo "#define WITH_RELATIVE_NONE 1" >>confdefs.h
+
+			;;
+		* )
+			as_fn_error $? "\"--with-relative expects: yes no\"" "$LINENO" 5
+    esac
+else
+
+		# default if no ref to --with-relative
+		WITH_RELATIVE=1
+		$as_echo "#define WITH_RELATIVE 1" >>confdefs.h
+
+
+fi
+
+
+
+
+# Check whether --with-sequential was given.
+if test "${with_sequential+set}" = set; then :
+  withval=$with_sequential;  case "$with_sequential" in
+		yes )
+			WITH_SEQUENTIAL=1
+			$as_echo "#define WITH_SEQUENTIAL 1" >>confdefs.h
+
+			;;
+		no )
+			WITH_SEQUENTIAL_NONE=1
+			$as_echo "#define WITH_SEQUENTIAL_NONE 1" >>confdefs.h
+
+			;;
+		* )
+			as_fn_error $? "\"--with-sequential expects: yes no\"" "$LINENO" 5
+    esac
+else
+
+		# default if no ref to --with-sequential
+		WITH_SEQUENTIAL=1
+		$as_echo "#define WITH_SEQUENTIAL 1" >>confdefs.h
+
+
+fi
+
+
+
+do_cobol85_IX_tests="yes"
+
+
+# Check whether --with-indexed was given.
+if test "${with_indexed+set}" = set; then :
+  withval=$with_indexed;  case "$with_indexed" in
+    	cisam )
+			for ac_header in isam.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "isam.h" "ac_cv_header_isam_h" "$ac_includes_default"
 if test "x$ac_cv_header_isam_h" = xyes; then :
@@ -13238,13 +13339,13 @@ fi
 
 done
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -lifisam" >&5
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -lifisam" >&5
 $as_echo_n "checking for isopen in -lifisam... " >&6; }
 if ${ac_cv_lib_ifisam_isopen+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lifisam -lifisamx $LIBS"
+LIBS="-lifisam ifisamx $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -13275,25 +13376,23 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ifisam_isopen" >&5
 $as_echo "$ac_cv_lib_ifisam_isopen" >&6; }
 if test "x$ac_cv_lib_ifisam_isopen" = xyes; then :
-  $as_echo "#define WITH_CISAM 1" >>confdefs.h
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBIFISAM 1
+_ACEOF
 
-		LIBCOB_LIBS="$LIBCOB_LIBS -lifisam -lifisamx"
+  LIBS="-lifisam $LIBS"
+
 else
   as_fn_error $? "libifisam is required for CISAM" "$LINENO" 5
 fi
 
-    fi
-fi
+			WITH_INDEXED_CISAM=1
+			$as_echo "#define WITH_INDEXED_CISAM 1" >>confdefs.h
 
-
-if test "$with_cisam" != "yes"
-then
-
-# Check whether --with-disam was given.
-if test "${with_disam+set}" = set; then :
-  withval=$with_disam;  if test "$with_disam" = "yes"
-    then
-	for ac_header in disam.h
+			LIBCOB_LIBS="$LIBCOB_LIBS -lifisam -lifisamx"
+			;;
+		disam )
+			for ac_header in disam.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "disam.h" "ac_cv_header_disam_h" "$ac_includes_default"
 if test "x$ac_cv_header_disam_h" = xyes; then :
@@ -13307,7 +13406,7 @@ fi
 
 done
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -ldisam" >&5
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -ldisam" >&5
 $as_echo_n "checking for isopen in -ldisam... " >&6; }
 if ${ac_cv_lib_disam_isopen+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13344,26 +13443,23 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_disam_isopen" >&5
 $as_echo "$ac_cv_lib_disam_isopen" >&6; }
 if test "x$ac_cv_lib_disam_isopen" = xyes; then :
-  $as_echo "#define WITH_DISAM 1" >>confdefs.h
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBDISAM 1
+_ACEOF
 
-		LIBCOB_LIBS="$LIBCOB_LIBS -ldisam"
+  LIBS="-ldisam $LIBS"
+
 else
   as_fn_error $? "libdisam is required for DISAM" "$LINENO" 5
 fi
 
-    fi
-fi
+			WITH_INDEXED_DISAM=1
+			$as_echo "#define WITH_INDEXED_DISAM 1" >>confdefs.h
 
-fi
-
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes"
-then
-
-# Check whether --with-vbisam was given.
-if test "${with_vbisam+set}" = set; then :
-  withval=$with_vbisam;  if test "$with_vbisam" = "yes"
-    then
-	for ac_header in vbisam.h
+			LIBCOB_LIBS="$LIBCOB_LIBS -ldisam"
+			;;
+		vbisam )
+			for ac_header in vbisam.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "vbisam.h" "ac_cv_header_vbisam_h" "$ac_includes_default"
 if test "x$ac_cv_header_vbisam_h" = xyes; then :
@@ -13377,7 +13473,7 @@ fi
 
 done
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -lvbisam" >&5
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for isopen in -lvbisam" >&5
 $as_echo_n "checking for isopen in -lvbisam... " >&6; }
 if ${ac_cv_lib_vbisam_isopen+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13414,43 +13510,376 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vbisam_isopen" >&5
 $as_echo "$ac_cv_lib_vbisam_isopen" >&6; }
 if test "x$ac_cv_lib_vbisam_isopen" = xyes; then :
-  $as_echo "#define WITH_VBISAM 1" >>confdefs.h
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVBISAM 1
+_ACEOF
 
-		LIBCOB_LIBS="$LIBCOB_LIBS -lvbisam"
+  LIBS="-lvbisam $LIBS"
+
 else
   as_fn_error $? "libvbisam is required for VBISAM" "$LINENO" 5
 fi
 
-    fi
-fi
+			WITH_INDEXED_VBISAM=1
+			$as_echo "#define WITH_INDEXED_VBISAM 1" >>confdefs.h
 
-fi
+			LIBCOB_LIBS="$LIBCOB_LIBS -lvbisam"
+			;;
+		bdb | yes )	   # default
+			# Checks postponed
+			WITH_INDEXED_BDB=1
+			;;
+		bdb1 )
+			for ac_header in db1.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "db1.h" "ac_cv_header_db1_h" "$ac_includes_default"
+if test "x$ac_cv_header_db1_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DB1_H 1
+_ACEOF
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes"
-then
-
-# Check whether --with-index-extfh was given.
-if test "${with_index_extfh+set}" = set; then :
-  withval=$with_index_extfh;  if test "$with_index_extfh" = "yes"
-    then
-	$as_echo "#define WITH_INDEX_EXTFH 1" >>confdefs.h
-
-    fi
-fi
-
-fi
-
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes"
-then
-
-# Check whether --with-db was given.
-if test "${with_db+set}" = set; then :
-  withval=$with_db;
 else
-  with_db=yes
+  as_fn_error $? "Berkeley DB db1.h is required for BDB1. Please copy or link db.h to db1.h" "$LINENO" 5
 fi
 
+done
+
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing dbopen" >&5
+$as_echo_n "checking for library containing dbopen... " >&6; }
+if ${ac_cv_search_dbopen+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char dbopen ();
+int
+main ()
+{
+return dbopen ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' db1; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_dbopen=$ac_res
 fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_dbopen+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_dbopen+:} false; then :
+
+else
+  ac_cv_search_dbopen=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_dbopen" >&5
+$as_echo "$ac_cv_search_dbopen" >&6; }
+ac_res=$ac_cv_search_dbopen
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+else
+  as_fn_error $? "library libdb1 is required for BDB1. Please copy or link libdb to libdb1" "$LINENO" 5
+fi
+
+			LIBCOB_LIBS="$LIBCOB_LIBS ${ac_cv_search_dbopen}"
+			WITH_INDEXED_BDB_1=1
+			$as_echo "#define WITH_INDEXED_BDB_1 1" >>confdefs.h
+
+			;;
+		odbc )
+			for ac_header in sql.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sql.h" "ac_cv_header_sql_h" "$ac_includes_default"
+if test "x$ac_cv_header_sql_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SQL_H 1
+_ACEOF
+
+else
+  as_fn_error $? "sql.h is required for ODBC DB" "$LINENO" 5
+fi
+
+done
+
+			for ac_header in sqlext.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sqlext.h" "ac_cv_header_sqlext_h" "$ac_includes_default"
+if test "x$ac_cv_header_sqlext_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SQLEXT_H 1
+_ACEOF
+
+else
+  as_fn_error $? "sqlext.h is required for ODBC DB" "$LINENO" 5
+fi
+
+done
+
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SQLAllocHandle in -lodbc" >&5
+$as_echo_n "checking for SQLAllocHandle in -lodbc... " >&6; }
+if ${ac_cv_lib_odbc_SQLAllocHandle+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lodbc  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char SQLAllocHandle ();
+int
+main ()
+{
+return SQLAllocHandle ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_odbc_SQLAllocHandle=yes
+else
+  ac_cv_lib_odbc_SQLAllocHandle=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_odbc_SQLAllocHandle" >&5
+$as_echo "$ac_cv_lib_odbc_SQLAllocHandle" >&6; }
+if test "x$ac_cv_lib_odbc_SQLAllocHandle" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBODBC 1
+_ACEOF
+
+  LIBS="-lodbc $LIBS"
+
+else
+  as_fn_error $? "libodbc is required for ODBC DB" "$LINENO" 5
+fi
+
+			WITH_INDEXED_ODBC=1
+			$as_echo "#define WITH_INDEXED_ODBC 1" >>confdefs.h
+
+			LIBCOB_LIBS="$LIBCOB_LIBS -lodbc"
+			;;
+		no )
+			WITH_INDEXED_NONE=1
+			$as_echo "#define WITH_INDEXED_NONE 1" >>confdefs.h
+
+			do_cobol85_IX_tests="no"
+			;;
+		* )
+			as_fn_error $? "\"--with-indexed expects: cisam disam vbisam bdb bdb1 odbc yes no\"" "$LINENO" 5
+    esac
+else
+
+		# default if no ref to --with-indexed
+		# Checks postponed
+		WITH_INDEXED_BDB=1
+
+
+fi
+
+
+
+if test "$WITH_INDEXED_BDB" = "1"
+	then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Checks for Berkeley DB ..." >&5
+$as_echo "$as_me: Checks for Berkeley DB ..." >&6;}
+
+	for ac_header in db.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "db.h" "ac_cv_header_db_h" "$ac_includes_default"
+if test "x$ac_cv_header_db_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DB_H 1
+_ACEOF
+
+else
+  as_fn_error $? "Berkeley DB db.h is required for BDB" "$LINENO" 5
+fi
+
+done
+
+
+	# BDB header exists. Extract major/minor number pair
+	COB_BDB_HEADER=''
+	if test "$cross_compiling" = yes; then :
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+		#include <stdio.h>
+		#include <db.h>
+		int main (int argc, char **argv)
+		{
+			(void)argv;
+			if (argc > 1)
+				printf ("%d.%d\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
+			return 0;
+		}
+
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  COB_BDB_HEADER=`./conftest$ac_exeext x`
+else
+  as_fn_error $? "Unable to extract Berkeley DB version information from db.h" "$LINENO" 5
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+	if test "x$COB_BDB_HEADER" = "x"
+	then
+		as_fn_error $? "Unable to extract Berkeley DB version information" "$LINENO" 5
+	fi
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Berkeley DB db.h version >= 4.1" >&5
+$as_echo_n "checking for Berkeley DB db.h version >= 4.1... " >&6; }
+	COB_BDB_HEADER_MAJOR=$(echo $COB_BDB_HEADER | cut -d. -f1)
+	if test $COB_BDB_HEADER_MAJOR -gt 4
+	then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ($COB_BDB_HEADER)" >&5
+$as_echo "yes ($COB_BDB_HEADER)" >&6; }
+	else
+		COB_BDB_HEADER_MINOR=$(echo $COB_BDB_HEADER | cut -d. -f2)
+		if test $COB_BDB_HEADER_MAJOR -eq 4 -a $COB_BDB_HEADER_MINOR -ge 1
+		then
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ($COB_BDB_HEADER)" >&5
+$as_echo "yes ($COB_BDB_HEADER)" >&6; }
+		else
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no ($COB_BDB_HEADER)" >&5
+$as_echo "no ($COB_BDB_HEADER)" >&6; }
+			as_fn_error $? "Berkeley DB db.h has incompatible version" "$LINENO" 5
+		fi
+	fi
+	MYOLDLIBS="$LIBS"
+	cob_got_db=no
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Berkeley DB library with version $COB_BDB_HEADER" >&5
+$as_echo_n "checking for Berkeley DB library with version $COB_BDB_HEADER... " >&6; }
+	for cobdb in db db-$COB_BDB_HEADER
+	do
+		LIBS="$MYOLDLIBS -l$cobdb"
+		if test "$cross_compiling" = yes; then :
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdio.h>
+		#include <db.h>
+int
+main ()
+{
+
+		int major, minor, patch;
+		db_version (&major, &minor, &patch);
+		if (major == DB_VERSION_MAJOR && minor == DB_VERSION_MINOR) {
+			return 0;
+		}
+		return 1;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  $as_echo "#define WITH_INDEXED_BDB 1" >>confdefs.h
+
+		cob_got_db=yes
+		LIBCOB_LIBS="$LIBCOB_LIBS -l$cobdb"
+		break
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+	done
+	LIBS="$MYOLDLIBS"
+	if test "$cob_got_db" = "yes"
+	then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: BDB library version $COB_BDB_HEADER found as -l$cobdb" >&5
+$as_echo "$as_me: BDB library version $COB_BDB_HEADER found as -l$cobdb" >&6;}
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		as_fn_error $? "BDB library version $COB_BDB_HEADER not found" "$LINENO" 5
+	fi
+	unset cobdb
+	unset cob_got_db
+	unset COB_BDB_HEADER
+fi
+
+
+# Check whether --with-file-status was given.
+if test "${with_file_status+set}" = set; then :
+  withval=$with_file_status;  case "$with_file_status" in
+		ansi85 )
+			WITH_FILE_STATUS_ANSI85=1
+			$as_echo "#define WITH_FILE_STATUS_ANSI85 1" >>confdefs.h
+
+			;;
+		ext | extended )
+			WITH_FILE_STATUS_EXTENDED=1
+			$as_echo "#define WITH_FILE_STATUS_EXTENDED 1" >>confdefs.h
+
+			;;
+		native )
+			WITH_FILE_STATUS_NATIVE=1
+			$as_echo "#define WITH_FILE_STATUS_NATIVE 1" >>confdefs.h
+
+			;;
+		rm | RM )
+			WITH_FILE_STATUS_RM=1
+			$as_echo "#define WITH_FILE_STATUS_RM 1" >>confdefs.h
+
+			;;
+		* )
+			as_fn_error $? "\"--with-file-status expects: ansi85 ext\ended\ native rm\"" "$LINENO" 5
+    esac
+else
+
+		# default if no ref to --with-file-status
+		WITH_FILE_STATUS_EXTENDED=1
+		$as_echo "#define WITH_FILE_STATUS_EXTENDED 1" >>confdefs.h
+
+
+fi
+
+
+
 
 
 # Check whether --with-dl was given.
@@ -13496,6 +13925,111 @@ if test "${enable_param_check+set}" = set; then :
 fi
 
 
+# Check whether --enable-ignore-number-zone was given.
+if test "${enable_ignore_number_zone+set}" = set; then :
+  enableval=$enable_ignore_number_zone; if test "$enable_ignore_number_zone" = "yes"
+   then
+	$as_echo "#define COB_IGNORE_NUMBER_ZONE 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-treat-null-as-zero was given.
+if test "${enable_treat_null_as_zero+set}" = set; then :
+  enableval=$enable_treat_null_as_zero; if test "$enable_treat_null_as_zero" = "yes"
+   then
+	$as_echo "#define COB_TREAT_NULL_AS_ZERO 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-relative-fixed was given.
+if test "${enable_relative_fixed+set}" = set; then :
+  enableval=$enable_relative_fixed; if test "$enable_relative_fixed" = "yes"
+   then
+	$as_echo "#define WITH_RELATIVE_FIXED_RSZ 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-fileio-trace was given.
+if test "${enable_fileio_trace+set}" = set; then :
+  enableval=$enable_fileio_trace; if test "$enable_fileio_trace" = "yes"
+   then
+	$as_echo "#define WITH_FILEIO_TRACE 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-fileio-stats was given.
+if test "${enable_fileio_stats+set}" = set; then :
+  enableval=$enable_fileio_stats; if test "$enable_fileio_stats" = "yes"
+   then
+	$as_echo "#define WITH_FILEIO_STATS 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-fileio-log was given.
+if test "${enable_fileio_log+set}" = set; then :
+  enableval=$enable_fileio_log; if test "$enable_fileio_log" = "yes"
+   then
+    # Some non LINUX environments might not support syslog
+	for ac_header in syslog.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "syslog.h" "ac_cv_header_syslog_h" "$ac_includes_default"
+if test "x$ac_cv_header_syslog_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYSLOG_H 1
+_ACEOF
+
+else
+  as_fn_error $? "syslog is required for file io log. syslog.h not found" "$LINENO" 5
+fi
+
+done
+
+	$as_echo "#define WITH_FILEIO_LOG 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-fileio-sharing was given.
+if test "${enable_fileio_sharing+set}" = set; then :
+  enableval=$enable_fileio_sharing; if test "$enable_fileio_sharing" = "yes"
+   then
+	$as_echo "#define WITH_FILEIO_SHARING 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-fileio-exchange was given.
+if test "${enable_fileio_exchange+set}" = set; then :
+  enableval=$enable_fileio_exchange; if test "$enable_fileio_exchange" = "yes"
+   then
+	$as_echo "#define WITH_FILEIO_EXCHANGE 1" >>confdefs.h
+
+   fi
+fi
+
+
+# Check whether --enable-odbc_dynamic_connection was given.
+if test "${enable_odbc_dynamic_connection+set}" = set; then :
+  enableval=$enable_odbc_dynamic_connection; if test "$enable_odbc_dynamic_connection" = "yes"
+   then
+	$as_echo "#define WITH_ODBC_DYNAMIC_CONNECTION 1" >>confdefs.h
+
+   fi
+fi
+
+
 
 # Check whether --with-patch-level was given.
 if test "${with_patch_level+set}" = set; then :
@@ -13523,14 +14057,14 @@ _ACEOF
 # Check whether --with-varseq was given.
 if test "${with_varseq+set}" = set; then :
   withval=$with_varseq; case $with_varseq in
-    yes)	as_fn_error $? "You must give --with-varseq an argument." "$LINENO" 5
-		;;
-    no)		as_fn_error $? "--without-varseq not supported." "$LINENO" 5
-		;;
+    yes)        as_fn_error $? "You must give --with-varseq an argument." "$LINENO" 5
+                ;;
+    no)         as_fn_error $? "--without-varseq not supported." "$LINENO" 5
+                ;;
     [0-3])
-		;;
-    *)		as_fn_error $? "Invalid --with-varseq argument" "$LINENO" 5
-		;;
+                ;;
+    *)          as_fn_error $? "Invalid --with-varseq argument" "$LINENO" 5
+                ;;
   esac
 else
   with_varseq=0
@@ -13542,7 +14076,10 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+
 # Checks for gmp.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: Checks for GMP ..." >&5
+$as_echo "$as_me: Checks for GMP ..." >&6;}
 for ac_header in gmp.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
@@ -13604,6 +14141,7 @@ fi
 # Check just major/minor levels between header and library
 MYOLDLIBS=$LIBS
 LIBS="$MYOLDLIBS -lgmp"
+# get GMP version from header
 if test "$cross_compiling" = yes; then :
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -13612,41 +14150,81 @@ See \`config.log' for more details" "$LINENO" 5; }
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#include <stdio.h>
-	#include <string.h>
-	#include <gmp.h>
-int
-main ()
-{
 
-	char	dbver[16];
-	printf("checking matching GMP version ... ");
-	(void)snprintf (dbver, sizeof(dbver), "%d.%d",
-			__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
-	if (!memcmp (dbver, gmp_version, strlen (dbver))) {
-		printf("yes\n");
+	#include <stdio.h>
+	#include <gmp.h>
+	int main (int argc, char **argv)
+	{
+		(void)argv;
+		if (argc > 1)
+			printf ("%d.%d\n", __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR);
 		return 0;
 	}
-	printf("no\n");
-	printf("\tHeader  has version %d.%d.%d\n",
-		__GNU_MP_VERSION, __GNU_MP_VERSION_MINOR,
-		__GNU_MP_VERSION_PATCHLEVEL);
-	printf("\tLibrary has version %s\n", gmp_version);
-	return 1;
 
-  ;
-  return 0;
-}
 _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
-
+  COB_GMP_HEADER=`./conftest$ac_exeext x`
 else
-  as_fn_error $? "Unable to use GMP - Please check config.log" "$LINENO" 5
+  as_fn_error $? "Unable to extract GMP version information from gmp.h" "$LINENO" 5
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
+if test "x$COB_GMP_HEADER" = "x"
+then
+	as_fn_error $? "Unable to extract GMP version information" "$LINENO" 5
+fi
+
+# get GMP version from lib
+if test "$cross_compiling" = yes; then :
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+	#include <stdio.h>
+	#include <gmp.h>
+	int main (int argc, char **argv)
+	{
+		(void)argv;
+		if (argc > 1)
+			puts (gmp_version);
+		return 0;
+	}
+
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  COB_GMP_LIB=`./conftest$ac_exeext x`
+else
+  as_fn_error $? "Unable to extract GMP version information from gmp_version" "$LINENO" 5
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+if test "x$COB_GMP_LIB" = "x"
+then
+	as_fn_error $? "Unable to extract GMP version information" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking matching GMP version" >&5
+$as_echo_n "checking matching GMP version... " >&6; }
+COB_GMP_LIB_MAJOR=$(echo $COB_GMP_LIB | cut -d. -f1)
+COB_GMP_LIB_MINOR=$(echo $COB_GMP_LIB | cut -d. -f2)
+
+if test "$COB_GMP_HEADER" == "$COB_GMP_LIB_MAJOR.$COB_GMP_LIB_MINOR"
+then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ($COB_GMP_HEADER)" >&5
+$as_echo "yes ($COB_GMP_HEADER)" >&6; }
+else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no ($COB_GMP_HEADER / $COB_GMP_LIB)" >&5
+$as_echo "no ($COB_GMP_HEADER / $COB_GMP_LIB)" >&6; }
+	as_fn_error $? "Unable to use GMP - Please check config.log" "$LINENO" 5
+fi
 LIBS=$MYOLDLIBS
 
 
@@ -15701,10 +16279,14 @@ $as_echo "#define HAVE_LANGINFO_CODESET 1" >>confdefs.h
   fi
 
 
-# Checks for ncurses/pdcurses/curses.
-USE_NCURSES="no"
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lncursesw" >&5
+# Checks for ncurses/pdcurses/curses.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: Checks for curses ..." >&5
+$as_echo "$as_me: Checks for curses ..." >&6;}
+
+if test "$USE_NCURSES" = "ncursesw" -o "$USE_NCURSES" = "check"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lncursesw" >&5
 $as_echo_n "checking for initscr in -lncursesw... " >&6; }
 if ${ac_cv_lib_ncursesw_initscr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -15749,9 +16331,9 @@ _ACEOF
 
 fi
 
-if test "x$ac_cv_lib_ncursesw_initscr" = "xyes"
-then
-  for ac_header in ncursesw/ncurses.h
+  if test "x$ac_cv_lib_ncursesw_initscr" = "xyes"
+  then
+    for ac_header in ncursesw/ncurses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "ncursesw/ncurses.h" "ac_cv_header_ncursesw_ncurses_h" "$ac_includes_default"
 if test "x$ac_cv_header_ncursesw_ncurses_h" = xyes; then :
@@ -15759,13 +16341,8 @@ if test "x$ac_cv_header_ncursesw_ncurses_h" = xyes; then :
 #define HAVE_NCURSESW_NCURSES_H 1
 _ACEOF
  USE_NCURSES="ncursesw"
-fi
-
-done
-
-  if test "$USE_NCURSES" = "no"
-  then
-    for ac_header in ncursesw/curses.h
+else
+  for ac_header in ncursesw/curses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "ncursesw/curses.h" "ac_cv_header_ncursesw_curses_h" "$ac_includes_default"
 if test "x$ac_cv_header_ncursesw_curses_h" = xyes; then :
@@ -15773,18 +16350,32 @@ if test "x$ac_cv_header_ncursesw_curses_h" = xyes; then :
 #define HAVE_NCURSESW_CURSES_H 1
 _ACEOF
  USE_NCURSES="ncursesw"
+else
+  if test "$USE_NCURSES" = "ncursesw"
+         then
+           USE_NCURSES="missing_header"
+         fi
 fi
 
 done
 
-  fi
-  if test "$USE_NCURSES" != "no"
-  then
-    LIBCOB_LIBS="$LIBCOB_LIBS -lncursesw"
+fi
+
+done
+
+    if test "$USE_NCURSES" = "ncursesw"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lncursesw"
+    fi
+  else
+    if test "$USE_NCURSES" = "ncursesw"
+    then
+      USE_NCURSES="missing_lib"
+    fi
   fi
 fi
 
-if test "$USE_NCURSES" = "no"
+if test "$USE_NCURSES" = "ncurses" -o "$USE_NCURSES" = "check"
 then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lncurses" >&5
 $as_echo_n "checking for initscr in -lncurses... " >&6; }
@@ -15841,13 +16432,8 @@ if test "x$ac_cv_header_ncurses_h" = xyes; then :
 #define HAVE_NCURSES_H 1
 _ACEOF
  USE_NCURSES="ncurses"
-fi
-
-done
-
-    if test "$USE_NCURSES" = "no"
-    then
-      for ac_header in ncurses/ncurses.h
+else
+  for ac_header in ncurses/ncurses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "ncurses/ncurses.h" "ac_cv_header_ncurses_ncurses_h" "$ac_includes_default"
 if test "x$ac_cv_header_ncurses_ncurses_h" = xyes; then :
@@ -15855,14 +16441,8 @@ if test "x$ac_cv_header_ncurses_ncurses_h" = xyes; then :
 #define HAVE_NCURSES_NCURSES_H 1
 _ACEOF
  USE_NCURSES="ncurses"
-fi
-
-done
-
-    fi
-    if test "$USE_NCURSES" = "no"
-    then
-      for ac_header in curses.h
+else
+  for ac_header in curses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "curses.h" "ac_cv_header_curses_h" "$ac_includes_default"
 if test "x$ac_cv_header_curses_h" = xyes; then :
@@ -15870,17 +16450,39 @@ if test "x$ac_cv_header_curses_h" = xyes; then :
 #define HAVE_CURSES_H 1
 _ACEOF
  USE_NCURSES="ncurses"
+else
+  if test "$USE_NCURSES" = "ncurses"
+            then
+              USE_NCURSES="missing_header"
+            fi
 fi
 
 done
 
-    fi
-    if test "$USE_NCURSES" != "no"
+fi
+
+done
+
+fi
+
+done
+
+    if test "$USE_NCURSES" = "ncurses"
     then
       LIBCOB_LIBS="$LIBCOB_LIBS -lncurses"
     fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lpdcurses" >&5
+    if test "$USE_NCURSES" = "ncurses"
+    then
+      USE_NCURSES="missing_lib"
+    fi
+  fi
+fi
+
+
+if test "$USE_NCURSES" = "pdcurses" -o "$USE_NCURSES" = "check"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lpdcurses" >&5
 $as_echo_n "checking for initscr in -lpdcurses... " >&6; }
 if ${ac_cv_lib_pdcurses_initscr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -15925,9 +16527,9 @@ _ACEOF
 
 fi
 
-    if test "x$ac_cv_lib_pdcurses_initscr" = "xyes"
-    then
-      for ac_header in pdcurses.h
+  if test "x$ac_cv_lib_pdcurses_initscr" = "xyes"
+  then
+    for ac_header in pdcurses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "pdcurses.h" "ac_cv_header_pdcurses_h" "$ac_includes_default"
 if test "x$ac_cv_header_pdcurses_h" = xyes; then :
@@ -15944,6 +16546,11 @@ if test "x$ac_cv_header_curses_h" = xyes; then :
 #define HAVE_CURSES_H 1
 _ACEOF
  USE_NCURSES="pdcurses"
+else
+  if test "$USE_NCURSES" = "pdcurses"
+          then
+            USE_NCURSES="missing_header"
+          fi
 fi
 
 done
@@ -15952,12 +16559,21 @@ fi
 
 done
 
-      if test "$USE_NCURSES" != "no"
-      then
-        LIBCOB_LIBS="$LIBCOB_LIBS -lpdcurses"
-      fi
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lcurses" >&5
+    if test "$USE_NCURSES" = "pdcurses"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lpdcurses"
+    fi
+  else
+    if test "$USE_NCURSES" = "pdcurses"
+    then
+      USE_NCURSES="missing_lib"
+    fi
+  fi
+fi
+
+if test "$USE_NCURSES" = "curses" -o "$USE_NCURSES" = "check"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lcurses" >&5
 $as_echo_n "checking for initscr in -lcurses... " >&6; }
 if ${ac_cv_lib_curses_initscr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -16002,9 +16618,9 @@ _ACEOF
 
 fi
 
-      if test "x$ac_cv_lib_curses_initscr" = "xyes"
-      then
-        for ac_header in curses.h
+  if test "x$ac_cv_lib_curses_initscr" = "xyes"
+  then
+    for ac_header in curses.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "curses.h" "ac_cv_header_curses_h" "$ac_includes_default"
 if test "x$ac_cv_header_curses_h" = xyes; then :
@@ -16012,18 +16628,38 @@ if test "x$ac_cv_header_curses_h" = xyes; then :
 #define HAVE_CURSES_H 1
 _ACEOF
  USE_NCURSES="curses"
+else
+  if test "$USE_NCURSES" = "pdcurses"
+       then
+         USE_NCURSES="missing_header"
+       fi
 fi
 
 done
 
-        if test "$USE_NCURSES" != "no"
-        then
-          LIBCOB_LIBS="$LIBCOB_LIBS -lcurses"
-        fi
-      fi
+    if test "$USE_NCURSES" != "no"
+    then
+      LIBCOB_LIBS="$LIBCOB_LIBS -lcurses"
     fi
   fi
+else
+  if test "$USE_NCURSES" = "curses"
+  then
+    USE_NCURSES="missing_lib"
+  fi
 fi
+
+case "$USE_NCURSES" in
+  check)
+	USE_NCURSES="not_found"
+	;;
+  missing_lib)
+	as_fn_error $? "Not able to link configured library $with_curses" "$LINENO" 5
+	;;
+  missing_header)
+	as_fn_error $? "No header found for configured library $with_curses" "$LINENO" 5
+	;;
+esac
 
 if test "$USE_NCURSES" = "ncurses" -o "$USE_NCURSES" = "ncursesw"
 then
@@ -16077,7 +16713,7 @@ rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 fi
 
-if test "$USE_NCURSES" != "no"
+if test "$USE_NCURSES" != "no" -a "$USE_NCURSES" != "not_found"
 then
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for curses color_set function" >&5
 $as_echo_n "checking for curses color_set function... " >&6; }
@@ -16118,144 +16754,6 @@ rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 fi
 
-# Checks for db.
-if test "$with_db" = "yes"
-then
-	if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-		#include <db.h>
-int
-main ()
-{
-
-		printf("checking for Berkeley DB db.h version >= 4.1 ... ");
-		#if (defined(DB_VERSION_MAJOR) && defined(DB_VERSION_MINOR))
-		#if (DB_VERSION_MAJOR > 4) || ((DB_VERSION_MAJOR == 4) && (DB_VERSION_MINOR > 0))
-		printf("yes (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 0;
-		#else
-		printf("no (%d.%d)\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-		return 1;
-		#endif
-		#else
-		printf("no (version numbers not found)\n");
-		return 1;
-		#endif
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-
-else
-  as_fn_error $? "Berkeley DB db.h is missing or has incompatible version" "$LINENO" 5
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-
-	# BDB header is valid. Extract major/minor number pair
-	COB_BDB_HEADER=''
-	if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-		#include <stdio.h>
-		#include <db.h>
-		int main (int argc, char **argv)
-		{
-			(void)argv;
-			if (argc > 1)
-				printf ("%d.%d\n", DB_VERSION_MAJOR, DB_VERSION_MINOR);
-			return 0;
-		}
-
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  COB_BDB_HEADER=`./conftest$ac_exeext x`
-else
-  as_fn_error $? "Unable to extract version information" "$LINENO" 5
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-	if test "x$COB_BDB_HEADER" = "x"
-	then
-		as_fn_error $? "Unable to extract version information" "$LINENO" 5
-	fi
-	MYOLDLIBS="$LIBS"
-	cob_got_db=no
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Berkeley DB library with version $COB_BDB_HEADER" >&5
-$as_echo_n "checking for Berkeley DB library with version $COB_BDB_HEADER... " >&6; }
-	for cobdb in db db-$COB_BDB_HEADER
-	do
-		LIBS="$MYOLDLIBS -l$cobdb"
-		if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-		#include <db.h>
-int
-main ()
-{
-
-		int major, minor, patch;
-		db_version (&major, &minor, &patch);
-		if (major == DB_VERSION_MAJOR && minor == DB_VERSION_MINOR) {
-			return 0;
-		}
-		return 1;
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  $as_echo "#define WITH_DB 1" >>confdefs.h
-
-		cob_got_db=yes
-		LIBCOB_LIBS="$LIBCOB_LIBS -l$cobdb"
-		break
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-	done
-	LIBS="$MYOLDLIBS"
-	if test "$cob_got_db" = "yes"
-	then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: BDB library version $COB_BDB_HEADER found as -l$cobdb" >&5
-$as_echo "$as_me: BDB library version $COB_BDB_HEADER found as -l$cobdb" >&6;}
-	else
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		as_fn_error $? "BDB library version $COB_BDB_HEADER not found" "$LINENO" 5
-	fi
-	unset cobdb
-	unset cob_got_db
-	unset COB_BDB_HEADER
-fi
 
 # Checks for dl/ltdl.
 DEFINE_DL="no"
@@ -16983,12 +17481,7 @@ then
 
 fi
 
-if test "$with_cisam" != "yes" -a "$with_disam" != "yes" -a "$with_vbisam" != "yes" -a "$with_index_extfh" != "yes" -a "$with_db" != "yes"
-then
-	COB_HAS_ISAM=no
-else
-	COB_HAS_ISAM=yes
-fi
+
 
 unset COB_USES_GCC_ICC
 unset COB_USES_GCC_ONLY
@@ -16999,7 +17492,7 @@ unset MYOCLIBS
 
 # Generate the output
 
- if test $COB_HAS_ISAM = yes; then
+ if test $do_cobol85_IX_tests = "yes"; then
   COB_MAKE_IX_TRUE=
   COB_MAKE_IX_FALSE='#'
 else
@@ -17045,7 +17538,6 @@ fi
 
 
 COB_BIGENDIAN="$ac_cv_c_bigendian"
-
 
 
 
@@ -17667,7 +18159,7 @@ Configuration commands:
 $config_commands
 
 Report bugs to <open-cobol-list@lists.sourceforge.net>.
-GNU Cobol home page: <http://www.opencobol.org>.
+GNU Cobol home page: <http://sourceforge.net/projects/open-cobol/>.
 General help using GNU software: <http://www.gnu.org/gethelp/>."
 
 _ACEOF
@@ -19614,62 +20106,195 @@ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
 
-echo "GNU Cobol Configuration:"
-echo " CC                ${CC}"
-echo " CFLAGS            ${CFLAGS}"
-echo " COB_CFLAGS        ${COB_CFLAGS}"
-echo " LDFLAGS           ${LDFLAGS}"
-echo " COB_LDFLAGS       ${COB_LDFLAGS}"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: GNU Cobol Configuration:" >&5
+$as_echo "$as_me: GNU Cobol Configuration:" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  CC                ${CC}" >&5
+$as_echo "$as_me:  CC                ${CC}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  CFLAGS            ${CFLAGS}" >&5
+$as_echo "$as_me:  CFLAGS            ${CFLAGS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_CFLAGS        ${COB_CFLAGS}" >&5
+$as_echo "$as_me:  COB_CFLAGS        ${COB_CFLAGS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  LDFLAGS           ${LDFLAGS}" >&5
+$as_echo "$as_me:  LDFLAGS           ${LDFLAGS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_LDFLAGS       ${COB_LDFLAGS}" >&5
+$as_echo "$as_me:  COB_LDFLAGS       ${COB_LDFLAGS}" >&6;}
 if test "x$COBC_LIBS" != "x"
 then
-  echo " COBC_LIBS         ${COBC_LIBS}"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:  COBC_LIBS         ${COBC_LIBS}" >&5
+$as_echo "$as_me:  COBC_LIBS         ${COBC_LIBS}" >&6;}
 fi
-echo " COB_LIBS          ${COB_LIBS}"
-echo " COB_CONFIG_DIR    ${COB_CONFIG_DIR}"
-echo " COB_COPY_DIR      ${COB_COPY_DIR}"
-echo " COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}"
-echo " COB_MODULE_EXT    ${COB_MODULE_EXT}"
-echo " COB_SHARED_OPT    ${COB_SHARED_OPT}"
-echo " COB_PIC_FLAGS     ${COB_PIC_FLAGS}"
-echo " COB_EXPORT_DYN    ${COB_EXPORT_DYN}"
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_LIBS          ${COB_LIBS}" >&5
+$as_echo "$as_me:  COB_LIBS          ${COB_LIBS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_CONFIG_DIR    ${COB_CONFIG_DIR}" >&5
+$as_echo "$as_me:  COB_CONFIG_DIR    ${COB_CONFIG_DIR}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_COPY_DIR      ${COB_COPY_DIR}" >&5
+$as_echo "$as_me:  COB_COPY_DIR      ${COB_COPY_DIR}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}" >&5
+$as_echo "$as_me:  COB_LIBRARY_PATH  ${COB_LIBRARY_PATH}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_MODULE_EXT    ${COB_MODULE_EXT}" >&5
+$as_echo "$as_me:  COB_MODULE_EXT    ${COB_MODULE_EXT}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_OBJECT_EXT    ${COB_OBJECT_EXT}" >&5
+$as_echo "$as_me:  COB_OBJECT_EXT    ${COB_OBJECT_EXT}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_SHARED_OPT    ${COB_SHARED_OPT}" >&5
+$as_echo "$as_me:  COB_SHARED_OPT    ${COB_SHARED_OPT}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_PIC_FLAGS     ${COB_PIC_FLAGS}" >&5
+$as_echo "$as_me:  COB_PIC_FLAGS     ${COB_PIC_FLAGS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  COB_EXPORT_DYN    ${COB_EXPORT_DYN}" >&5
+$as_echo "$as_me:  COB_EXPORT_DYN    ${COB_EXPORT_DYN}" >&6;}
 if test "x$striplib" != "x"
 then
-  echo " COB_STRIP_CMD     ${striplib}"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:  COB_STRIP_CMD     ${striplib}" >&5
+$as_echo "$as_me:  COB_STRIP_CMD     ${striplib}" >&6;}
 fi
 if test "${DEFINE_DL}" = "yes"
 then
-  echo " Dynamic loading:  System"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:  Dynamic loading:  System" >&5
+$as_echo "$as_me:  Dynamic loading:  System" >&6;}
 else
-  echo " Dynamic loading:  Libtool"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:  Dynamic loading:  Libtool" >&5
+$as_echo "$as_me:  Dynamic loading:  Libtool" >&6;}
 fi
-echo " Use gettext for international messages:      ${USE_NLS}"
-echo " Use fcntl for file locking:                  ${ac_cv_func_fcntl}"
-if test "$USE_NCURSES" != "no"
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  Use gettext for international messages:      ${USE_NLS}" >&5
+$as_echo "$as_me:  Use gettext for international messages:      ${USE_NLS}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:  Use fcntl for file locking:                  ${ac_cv_func_fcntl}" >&5
+$as_echo "$as_me:  Use fcntl for file locking:                  ${ac_cv_func_fcntl}" >&6;}
+case "$USE_NCURSES" in
+  not_found)
+    { $as_echo "$as_me:${as_lineno-$LINENO}:  screen I/O (no curses found):                NO" >&5
+$as_echo "$as_me:  screen I/O (no curses found):                NO" >&6;}
+	;;
+  no)
+    { $as_echo "$as_me:${as_lineno-$LINENO}:  screen I/O (disabled)       :                NO" >&5
+$as_echo "$as_me:  screen I/O (disabled)       :                NO" >&6;}
+	;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}:  Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}" >&5
+$as_echo "$as_me:  Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}" >&6;}
+	;;
+esac
+{ $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: GNU Cobol FILE I-O:" >&5
+$as_echo "$as_me: GNU Cobol FILE I-O:" >&6;}
+if test "${WITH_RELATIVE}" != ""
 then
-  echo " Use ncurses/pdcurses/curses for screen I/O:  ${USE_NCURSES}"
-else
-  echo " screen I/O (no curses found):                NO"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION RELATIVE I-O:       standard" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION RELATIVE I-O:       standard" >&6;}
 fi
-if test "$with_seqra_extfh" = "yes"
+if test "${WITH_RELATIVE_NONE}" != ""
 then
-  echo " Use external SEQ/RAN file handler            yes"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION RELATIVE I-O:       none" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION RELATIVE I-O:       none" >&6;}
 fi
-if test "$with_index_extfh" = "yes"
+
+if test "${WITH_SEQUENTIAL}" != ""
 then
-  echo " Use external ISAM file handler               yes"
-elif test "$with_cisam" = "yes"
-then
-  echo " Use CISAM for ISAM I/O                       yes"
-elif test "$with_disam" = "yes"
-then
-  echo " Use DISAM for ISAM I/O                       yes"
-elif test "$with_vbisam" = "yes"
-then
-  echo " Use VBISAM for ISAM I/O                      yes"
-elif test "$with_db" = "yes"
-then
-  echo " Use Berkeley DB for ISAM I/O:                yes"
-else
-  echo " ISAM I/O (no handler configured):            NO"
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION SEQUENTIAL I-O:     standard" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION SEQUENTIAL I-O:     standard" >&6;}
 fi
+if test "${WITH_SEQUENTIAL_NONE}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION SEQUENTIAL I-O:     none" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION SEQUENTIAL I-O:     none" >&6;}
+fi
+
+if test "${WITH_INDEXED_CISAM}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        CISAM" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        CISAM" >&6;}
+fi
+if test "${WITH_INDEXED_DISAM}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        DISAM" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        DISAM" >&6;}
+fi
+if test "${WITH_INDEXED_VBISAM}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        VBISAM" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        VBISAM" >&6;}
+fi
+if test "${WITH_INDEXED_BDB}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        Berkeley DB" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        Berkeley DB" >&6;}
+fi
+if test "${WITH_INDEXED_BDB_1}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        Berkeley DB < 4.1" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        Berkeley DB < 4.1" >&6;}
+fi
+if test "${WITH_INDEXED_ODBC}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        ODBC Database" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        ODBC Database" >&6;}
+  if test "$enable_odbc_dynamic_connection" = "yes"
+  then
+     { $as_echo "$as_me:${as_lineno-$LINENO}:   Get ODBC SERVER and DB names from file-name: yes" >&5
+$as_echo "$as_me:   Get ODBC SERVER and DB names from file-name: yes" >&6;}
+  fi
+fi
+if test "${WITH_INDEXED_NONE}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Handler for ORGANIZATION INDEXED I-O:        none" >&5
+$as_echo "$as_me:   Handler for ORGANIZATION INDEXED I-O:        none" >&6;}
+fi
+
+if test "${WITH_FILE_STATUS_ANSI85}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   File Status Key coding:                      ANSI85" >&5
+$as_echo "$as_me:   File Status Key coding:                      ANSI85" >&6;}
+fi
+if test "${WITH_FILE_STATUS_EXTENDED}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   File Status Key coding:                      extended: 9/cobol_rts_errno" >&5
+$as_echo "$as_me:   File Status Key coding:                      extended: 9/cobol_rts_errno" >&6;}
+fi
+if test "${WITH_FILE_STATUS_NATIVE}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   File Status Key coding:                      native: 8/os_errno" >&5
+$as_echo "$as_me:   File Status Key coding:                      native: 8/os_errno" >&6;}
+fi
+if test "${WITH_FILE_STATUS_RM}" != ""
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   File Status Key coding:                      RM: 9N" >&5
+$as_echo "$as_me:   File Status Key coding:                      RM: 9N" >&6;}
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}:   Use fcntl for file locking:                  ${ac_cv_func_fcntl}" >&5
+$as_echo "$as_me:   Use fcntl for file locking:                  ${ac_cv_func_fcntl}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:   SEQUENTIAL variable length records style:    ${with_varseq}" >&5
+$as_echo "$as_me:   SEQUENTIAL variable length records style:    ${with_varseq}" >&6;}
+if test "$enable-relative-fixed" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Use fixed length records for RELATIVE:       yes" >&5
+$as_echo "$as_me:   Use fixed length records for RELATIVE:       yes" >&6;}
+fi
+if test "$enable_fileio_trace" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Include code for fileio trace:               yes" >&5
+$as_echo "$as_me:   Include code for fileio trace:               yes" >&6;}
+fi
+if test "$enable_fileio_log" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Include code for fileio log:                 yes" >&5
+$as_echo "$as_me:   Include code for fileio log:                 yes" >&6;}
+fi
+if test "$enable_fileio_stats" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Include code for fileio stats:               yes" >&5
+$as_echo "$as_me:   Include code for fileio stats:               yes" >&6;}
+fi
+if test "$enable_fileio_sharing" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Include code for file sharing:               yes" >&5
+$as_echo "$as_me:   Include code for file sharing:               yes" >&6;}
+fi
+if test "$enable_fileio_exchange" = "yes"
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}:   Include code to call external file-handler:  yes" >&5
+$as_echo "$as_me:   Include code to call external file-handler:  yes" >&6;}
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
+
 unset DEFINE_DL

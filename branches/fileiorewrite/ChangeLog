@@ -1,3 +1,21 @@
+
+2014-08-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* configure.ac : add new parameter --with-curses for explicit
+	  selection of used curses library (including "no");
+	  better check of matching version header/library for GMP and BDB;
+	  additional output of configuration summary to config.log;
+	  respect --quite (don't echo or printf to stdout)
+
+2014-06-20  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* New folder build_windows
+	* Added project files for Visual Studio 2003 and newer
+
+2014-06-14  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* General: Win compatibility: define COB_OBJEXT in defaults.h
+
 2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* moved cobgetopt.c from lib to libcob
