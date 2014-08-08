@@ -17,7 +17,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
-### GNU Cobol Test Suite :: fileio related syntax   
+### GNU Cobol Test Suite :: fileio related syntax
 
 ## ==================================================================
 ## The SELECT clause
@@ -48,7 +48,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 10: Error: 'file1' is not defined
 prog.cob: 10: Error: 'file1' is not a file name
 ])
@@ -77,7 +77,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 9: Error: Redefinition of 'file1'
 prog.cob: 7: Error: 'file1' previously defined here
 ])
@@ -109,7 +109,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: NOT DETECTED AT COMPILE TIME
 ])
 AT_CLEANUP
@@ -141,36 +141,39 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: NOT DETECTED AT COMPILE TIME
 ])
 AT_CLEANUP
 
 
 ## ------------------------------------------------------------------
-## File SELECT clause must contain ASSIGN            
+## File SELECT clause must contain ASSIGN
 ## ------------------------------------------------------------------
 
-AT_SETUP([Missing ASSIGN])
+AT_SETUP([SELECT without ASSIGN])
 AT_KEYWORDS([file])
 
 AT_DATA([prog.cob], [
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. prog.
-       ENVIRONMENT DIVISION.
-       INPUT-OUTPUT SECTION.
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION.
+       INPUT-OUTPUT     SECTION.
        FILE-CONTROL.
-       SELECT file1.
-       DATA DIVISION.
-       FILE SECTION.
-       FD file1.
-       1  file1-rec pic x.
-       PROCEDURE DIVISION.
+       SELECT  TEST-FILE
+               ORGANIZATION IS SEQUENTIAL.
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD TEST-FILE.
+       01 TEST-REC      PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           CLOSE TEST-FILE.
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
-[prog.cob: 12: Error: ASSIGN clause is missing 'file1'
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
+[prog.cob: 13: Error: ASSIGN clause is missing 'TEST-FILE'
 ])
 AT_CLEANUP
 
@@ -202,7 +205,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: NOT DETECTED AT COMPILE TIME
 ])
 AT_CLEANUP
@@ -239,7 +242,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY -conf=test.conf -o prog prog.cob], [0], ,
+AT_CHECK([$COMPILE_ONLY -conf=test.conf prog.cob], [0], [],
 [prog.cob: 12: Warning: 'FILENAME' will be implicitly defined
 ])
 AT_CLEANUP
@@ -272,7 +275,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 8: Error: 'fs' is not defined
 ])
 AT_CLEANUP
@@ -301,7 +304,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: NOT DETECTED AT COMPILE TIME
 ])
 AT_CLEANUP
@@ -330,7 +333,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: NOT DETECTED AT COMPILE TIME
 ])
 AT_CLEANUP
@@ -362,7 +365,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 13: Error: OPEN I-O not allowed on LINE SEQUENTIAL files
 ])
 
@@ -393,7 +396,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 7: Error: ORGANIZATION clause invalid
 ])
 
@@ -430,7 +433,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 17: Error: RELATIVE KEY file1-key is not numeric
 ])
 AT_CLEANUP
@@ -466,7 +469,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 18: Error: RELATIVE KEY file1-key declared outside WORKING STORAGE
 ])
 AT_CLEANUP
@@ -528,7 +531,7 @@ AT_DATA([prog.cob], [
        END PROGRAM prog.
 ])
 
-AT_CHECK([$COMPILE_ONLY -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
 AT_CLEANUP
 
 
@@ -581,7 +584,7 @@ AT_DATA([prog.cob], [
        END PROGRAM prog.
 ])
 
-AT_CHECK([$COMPILE_ONLY -o prog prog.cob], [0], , [])
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
 AT_CLEANUP
 
 
@@ -610,12 +613,12 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: 15: Error: START not allowed on SEQUENTIAL files
 ])
 
-
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (1)])
 AT_KEYWORDS([file])
@@ -648,13 +651,14 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'P01':
 prog.cob: In paragraph 'P02':
 prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
 ])
 
 AT_CLEANUP
+
 
 AT_SETUP([DECLARATIVES Invalid procedure reference (2)])
 AT_KEYWORDS([file])
@@ -687,7 +691,7 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'P01':
 prog.cob: In paragraph 'P02':
 prog.cob: 20: Error: 'PP02' is not in DECLARATIVES
@@ -727,11 +731,10 @@ AT_DATA([prog.cob], [
            STOP RUN.
 ])
 
-AT_CHECK([$COMPILE_ONLY prog.cob], [1], ,
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
 [prog.cob: In section 'PP01':
 prog.cob: In paragraph 'PP02':
 prog.cob: 25: Error: Invalid reference to 'P02' (In DECLARATIVES)
 ])
 
 AT_CLEANUP
-

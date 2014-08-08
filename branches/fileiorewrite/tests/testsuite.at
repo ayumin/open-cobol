@@ -30,16 +30,16 @@ AT_BANNER([Syntax tests])
 
 m4_include([syn_copy.at])
 m4_include([syn_definition.at])
-m4_include([syn_expression.at])
 m4_include([syn_subscripts.at])		# 8.4.1.2 Subscripts
 m4_include([syn_occurs.at])		# 13.16.36 OCCURS clause
 m4_include([syn_redefines.at])		# 13.16.42 REDEFINES clause
 m4_include([syn_value.at])		# 13.16.61 VALUE clause
+m4_include([syn_file.at])		# Files (SELECT, ASSIGN, ...) without RW
 m4_include([syn_misc.at])		# Miscellanous
 m4_include([syn_move.at])		# 14.8.24 MOVE statement
 m4_include([syn_multiply.at])		# 14.8.25 MULTIPLY statement
 m4_include([syn_set.at])		# 14.8.35 SET statement
-m4_include([syn_reportwriter.at])
+m4_include([syn_reportwriter.at])		# REPORT WRITER
 
 ## Run tests
 AT_BANNER([Run tests])
@@ -49,6 +49,7 @@ m4_include([run_subscripts.at])		# 8.4.1.2 Subscripts
 m4_include([run_refmod.at])		# 8.4.2.3 Reference-modification
 m4_include([run_accept.at])		# 14.8.1  ACCEPT statement
 m4_include([run_initialize.at])		# 14.8.19 INITIALIZE statement
+m4_include([run_file.at])		# Files (SELECT, ASSIGN, ...) without RW
 m4_include([run_misc.at])
 m4_include([run_extensions.at])
 m4_include([run_returncode.at])
