@@ -588,6 +588,269 @@ AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
 AT_CLEANUP
 
 
+AT_SETUP([SPLIT-KEYS])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE1
+              ASSIGN        "TESTFILE"
+              ACCESS        DYNAMIC
+              ORGANIZATION  INDEXED
+              RECORD KEY
+                 TESTKEY1 = TESTKEY-P1
+              ALTERNATE RECORD KEY
+                 TESTKEY2 = TESTKEY-P2
+                            TESTKEY-P3
+                 WITH DUPLICATES
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC.
+           03  TESTKEY-P1 PIC X(4).
+           03  TESTKEY-P2 PIC 9(4).
+           03  TESTDATA   PIC X(4).
+           03  TESTKEY-P3 PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           READ  TEST-FILE KEY IS TESTKEY1
+           END-READ.
+           START TEST-FILE KEY IS GREATER THAN TESTKEY2
+           END-START.
+           READ  TEST-FILE NEXT
+           END-READ.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
+AT_CLEANUP
+
+
+AT_SETUP([ALTERNATE RECORD KEY SUPPRESS WHEN])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE1
+              ASSIGN        "TESTFILE"
+              ACCESS        DYNAMIC
+              ORGANIZATION  INDEXED
+              RECORD KEY    TESTKEY-P1
+              ALTERNATE RECORD KEY TESTKEY-P2
+                 WITH DUPLICATES
+                 SUPPRESS WHEN ZEROES
+              ALTERNATE RECORD KEY TESTKEY-P3
+                 WITH DUPLICATES
+                 SUPPRESS WHEN SPACES
+              ALTERNATE RECORD KEY TESTKEY-P4
+                 WITH DUPLICATES
+                 SUPPRESS WHEN ALL "A"
+              ALTERNATE RECORD KEY TESTKEY-P5
+                 WITH DUPLICATES
+                 SUPPRESS WHEN ALL SPACES
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC.
+           03  TESTKEY-P1 PIC X(4).
+           03  TESTKEY-P2 PIC 9(4).
+           03  TESTDATA   PIC X(4).
+           03  TESTKEY-P3 PIC X(4).
+           03  TESTKEY-P4 PIC X(4).
+           03  TESTKEY-P5 PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           READ  TEST-FILE KEY IS TESTKEY1
+           END-READ.
+           START TEST-FILE KEY IS GREATER THAN TESTKEY2
+           END-START.
+           READ  TEST-FILE NEXT
+           END-READ.
+           READ  TEST-FILE KEY IS TESTKEY3
+           END-READ.
+           READ  TEST-FILE KEY IS TESTKEY4
+           END-READ.
+           READ  TEST-FILE KEY IS TESTKEY5
+           END-READ.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY -std=mf prog.cob], [0], [], [])
+AT_CLEANUP
+
+
+AT_SETUP([RECORD definition with SOURCE IS / =])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE1
+              ASSIGN         "TESTFILE"
+              ACCESS         DYNAMIC
+              ORGANIZATION   INDEXED
+              RECORD KEY     TESTKEY-P1 OF TEST-REC1
+              ALTERNATE RECORD KEY 
+                 TEST1KEY2 = TESTKEY-P2 OF TEST-REC1,
+                             TESTKEY-P3 OF TEST-REC1
+                 WITH DUPLICATES
+              .
+       SELECT TEST-FILE2
+              ASSIGN         "TESTFILE"
+              ACCESS         DYNAMIC
+              ORGANIZATION   INDEXED
+              RECORD KEY     TESTKEY-P1 OF TEST-REC2
+              ALTERNATE RECORD KEY
+                 TEST2KEY2 SOURCE IS TESTKEY-P2 OF TEST-REC2,
+                                     TESTKEY-P3 OF TEST-REC2
+                 WITH DUPLICATES
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE1.
+       01  TEST-REC1.
+           03  TESTKEY-P1 PIC X(4).
+           03  TESTKEY-P2 PIC 9(4).
+           03  TESTDATA   PIC X(4).
+           03  TESTKEY-P3 PIC X(4).
+       FD  TEST-FILE2.
+       01  TEST-REC2.
+           03  TESTKEY-P1 PIC X(4).
+           03  TESTKEY-P2 PIC 9(4).
+           03  TESTDATA   PIC X(4).
+           03  TESTKEY-P3 PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE1.
+           READ  TEST-FILE1 KEY IS  TESTKEY-P1 OF TEST-REC1
+           END-READ.
+           START TEST-FILE1 KEY IS LESS THAN OR EQUAL TO TEST1KEY2
+           END-START.
+           READ  TEST-FILE1 NEXT
+           END-READ.
+           CLOSE TEST-FILE1.
+           OPEN  INPUT TEST-FILE2.
+           READ  TEST-FILE2 KEY IS  TESTKEY-P1 OF TEST-REC2
+           END-READ.
+           START TEST-FILE2 KEY IS GREATER THAN TEST2KEY2
+           END-START.
+           READ  TEST-FILE2 NEXT
+           END-READ.
+           CLOSE TEST-FILE2.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [0], [], [])
+AT_CLEANUP
+
+
+AT_SETUP([ALTERNATE RECORD definition WITH NO DUPLICATES])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN        "TESTFILE"
+              ACCESS        DYNAMIC
+              ORGANIZATION  INDEXED
+              RECORD KEY    TESTKEY1
+              ALTERNATE RECORD KEY TESTKEY2
+                               WITH DUPLICATES
+              ALTERNATE RECORD KEY TESTKEY3
+                               WITH NO DUPLICATES
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC.
+           03  TESTKEY1   PIC X(4).
+           03  TESTKEY2   PIC 9(4).
+           03  TESTKEY3   PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           READ  TEST-FILE KEY IS TESTKEY1
+           END-READ.
+           START TEST-FILE KEY IS GREATER THAN TESTKEY2
+           END-START.
+           READ  TEST-FILE NEXT
+           END-READ.
+           START TEST-FILE KEY IS LESS THAN TESTKEY3
+           END-START.
+           READ  TEST-FILE PREVIOUS
+           END-READ.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
+[prog.cob: 15: Error: non-standard 'NO DUPLICATES'
+])
+AT_CHECK([$COMPILE_ONLY -frelax-syntax prog.cob], [0], [], [])
+AT_CLEANUP
+
+
+AT_SETUP([ALTERNATE RECORD definition omitting RECORD])
+AT_KEYWORDS([file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN        "TESTFILE"
+              ACCESS        DYNAMIC
+              ORGANIZATION  INDEXED
+              RECORD     KEY  TESTKEY1
+              ALTERNATE  KEY  TESTKEY2
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC.
+           03  TESTKEY1   PIC X(4).
+           03  TESTKEY2   PIC 9(4).
+       PROCEDURE        DIVISION.
+           OPEN  INPUT TEST-FILE.
+           READ  TEST-FILE KEY IS TESTKEY1
+           END-READ.
+           START TEST-FILE KEY IS LESS THAN TESTKEY2
+           END-START.
+           READ  TEST-FILE NEXT
+           END-READ.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE_ONLY prog.cob], [1], [],
+[prog.cob: 12: Error: 'RECORD' is mandatory here
+])
+AT_CHECK([$COMPILE_ONLY -frelax-syntax prog.cob], [0], [], [])
+AT_CLEANUP
 
 
 AT_SETUP([START on SEQUENTIAL file])

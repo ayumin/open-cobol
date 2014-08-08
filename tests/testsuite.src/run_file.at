@@ -30,7 +30,7 @@
 ## ------------------------------------------------------------------
 
 AT_SETUP([File defaults: ORG:SEQ & ACC:SEQ])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -75,7 +75,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File external name: defaulted])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([fexists_signed.c], [
 
@@ -157,7 +157,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File external name: pathed])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 
 AT_DATA([test.conf], [
@@ -279,7 +279,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File external name: unpathed])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 
 AT_DATA([test.conf], [
@@ -409,7 +409,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File external name: use environmental variable])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 
 AT_DATA([test.conf], [
@@ -541,7 +541,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File external name: ASSIGN FID])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([test.conf], [
 include "mf.conf"
@@ -586,7 +586,7 @@ AT_CLEANUP
 
 
 AT_SETUP([File external name: IBM])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -625,7 +625,7 @@ AT_CLEANUP
 ## File name mapping via environmental variable.
 ## ------------------------------------------------------------------
 AT_SETUP([ASSIGN expansion])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -659,7 +659,7 @@ AT_CLEANUP
 ## File name mapping via $COB_FILE_PATH
 ## ------------------------------------------------------------------
 AT_SETUP([File external name: use $COB_FILE_PATH])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([test.conf], [
 include "cobol2002.conf"
@@ -700,7 +700,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ Basic IO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -744,7 +744,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:LINE-SEQ ACC:SEQ Basic IO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -784,7 +784,7 @@ AT_CLEANUP
 ## OPEN + WRITE + CLOSE with external check
 ## ------------------------------------------------------------------
 AT_SETUP([File ORG:LINE-SEQ ACC:SEQ write])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -837,7 +837,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:LINE-SEQ ACC:SEQ read short & long])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([TEST-FILE],
 [a
@@ -909,7 +909,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ READ INTO AT-END])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -958,7 +958,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ IO with variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -1035,7 +1035,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:LINE SEQ ACC:SEQ IO with variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -1110,7 +1110,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ Disruptive REWRITE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -1215,7 +1215,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ File lock SELECT EXCLUSIVE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -1278,7 +1278,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ File lock OPEN EXCLUSIVE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -1338,7 +1338,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ File lock SHARE NO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -1401,7 +1401,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ File lock SHARE READ ONLY])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -1470,7 +1470,7 @@ AT_CLEANUP
 ## -------------------------------------------------------------------
 
 AT_SETUP([File ORG:SEQ ACC:SEQ Preceding file lock])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -1540,7 +1540,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:REL ACC:SEQ Basic IO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -1580,7 +1580,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:REL ACC:RAN Basic IO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -1641,7 +1641,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:REL ACC:SEQ IO with variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -1718,7 +1718,7 @@ AT_CLEANUP
 
 
 AT_SETUP([File ORG:REL ACC:DYN Sparse start])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1801,7 +1801,7 @@ AT_CLEANUP
 
 
 AT_SETUP([File ORG:REL ACC:DYN START boundaries])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -1884,7 +1884,7 @@ AT_CLEANUP
 
 
 AT_SETUP([File ORG:REL ACC:RAN READ + REWRITE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -1964,7 +1964,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ Basic IO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -2009,7 +2009,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ READ on empty])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -2054,7 +2054,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ READ on missing OPTIONAL])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -2105,7 +2105,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ IO with variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        program-id. prog.
@@ -2188,7 +2188,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ File lock SELECT EXCLUSIVE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2258,7 +2258,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ File lock OPEN EXCLUSIVE])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2326,7 +2326,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ File lock SHARE NO])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2396,7 +2396,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ File lock SHARE READ ONLY])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2472,7 +2472,7 @@ AT_CLEANUP
 ## -------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:SEQ Preceding file lock])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog1.cob], [
        identification division.
@@ -2544,7 +2544,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:RAN AUTOMATIC locked record])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_SKIP_IF(true)
 
@@ -2627,7 +2627,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:RAN AUTOMATIC locked record])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_SKIP_IF(true)
 
@@ -2713,7 +2713,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:RAN MANUAL locked record])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_SKIP_IF(true)
 
@@ -2797,7 +2797,7 @@ AT_CLEANUP
 
 
 AT_SETUP([File ORG:IDX ACC:DYN START boundaries])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -2880,8 +2880,8 @@ AT_CLEANUP
 ## Split keys: create file and read by split alternate-key
 ## ------------------------------------------------------------------
 
-AT_SETUP([File ORG:IDX ACC:DYN Split-keys])
-AT_KEYWORDS([file])
+AT_SETUP([File ORG:IDX ACC:DYN Split-keys (1)])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -2962,6 +2962,160 @@ AT_CHECK([./prog], [0])
 AT_CLEANUP
 
 
+AT_SETUP([File ORG:IDX ACC:DYN Split-keys (2)])
+AT_KEYWORDS([runfile file])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT      DIVISION. 
+       INPUT-OUTPUT     SECTION.
+       FILE-CONTROL.
+       SELECT TEST-FILE
+              ASSIGN        "TESTFILE"
+              ACCESS        DYNAMIC
+              ORGANIZATION  INDEXED
+              RECORD KEY           TESTKEY1 SOURCE IS TESTKEY-P1
+              ALTERNATE RECORD KEY TESTKEY2 SOURCE IS TESTKEY-P2,
+                                                      TESTKEY-P3
+                                            WITH DUPLICATES
+              .
+       DATA             DIVISION.
+       FILE             SECTION.
+       FD  TEST-FILE.
+       01  TEST-REC.
+           03  TESTKEY-P1 PIC X(4).
+           03  TESTKEY-P2 PIC 9(4).
+           03  TESTDATA   PIC X(4).
+           03  TESTKEY-P3 PIC X(4).
+       PROCEDURE        DIVISION.
+           OPEN  OUTPUT TEST-FILE.
+           WRITE TEST-REC FROM "BBBB0001dat1aaaa"
+           END-WRITE.
+           WRITE TEST-REC FROM "AAAA0001dat2aaaa"
+           END-WRITE.
+           WRITE TEST-REC FROM "CCCC0002dat3aaaa"
+           END-WRITE.
+           WRITE TEST-REC FROM "DDDD0002dat4bbbb"
+           END-WRITE.
+           CLOSE TEST-FILE.
+           OPEN  INPUT TEST-FILE.
+           MOVE  "CCCC" TO TESTKEY-P1.
+           READ  TEST-FILE KEY IS TESTKEY1
+              INVALID KEY
+                 DISPLAY "READ with CCCC found no record"
+                 END-DISPLAY
+              NOT INVALID KEY
+                 IF TESTDATA NOT = "dat3"
+                    DISPLAY "READ with wrong result: "
+                            TEST-REC
+                    END-DISPLAY
+                 END-IF
+           END-READ.
+           MOVE 0001     TO TESTKEY-P2.
+           MOVE "aaaa"   TO TESTKEY-P3.
+           START TEST-FILE KEY >= TESTKEY2
+              INVALID KEY
+                 DISPLAY "START >= 0001 found no record"
+                 END-DISPLAY
+              NOT INVALID KEY
+                 READ  TEST-FILE NEXT
+                    AT END
+                       DISPLAY "READ NEXT (1) found no record"
+                       END-DISPLAY
+                       GO TO END-PAR
+                    NOT AT END
+                       IF TESTDATA NOT = "dat2"
+                          DISPLAY "READ NEXT (1) "
+                                  "with wrong result: "
+                                  TESTDATA
+                          END-DISPLAY
+                          GO TO END-PAR
+                       END-IF
+                 END-READ
+                 READ  TEST-FILE NEXT
+                    AT END
+                       DISPLAY "READ NEXT (2) found no record"
+                       END-DISPLAY
+                       GO TO END-PAR
+                    NOT AT END
+                       IF TESTDATA NOT = "dat1"
+                          DISPLAY "READ NEXT (2) "
+                                  "with wrong result: "
+                                  TESTDATA
+                          END-DISPLAY
+                          GO TO END-PAR
+                       END-IF
+                 END-READ
+           END-START.
+           MOVE 0001      TO TESTKEY-P2.
+           MOVE "aaaa"    TO TESTKEY-P3.
+           START TEST-FILE KEY > TESTKEY2
+              INVALID KEY
+                 DISPLAY "START > 0001 found no record"
+                 END-DISPLAY
+              NOT INVALID KEY
+                 READ  TEST-FILE NEXT
+                    AT END
+                       DISPLAY "READ NEXT (3) found no record"
+                       END-DISPLAY
+                       GO TO END-PAR
+                    NOT AT END
+                       IF TESTDATA NOT = "dat3"
+                          DISPLAY "READ NEXT (3) "
+                                  "with wrong result: "
+                                  TESTDATA
+                          END-DISPLAY
+                          GO TO END-PAR
+                       END-IF
+                 END-READ
+           END-START.
+           MOVE 0002      TO TESTKEY-P2.
+           MOVE ALL "Z"   TO TESTKEY-P3.
+           START TEST-FILE KEY IS <= TESTKEY2
+              INVALID KEY
+                 DISPLAY "START <= 0002 found no record"
+                 END-DISPLAY
+              NOT INVALID KEY
+                 READ  TEST-FILE PREVIOUS
+                    AT END
+                       DISPLAY "READ PREVIOUS (1) found no record"
+                       END-DISPLAY
+                       GO TO END-PAR
+                    NOT AT END
+                       IF TESTDATA NOT = "dat4"
+                          DISPLAY "READ PREVIOUS (1) "
+                                  "with wrong result: "
+                                  TESTDATA
+                          END-DISPLAY
+                          GO TO END-PAR
+                       END-IF
+                 END-READ
+                 READ  TEST-FILE PREVIOUS
+                    AT END
+                       DISPLAY "READ PREVIOUS (2) found no record"
+                       END-DISPLAY
+                       GO TO END-PAR
+                    NOT AT END
+                       IF TESTDATA NOT = "dat3"
+                          DISPLAY "READ PREVIOUS (2) "
+                                  "with wrong result: "
+                                  TESTDATA
+                          END-DISPLAY
+                          GO TO END-PAR
+                       END-IF
+                 END-READ
+           END-START.
+       END-PAR.
+           CLOSE TEST-FILE.
+           STOP RUN.
+       END PROGRAM prog.
+])
+
+AT_CHECK([$COMPILE prog.cob], [0], [], [])
+AT_CHECK([$COMPILE ./prog], [0], [], [])
+AT_CLEANUP
+
 
 ## ------------------------------------------------------------------
 ## ORGANIZATION INDEXED, ACCESS DYNAMIC
@@ -2969,7 +3123,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:DYN Partial-keys])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -3099,7 +3253,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:RAN Implicit Indexes])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -3271,7 +3425,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FS ORG:REL ACC:DYN No-file START <])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 
 AT_DATA([prog.cob], [
@@ -3326,7 +3480,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FS ORG:REL ACC:DYN No-file START >])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 
 AT_DATA([prog.cob], [
@@ -3392,7 +3546,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FILE-STATUS common parent+child COBOL modules])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -3444,7 +3598,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:REL ACC:DYN ref'd from COBOL module])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -3527,7 +3681,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([File ORG:IDX ACC:DYN ref'd from COBOL module])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -3608,7 +3762,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([DECLARATIVES procedure referencing])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -3652,7 +3806,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([DECLARATIVES procedure referencing (multiple)])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -3708,7 +3862,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([ASSIGN to KEYBOARD/DISPLAY])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([TEST-FILE],
 [a
@@ -3770,7 +3924,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([READ INPUT pipe & WRITE OUTPUT pipe])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([test-data-in],
 [NAME
@@ -3873,7 +4027,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT KEYBOARD to DISPLAY])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([TEST-FILE],
 [9
@@ -3942,7 +4096,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT nonexistent file])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION   DIVISION.
@@ -3983,7 +4137,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT USING ... GIVING ...])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -4085,7 +4239,7 @@ AT_CLEANUP
 
 
 AT_SETUP([SORT INPUT PROC + OUTPUT PROC])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
@@ -4179,7 +4333,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT on key-1 ASC key2 DESC])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([file1],
 [A1
@@ -4249,7 +4403,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT ORG LINE SEQUENTIAL variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([file1],
 [A1XXXX
@@ -4319,7 +4473,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([SORT ORG SEQUENTIAL variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 AT_DATA([prog.cob], [
        IDENTIFICATION DIVISION.
        PROGRAM-ID. prog.
@@ -4407,7 +4561,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([MERGE ORG LINE SEQUENTIAL variable rsz])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([file1],
 [A1XXXX
@@ -4512,7 +4666,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FILE CALL BYTE-STREAM])
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -4610,7 +4764,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FILE CALL directory + file ops 1]) 
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
@@ -4695,7 +4849,7 @@ AT_CLEANUP
 ## ------------------------------------------------------------------
 
 AT_SETUP([FILE CALL directory + file ops 2]) 
-AT_KEYWORDS([file])
+AT_KEYWORDS([runfile file])
 
 AT_DATA([prog.cob], [
        identification division.
