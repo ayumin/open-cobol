@@ -137,7 +137,6 @@ COB_COPY_DIR = @COB_COPY_DIR@
 COB_EXPORT_DYN = @COB_EXPORT_DYN@
 COB_FIX_LIB = @COB_FIX_LIB@
 COB_FIX_LIBTOOL = @COB_FIX_LIBTOOL@
-COB_HAS_ISAM = @COB_HAS_ISAM@
 COB_KEYWORD_INLINE = @COB_KEYWORD_INLINE@
 COB_LDFLAGS = @COB_LDFLAGS@
 COB_LIBRARY_PATH = @COB_LIBRARY_PATH@
@@ -273,24 +272,27 @@ TESTSUITE = $(srcdir)/testsuite
 testsuite_sources = \
 	testsuite.src/syn_copy.at \
 	testsuite.src/syn_definition.at \
-	testsuite.src/syn_expression.at \
-	testsuite.src/syn_multiply.at \
-	testsuite.src/syn_redefines.at \
-	testsuite.src/syn_value.at \
-	testsuite.src/syn_move.at \
-	testsuite.src/syn_set.at \
-	testsuite.src/syn_occurs.at \
+	testsuite.src/syn_file.at \
 	testsuite.src/syn_misc.at \
+	testsuite.src/syn_move.at \
+	testsuite.src/syn_multiply.at \
+	testsuite.src/syn_occurs.at \
+	testsuite.src/syn_redefines.at \
+	testsuite.src/syn_reportwriter.at \
+	testsuite.src/syn_set.at \
 	testsuite.src/syn_subscripts.at \
-	testsuite.src/run_fundamental.at \
+	testsuite.src/syn_value.at \
 	testsuite.src/run_accept.at \
+	testsuite.src/run_extensions.at \
+	testsuite.src/run_file.at \
+	testsuite.src/run_functions.at \
+	testsuite.src/run_fundamental.at \
 	testsuite.src/run_initialize.at \
 	testsuite.src/run_misc.at \
 	testsuite.src/run_refmod.at \
-	testsuite.src/run_subscripts.at \
-	testsuite.src/run_extensions.at \
+	testsuite.src/run_reportwriter.at \
 	testsuite.src/run_returncode.at \
-	testsuite.src/run_functions.at \
+	testsuite.src/run_subscripts.at \
 	testsuite.src/data_binary.at \
 	testsuite.src/data_display.at \
 	testsuite.src/data_packed.at \

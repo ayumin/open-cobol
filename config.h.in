@@ -6,7 +6,7 @@
 /* Executable extension */
 #undef COB_EXEEXT
 
-/* Enable experimemental code (Developers only!) */
+/* Enable experimental code (Developers only!) */
 #undef COB_EXPERIMENTAL
 
 /* Compile/link option for exporting symbols */
@@ -77,6 +77,9 @@
 
 /* Define to 1 if you have the <curses.h> header file. */
 #undef HAVE_CURSES_H
+
+/* Define to 1 if you have the <db.h> header file. */
+#undef HAVE_DB_H
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
@@ -358,6 +361,9 @@
 
 /* Use CISAM as ISAM handler */
 #undef WITH_CISAM
+
+/* curses library for extended SCREEN I/O */
+#undef WITH_CURSES
 
 /* Compile with the Berkeley DB library */
 #undef WITH_DB
