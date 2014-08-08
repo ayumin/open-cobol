@@ -147,7 +147,7 @@ static struct cb_field		*description_field;
 static struct cb_file		*current_file;
 static struct cb_report		*current_report;
 static struct cb_report		*report_instance;
-static struct cb_key_component  *key_component_list;
+static struct cb_key_component	*key_component_list;
 
 static struct cb_file		*linage_file;
 static cb_tree			next_label_list;
@@ -622,6 +622,18 @@ check_set_usage (const enum cb_usage usage)
 {
 	check_pic_repeated ("USAGE", SYN_CLAUSE_5);
 	current_field->usage = usage;
+}
+
+static void
+check_relaxed_syntax_opt (const char * optional, const unsigned int needed)
+{
+	if (!cb_relaxed_syntax_check) {
+		if (needed) {
+			cb_error (_("'%s' is mandatory here"), optional);
+		} else {
+			cb_error (_("non-standard '%s'"), optional);
+		}
+	}
 }
 
 static void
@@ -2123,6 +2135,11 @@ alphabet_lits:
 | LOW_VALUE			{ $$ = cb_norm_low; }
 ;
 
+space_or_zero:
+  SPACE				{ $$ = cb_space; }
+| ZERO				{ $$ = cb_zero; }
+;
+
 
 /* SYMBOLIC characters clause */
 
@@ -2695,7 +2712,7 @@ access_mode:
 /* ALTERNATIVE RECORD KEY clause */
 
 alternative_record_key_clause:
-  ALTERNATE RECORD _key _is reference flag_duplicates suppress_clause
+  ALTERNATE rel_record _key _is reference flag_duplicates suppress_clause
   {
 	struct cb_alt_key *p;
 	struct cb_alt_key *l;
@@ -2724,7 +2741,7 @@ alternative_record_key_clause:
 	}
   }
 |
-  ALTERNATE RECORD _key _is reference TOK_EQUAL split_key_list flag_duplicates suppress_clause
+  ALTERNATE rel_record _key _is reference _source_is split_key_list flag_duplicates suppress_clause
   {
 	struct cb_alt_key *p;
 	struct cb_alt_key *l;
@@ -2761,41 +2778,22 @@ alternative_record_key_clause:
   }
 ;
 
-
-
-split_key_list:
-  {
-    key_component_list = NULL;
-  }
-  split_key
-| split_key_list split_key
-;
-
-
-
-split_key:
-  reference
-  {
-    struct cb_key_component *c;
-    struct cb_key_component *comp = cobc_malloc(sizeof(struct cb_key_component));
-    comp->next = NULL;
-    comp->component = $1;
-    if (key_component_list == NULL) {
-       key_component_list = comp;
-    } else {
-       for (c = key_component_list; c->next != NULL; c = c->next);
-       c->next = comp;
-    }
-  }
-;
-
 suppress_clause:
   /* empty */                   { $$ = cb_int (-1); }
 |
-  SUPPRESS WHEN ALL simple_value
+  SUPPRESS WHEN ALL literal
   {
      if (cb_verify (cb_use_sparse_indexed_keys, "SUPPRESS WHEN")) {
         $$ = cb_int (literal_value ($4));
+     } else {
+        $$ = cb_int (-1);
+     }
+  }
+|
+  SUPPRESS WHEN space_or_zero
+  {
+     if (cb_verify (cb_use_sparse_indexed_keys, "SUPPRESS WHEN")) {
+        $$ = cb_int (literal_value ($3));
      } else {
         $$ = cb_int (-1);
      }
@@ -2931,6 +2929,55 @@ record_key_clause:
   {
 	check_repeated ("RECORD KEY", SYN_CLAUSE_9);
 	current_file->key = $4;
+  }
+| RECORD _key _is reference _source_is split_key_list
+  {
+	PENDING ("SPLIT KEYS for PRIMARY KEYS");
+	#if 0 /* ToDo: implement */
+	cb_tree composite_key;
+
+	check_repeated ("RECORD KEY", SYN_CLAUSE_9);
+	// generate field (in w-s) for composite-key
+	composite_key = cb_build_field($5);
+	if (composite_key == cb_error_node) {
+		YYERROR;
+	} else {
+		composite_key->category = CB_CATEGORY_ALPHANUMERIC; 
+		((struct cb_field *)composite_key)->count = 1;
+		current_file->key = cb_build_field_reference((struct cb_field *)composite_key, NULL);
+		current_file->component_list = key_component_list;
+	}
+	#endif
+  }
+;
+
+_source_is:
+  TOK_EQUAL
+| SOURCE _is
+;
+
+split_key_list:
+  {
+    key_component_list = NULL;
+  }
+  split_key
+| split_key_list split_key
+;
+
+
+split_key:
+  reference
+  {
+    struct cb_key_component *c;
+    struct cb_key_component *comp = cobc_malloc(sizeof(struct cb_key_component));
+    comp->next = NULL;
+    comp->component = $1;
+    if (key_component_list == NULL) {
+       key_component_list = comp;
+    } else {
+       for (c = key_component_list; c->next != NULL; c = c->next);
+       c->next = comp;
+    }
   }
 ;
 
@@ -10398,6 +10445,11 @@ flag_all:
 flag_duplicates:
   /* empty */			{ $$ = cb_int0; }
 | with_dups			{ $$ = cb_int1; }
+| with_no_dups
+{
+	check_relaxed_syntax_opt ("NO DUPLICATES", 0);
+	$$ = cb_int0;
+}
 ;
 
 flag_initialized:
@@ -10647,6 +10699,16 @@ _when:		| WHEN ;
 _when_set_to:	| WHEN SET TO ;
 _with:		| WITH ;
 
+/* Only optional if relaxed_syntax_check */
+
+rel_record:
+  /* empty */
+  {
+	check_relaxed_syntax_opt ("RECORD", 1);
+  }
+| RECORD
+;
+
 /* Mandatory selection */
 
 coll_sequence:		COLLATING SEQUENCE | SEQUENCE ;
@@ -10665,6 +10727,7 @@ reel_or_unit:		REEL | UNIT ;
 scroll_line_or_lines:	LINE | LINES ;
 size_or_length:		SIZE | LENGTH ;
 with_dups:		WITH DUPLICATES | DUPLICATES ;
+with_no_dups:	WITH NO DUPLICATES | NO DUPLICATES ;
 
 prog_coll_sequence:
   PROGRAM COLLATING SEQUENCE
