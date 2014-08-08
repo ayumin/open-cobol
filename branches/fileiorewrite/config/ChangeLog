@@ -1,3 +1,9 @@
+
+2014-08-08  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* added use-sparse-indexed-keys (set to "unconformable" in all
+		configuration files despite of mf.conf where set to "ok")
+
 2010-06-28  Roger While <simrw@sim-basis.de>
 
 	* MARK - Version 2.0
