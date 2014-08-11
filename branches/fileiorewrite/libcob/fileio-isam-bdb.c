@@ -27,8 +27,8 @@
 
 
 
+#include "fileio-misc.h"
 
-#include "config.h"
 
 /*
  * This entire module is excluded unless configured
@@ -38,7 +38,6 @@
 #if defined(WITH_INDEXED_BDB) || defined(WITH_INDEXED_BDB_1)
 
 
-#include "fileio-misc.h"
 #include "fileio-isam.h"
 
 

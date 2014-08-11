@@ -25,8 +25,8 @@
 
 
 
+#include "fileio-misc.h"
 
-#include "config.h"
 
 
 /*
@@ -36,7 +36,6 @@
 
 #ifdef WITH_SEQUENTIAL
 
-#include "fileio-misc.h"
 #include "fileio-sequential.h"
 
 
@@ -244,12 +243,16 @@ static int _sequential_grab_linage(cob_file_t *f);
  *	COB_LS_NULLS :: insert a NUL (x00) before any character <= 0x1f [false]
  *	COB_LS_FIXED :: treat LINE-SEQUENTIAL as SEQUENTIAL
  *	                (i.e. don't trim trailing spaces) [false] 
+ *	COB_UNIX_LF  :: on LINE-SEQUENTIAL add "b" for BINARY to open-mode.
+ *	                This inhibits map '\n" to 0xOD0A - ON SOME SYSTEMS.
+ *	                (It has no effect on LINUX & MinGW.)
 */
 
 int cob_fileio_sequential_initialise() {
 
 	tf_ls_nulls = cob_fileio_get_tf("COB_LS_NULLS");
 	tf_ls_fixed = cob_fileio_get_tf("COB_LS_FIXED");
+	tf_ls_binary = cob_fileio_get_tf("COB_UNIX_LF");
 
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 1)

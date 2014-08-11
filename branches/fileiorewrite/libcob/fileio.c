@@ -46,10 +46,8 @@
 
 
 
-#include "config.h"
 
 #include "fileio-misc.h"
-#include "fileio.h"
 #include "fileio-isam.h"
 #include "fileio-relative.h"
 #include "fileio-sequential.h"

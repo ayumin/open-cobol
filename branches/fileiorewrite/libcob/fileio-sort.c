@@ -27,7 +27,6 @@
 
 
 #include <stdarg.h>
-#include "config.h"
 #include "fileio-misc.h"
 #include "fileio-sort.h"
 

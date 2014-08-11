@@ -30,9 +30,8 @@
 #include <dirent.h>
 #include "fileio-misc.h"
 #include "common.h"
-#include "coblocal.h"
+#include "fileio-call.h"
 
-#include "config.h"
 
 
 
@@ -661,9 +660,9 @@ int cob_sys_delete_dir(unsigned char *dir)
 	fn = _call_str_from_fld(APP_MODULE->cob_procedure_params[0]);
 	res = rmdir(fn);
 	if (res != 0) {
-    	res = (errno == 2) ? RETURN_CODE_XX(COB_STATUS_35_NOT_EXISTS)
+		res = (errno == 2) ? RETURN_CODE_XX(COB_STATUS_35_NOT_EXISTS)
 		                   : RETURN_CODE_9N(errno);
-	}
+	}    	
 	free(fn);
 	return(res);
 }

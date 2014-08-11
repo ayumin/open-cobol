@@ -36,9 +36,6 @@
 
 
 
-#include <ctype.h>
-#include <values.h>
-#include "config.h"
 #include "fileio-misc.h"
 
 
@@ -172,6 +169,9 @@ const char *cob_exception_state_cap[] = {
 int trace_level = 0;                       
 
 
+// Set from $COB_UNIX_LF
+// Open LINE-SEQUENTIAL in binary mode.
+int tf_ls_binary = 0;
 
 
 #define SET_STATUS_KEY(fs, b1, b2) 	{fs[0] = b1; fs[1] = b2;}
@@ -658,7 +658,7 @@ static int _fileio_open_native(
 	, int cob_mode)
 {
 	char tf_file_exists;
-	const char *mode;
+	char mode[4];
 	struct stat st;
 	FILE *fp = NULL;
 
@@ -707,53 +707,33 @@ static int _fileio_open_native(
 	default:
 		return(EPERM);
 	}
-
-
-
-#if !defined(_WIN32) || defined(_MSC_VER)
 	switch (cob_mode) {
 	case COB_OPEN_INPUT:
-		mode = (f->organization == COB_ORG_LINE_SEQUENTIAL) ? "r" : "rb";
+		strcpy(mode, "r");
 		break;
 	case COB_OPEN_OUTPUT:
-		if (f->organization == COB_ORG_RELATIVE)
-			mode = "wb+";
-		else if (f->organization == COB_ORG_LINE_SEQUENTIAL)
- 			mode = "w";
-		else
- 			mode = "wb";
+		strcpy(mode, (f->organization == COB_ORG_RELATIVE) ? "w+" : "w");
 		break;
 	case COB_OPEN_I_O:
-		mode = (f->organization == COB_ORG_LINE_SEQUENTIAL) ? "r+" : "rb+";
+		strcpy(mode, "r+");
 		break;
 	case COB_OPEN_EXTEND:
-		mode = (f->organization == COB_ORG_LINE_SEQUENTIAL) ? "a+" : "ab+";
-		break;
-	default:
-		return(EPERM);
-	}
-#else
-	switch (cob_mode) {
-	case COB_OPEN_INPUT:
-		mode = "rb";
-		break;
-	case COB_OPEN_OUTPUT:
-		mode = (f->organization == COB_ORG_RELATIVE) ? "wb+" : "wb";
-		break;
-	case COB_OPEN_I_O:
-		mode = "rb+";
-		break;
-	case COB_OPEN_EXTEND:
-		mode = "ab+";
+		strcpy(mode, "a+");
 		break;
 	}
-#endif
+	/*
+	 *  Add "b" for BINARY
+	 *  Ignored altogether on LINUX style platforms.
+	 *  On some other (Windows not MinGW) effects mapping '\n' --> 0x0D0A
+	 */
+	if ((f->organization != COB_ORG_LINE_SEQUENTIAL) || tf_ls_binary)
+		strcat(mode, "b");
 
 	fp = fopen(filename, mode);
 
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 1)
-		fprintf(stderr, "%s: exit _fileio_open_native %s: \"%s\" [%d]\n"
+		fprintf(stderr, "%s: exit _fileio_open_native mode=\"%s\": \"%s\" [res=%d]\n"
 		      , me, mode, filename, (fp == NULL) ? errno : 0);
 #endif
 

@@ -25,8 +25,8 @@
 
 
 
+#include "fileio-misc.h"
 
-#include "config.h"
 
 /*
  *    This entire module is excluded unless configured with one of
@@ -49,7 +49,6 @@
 
 
 
-#include "fileio-misc.h"
 #include "fileio-isam.h"
 
 #ifdef WITH_INDEXED_CISAM
