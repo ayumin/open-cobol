@@ -26,9 +26,10 @@
 
 
 
+
 /*
  *	The header file for OpenCOBOL fileio :: miscellaneous supporting functions
- *
+ *	Clients: #include this header file FIRST :: it includes "config.h".
  */
 
 
@@ -36,12 +37,29 @@
 #define FILEIO_MISC_H
 
 
-// Define flags referenced in some system header files
+#include "config.h"     // ALWAYS FIRST - it determines which other .h are included
 
-#define _LFS64_LARGEFILE                1
-#define _LFS64_STDIO                    1
-#define _FILE_OFFSET_BITS               64
+
+
+
+/*
+ * Select Large Files (if there is an option: e.g. on 32-bit implementing LARGEFILE)
+ * These definitions effect /usr/include/features.h - which documents them.
+ *  _LARGEFILE_SOURCE    Some more functions for correct standard I/O.
+ *  _LARGEFILE64_SOURCE  Additional functionality from LFS for large files.
+ *  _FILE_OFFSET_BITS=N  Select default filesystem interface.
+ * 
+ * cf. http://www.unix.org/version2/whatsnew/lfs20mar.html 
+*/    
+ 
+
+#define _LARGEFILE_SOURCE               1
 #define _LARGEFILE64_SOURCE             1
+#define _FILE_OFFSET_BITS               64
+
+
+
+
 
 #ifdef  _AIX
 	#define _LARGE_FILES                    1
@@ -52,6 +70,13 @@
 #endif
 
 
+
+#ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+#endif
+
+#include <ctype.h>
+#include <values.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -61,18 +86,15 @@
 #include <time.h>
 
 
-// Force symbol exports on all fileio modules
-#define COB_LIB_EXPIMP
-
-#include "config.h"
-
-#ifdef HAVE_UNISTD_H
-	#include <unistd.h>
-#endif
-
 #ifdef HAVE_FCNTL_H
 	#include <fcntl.h>
 #endif
+
+
+
+// Force symbol exports on all fileio modules
+#define COB_LIB_EXPIMP
+
 
 #if defined(_WIN32)
 //      Under MinGw path names are formed LINUX style - unsure about the rest
@@ -322,6 +344,11 @@ struct cob_fileio_funcs {
 };
 
 
+/*
+ *	Set in fileio-sequential from $COB_UNIX_LF 
+ *	Used in file_open to modify fopen() mode.
+ */
+extern int tf_ls_binary;
 
 
 

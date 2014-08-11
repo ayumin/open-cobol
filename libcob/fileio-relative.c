@@ -25,8 +25,8 @@
 
 
 
+#include "fileio-misc.h"
 
-#include "config.h"
 
 /*
  *	This entire module is excluded unless configured with WITH_RELATIVE
@@ -36,7 +36,6 @@
 #ifdef WITH_RELATIVE
 
 
-#include "fileio-misc.h"
 #include "fileio-relative.h"
 
 

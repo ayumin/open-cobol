@@ -26,7 +26,6 @@
 
 
 
-#include "config.h"
 #include "fileio-misc.h"
 #include "fileio-stats.h"
 

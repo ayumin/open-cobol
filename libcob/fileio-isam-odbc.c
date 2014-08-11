@@ -26,10 +26,8 @@
 
 
 
+#include "fileio-misc.h"
 
-
-
-#include "config.h"
 
 /*
  *	This entire module is excluded unless configured with WITH_INDEXED_ODBC
@@ -135,7 +133,6 @@
 
 
 #include "fileio-isam.h"
-#include "fileio-misc.h"
 #include "sql.h"
 #include "sqlext.h"
 
