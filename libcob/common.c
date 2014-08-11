@@ -3843,46 +3843,70 @@ print_runtime_env(void) {
 			no_default, 3);
 
 	printf(_("\n\nFile I/O\n"));
+	var_print("COB_FILE_PATH", runtimeptr->cob_file_path_env, not_set, 2);
+	var_print("cob_file_path", runtimeptr->cob_file_path, not_set, 3);
+
+	var_print("COB_FILEIO_TRACE", runtimeptr->cob_fileio_trace_env, not_set, 2);
+	var_print("cob_fileio_trace", cob_int_to_string(*(runtimeptr->cob_fileio_trace), intstring),
+                        no_default, 3);
+
 	var_print("COB_SYNC", runtimeptr->cob_do_sync_env, not_set, 2);
 	var_print("cob_do_sync",
 			cob_int_to_string(*(runtimeptr->cob_do_sync), intstring),
 			no_default, 3);
-	var_print("COB_LS_USES_CR", runtimeptr->cob_ls_uses_cr_env, not_set, 2);
-	var_print("cob_ls_uses_cr",
-			cob_int_to_string(*(runtimeptr->cob_ls_uses_cr), intstring),
+
+#if defined(WITH_INDEXED_BDB) || defined(WITH_INDEXED_BDB_1)
+	var_print("COB_BDB_CACHE_SIZE", runtimeptr->cob_bdb_cache_size_env, not_set, 2);
+	var_print("cob_bdb_cache_size",
+			cob_int_to_formatted_bytestring(*(runtimeptr->cob_bdb_cache_size), intstring),
+                        no_default, 3);
+
+	var_print("COB_BDB_HOME", runtimeptr->cob_bdb_home_env, not_set, 2);
+	var_print("cob_bdb_home", runtimeptr->cob_bdb_home, not_set, 3);
+#endif
+
+#if defined(WITH_SEQUENTIAL)
+	var_print("COB_LS_NULLS", runtimeptr->cob_ls_nulls_env, not_set, 2);
+	var_print("cob_ls_nulls",
+			cob_int_to_string(*(runtimeptr->cob_ls_nulls), intstring),
 			no_default, 3);
 
-	var_print("COB_SORT_MEMORY", runtimeptr->cob_sort_memory_env, not_set,
-			2);
+	var_print("COB_LS_FIXED", runtimeptr->cob_ls_fixed_env, not_set, 2);
+	var_print("cob_ls_fixed",
+			cob_int_to_string(*(runtimeptr->cob_ls_fixed), intstring),
+			no_default, 3);
+
+	var_print("COB_LS_UNIX_LF", runtimeptr->cob_ls_unix_lf_env, not_set, 2);
+	var_print("cob_ls_unix_lf",
+			cob_int_to_string(*(runtimeptr->cob_ls_unix_lf), intstring),
+			no_default, 3);
+#endif
+
+#if defined(WITH_FILEIO_STATS)
+	var_print("COB_FILEIO_STATS", runtimeptr->cob_fileio_stats_env, not_set, 2);
+	var_print("cob_fileio_stats",
+			cob_int_to_string(*(runtimeptr->cob_fileio_stats), intstring),
+			no_default, 3);
+
+	var_print("COB_FILEIO_STATS_REPORT", runtimeptr->cob_fileio_stats_report_env, not_set, 2);
+	var_print("cob_fileio_stats_report", runtimeptr->cob_fileio_stats_report, not_set, 3);
+
+	var_print("COB_FILEIO_STATS_DIRECTORY", runtimeptr->cob_fileio_stats_directory_env, not_set, 2);
+	var_print("cob_fileio_stats_directory", runtimeptr->cob_fileio_stats_directory, not_set, 3);
+#endif
+
+	var_print("COB_SORT_MEMORY", runtimeptr->cob_sort_memory_env, not_set, 2);
 	var_print("cob_sort_memory",
 			cob_int_to_formatted_bytestring(*(runtimeptr->cob_sort_memory),
 					intstring),
 			cob_int_to_formatted_bytestring(COB_SORT_MEMORY, intstring2), 3);
+/* NYI
 	var_print("COB_SORT_CHUNK", runtimeptr->cob_sort_chunk_env, not_set, 2);
 	var_print("cob_sort_chunk",
 			cob_int_to_formatted_bytestring(*(runtimeptr->cob_sort_chunk),
 					intstring),
 			cob_int_to_formatted_bytestring(COB_SORT_CHUNK, intstring2), 3);
-	var_print("COB_FILE_PATH", runtimeptr->cob_file_path_env, not_set, 2);
-	var_print("cob_file_path", runtimeptr->cob_file_path, not_set, 3);
-	var_print("COB_LS_NULLS", runtimeptr->cob_ls_nulls_env, not_set, 2);
-	var_print("cob_ls_nulls",
-			cob_int_to_string(*(runtimeptr->cob_ls_nulls), intstring),
-			no_default, 3);
-	var_print("COB_LS_FIXED", runtimeptr->cob_ls_fixed_env, not_set, 2);
-	var_print("cob_ls_fixed",
-			cob_int_to_string(*(runtimeptr->cob_ls_fixed), intstring),
-			no_default, 3);
-	var_print("COB_VARSEQ_FORMAT", runtimeptr->cob_varseq_type_env,
-			_("0 (default), [2-byte record-length] [0000] [record-data]"), 2);
-	var_print("cob_varseq_type",
-			cob_int_to_string(*(runtimeptr->cob_varseq_type), intstring),
-			_("0 (default), [2-byte record-length] [0000] [record-data]"), 3);
-	var_print("COB_UNIX_LF", runtimeptr->cob_unix_lf_env, not_set,
-			2);
-	var_print("cob_unix_lf",
-			cob_int_to_string(cobglobptr->cob_unix_lf, intstring),
-			no_default, 3);
+NYI */
 
 	if (runtimeptr->cob_local_edit) {
 		printf(_("\n\nLocale Properties\n"));

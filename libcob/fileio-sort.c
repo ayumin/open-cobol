@@ -262,7 +262,7 @@ static int _sort_retrieve(
  *	TMPDIR TMP TEMP :: name of directory to store temporary work-files [/tmp]	 
  */
 int cob_fileio_sort_initialise() {
-	const char *s;
+	char *s;
 	int n;
 
 	if ((s = getenv("COB_SORT_MEMORY")) != NULL) {
@@ -273,6 +273,9 @@ int cob_fileio_sort_initialise() {
 			sort_memory = n;
 		}
 	}
+        app_env->cob_sort_memory_env = cob_save_env_value(app_env->cob_sort_memory_env, s);
+        app_env->cob_sort_memory = &sort_memory;
+
 	dir_temp = cob_malloc(FILENAME_MAX);
 	cob_fileio_get_dirtmp(dir_temp);
 	dir_temp = realloc(dir_temp, strlen(dir_temp)+1);

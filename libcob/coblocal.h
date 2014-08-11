@@ -196,23 +196,30 @@ typedef struct runtime_env {
 	char* cob_preload_env;
 
 	/* fileio.c */
-	unsigned int* cob_do_sync;
-	char* cob_do_sync_env;
-	unsigned int* cob_ls_uses_cr;
-	char* cob_ls_uses_cr_env;
-	size_t* cob_sort_memory;
-	char* cob_sort_memory_env;
-	size_t* cob_sort_chunk;
-	char* cob_sort_chunk_env;
-	char* cob_file_path;
-	char* cob_file_path_env;
-	unsigned int* cob_ls_nulls;
-	char* cob_ls_nulls_env;
-	unsigned int* cob_ls_fixed;
-	char* cob_ls_fixed_env;
-	size_t* cob_varseq_type;
-	char* cob_varseq_type_env;
-	char* cob_unix_lf_env;
+	char      *cob_file_path;
+	char          *cob_file_path_env;
+	int       *cob_fileio_trace;
+	char          *cob_fileio_trace_env;
+	int       *cob_do_sync;
+	char          *cob_do_sync_env;
+	size_t    *cob_bdb_cache_size;
+	char          *cob_bdb_cache_size_env;
+	char      *cob_bdb_home;
+	char          *cob_bdb_home_env;
+	int       *cob_ls_nulls;
+	char          *cob_ls_nulls_env;
+	int       *cob_ls_fixed;
+	char          *cob_ls_fixed_env;
+	int       *cob_ls_unix_lf;
+	char          *cob_ls_unix_lf_env;
+	int       *cob_fileio_stats;
+	char          *cob_fileio_stats_env;
+	char      *cob_fileio_stats_report;
+	char          *cob_fileio_stats_report_env;
+	char      *cob_fileio_stats_directory;
+	char          *cob_fileio_stats_directory_env;
+	int       *cob_sort_memory;
+	char          *cob_sort_memory_env;
 
 	/* move.c */
 	unsigned int* cob_local_edit;
