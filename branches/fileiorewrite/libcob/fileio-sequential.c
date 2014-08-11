@@ -252,7 +252,15 @@ int cob_fileio_sequential_initialise() {
 
 	tf_ls_nulls = cob_fileio_get_tf("COB_LS_NULLS");
 	tf_ls_fixed = cob_fileio_get_tf("COB_LS_FIXED");
-	tf_ls_binary = cob_fileio_get_tf("COB_UNIX_LF");
+	tf_ls_binary = cob_fileio_get_tf("COB_LS_UNIX_LF");
+
+        app_env->cob_ls_nulls_env = cob_save_env_value(app_env->cob_ls_nulls_env, getenv("COB_LS_NULLS"));
+        app_env->cob_ls_nulls = &tf_ls_nulls;
+        app_env->cob_ls_fixed_env = cob_save_env_value(app_env->cob_ls_fixed_env, getenv("COB_LS_FIXED"));
+        app_env->cob_ls_fixed = &tf_ls_fixed;
+        app_env->cob_ls_unix_lf_env = cob_save_env_value(app_env->cob_ls_unix_lf_env, getenv("COB_LS_UNIX_LF"));
+        app_env->cob_ls_unix_lf = &tf_ls_binary;
+
 
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 1)

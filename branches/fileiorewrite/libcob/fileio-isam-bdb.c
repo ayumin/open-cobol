@@ -470,7 +470,7 @@ static struct file_list_member {
 
 
 static const char          *bdb_home = NULL;            // Base for BDB Environment ($DB_HOME)
-static long                 bdb_cache_size;             // Environment cache size (Mb) (0 to use default from BDB)
+static size_t               bdb_cache_size;             // Environment cache size (Mb) (0 to use default from BDB)
 static DB_ENV              *bdb_env;                    // BDB Environment
 static u_int32_t            uniqid;                     // Unique id assigned by BDB to this process
 static DBC                 *cursor = NULL;              // Global to facilitate abort/clean-up
@@ -709,17 +709,22 @@ int cob_fileio_isam_initialise()
 		fprintf(stderr, "%s: cob_fileio_isam_initialise()\n", me);
 #endif
 
-	_bdb_join_environment(getenv("DB_HOME"));
+	_bdb_join_environment(s = getenv("DB_HOME"));
+        app_env->cob_bdb_home_env = cob_save_env_value(app_env->cob_bdb_home, s);
+        app_env->cob_bdb_home = s;
 	if ((s = getenv("COB_BDB_CACHE_SIZE")) != NULL) {
 		bdb_cache_size = atoi(s);
 		if (bdb_cache_size < 0) bdb_cache_size = 0;  // sanity check: use BDB default
 	} else {
 		bdb_cache_size = ENV_CACHE_SIZE;
 	}
+        app_env->cob_bdb_cache_size_env = cob_save_env_value(app_env->cob_bdb_cache_size_env, s);
+        app_env->cob_bdb_cache_size = &bdb_cache_size;
+
 
 #ifdef  WITH_FILEIO_TRACE
 	if (trace_level > 1) {
-		fprintf(stderr, "%s: bdb_cache_size=%ld\n", me, bdb_cache_size);
+		fprintf(stderr, "%s: bdb_cache_size=%zu\n", me, bdb_cache_size);
 		fprintf(stderr, "%s: exit cob_fileio_isam_initialise() res=%d\n", me, res);
 	}
 #endif
@@ -1533,7 +1538,7 @@ char *cob_fileio_isam_stats_env(const char *indent)
 
 	pb += sprintf(pb, "%s<BDB_env_cache_size var=\"COB_BDB_CACHE_SIZE\" value=\"%s\" >\n"
 	      , indent, getenv("COB_BDB_CACHE_SIZE"));
-	pb += sprintf(pb, "%s\t%ld Mb\n", indent, bdb_cache_size);
+	pb += sprintf(pb, "%s\t%zu Mb\n", indent, bdb_cache_size);
 	pb += sprintf(pb, "%s</BDB_env_cache_size>\n", indent);
 
 	xml = realloc(xml, strlen(xml) + 1);

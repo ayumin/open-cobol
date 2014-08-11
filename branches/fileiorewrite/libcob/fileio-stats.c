@@ -143,13 +143,15 @@ static void _stats_emit_exception(exception_t *exc, const char *indent);
 
 int cob_fileio_stats_initialise(void)
 {
-	char *var, *pb_dir;
+	char *s, *pb_dir;
 
-	var = getenv("COB_STATS"); 
-	tf_stats = 0;
-	if ((var != NULL) && ((*var == 'y') || (*var == 'Y') || (*var == '1')))
-		tf_stats = 1;
+        tf_stats = cob_fileio_get_tf("COB_STATS");
+        env->cob_fileio_stats_env = cob_save_env_value(env->cob_fileio_stats_env, getenv("COB_STATS");
+        env->cob_fileio_stats = &tf_stats;
+
 	fid_stats_consolidated = getenv("COB_STATS_REPORT");
+        env->cob_fileio_stats_report_env = cob_save_env_value(env->cob_fileio_stats_report_env, fid_stats_consolidated);
+        env->cob_fileio_stats_report = fid_stats_consolidated;
 	if (fid_stats_consolidated != NULL)
 		tf_stats = 1;
 	if (tf_stats == 0)
@@ -164,6 +166,8 @@ int cob_fileio_stats_initialise(void)
 		strcpy(dir_stats, pb_dir);
 	}
 	dir_stats = realloc(dir_stats, strlen(dir_stats)+1);
+        env->cob_fileio_stats_directory_env = cob_save_env_value(env->cob_fileio_stats_directory_env, dir_stats);
+        env->cob_fileio_stats_directory = dir_stats;
 
 #ifdef _WIN32
 	GetTempFileName (dir_stats, "cob_stat", 0, fid_stats);
@@ -584,7 +588,7 @@ static void _stats_emit_environment(void)
 	fprintf(f_stats, "\t\t<cwd> %s </cwd>\n", cwd);
 
 	var = getenv("COB_LINE_TRACE");
-    if ((var != NULL) && (*var == 'Y' || *var == 'y')) 
+	if ((var != NULL) && (*var == 'Y' || *var == 'y')) 
 		val = "yes";
 	else
 		val = "no";

@@ -319,7 +319,7 @@ static const struct cob_fileio_funcs *fileio_funcs[COB_ORG_MAX] = {
  *	initialisation.
  *
  *	Environmental variables referenced [default]:
- *	COB_FILEIO_TRACE :: 0..no trace    n..trace detail increases with n
+ *	COB_FILEIO_TRACE :: 0..no trace    n..trace detail increases with n [0]
  *	COB_SYNC      :: Y..logical flush  P..physical flush [no flush/sync]
  *	COB_FILE_PATH :: default root directory when forming external file-names [NULL] 
  */
@@ -341,6 +341,8 @@ void cob_init_fileio(
 			}
 		}
 	}
+	env->cob_fileio_trace_env = cob_save_env_value(env->cob_fileio_trace_env, s);
+	env->cob_fileio_trace = &trace_level;
 	if (trace_level > 0)
 		fprintf(stderr, "\n%s: cob_init_fileio() trace-level=%d\n", me, trace_level);
 #endif
@@ -363,6 +365,8 @@ void cob_init_fileio(
 			synchronise = COB_SYNC_PHYSICAL;
 		}
 	}
+	env->cob_do_sync_env = cob_save_env_value(env->cob_do_sync_env, s);
+	env->cob_do_sync = &synchronise;
 	cob_file_path = NULL;
 	if ((s = getenv("COB_FILE_PATH")) != NULL) {
 		// check not empty string
@@ -373,6 +377,8 @@ void cob_init_fileio(
 			}
 		}
 	}
+	env->cob_file_path_env = cob_save_env_value(env->cob_file_path_env, s);
+	env->cob_file_path = cob_file_path;
 	res = 0;
 	if (0 != (res = cob_fileio_sharing_initialise())) 
 		fprintf(stderr, "libcob: fileio: !!! failed to initialise sharing sub-system\n");
@@ -492,6 +498,7 @@ void cob_exit_fileio(void)
 #endif
 
 }
+
 
 
 
