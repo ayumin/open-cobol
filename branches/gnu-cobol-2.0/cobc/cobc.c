@@ -3461,11 +3461,13 @@ process_assemble (struct filename *fn)
 	return process (cobc_buffer);
 #else
 	if (cb_compile_level == CB_LEVEL_MODULE ||
-	    cb_compile_level == CB_LEVEL_LIBRARY) {
+	    cb_compile_level == CB_LEVEL_LIBRARY ||
+	    cb_compile_level == CB_LEVEL_ASSEMBLE) {
 		sprintf (cobc_buffer, "%s -c %s %s %s -o \"%s\" \"%s\"",
 			 cobc_cc, cobc_cflags, cobc_include,
 			 COB_PIC_FLAGS, fn->object, fn->translate);
 	} else {
+		// Only for CB_LEVEL_EXECUTABLE
 		sprintf (cobc_buffer, "%s -c %s %s -o \"%s\" \"%s\"",
 			 cobc_cc, cobc_cflags, cobc_include,
 			 fn->object, fn->translate);
