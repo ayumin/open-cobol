@@ -282,7 +282,7 @@ static void	scan_options (const char *, const unsigned int);
 			cb_source_file = cobc_parse_strdup (p2);
 			cb_source_line = (int)strtol (yytext + 5, NULL, 10) - 1;
 		}
-		free (p2);
+		cobc_free (p2);
 	}
 }
 
@@ -1025,17 +1025,17 @@ H\"[^\"\n]*\" {
 	/* At EOF - Clear variables */
 	for (p78 = lev78ptr; p78; ) {
 		p782 = p78->next;
-		free (p78);
+		cobc_free (p78);
 		p78 = p782;
 	}
 	for (p78 = globlev78ptr; p78; ) {
 		p782 = p78->next;
-		free (p78);
+		cobc_free (p78);
 		p78 = p782;
 	}
 	for (p78 = const78ptr; p78; ) {
 		p782 = p78->next;
-		free (p78);
+		cobc_free (p78);
 		p78 = p782;
 	}
 	top78ptr = NULL;
@@ -1538,14 +1538,14 @@ scan_define_options (const char *text)
 	/* Variable name */
 	s = strtok (NULL, " \n");
 	if (!s) {
-		free (p);
+		cobc_free (p);
 		return;
 	}
 
 	/* Check for already defined constant */
 	for (p78 = top78ptr; p78; p78 = p78->globnext) {
 		if (strcasecmp (s, p78->fld78->name) == 0) {
-			free (p);
+			cobc_free (p);
 			return;
 		}
 	}
@@ -1611,8 +1611,8 @@ scan_define_options (const char *text)
 	cb_add_const_var (var, x);
 
 freevar:
-	free (p);
-	free (var);
+	cobc_free (p);
+	cobc_free (var);
 }
 
 /* Global functions */
@@ -1622,15 +1622,15 @@ ylex_clear_all (void)
 {
 	/* Clear buffers after parsing all source elements */
 	if (picbuff2) {
-		free (picbuff2);
+		cobc_free (picbuff2);
 		picbuff2 = NULL;
 	}
 	if (picbuff1) {
-		free (picbuff1);
+		cobc_free (picbuff1);
 		picbuff1 = NULL;
 	}
 	if (plexbuff) {
-		free (plexbuff);
+		cobc_free (plexbuff);
 		plexbuff = NULL;
 	}
 	plexsize = 0;
@@ -1661,7 +1661,7 @@ cb_reset_78 (void)
 	/* Remove constant (78 level) items for current program */
 	for (p78 = lev78ptr; p78; ) {
 		p782 = p78->next;
-		free (p78);
+		cobc_free (p78);
 		p78 = p782;
 	}
 	lev78ptr = NULL;
@@ -1684,7 +1684,7 @@ cb_reset_global_78 (void)
 	/* Remove constant (78 level) items for top program */
 	for (p78 = globlev78ptr; p78; ) {
 		p782 = p78->next;
-		free (p78);
+		cobc_free (p78);
 		p78 = p782;
 	}
 	globlev78ptr = NULL;

@@ -1,4 +1,11 @@
 
+2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* common.c, common.h: added cob_free() function (as suggested by 
+	  Sergey Kashyrin)
+	* changed all free() to cob_free()
+	* numeric.c: use free function (passed by mp_get_memory_functions) (Bug #91)
+
 2014-08-05  Louis Krupp <lkrupp@users.sf.net>
 
 	* screenio.c : compilation fails if configured without curses (bug #90)

@@ -675,8 +675,8 @@ DEFNUM_LITERAL	[+-]?[0-9]*[\.]*[0-9]+
 			cb_error (_("Dangling IF/ELSE directive"));
 		}
 		plex_nest_depth = 0;
-		free (p->dname);
-		free (p);
+		cobc_free (p->dname);
+		cobc_free (p);
 		listing_line = 0;
 		requires_listing_line = 1;
 		requires_new_line = 0;
@@ -708,8 +708,8 @@ DEFNUM_LITERAL	[+-]?[0-9]*[\.]*[0-9]+
 	cb_source_format = p->source_format;
 
 	copy_stack = p->next;
-	free (p->dname);
-	free (p);
+	cobc_free (p->dname);
+	cobc_free (p);
 }
 
 %%
@@ -888,11 +888,11 @@ void
 plex_clear_all (void)
 {
 	if (plexbuff1) {
-		free (plexbuff1);
+		cobc_free (plexbuff1);
 		plexbuff1 = NULL;
 	}
 	if (plexbuff2) {
-		free (plexbuff2);
+		cobc_free (plexbuff2);
 		plexbuff2 = NULL;
 	}
 }
@@ -1489,7 +1489,7 @@ ppecho (const char *text, const cob_u32_t alt_space, const int textlen)
 					temp_ptr = cobc_strdup (save_queue->text);
 					*(temp_ptr + size2) = 0;
 					check_listing (temp_ptr, 0);
-					free (temp_ptr);
+					cobc_free (temp_ptr);
 				}
 			}
 			for (lno = r->new_text; lno; lno = lno->next) {

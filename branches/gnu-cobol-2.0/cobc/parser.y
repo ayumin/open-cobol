@@ -534,7 +534,7 @@ clear_initial_values (void)
 	report_instance = NULL;
 	next_label_list = NULL;
 	if (cobc_glob_line) {
-		free (cobc_glob_line);
+		cobc_free (cobc_glob_line);
 		cobc_glob_line = NULL;
 	}
 }

@@ -1057,7 +1057,7 @@ cob_move_edited_to_display (cob_field *f1, cob_field *f2)
 	store_common_region (f2, buff, (size_t)(p - buff), scale);
 
 	COB_PUT_SIGN (f2, sign);
-	free (buff);
+	cob_free (buff);
 }
 
 static void
@@ -1118,7 +1118,7 @@ indirect_move (void (*func) (cob_field *src, cob_field *dst),
 	temp.attr = &attr;
 	func (src, &temp);
 	cob_move (&temp, dst);
-	free (temp.data);
+	cob_free (temp.data);
 }
 
 static void
@@ -1162,7 +1162,7 @@ cob_move_all (cob_field *src, cob_field *dst)
 	}
 
 	cob_move (&temp, dst);
-	free (p);
+	cob_free (p);
 }
 
 void

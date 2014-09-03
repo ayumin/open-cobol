@@ -123,7 +123,7 @@ alloc_figurative (const cob_field *f1, const cob_field *f2)
 	size2 = f2->size;
 	if (size2 > figurative_size) {
 		if (figurative_ptr) {
-			free (figurative_ptr);
+			cob_free (figurative_ptr);
 		}
 		figurative_ptr = cob_malloc (size2);
 		figurative_size = size2;
@@ -248,7 +248,7 @@ cob_inspect_init (cob_field *var, const cob_u32_t replacing)
 	digcount = inspect_size * sizeof (int);
 	if (digcount > inspect_mark_size) {
 		if (inspect_mark) {
-			free (inspect_mark);
+			cob_free (inspect_mark);
 		}
 		inspect_mark = cob_fast_malloc (digcount);
 		inspect_mark_size = digcount;
@@ -499,7 +499,7 @@ cob_unstring_init (cob_field *src, cob_field *ptr, const size_t num_dlm)
 	unstring_ndlms = 0;
 	cob_set_exception (0);
 	if (num_dlm > dlm_list_size) {
-		free (dlm_list);
+		cob_free (dlm_list);
 		dlm_list = cob_malloc (num_dlm * sizeof(struct dlm_struct));
 		dlm_list_size = num_dlm;
 	}
@@ -634,15 +634,15 @@ void
 cob_exit_strings (void)
 {
 	if (inspect_mark) {
-		free (inspect_mark);
+		cob_free (inspect_mark);
 		inspect_mark = NULL;
 	}
 	if (dlm_list) {
-		free (dlm_list);
+		cob_free (dlm_list);
 		dlm_list = NULL;
 	}
 	if (figurative_ptr) {
-		free (figurative_ptr);
+		cob_free (figurative_ptr);
 		figurative_ptr = NULL;
 	}
 	figurative_size = 0;

@@ -466,33 +466,33 @@ cobc_free_mem (void)
 	struct cobc_mem_struct	*repsl;
 
 	if (save_temps_dir) {
-		free (save_temps_dir);
+		cobc_free (save_temps_dir);
 		save_temps_dir = NULL;
 	}
 	if (cobc_list_dir) {
-		free (cobc_list_dir);
+		cobc_free (cobc_list_dir);
 		cobc_list_dir = NULL;
 	}
 	if (cobc_list_file) {
-		free (cobc_list_file);
+		cobc_free (cobc_list_file);
 		cobc_list_file = NULL;
 	}
 	for (reps = cobc_plexmem_base; reps; ) {
 		repsl = reps;
 		reps = reps->next;
-		free (repsl);
+		cobc_free (repsl);
 	}
 	cobc_plexmem_base = NULL;
 	for (reps = cobc_parsemem_base; reps; ) {
 		repsl = reps;
 		reps = reps->next;
-		free (repsl);
+		cobc_free (repsl);
 	}
 	cobc_parsemem_base = NULL;
 	for (reps = cobc_mainmem_base; reps; ) {
 		repsl = reps;
 		reps = reps->next;
-		free (repsl);
+		cobc_free (repsl);
 	}
 	cobc_mainmem_base = NULL;
 }
@@ -651,6 +651,18 @@ cobc_malloc (const size_t size)
 	return mptr;
 }
 
+void
+cobc_free(void * mptr)
+{
+#ifdef	COB_TREE_DEBUG
+	if (unlikely(!dupstr)) {
+		cobc_abort_pr (_("Call to cobc_strdup with NULL pointer"));
+		cobc_abort_terminate ();
+	}
+#endif
+	free(mptr);
+}
+
 void *
 cobc_strdup (const char *dupstr)
 {
@@ -755,7 +767,7 @@ cobc_main_realloc (void *prevptr, const size_t size)
 		cobc_mainmem_base = m;
 	}
 	memcpy (m->memptr, curr->memptr, curr->memlen);
-	free (curr);
+	cobc_free (curr);
 	
 	return m->memptr;
 }
@@ -782,7 +794,7 @@ cobc_main_free (void *prevptr)
 		/* At mainmem_base */
 		cobc_mainmem_base = curr->next;
 	}
-	free (curr);
+	cobc_free (curr);
 }
 
 /* Memory allocate/strdup/reallocate/free for parser */
@@ -857,7 +869,7 @@ cobc_parse_realloc (void *prevptr, const size_t size)
 		cobc_parsemem_base = m;
 	}
 	memcpy (m->memptr, curr->memptr, curr->memlen);
-	free (curr);
+	cobc_free (curr);
 	
 	return m->memptr;
 }
@@ -884,7 +896,7 @@ cobc_parse_free (void *prevptr)
 		/* At parsemem_base */
 		cobc_parsemem_base = curr->next;
 	}
-	free (curr);
+	cobc_free (curr);
 }
 
 /* Memory allocate/strdup/reallocate/free for preprocessor */
@@ -1232,7 +1244,7 @@ cb_define_list_add (struct cb_define_struct *list, const char *text)
 	for (l = list; l; l = l->next) {
 		if (!strcasecmp (s, l->name)) {
 			cobc_abort_pr (_("Duplicate define '%s' - Ignoring"), s);
-			free (x);
+			cobc_free (x);
 			return list;
 		}
 	}
@@ -1243,11 +1255,11 @@ cb_define_list_add (struct cb_define_struct *list, const char *text)
 	p->deftype = PLEX_DEF_NONE;
 	s = strtok (NULL, "");
 	if (cobc_set_value (p, s)) {
-		free (x);
+		cobc_free (x);
 		return NULL;
 	}
 
-	free (x);
+	cobc_free (x);
 
 	if (!list) {
 		p->last = p;
@@ -1556,7 +1568,7 @@ cobc_cmd_print (const char *cmd)
 		fprintf (stderr, "%s%s", (n ? " " : ""), token);
 		n += toklen;
 	}
-	free (p);
+	cobc_free (p);
 	putc ('\n', stderr);
 	fflush (stderr);
 }
@@ -1597,7 +1609,7 @@ cobc_var_print (const char *msg, const char *val, const unsigned int env)
 		n += toklen;
 	}
 	putchar ('\n');
-	free (p);
+	cobc_free (p);
 }
 
 static void
@@ -1848,7 +1860,7 @@ cobc_deciph_funcs (const char *opt)
 		CB_TEXT_LIST_ADD (cb_intrinsic_list, q);
 		q = strtok (NULL, ",");
 	}
-	free (p);
+	cobc_free (p);
 }
 
 static int
@@ -2428,7 +2440,7 @@ process_env_copy_path (const char *p)
 		token = strtok (NULL, PATHSEPS);
 	}
 
-	free (value);
+	cobc_free (value);
 	return;
 }
 
@@ -2881,7 +2893,7 @@ process (char *cmd)
 			fflush (stderr);
 		}
 		if (comp_only || ret != 0) {
-			free (buffptr);
+			cobc_free (buffptr);
 			return ret;
 		}
 	}
@@ -2935,7 +2947,7 @@ process (char *cmd)
 		fprintf (stderr, "\t%d\n", ret);
 		fflush (stderr);
 	}
-	free (buffptr);
+	cobc_free (buffptr);
 	return ret;
 }
 
@@ -2964,9 +2976,9 @@ process (const char *cmd, struct filename *fn)
 	if(output_name) output_name_temp = file_basename(output_name);
 	else output_name_temp = (char *) fn->demangle_source;
 
-	search_pattern = (char*) cob_malloc(fn->translate_len - i + 1);
+	search_pattern = (char*) cobc_malloc(fn->translate_len - i + 1);
 	snprintf(search_pattern, fn->translate_len - i, "%s#", fn->translate + i + 1); 
-	search_pattern2 = (char*) cob_malloc(2 * (strlen(output_name_temp) + 4) + 3);
+	search_pattern2 = (char*) cobc_malloc(2 * (strlen(output_name_temp) + 4) + 3);
 	sprintf(search_pattern2, "%s.lib#%s.exp#", output_name_temp, output_name_temp);
 
 	/* Open pipe to catch output of cl.exe */
@@ -2975,7 +2987,7 @@ process (const char *cmd, struct filename *fn)
 	if(!pipe) return !!-1; /* checkme */
 	else {
 		/* prepare buffer and read from pipe */
-		read_buffer = (char*) cob_malloc(COB_FILE_BUFF);
+		read_buffer = (char*) cobc_malloc(COB_FILE_BUFF);
 		line_start = read_buffer;
 		fgets(read_buffer, COB_FILE_BUFF - 1, pipe);
 		
@@ -3005,10 +3017,10 @@ process (const char *cmd, struct filename *fn)
 			fflush(stdout);
 		}
 
-		free(read_buffer);
+		cobc_free(read_buffer);
 	}
-	free(search_pattern);
-	free(search_pattern2);
+	cobc_free(search_pattern);
+	cobc_free(search_pattern2);
 
 	/* close pipe and get return code of cl.exe */
 	return !!_pclose(pipe);
@@ -3048,7 +3060,7 @@ process (const char *cmd)
 	ret = system (buffptr);
 
 	if (unlikely(buffptr != cmd)) {
-		free (buffptr);
+		cobc_free (buffptr);
 	}
 
 #ifdef	WIFSIGNALED
@@ -3152,7 +3164,7 @@ preprocess (struct filename *fn)
 	for (m = cobc_plexmem_base; m; ) {
 		ml = m;
 		m = m->next;
-		free (ml);
+		cobc_free (ml);
 	}
 	cobc_plexmem_base = NULL;
 
@@ -4320,7 +4332,7 @@ main (int argc, char **argv)
 			for (mptr = cobc_parsemem_base; mptr; ) {
 				mptrt = mptr;
 				mptr = mptr->next;
-				free (mptrt);
+				cobc_free (mptrt);
 			}
 			cobc_parsemem_base = NULL;
 		}

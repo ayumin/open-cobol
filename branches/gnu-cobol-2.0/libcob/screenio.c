@@ -1664,7 +1664,7 @@ cob_exit_screen (void)
 		_nc_freeall ();
 #endif
 		if (cob_base_inp) {
-			free (cob_base_inp);
+			cob_free (cob_base_inp);
 			cob_base_inp = NULL;
 		}
 	}

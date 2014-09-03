@@ -417,7 +417,7 @@ make_field_entry (cob_field *f)
 	curr_field = &calc_temp->calc_field;
 	if (f->size > calc_temp->calc_size) {
 		if (curr_field->data) {
-			free (curr_field->data);
+			cob_free (curr_field->data);
 		}
 		calc_temp->calc_size = f->size + 1;
 		s = cob_malloc (f->size + 1U);
@@ -1029,7 +1029,7 @@ cob_decimal_set_mpf (cob_decimal *d, const mpf_t src)
 		++p;
 	}
 	len = (cob_sli_t)strlen (p);
-	free (q);
+	cob_free (q);
 	len -= scale;
 	if (len >= 0) {
 		d->scale = len;
@@ -1964,7 +1964,7 @@ cob_intr_concatenate (const int offset, const int length,
 	if (unlikely(offset > 0)) {
 		calc_ref_mod (curr_field, offset, length);
 	}
-	free (f);
+	cob_free (f);
 	return curr_field;
 }
 
@@ -2060,8 +2060,8 @@ cob_intr_substitute (const int offset, const int length,
 	if (unlikely(offset > 0)) {
 		calc_ref_mod (curr_field, offset, length);
 	}
-	free (f1);
-	free (f2);
+	cob_free (f1);
+	cob_free (f2);
 	return curr_field;
 }
 
@@ -2161,8 +2161,8 @@ cob_intr_substitute_case (const int offset, const int length,
 	if (unlikely(offset > 0)) {
 		calc_ref_mod (curr_field, offset, length);
 	}
-	free (f1);
-	free (f2);
+	cob_free (f1);
+	cob_free (f2);
 	return curr_field;
 }
 
@@ -2271,7 +2271,7 @@ cob_intr_exception_location (void)
 	field.size = strlen (buff);
 	make_field_entry (&field);
 	memcpy (curr_field->data, buff, field.size);
-	free (buff);
+	cob_free (buff);
 	return curr_field;
 }
 
@@ -3163,7 +3163,7 @@ cob_intr_numval (cob_field *srcfield)
 		final_buff[0] = '0';
 	}
 	mpz_set_str (d1.value, (char *)final_buff, 10);
-	free (final_buff);
+	cob_free (final_buff);
 	if (sign && mpz_sgn (d1.value)) {
 		mpz_neg (d1.value, d1.value);
 	}
@@ -3257,7 +3257,7 @@ cob_intr_numval_c (cob_field *srcfield, cob_field *currency)
 		final_buff[0] = '0';
 	}
 	mpz_set_str (d1.value, (char *)final_buff, 10);
-	free (final_buff);
+	cob_free (final_buff);
 	if (sign && mpz_sgn (d1.value)) {
 		mpz_neg (d1.value, d1.value);
 	}
@@ -3346,7 +3346,7 @@ cob_intr_numval_f (cob_field *srcfield)
 	}
 
 	mpz_set_str (d1.value, (char *)final_buff, 10);
-	free (final_buff);
+	cob_free (final_buff);
 	if (!mpz_sgn (d1.value)) {
 		/* Value is zero ; sign and exponent irrelevant */
 		d1.scale = 0;
@@ -3635,7 +3635,7 @@ cob_intr_median (const int params, ...)
 		cob_alloc_field (&d1);
 		(void)cob_decimal_get_field (&d1, curr_field, 0);
 	}
-	free (field_alloc);
+	cob_free (field_alloc);
 	return curr_field;
 }
 
@@ -4981,13 +4981,13 @@ cob_intr_locale_compare (const int params, ...)
 	} else {
 		curr_field->data[0] = '=';
 	}
-	free (p1);
-	free (p2);
+	cob_free (p1);
+	cob_free (p2);
 
 #ifdef	HAVE_SETLOCALE
 	if (deflocale) {
 		(void) setlocale (LC_ALL, cobglobptr->cob_locale);
-		free (deflocale);
+		cob_free (deflocale);
 	}
 #endif
 
@@ -5160,10 +5160,10 @@ cob_exit_intrinsic (void)
 	calc_temp = calc_base;
 	for (i = 0; i < COB_DEPTH_LEVEL; ++i, ++calc_temp) {
 		if (calc_temp->calc_field.data) {
-			free (calc_temp->calc_field.data);
+			cob_free (calc_temp->calc_field.data);
 		}
 	}
-	free (calc_base);
+	cob_free (calc_base);
 }
 
 void
