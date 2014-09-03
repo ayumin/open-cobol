@@ -1,5 +1,8 @@
 2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
 
+	* cobc.c, cobc.h: added cobc_free() function
+	* change all free() to cobc_free()
+	* cobc.c (process) [_MSC_VER]: cob_malloc() to cobc_malloc() 
 	* cobc.c: use COB_PIC_FLAGS for CB_LEVEL_ASSEMBLE
 
 2014-07-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>

@@ -769,6 +769,56 @@ AT_CHECK([./caller], [0], [P1P2P3P4])
 
 AT_CLEANUP
 
+AT_SETUP([CALL / GOBACK with LOCAL-STORAGE])
+AT_KEYWORDS([extensions])
+
+# Testcase introduced when Bug #91 occured.
+# Will fail if memory is freed which was 
+# allocated by mpir/gmp.
+AT_DATA([prog_a.cob], [
+		IDENTIFICATION DIVISION. 
+		PROGRAM-ID. prog_a.
+		DATA DIVISION.
+		WORKING-STORAGE SECTION.
+		77  WS-STRINGA   PIC X(10).
+		PROCEDURE DIVISION.       
+		    MOVE  "hi there"   TO WS-STRINGA
+		    CALL  "prog_b"  USING WS-STRINGA      
+		    DISPLAY "back in prog_a"  
+		    GOBACK.
+])
+
+AT_DATA([prog_b.cob], [
+		IDENTIFICATION DIVISION. 
+		PROGRAM-ID. prog_b.
+		DATA DIVISION.
+		WORKING-STORAGE SECTION. 
+		77  WS-STRINGB   PIC X(10).
+		77  WS-CALLSB    PIC 9(03).
+		LOCAL-STORAGE SECTION.
+		77  LS-STRING  PIC X(10). 
+		LINKAGE SECTION.
+		77  LK-STRING  PIC X(10). 
+		
+		PROCEDURE DIVISION  USING  LK-STRING. 
+		    DISPLAY "entered prog_b"           
+		    ADD   1  TO  WS-CALLSB 
+		    MOVE  LK-STRING TO WS-STRINGB     
+		    MOVE  LK-STRING TO LS-STRING    
+		    DISPLAY "exiting prog_b"      
+		    GOBACK.
+])
+
+AT_CHECK([$COMPILE prog_a.cob], [0], [], [])
+AT_CHECK([$COMPILE_MODULE prog_b.cob], [0], [], [])
+AT_CHECK([./prog_a], [0], [entered prog_b
+exiting prog_b
+back in prog_a
+], [])
+
+AT_CLEANUP
+
+
 AT_SETUP([CALL BY VALUE alphanumeric item])
 AT_KEYWORDS([extensions])
 

@@ -6,7 +6,7 @@
 
    The GNU Cobol runtime library is free software: you can redistribute it
    and/or modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation, either version 3 of the
+   as published by the Freecob_freetware Foundation, either version 3 of the
    License, or (at your option) any later version.
 
    GNU Cobol is distributed in the hope that it will be useful,
@@ -524,7 +524,7 @@ cob_chk_file_env (const char *src)
 		}
 	}
 	if (unlikely(q)) {
-		free (q);
+		cob_free (q);
 	}
 	return p;
 }
@@ -633,7 +633,7 @@ cob_chk_file_mapping (void)
 		}
 	}
 	strcpy (file_open_name, file_open_buff);
-	free (saveptr);
+	cob_free (saveptr);
 }
 
 static void
@@ -2037,15 +2037,15 @@ freefh (struct indexfile *fh)
 		return;
 	}
 	if (fh->filename) {
-		free ((void *)fh->filename);
+		cob_free ((void *)fh->filename);
 	}
 	if (fh->savekey) {
-		free ((void *)fh->savekey);
+		cob_free ((void *)fh->savekey);
 	}
 	if (fh->recwrk) {
-		free ((void *)fh->recwrk);
+		cob_free ((void *)fh->recwrk);
 	}
-	free ((void *)fh);
+	cob_free ((void *)fh);
 }
 
 /* Restore ISAM file positioning */
@@ -2172,7 +2172,7 @@ join_environment (void)
 #endif
 #endif
 	bdb_env->set_cachesize (bdb_env, 0, 2*1024*1024, 0);
-	bdb_env->set_alloc (bdb_env, cob_malloc, realloc, free);
+	bdb_env->set_alloc (bdb_env, cob_malloc, realloc, cob_free);
 	flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB;
 	ret = bdb_env->open (bdb_env, bdb_home, flags, 0);
 	if (ret) {
@@ -2199,7 +2199,7 @@ lock_record (cob_file *f, const char *key, const unsigned int keylen)
 	p = f->file;
 	len = keylen + p->filenamelen + 1;
 	if (len > rlo_size) {
-		free (record_lock_object);
+		cob_free (record_lock_object);
 		record_lock_object = cob_malloc (len);
 		rlo_size = len;
 	}
@@ -2229,7 +2229,7 @@ test_record_lock (cob_file *f, const char *key, const unsigned int keylen)
 	p = f->file;
 	len = keylen + p->filenamelen + 1;
 	if (len > rlo_size) {
-		free (record_lock_object);
+		cob_free (record_lock_object);
 		record_lock_object = cob_malloc (len);
 		rlo_size = len;
 	}
@@ -3059,7 +3059,7 @@ dobuild:
 		ret = bdb_env->lock_get (bdb_env, bdb_lock_id, DB_LOCK_NOWAIT,
 					&p->key, lock_mode, &p->bdb_file_lock);
 		if (ret) {
-			free (p);
+			cob_free (p);
 			if (ret == DB_LOCK_NOTGRANTED) {
 				return COB_STATUS_61_FILE_SHARING;
 			} else {
@@ -3171,14 +3171,14 @@ dobuild:
 			if (handle_created) {
 				DB_CLOSE (p->db[i]);
 			}
-			free (p->db);
-			free (p->last_readkey);
-			free (p->last_dupno);
-			free (p->cursor);
+			cob_free (p->db);
+			cob_free (p->last_readkey);
+			cob_free (p->last_dupno);
+			cob_free (p->cursor);
 			if (bdb_env != NULL) {
 				bdb_env->lock_put (bdb_env, &p->bdb_file_lock);
 			}
-			free (p);
+			cob_free (p);
 			switch (ret) {
 			case DB_LOCK_NOTGRANTED:
 				return COB_STATUS_61_FILE_SHARING;
@@ -3291,26 +3291,26 @@ indexed_close (cob_file *f, const int opt)
 		if (p->db[i]) {
 			DB_CLOSE (p->db[i]);
 		}
-		free (p->last_readkey[i]);
-		free (p->last_readkey[f->nkeys + i]);
+		cob_free (p->last_readkey[i]);
+		cob_free (p->last_readkey[f->nkeys + i]);
 	}
 
 	if (p->last_key) {
-		free (p->last_key);
+		cob_free (p->last_key);
 	}
-	free (p->temp_key);
-	free (p->db);
-	free (p->last_readkey);
-	free (p->last_dupno);
-	free (p->rewrite_sec_key);
-	free (p->filename);
-	free (p->cursor);
+	cob_free (p->temp_key);
+	cob_free (p->db);
+	cob_free (p->last_readkey);
+	cob_free (p->last_dupno);
+	cob_free (p->rewrite_sec_key);
+	cob_free (p->filename);
+	cob_free (p->cursor);
 	if (bdb_env != NULL) {
 		unlock_record (f);
 		bdb_env->lock_put (bdb_env, &p->bdb_file_lock);
 		bdb_env->lock_id_free (bdb_env, p->bdb_lock_id);
 	}
-	free (p);
+	cob_free (p);
 
 	return COB_STATUS_00_SUCCESS;
 
@@ -4544,7 +4544,7 @@ cob_close (cob_file *f, cob_field *fnstatus, const int opt, const int remfil)
 				} else {
 					m->next = l->next;
 				}
-				free (l);
+				cob_free (l);
 				break;
 			}
 			m = l;
@@ -5032,11 +5032,11 @@ open_cbl_file (unsigned char *file_name, unsigned char *file_access,
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	fd = open (fn, flag, 0660);
 	if (fd < 0) {
-		free (fn);
+		cob_free (fn);
 		memset (file_handle, -1, (size_t)4);
 		return 35;
 	}
-	free (fn);
+	cob_free (fn);
 	memcpy (file_handle, &fd, (size_t)4);
 	return 0;
 }
@@ -5195,7 +5195,7 @@ cob_sys_delete_file (unsigned char *file_name)
 	}
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	ret = unlink (fn);
-	free (fn);
+	cob_free (fn);
 	if (ret) {
 		return 128;
 	}
@@ -5227,20 +5227,20 @@ cob_sys_copy_file (unsigned char *fname1, unsigned char *fname2)
 	flag |= O_RDONLY;
 	fd1 = open (fn1, flag, 0);
 	if (fd1 < 0) {
-		free (fn1);
+		cob_free (fn1);
 		return -1;
 	}
-	free (fn1);
+	cob_free (fn1);
 	fn2 = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[1]);
 	flag &= ~O_RDONLY;
 	flag |= O_CREAT | O_TRUNC | O_WRONLY;
 	fd2 = open (fn2, flag, 0660);
 	if (fd2 < 0) {
 		close (fd1);
-		free (fn2);
+		cob_free (fn2);
 		return -1;
 	}
-	free (fn2);
+	cob_free (fn2);
 
 	ret = 0;
 	while ((i = read (fd1, file_open_buff, COB_FILE_BUFF)) > 0) {
@@ -5281,10 +5281,10 @@ cob_sys_check_file_exist (unsigned char *file_name, unsigned char *file_info)
 
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	if (stat (fn, &st) < 0) {
-		free (fn);
+		cob_free (fn);
 		return 35;
 	}
-	free (fn);
+	cob_free (fn);
 	sz = (cob_s64_t)st.st_size;
 	tm = localtime (&st.st_mtime);
 	d = (short)tm->tm_mday;
@@ -5335,8 +5335,8 @@ cob_sys_rename_file (unsigned char *fname1, unsigned char *fname2)
 	fn1 = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	fn2 = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[1]);
 	ret = rename (fn1, fn2);
-	free (fn1);
-	free (fn2);
+	cob_free (fn1);
+	cob_free (fn2);
 	if (ret) {
 		return 128;
 	}
@@ -5370,7 +5370,7 @@ cob_sys_get_current_dir (const int flags, const int dir_length,
 		has_space = 2;
 	}
 	if (dir_size + has_space > dir_length) {
-		free (dirname);
+		cob_free (dirname);
 		return 128;
 	}
 	if (has_space) {
@@ -5380,7 +5380,7 @@ cob_sys_get_current_dir (const int flags, const int dir_length,
 	} else {
 		memcpy (dir, dirname, (size_t)dir_size);
 	}
-	free (dirname);
+	cob_free (dirname);
 	return 0;
 }
 
@@ -5403,7 +5403,7 @@ cob_sys_create_dir (unsigned char *dir)
 #else
 	ret = mkdir (fn, 0770);
 #endif
-	free (fn);
+	cob_free (fn);
 	if (ret) {
 		return 128;
 	}
@@ -5425,7 +5425,7 @@ cob_sys_change_dir (unsigned char *dir)
 	}
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	ret = chdir (fn);
-	free (fn);
+	cob_free (fn);
 	if (ret) {
 		return 128;
 	}
@@ -5447,7 +5447,7 @@ cob_sys_delete_dir (unsigned char *dir)
 	}
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	ret = rmdir (fn);
-	free (fn);
+	cob_free (fn);
 	if (ret) {
 		return 128;
 	}
@@ -5535,10 +5535,10 @@ cob_sys_file_info (unsigned char *file_name, unsigned char *file_info)
 
 	fn = cob_str_from_fld (COB_MODULE_PTR->cob_procedure_params[0]);
 	if (stat (fn, &st) < 0) {
-		free (fn);
+		cob_free (fn);
 		return 35;
 	}
-	free (fn);
+	cob_free (fn);
 	sz = (cob_u64_t)st.st_size;
 	tm = localtime (&st.st_mtime);
 	d = (short)tm->tm_mday;
@@ -5671,8 +5671,8 @@ cob_free_list (struct cobsort *hp)
 	for (; s1;) {
 		s2 = s1;
 		s1 = s1->next;
-		free (s2->mem_ptr);
-		free (s2);
+		cob_free (s2->mem_ptr);
+		cob_free (s2);
 	}
 }
 
@@ -5733,7 +5733,7 @@ cob_srttmpfile (void)
 	fd = open (filename, O_CREAT | O_TRUNC | O_RDWR | O_BINARY, 0660);
 #endif
 	if (fd < 0) {
-		free (filename);
+		cob_free (filename);
 		return NULL;
 	}
 	(void)unlink (filename);
@@ -5741,7 +5741,7 @@ cob_srttmpfile (void)
 	if (!fp) {
 		close (fd);
 	}
-	free (filename);
+	cob_free (filename);
 	return fp;
 }
 
@@ -6158,7 +6158,7 @@ cob_file_sort_giving (cob_file *sort_file, const size_t varcnt, ...)
 	for (i = 0; i < varcnt; ++i) {
 		cob_close (fbase[i], NULL, COB_CLOSE_NORMAL, 0);
 	}
-	free (fbase);
+	cob_free (fbase);
 }
 
 void
@@ -6233,10 +6233,10 @@ cob_file_sort_close (cob_file *f)
 				fclose (hp->file[i].fp);
 			}
 		}
-		free (hp);
+		cob_free (hp);
 	}
 	if (f->keys) {
-		free (f->keys);
+		cob_free (f->keys);
 	}
 	f->file = NULL;
 	save_status (f, fnstatus, COB_STATUS_00_SUCCESS);
@@ -6326,15 +6326,15 @@ cob_exit_fileio (void)
 		bdb_env = NULL;
 	}
 	if (record_lock_object) {
-		free (record_lock_object);
+		cob_free (record_lock_object);
 		record_lock_object = NULL;
 	}
 	if (bdb_buff) {
-		free (bdb_buff);
+		cob_free (bdb_buff);
 		bdb_buff = NULL;
 	}
 	if (bdb_home) {
-		free (bdb_home);
+		cob_free (bdb_home);
 		bdb_home = NULL;
 	}
 
@@ -6349,19 +6349,19 @@ cob_exit_fileio (void)
 #endif
 
 	if (cob_file_path) {
-		free (cob_file_path);
+		cob_free (cob_file_path);
 		cob_file_path = NULL;
 	}
 
 	if (runtime_buffer) {
-		free (runtime_buffer);
+		cob_free (runtime_buffer);
 		runtime_buffer = NULL;
 	}
 
 	for (l = file_cache; l;) {
 		p = l;
 		l = l->next;
-		free (p);
+		cob_free (p);
 	}
 	file_cache = NULL;
 }
@@ -6426,7 +6426,7 @@ cob_init_fileio (cob_global *lptr, runtime_env* runtimeptr)
 	cob_file_path_env = cob_save_env_value(cob_file_path_env, cob_file_path);
 	if (cob_file_path) {
 		if (stat (cob_file_path, &st) || !(S_ISDIR (st.st_mode))) {
-			free (cob_file_path);
+			cob_free (cob_file_path);
 			cob_file_path = NULL;
 		}
 	}

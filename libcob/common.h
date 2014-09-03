@@ -657,6 +657,7 @@
 #define COB_FERROR_SCR_INP	10
 #define COB_FERROR_FILE		11
 #define COB_FERROR_FUNCTION	12
+#define COB_FERROR_FREE		13
 
 /* Exception identifier enumeration */
 
@@ -1227,6 +1228,7 @@ DECLNORET COB_EXPIMP void	cob_stop_run	(const int) COB_A_NORETURN;
 DECLNORET COB_EXPIMP void	cob_fatal_error	(const int) COB_A_NORETURN;
 
 COB_EXPIMP void	*cob_malloc			(const size_t) COB_A_MALLOC;
+COB_EXPIMP void	cob_free			(void *);
 COB_EXPIMP void	*cob_fast_malloc		(const size_t) COB_A_MALLOC;
 COB_EXPIMP void	*cob_cache_malloc		(const size_t) COB_A_MALLOC;
 COB_EXPIMP void	*cob_cache_realloc		(void *, const size_t);

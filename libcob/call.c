@@ -295,8 +295,8 @@ cob_set_library_path (const char *path)
 
 	/* Clear the previous path */
 	if (resolve_path) {
-		free (resolve_path);
-		free (resolve_alloc);
+		cob_free (resolve_path);
+		cob_free (resolve_alloc);
 	}
 
 	/* Count the number of separators */
@@ -408,12 +408,12 @@ do_cancel_module (struct call_hash *p, struct call_hash **base_hash,
 		prev->next = p->next;
 	}
 	if (p->name) {
-		free ((void *)(p->name));
+		cob_free ((void *)(p->name));
 	}
 	if (p->path) {
-		free ((void *)(p->path));
+		cob_free ((void *)(p->path));
 	}
-	free (p);
+	cob_free (p);
 }
 
 static void *
@@ -421,7 +421,7 @@ cob_get_buff (const size_t buffsize)
 {
 	if (buffsize > call_lastsize) {
 		call_lastsize = buffsize;
-		free (call_buffer);
+		cob_free (call_buffer);
 		call_buffer = cob_fast_malloc (buffsize);
 	}
 	return call_buffer;
@@ -560,7 +560,7 @@ insert (const char *name, void *func, lt_dlhandle handle,
 		if (realpath (path, s) != NULL) {
 			p->path = cob_strdup (s);
 		}
-		free (s);
+		cob_free (s);
 #endif
 		if (!p->path) {
 			p->path = cob_strdup (path);
@@ -914,7 +914,7 @@ cob_resolve (const char *name)
 	entry = cob_chk_call_path (name, &dirent);
 	p = cob_resolve_internal (entry, dirent, 0);
 	if (dirent) {
-		free (dirent);
+		cob_free (dirent);
 	}
 	return p;
 }
@@ -929,7 +929,7 @@ cob_resolve_cobol (const char *name, const int fold_case, const int errind)
 	entry = cob_chk_call_path (name, &dirent);
 	p = cob_resolve_internal (entry, dirent, fold_case);
 	if (dirent) {
-		free (dirent);
+		cob_free (dirent);
 	}
 	if (unlikely(!p)) {
 		if (errind) {
@@ -977,7 +977,7 @@ cob_call_field (const cob_field *f, const struct cob_call_struct *cs,
 	for (psyst = system_tab; psyst->syst_name; ++psyst) {
 		if (!strcmp (entry, psyst->syst_name)) {
 			if (dirent) {
-				free (dirent);
+				cob_free (dirent);
 			}
 			return psyst->syst_call.funcvoid;
 		}
@@ -988,7 +988,7 @@ cob_call_field (const cob_field *f, const struct cob_call_struct *cs,
 	for (s = cs; s && s->cob_cstr_name; s++) {
 		if (!strcmp (entry, s->cob_cstr_name)) {
 			if (dirent) {
-				free (dirent);
+				cob_free (dirent);
 			}
 			return s->cob_cstr_call.funcvoid;
 		}
@@ -996,7 +996,7 @@ cob_call_field (const cob_field *f, const struct cob_call_struct *cs,
 
 	p = cob_resolve_internal (entry, dirent, fold_case);
 	if (dirent) {
-		free (dirent);
+		cob_free (dirent);
 	}
 	if (unlikely(!p)) {
 		if (errind) {
@@ -1116,7 +1116,7 @@ cob_call (const char *name, const int argc, void **argv)
 #else
 #error	"Invalid COB_MAX_FIELD_PARAMS value"
 #endif
-	free (pargv);
+	cob_free (pargv);
 	return i;
 }
 
@@ -1187,31 +1187,31 @@ cob_exit_call (void)
 #endif
 
 	if (call_filename_buff) {
-		free (call_filename_buff);
+		cob_free (call_filename_buff);
 		call_filename_buff = NULL;
 	}
 	if (call_entry_buff) {
-		free (call_entry_buff);
+		cob_free (call_entry_buff);
 		call_entry_buff = NULL;
 	}
 	if (call_entry2_buff) {
-		free (call_entry2_buff);
+		cob_free (call_entry2_buff);
 		call_entry2_buff = NULL;
 	}
 	if (call_buffer) {
-		free (call_buffer);
+		cob_free (call_buffer);
 		call_buffer = NULL;
 	}
 	if (resolve_error_buff) {
-		free (resolve_error_buff);
+		cob_free (resolve_error_buff);
 		resolve_error_buff = NULL;
 	}
 	if (resolve_alloc) {
-		free (resolve_alloc);
+		cob_free (resolve_alloc);
 		resolve_alloc = NULL;
 	}
 	if (resolve_path) {
-		free (resolve_path);
+		cob_free (resolve_path);
 		resolve_path = NULL;
 	}
 
@@ -1225,17 +1225,17 @@ cob_exit_call (void)
 			q = p;
 			p = p->next;
 			if (q->name) {
-				free ((void *)q->name);
+				cob_free ((void *)q->name);
 			}
 			if (q->path) {
-				free ((void *)q->path);
+				cob_free ((void *)q->path);
 			}
-			free (q);
+			cob_free (q);
 		}
 #ifndef	COB_ALT_HASH
 	}
 	if (call_table) {
-		free (call_table);
+		cob_free (call_table);
 	}
 	call_table = NULL;
 #endif
@@ -1243,25 +1243,25 @@ cob_exit_call (void)
 	for (h = base_preload_ptr; h;) {
 		j = h;
 		if (h->path) {
-			free ((void *)h->path);
+			cob_free ((void *)h->path);
 		}
 		if (h->handle) {
 			lt_dlclose (h->handle);
 		}
 		h = h->next;
-		free (j);
+		cob_free (j);
 	}
 	base_preload_ptr = NULL;
 	for (h = base_dynload_ptr; h;) {
 		j = h;
 		if (h->path) {
-			free ((void *)h->path);
+			cob_free ((void *)h->path);
 		}
 		if (h->handle) {
 			lt_dlclose (h->handle);
 		}
 		h = h->next;
-		free (j);
+		cob_free (j);
 	}
 	base_dynload_ptr = NULL;
 
@@ -1269,7 +1269,7 @@ cob_exit_call (void)
 	lt_dlexit ();
 #if	0	/* RXWRXW - ltdl leak */
 	/* Weird - ltdl leaks mainhandle - This appears to work but .. */
-	free (mainhandle);
+	cob_free (mainhandle);
 #endif
 #endif
 
@@ -1400,9 +1400,9 @@ cob_init_call (cob_global *lptr, runtime_env* runtimeptr)
 			}
 #endif
 		}
-		free (p);
+		cob_free (p);
 	}
-	free (buff);
+	cob_free (buff);
 	call_buffer = cob_fast_malloc ((size_t)CALL_BUFF_SIZE);
 	call_lastsize = CALL_BUFF_SIZE;
 

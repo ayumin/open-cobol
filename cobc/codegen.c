@@ -3970,8 +3970,8 @@ output_perform_exit (struct cb_label *l)
 		output_line ("if (entry == %d) {", l->id);
 		output_line ("  cob_module_leave (module);");
 		if (cb_flag_stack_on_heap || current_prog->flag_recursive) {
-			output_line ("  free (frame_stack);");
-			output_line ("  free (cob_procedure_params);");
+			output_line ("  cob_free (frame_stack);");
+			output_line ("  cob_free (cob_procedure_params);");
 			output_line ("  cob_cache_free (module);");
 		}
 		output_line ("  return 0;");
@@ -6386,9 +6386,9 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 		for (inc = 0; inc < gen_dynamic; inc++) {
 			output_line ("if (cob_dyn_%u) {", inc);
 			output_line ("  if (cob_dyn_%u->data) {", inc);
-			output_line ("    free (cob_dyn_%u->data);", inc);
+			output_line ("    cob_free (cob_dyn_%u->data);", inc);
 			output_line ("  }");
-			output_line ("  free (cob_dyn_%u);", inc);
+			output_line ("  cob_free (cob_dyn_%u);", inc);
 			output_line ("  cob_dyn_%u = NULL;", inc);
 			output_line ("}");
 		}
@@ -6432,8 +6432,8 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 
 	if (cb_flag_stack_on_heap || prog->flag_recursive) {
 		output_line ("/* Free frame stack / call parameters */");
-		output_line ("free (frame_stack);");
-		output_line ("free (cob_procedure_params);");
+		output_line ("cob_free (frame_stack);");
+		output_line ("cob_free (cob_procedure_params);");
 		output_newline ();
 	}
 
@@ -6455,7 +6455,7 @@ output_internal_function (struct cb_program *prog, cb_tree parameter_list)
 #if	1	/* RXWRXW Mod */
 		output_line ("cob_cache_free (module);");
 #else
-		output_line ("free (module);");
+		output_line ("cob_free (module);");
 #endif
 		output_newline ();
 	}

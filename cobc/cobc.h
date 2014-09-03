@@ -309,6 +309,7 @@ extern int			functions_are_all;
 extern struct noreserve		*cobc_nores_base;
 
 extern void			*cobc_malloc (const size_t);
+extern void			cobc_free (void *);
 extern void			*cobc_strdup (const char *);
 extern void			*cobc_realloc (void *, const size_t);
 
