@@ -3493,9 +3493,9 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	 * cob_argv is a static char** containing argv from runtime
 	 */
 
-	size_t opt_val_size;
-	size_t so_size;
-	size_t lo_size;
+	size_t opt_val_size = 0;
+	size_t so_size = 0;
+	size_t lo_size = 0;
 	
 	unsigned int lo_amount;
 
@@ -3505,9 +3505,9 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	char* temp;
 
 	struct option* longoptions;
-	longoption_def* l;
+	longoption_def* l = NULL;
 
-	int longind;
+	int longind = 0;
 	unsigned int i;
 	int j;
 
@@ -3523,9 +3523,15 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	/*
 	 * Read in sizes of some parameters
 	 */
+	if (COB_MODULE_PTR->cob_procedure_params[1]) {
 		lo_size = COB_MODULE_PTR->cob_procedure_params[1]->size;
+	}
+	if (COB_MODULE_PTR->cob_procedure_params[0]) {
 		so_size = COB_MODULE_PTR->cob_procedure_params[0]->size;
+	}
+	if (COB_MODULE_PTR->cob_procedure_params[5]) {
 		opt_val_size = COB_MODULE_PTR->cob_procedure_params[5]->size;
+	}
 
 	/*
 	 * Buffering longoptions (cobol), target format (struct option)
@@ -3539,17 +3545,23 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 		cob_stop_run (1);
 	}
 
-	if (COB_MODULE_PTR->cob_procedure_params[2]) {
-		longind = cob_get_int (COB_MODULE_PTR->cob_procedure_params[2]);
+	if (!COB_MODULE_PTR->cob_procedure_params[2]) {
+		cob_runtime_error (_("Call to CBL_OC_GETOPT with missing longind."));
+		cob_stop_run (1);
 	}
+	longind = cob_get_int (COB_MODULE_PTR->cob_procedure_params[2]);
 
 	/*
 	 * Add 0-termination to strings.
 	 */
 	shortoptions = cob_malloc(so_size + 1U);
+	if (COB_MODULE_PTR->cob_procedure_params[0]) {
 		cob_field_to_string (COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
+	}
 
+	if (COB_MODULE_PTR->cob_procedure_params[1]) {
 		l = (struct longoption_def*) (COB_MODULE_PTR->cob_procedure_params[1]->data);
+	}
 
 	for (i = 0; i < lo_amount; i++) {
 		j = sizeof(l->name) - 1;

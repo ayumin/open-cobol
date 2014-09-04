@@ -4,6 +4,11 @@
 	* common.c (cob_check_env_false): new pendant to cob_check_env_true, currently
 	  used only for disabling COB_BELL
 
+2014-08-24  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* common.c (cob_sys_getopt_long_long): make params lo_size(1), so_size(0)
+	  and opt_val_size(5) optional (can be OMITTED in CALL 'CBL_OC_GETOPT')
+
 2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* common.c, common.h: added cob_free() function (as suggested by 
