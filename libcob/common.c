@@ -957,22 +957,28 @@ cob_check_trace_file (void)
 }
 
 int
-cob_check_env_true(char* s) {
-	int len;
-	char* temp;
-
-	if(!s) return 0;
-
-	len = strlen(s);
-	temp = cob_strdup(s);
-
-	if(len == 1 && (*temp == 'Y' || *s == 'y' || *s == '1')) return 1;
-
-	cob_sys_toupper(s, len);
-	if(strcmp(s, "YES") == 0 || strcmp(s, "ON") == 0 || strcmp(s, "TRUE") == 0) {
-		return 1;
+cob_check_env_true (char* s)
+{
+	if (s) {
+		if (strlen(s) == 1 && (*s == 'Y' || *s == 'y' || *s == '1')) return 1;
+		if (strcasecmp(s, "YES") == 0 || strcasecmp(s, "ON") == 0 ||
+			strcasecmp(s, "TRUE") == 0) {
+			return 1;
+		}
 	}
+	return 0;
+}
 
+int
+cob_check_env_false (char* s)
+{
+	if (s) {
+		if (strlen(s) == 1 && (*s == 'N' || *s == 'n' || *s == '0')) return 1;
+		if (strcasecmp(s, "NO") == 0 || strcasecmp(s, "NONE") == 0 ||
+			strcasecmp(s, "OFF") == 0 || strcasecmp(s, "FALSE") == 0) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
@@ -1003,24 +1009,12 @@ cob_rescan_env_vals (void)
 	if (s) {
 		runtimeptr->cob_beep_str_env = cob_save_env_value(
 				runtimeptr->cob_beep_str_env, s);
-
 		if (!strcasecmp(s, "FLASH")) {
 			cobglobptr->cob_beep_value = 1;
 		} else if (!strcasecmp(s, "SPEAKER")) {
 			cobglobptr->cob_beep_value = 2;
-		} else {
-			/* NO/NONE/OFF/0 */
-			switch (*s) {
-			case 'n':
-			case 'N':
-			case 'o':
-			case 'O':
-			case '0':
-				cobglobptr->cob_beep_value = 9;
-				break;
-			default:
-				break;
-			}
+		} else if (cob_check_env_false (s)) {
+			cobglobptr->cob_beep_value = 9;
 		}
 	}
 
@@ -3529,9 +3523,9 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	/*
 	 * Read in sizes of some parameters
 	 */
-	lo_size = COB_MODULE_PTR->cob_procedure_params[1]->size;
-	so_size = COB_MODULE_PTR->cob_procedure_params[0]->size;
-	opt_val_size = COB_MODULE_PTR->cob_procedure_params[5]->size;
+		lo_size = COB_MODULE_PTR->cob_procedure_params[1]->size;
+		so_size = COB_MODULE_PTR->cob_procedure_params[0]->size;
+		opt_val_size = COB_MODULE_PTR->cob_procedure_params[5]->size;
 
 	/*
 	 * Buffering longoptions (cobol), target format (struct option)
@@ -3553,9 +3547,9 @@ cob_sys_getopt_long_long (void* so, void* lo, void* idx, const int long_only, vo
 	 * Add 0-termination to strings.
 	 */
 	shortoptions = cob_malloc(so_size + 1U);
-	cob_field_to_string (COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
+		cob_field_to_string (COB_MODULE_PTR->cob_procedure_params[0], shortoptions, so_size);
 
-	l = (struct longoption_def*) (COB_MODULE_PTR->cob_procedure_params[1]->data);
+		l = (struct longoption_def*) (COB_MODULE_PTR->cob_procedure_params[1]->data);
 
 	for (i = 0; i < lo_amount; i++) {
 		j = sizeof(l->name) - 1;

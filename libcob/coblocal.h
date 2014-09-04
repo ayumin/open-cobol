@@ -279,7 +279,8 @@ COB_HIDDEN void		cob_print_realbin	(const cob_field *, FILE *,
 COB_HIDDEN void		cob_screen_set_mode	(const cob_u32_t);
 COB_HIDDEN void		cob_set_exception	(const int);
 COB_HIDDEN int		cob_get_exception_code	(void);
-COB_HIDDEN int      cob_check_env_true	(char*);
+COB_HIDDEN int		cob_check_env_true	(char*);
+COB_HIDDEN int		cob_check_env_false	(char*);
 COB_HIDDEN const char	*cob_get_exception_name	(void);
 COB_HIDDEN void		cob_field_to_string	(const cob_field *, void *,
 						 const size_t);
