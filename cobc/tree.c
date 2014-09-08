@@ -707,7 +707,9 @@ cb_tree_type (const cb_tree x, const struct cb_field *f)
 		COBC_DUMB_ABORT ();
 	}
 	/* NOT REACHED */
+#ifndef _MSC_VER
 	return 0;
+#endif
 }
 
 int

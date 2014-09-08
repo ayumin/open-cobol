@@ -607,7 +607,7 @@ cobc_abort (const char *filename, const int linenum)
 	cobc_abort_terminate ();
 }
 
-void
+void COB_A_NORETURN
 cobc_dumb_abort (const char *filename, const int linenum)
 {
 	cobc_abort (filename, linenum);
