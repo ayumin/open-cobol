@@ -815,7 +815,9 @@ cb_field_size (const cb_tree x)
 		COBC_DUMB_ABORT ();
 	}
 	/* NOT REACHED */
+#ifndef _MSC_VER
 	return 0;
+#endif
 }
 
 /* List system routines */
@@ -1446,7 +1448,7 @@ cb_build_identifier (cb_tree x, const int subchk)
 		if (!current_statement->flag_no_based) {
 			if (p->flag_item_based ||
 			   (f->storage == CB_STORAGE_LINKAGE &&
-			    !p->flag_is_pdiv_parm)) {
+				  !p->flag_is_pdiv_parm)) {
 				current_statement->null_check = CB_BUILD_FUNCALL_2 (
 					"cob_check_based",
 					cb_build_address (cb_build_field_reference (p, NULL)),
