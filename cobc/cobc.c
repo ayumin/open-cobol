@@ -2668,19 +2668,6 @@ process_filename (const char *filename)
 }
 
 #ifdef _MSC_VER
-
-static char*
-read_buffer_line(char* offset) {
-	if (!offset) return NULL;
-
-	while (offset[0] != 0x00 && strcmp("\n", offset) != 0) {
-		offset++;
-	}
-
-	if (offset[0] == 0x00) return "EOF";
-	return offset;
-}
-
 /*
  * search_pattern can contain one or more search strings separated by #
  * search_patterns must have a final #
@@ -2691,7 +2678,7 @@ line_contains(char* line_start, char* line_end, char* search_patterns) {
 	char* line_pos;
 	
 	if(search_patterns[strlen(search_patterns) - 1] != '#') return -1;
-	
+
 	pattern_start = 0;
 	for(pattern_end = 0; pattern_end < (int) strlen(search_patterns); pattern_end++) {
 		if(search_patterns[pattern_end] == '#') {
@@ -2989,25 +2976,27 @@ process (const char *cmd, struct filename *fn)
 		/* prepare buffer and read from pipe */
 		read_buffer = (char*) cobc_malloc(COB_FILE_BUFF);
 		line_start = read_buffer;
-		fgets(read_buffer, COB_FILE_BUFF - 1, pipe);
 		
 		/* reading two lines to filter unnecessary outputs */
 		for(i = 0; i < 2; i++) {
-			/* read one line from buffer, returning line end position */
-			line_end = read_buffer_line(line_start);
+			line_start = fgets(read_buffer, COB_FILE_BUFF - 1, pipe);
 
-			if(strcmp("EOF", line_end) == 0) {
+			if (line_start == NULL) {
 				return !!_pclose(pipe);
 			}
+
+			/* read one line from buffer, returning line end position */
+			line_end = line_start + strlen(line_start) - 1;
+
 			/* if non of the patterns was found, print line */
 			if(!line_contains(line_start, line_end, search_pattern)
 			   && !line_contains(line_start, line_end, search_pattern2)) 
 			{
 				fprintf(stdout, "%*s", line_end - line_start + 2, line_start);
 			}
-
-			line_start = line_end + 1;
 		}
+		line_start = line_end + 1;
+
 		/* print rest of buffer */
 		fprintf(stdout, line_start);
 		fflush(stdout);

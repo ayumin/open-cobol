@@ -1,4 +1,8 @@
 
+2014-09-08  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* cobc.c (process) [_MSC_VER] : bugfix in output filter
+
 2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c, cobc.h: added cobc_free() function
