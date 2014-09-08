@@ -1,7 +1,7 @@
 // Use \ to escape things, for example \\ for using in paths
 // Use \" for paths with spaces
 
-// define MAKE_DIST to 1 for using C:\GNU Cobol
+// define MAKE_DIST to 1 for using C:\GNU Cobol 2.0
 
 #define COB_CC           "cl"
 #ifdef MAKE_DIST

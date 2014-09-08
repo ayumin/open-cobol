@@ -332,7 +332,7 @@ extern void			cobc_abort_pr (const char *, ...) COB_A_FORMAT12;
 DECLNORET extern void		cobc_abort (const char *,
 					    const int) COB_A_NORETURN;
 DECLNORET extern void		cobc_too_many_errors (void) COB_A_NORETURN;
-extern void			cobc_dumb_abort (const char *, const int);
+DECLNORET extern void			cobc_dumb_abort (const char *, const int);
 
 extern size_t			cobc_check_valid_name (const char *,
 						       const unsigned int);
