@@ -2,9 +2,6 @@
 // Use \" for paths with spaces
 
 // define MAKE_DIST to 1 for using C:\GNU Cobol
-#ifndef _DEBUG
-#define MAKE_DIST 1
-#endif
 
 #define COB_CC           "cl"
 #ifdef MAKE_DIST
@@ -12,7 +9,7 @@
 #define COB_CFLAGS       "-I \"" COB_MAIN_DIR "\\include\""
 #define COB_LDFLAGS      "/LIBPATH:\"" COB_MAIN_DIR "\\libs\""
 #else  // no MAKE_DIST
-#define COB_MAIN_DIR     "C:\\Users\\simon\\Documents\\gnu-cobol-2.0_veryclean"
+#define COB_MAIN_DIR     "C:\\GnuCobol"
 #define COB_CFLAGS       "-I \"" COB_MAIN_DIR "\" -I \"" COB_MAIN_DIR "\\build_windows\""
 
 #ifdef _WIN64
