@@ -1,3 +1,8 @@
+2014-09-09  Philipp Böhme  <phi.boehme@googlemail.com>
+
+	* numeric.c : new static function cob_gmp_free
+	* numeric.c (cob_decimal_set_double, cob_decimal_get_packed, cob_decimal_get_display): 
+		use cob_gmp_free() to free memory allocated in mpir/gmp
 
 2014-09-04  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 

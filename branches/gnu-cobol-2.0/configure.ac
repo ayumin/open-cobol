@@ -88,6 +88,7 @@ AH_TEMPLATE([HAVE_CURSES_FREEALL], [ncurses has _nc_freeall function])
 AH_TEMPLATE([HAVE_USE_LEGACY_CODING], [ncurses has use_legacy_coding function])
 AH_TEMPLATE([HAVE_DESIGNATED_INITS], [Has designated initializers])
 AH_TEMPLATE([HAVE_NANO_SLEEP], [Has nanosleep function])
+AH_TEMPLATE([HAVE_MP_GET_MEMORY_FUNCTIONS], [Do we have mp_get_memory_functions in gmp])
 #AH_TEMPLATE([HAVE_RAISE], [Has raise function])
 AH_TEMPLATE([HAVE_FINITE_IEEEFP_H],
 	[Declaration of finite function in ieeefp.h instead of math.h])
@@ -383,7 +384,7 @@ AC_CHECK_HEADERS([gmp.h], [], AC_MSG_ERROR([gmp.h (GMP) is required]), [])
 AC_CHECK_LIB([gmp], [__gmpz_init],
 	[LIBCOB_LIBS="$LIBCOB_LIBS -lgmp"],
 	AC_MSG_ERROR([GMP is required]), [])
-
+	
 # Check just major/minor levels between header and library
 MYOLDLIBS=$LIBS
 LIBS="$MYOLDLIBS -lgmp"
@@ -439,6 +440,11 @@ else
 	AC_MSG_ERROR([Unable to use GMP - Please check config.log])
 fi
 LIBS=$MYOLDLIBS
+
+
+# Works fine as an alternative if necessary
+# AC_SEARCH_LIBS([__gmp_get_memory_functions], [gmp], [AC_DEFINE([HAVE_MP_GET_MEMORY_FUNCTIONS], [1])], [], [])
+AC_CHECK_LIB([gmp], [__gmp_get_memory_functions], [AC_DEFINE([HAVE_MP_GET_MEMORY_FUNCTIONS], [1])], [], [])
 
 
 # Solaris has nanosleep in other libraries

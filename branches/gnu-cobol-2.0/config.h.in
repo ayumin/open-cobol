@@ -178,6 +178,9 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
+/* Do we have mp_get_fmemory_functions in gmp */
+#undef HAVE_MP_GET_MEMORY_FUNCTIONS
+
 /* Has nanosleep function */
 #undef HAVE_NANO_SLEEP
 
