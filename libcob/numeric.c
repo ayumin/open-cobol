@@ -212,6 +212,19 @@ mpz_get_sll (const mpz_ptr src)
 
 #endif	/* COB_EXPERIMENTAL */
 
+
+static void
+cob_gmp_free(void * ptr) {
+/* mpir/gmp free functions */
+#ifdef HAVE_MP_GET_MEMORY_FUNCTIONS
+	void (*freefunc)(void *, size_t);
+	mp_get_memory_functions (NULL, NULL, &freefunc);
+	freefunc(ptr, strlen((char*) ptr) + 1);
+#else
+	free(ptr);
+#endif
+}
+
 static COB_INLINE COB_A_INLINE void
 num_byte_memcpy (unsigned char *s1, const unsigned char *s2, size_t size)
 {
@@ -818,11 +831,6 @@ cob_decimal_set_double (cob_decimal *d, const double v)
 		cob_u64_t	l1;
 	} ud;
 
-	/* get mpir/gmp free function */
-	void (*freefunc)(void *, size_t);
-	mp_get_memory_functions (NULL, NULL, &freefunc);
-
-
 	memset (&t1, ' ', sizeof(t1));
 	ud.d1 = v;
 	if (ud.l1 == 0 || ud.l1 == t1 || !finite (v)) {
@@ -838,7 +846,7 @@ cob_decimal_set_double (cob_decimal *d, const double v)
 	if (!*q) {
 		mpz_set_ui (d->value, 0UL);
 		d->scale = 0;
-		freefunc(q, strlen(q) + 1);
+		cob_gmp_free(q);
 		return;
 	}
 	p = q;
@@ -862,7 +870,7 @@ cob_decimal_set_double (cob_decimal *d, const double v)
 	if (sign) {
 		mpz_neg (d->value, d->value);
 	}
-	freefunc(q, strlen(q) + 1);
+	cob_gmp_free(q);
 }
 
 static double
@@ -1150,11 +1158,6 @@ cob_decimal_get_packed (cob_decimal *d, cob_field *f, const int opt)
 	int		digits;
 	unsigned int	x;
 
-	/* mpir/gmp free function */
-	void (*freefunc)(void *, size_t);
-	mp_get_memory_functions (NULL, NULL, &freefunc);
-
-
 #if	0	/* RXWRXW stack */
 	char		buff[1024];
 #endif
@@ -1202,7 +1205,7 @@ cob_decimal_get_packed (cob_decimal *d, cob_field *f, const int opt)
 #if	0	/* RXWRXW stack */
 			if (unlikely(mza != buff)) {
 #endif
-				freefunc(mza, strlen(mza) + 1);
+				cob_gmp_free(mza);
 
 #if	0	/* RXWRXW stack */
 			}
@@ -1232,7 +1235,7 @@ cob_decimal_get_packed (cob_decimal *d, cob_field *f, const int opt)
 #if	0	/* RXWRXW stack */
 	if (unlikely(mza != buff)) {
 #endif
-		freefunc(mza, strlen(mza) + 1);
+		cob_gmp_free(mza);
 
 #if	0	/* RXWRXW stack */
 	}
@@ -1373,10 +1376,6 @@ cob_decimal_get_display (cob_decimal *d, cob_field *f, const int opt)
 	int		diff;
 	int		sign;
 
-	/* mpir/gmp free function */
-	void (*freefunc)(void *, size_t);
-	mp_get_memory_functions (NULL, NULL, &freefunc);
-
 	data = COB_FIELD_DATA (f);
 	/* Build string */
 	sign = mpz_sgn (d->value);
@@ -1401,7 +1400,7 @@ cob_decimal_get_display (cob_decimal *d, cob_field *f, const int opt)
 		/* If the statement has ON SIZE ERROR or NOT ON SIZE ERROR,
 		   then throw an exception */
 		if (opt & COB_STORE_KEEP_ON_OVERFLOW) {
-			freefunc(p, strlen(p) + 1);
+			cob_gmp_free(p);
 			return cobglobptr->cob_exception_code;
 		}
 
@@ -1413,7 +1412,7 @@ cob_decimal_get_display (cob_decimal *d, cob_field *f, const int opt)
 		memcpy (data + diff, p, size);
 	}
 
-	freefunc(p, strlen(p) + 1);
+	cob_gmp_free(p);
 	COB_PUT_SIGN (f, sign);
 
 	return 0;

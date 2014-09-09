@@ -2907,6 +2907,7 @@ fi
 
 
 
+
 #AH_TEMPLATE([HAVE_RAISE], [Has raise function])
 
 
@@ -13682,6 +13683,51 @@ $as_echo "no ($COB_GMP_HEADER / $COB_GMP_LIB)" >&6; }
 	as_fn_error $? "Unable to use GMP - Please check config.log" "$LINENO" 5
 fi
 LIBS=$MYOLDLIBS
+
+
+# Works fine as an alternative if necessary
+# AC_SEARCH_LIBS([__gmp_get_memory_functions], [gmp], [AC_DEFINE([HAVE_MP_GET_MEMORY_FUNCTIONS], [1])], [], [])
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for __gmp_get_memory_functions in -lgmp" >&5
+$as_echo_n "checking for __gmp_get_memory_functions in -lgmp... " >&6; }
+if ${ac_cv_lib_gmp___gmp_get_memory_functions+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgmp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __gmp_get_memory_functions ();
+int
+main ()
+{
+return __gmp_get_memory_functions ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_gmp___gmp_get_memory_functions=yes
+else
+  ac_cv_lib_gmp___gmp_get_memory_functions=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gmp___gmp_get_memory_functions" >&5
+$as_echo "$ac_cv_lib_gmp___gmp_get_memory_functions" >&6; }
+if test "x$ac_cv_lib_gmp___gmp_get_memory_functions" = xyes; then :
+  $as_echo "#define HAVE_MP_GET_MEMORY_FUNCTIONS 1" >>confdefs.h
+
+fi
+
 
 
 # Solaris has nanosleep in other libraries

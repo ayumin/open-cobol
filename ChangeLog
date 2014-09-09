@@ -1,4 +1,9 @@
 
+2014-09-09  Philipp Böhme <phi.boehme@googlemail.com>
+
+	* configure.ac : new check for mp_get_memory_functions in 
+	  libgmp and new preprocessor define HAVE_MP_GET_MEMORY_FUNCTIONS
+
 2014-08-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* configure.ac : add new parameter --with-curses for explicit
