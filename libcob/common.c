@@ -1130,7 +1130,7 @@ cob_malloc (const size_t size)
 	return mptr;
 }
 
-void
+COB_INLINE void
 cob_free(void * mptr)
 {
 #ifdef _DEBUG
