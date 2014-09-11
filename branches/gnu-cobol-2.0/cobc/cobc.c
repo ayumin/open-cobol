@@ -651,12 +651,12 @@ cobc_malloc (const size_t size)
 	return mptr;
 }
 
-void
+COB_INLINE void
 cobc_free(void * mptr)
 {
 #ifdef	COB_TREE_DEBUG
-	if (unlikely(!dupstr)) {
-		cobc_abort_pr (_("Call to cobc_strdup with NULL pointer"));
+	if (unlikely(!mptr)) {
+		cobc_abort_pr (_("Call to cobc_free with NULL pointer"));
 		cobc_abort_terminate ();
 	}
 #endif
