@@ -18,7 +18,8 @@
 
 	* common.c, common.h: added cob_free() function (as suggested by 
 	  Sergey Kashyrin)
-	* changed all free() to cob_free()
+	* changed all free() to cob_free() (Own freeing function for debugging purposes. 
+	  (e.g. to locate heap crashes caused by malloc/free))
 	* numeric.c: use free function (passed by mp_get_memory_functions) (Bug #91)
 
 2014-08-05  Louis Krupp <lkrupp@users.sf.net>
