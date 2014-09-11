@@ -6,6 +6,8 @@
 2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c, cobc.h: added cobc_free() function
+	  (Own freeing functions for debugging purposes. 
+	  (e.g. to locate heap crashes caused by malloc/free))	
 	* change all free() to cobc_free()
 	* cobc.c (process) [_MSC_VER]: cob_malloc() to cobc_malloc() 
 	* cobc.c: use COB_PIC_FLAGS for CB_LEVEL_ASSEMBLE
