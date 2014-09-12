@@ -1,4 +1,10 @@
 
+2014-09-12  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* support spaces in testsuite
+	* changed atlocal_win, removing the need for a configured source
+	  (works with build_windows out of the box)
+
 2014-08-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* atlocal.in : unset all environmental vars that are used by libcob

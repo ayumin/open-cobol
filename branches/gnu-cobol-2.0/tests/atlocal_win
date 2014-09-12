@@ -20,12 +20,16 @@
 # along with GNU Cobol.  If not, see <http://www.gnu.org/licenses/>.
 
 # CC="gcc -std=gnu99"
+
+COB_SRC_PATH="$(cd .. ; pwd)"
+COB_WIN_BUILDPATH="$COB_SRC_PATH/build_windows/Win32/release"
+
 COB_BIGENDIAN="no"
 COB_HAS_ISAM="yes"
 COBC="cobc"
 COBCRUN="cobcrun"
 
-TEMPLATE="${abs_srcdir}/testsuite.src"
+TEMPLATE="$COB_SRC_PATH/tests/testsuite.src"
 
 FLAGS="-std=cobol2002 -debug -Wall ${COBOL_FLAGS}"
 COMPILE="${COBC} -x ${FLAGS}"
@@ -36,14 +40,16 @@ OBJECT_EXT="obj"
 
 PATHSEP=";"
 
-PATH="${abs_top_srcdir}/build_windows/win32/release:${PATH}"
+PATH="$COB_WIN_BUILDPATH:${PATH}"
 export PATH
-unset COB_CFLAGS
-unset COB_LDFLAGS
-unset COB_LIBS
-export COB_CONFIG_DIR="${abs_top_srcdir}/config"
-export COB_COPY_DIR="${abs_top_srcdir}/copy"
-export COB_LIBRARY_PATH="${abs_top_builddir}/extras:$COB_LIBRARY_PATH"
+
+# unset all environmental vars that are used by libcob
+for cobenv in $("$COBCRUN" --runtime-env | grep COB_ | cut -d: -f1); do unset $cobenv; done
+
+export COB_CONFIG_DIR="$COB_SRC_PATH/config"
+export COB_COPY_DIR="$COB_SRC_PATH/copy"
+export COB_LIBRARY_PATH="$COB_WIN_BUILDPATH:$COB_LIBRARY_PATH"
 export COB_UNIX_LF=YES
+export COB_MSG_FORMAT=GCC
 export COB_HAS_ISAM
 export LC_ALL=C
