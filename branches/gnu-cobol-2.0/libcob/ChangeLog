@@ -1,3 +1,8 @@
+
+2014-09-12  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* numeric.c, intrinsic.c, common.h : use cob_gmp_free in intrinsics, too
+
 2014-09-09  Philipp Böhme  <phi.boehme@googlemail.com>
 
 	* numeric.c : new static function cob_gmp_free
@@ -16,7 +21,7 @@
 
 2014-09-03  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* common.c, common.h: added cob_free() function (as suggested by 
+	* common.c, common.h: added cob_free() function (as suggested by
 	  Sergey Kashyrin)
 	* changed all free() to cob_free() (Own freeing function for debugging purposes. 
 	  (e.g. to locate heap crashes caused by malloc/free))
@@ -28,7 +33,7 @@
 
 2014-07-09  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* fileio.c (cob_file_sort_giving): initialize record buffer size before 
+	* fileio.c (cob_file_sort_giving): initialize record buffer size before
 	  cob_copy_check, solving bug #66
 
 2014-06-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
@@ -39,16 +44,16 @@
 	  additional calling WINAPI for temporary folder (GetTempPath);
 	  use identical logic as in non-win environments to build the name instead
 	  of calling WINAPI (GetTempFileName+DeleteFile)
-	* filio.c: renaming (cob_tmpfile) to (cob_srttmpfile) and
+	* fileio.c: renaming (cob_tmpfile) to (cob_srttmpfile) and
 	  (cob_get_temp_file) to (cob_get_sort_tempfile)
-	* filio.c (cob_srttmpfile): using new (cob_temp_name) to get the name
+	* fileio.c (cob_srttmpfile): using new (cob_temp_name) to get the name
 	* common.c: use (cob_sys_getpid) everywhere instead of (getpid); use (setenv)
 	  if available
 
 2014-05-20  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* call.c : inverted preload list for WIN32 builds
-	* common.c, move.c, screenio.c, fileio.c : Set runtime switch 
+	* common.c, move.c, screenio.c, fileio.c : Set runtime switch
 		from environment to true on "1", "Y", "YES", "TRUE", "ON"
 
 2014-05-13  Ron Norman <rjn@inglenet.com>
@@ -63,13 +68,13 @@
 
 	* common.[ch] : Added print_runtime_env showing all environment values along with
 		resolved variables used in libcob
-		New string helper functions: cob_int_to_string, cob_strcat, cob_strjoin, 
+		New string helper functions: cob_int_to_string, cob_strcat, cob_strjoin,
 		cob_int_to_formatted_bytestring
 	* call.c : Remove duplicates when resolving COB_LIBRARY_PATH
 
 2014-04-25  Ron Norman <rjn@inglenet.com>
 
-	* move.c : fixed bug in cob_move_fp_to_fp()	
+	* move.c : fixed bug in cob_move_fp_to_fp()
 	* numeric.c : Fixed errors in cob_add_int() when computing with floats.
 
 2014-04-14  Philipp Böhme <phi.boehme@googlemail.com>
