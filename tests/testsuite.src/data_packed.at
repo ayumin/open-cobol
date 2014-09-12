@@ -43,7 +43,7 @@ int dump (unsigned char *data)
 }
 ])
 
-sed -e 's/@USAGE@/PACKED-DECIMAL/' ${TEMPLATE}/numeric-dump.cob > prog.cob
+sed -e 's/@USAGE@/PACKED-DECIMAL/' "${TEMPLATE}/numeric-dump.cob" > prog.cob
 
 AT_CHECK([$COMPILE_MODULE dump.c], [0], , [])
 AT_CHECK([$COMPILE prog.cob], [0], , [])

@@ -38,7 +38,7 @@ AT_CHECK([$COBC -c prog.c], [0], [], [])
 AT_CHECK([$COBC prog.$OBJECT_EXT])
 AT_CHECK([$COBCRUN prog], [0], [bluBb], [])
 AT_CHECK([$COBC -S prog.cob], [0], [], [])
-#AT_CHECK([$COBC prog.$ASM_EXT]) Corrently breaking with MSC, deactivated
+#AT_CHECK([$COBC prog.$ASM_EXT]) Currently breaking with MSC, deactivated
 AT_CHECK([$COBC -E prog.cob], [0], [], [])
 AT_CHECK([test -f prog.i], [0], [], [])
 AT_CLEANUP
@@ -261,7 +261,7 @@ AT_DATA([prog.cob], [
            EXIT PROGRAM.
 ])
 
-AT_CHECK([$COMPILE $(pwd)/prog.cob], [0], , [])
+AT_CHECK([$COMPILE "$(pwd)/prog.cob"], [0], , [])
 AT_CHECK([./prog], [0], [OK])
 
 AT_CLEANUP
