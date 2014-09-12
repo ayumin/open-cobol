@@ -213,15 +213,15 @@ mpz_get_sll (const mpz_ptr src)
 #endif	/* COB_EXPERIMENTAL */
 
 
-static void
-cob_gmp_free(void * ptr) {
+void
+cob_gmp_free (void * ptr) {
 /* mpir/gmp free functions */
 #ifdef HAVE_MP_GET_MEMORY_FUNCTIONS
 	void (*freefunc)(void *, size_t);
 	mp_get_memory_functions (NULL, NULL, &freefunc);
-	freefunc(ptr, strlen((char*) ptr) + 1);
+	freefunc (ptr, strlen((char*) ptr) + 1);
 #else
-	free(ptr);
+	free (ptr);
 #endif
 }
 

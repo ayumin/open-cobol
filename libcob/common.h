@@ -1453,6 +1453,9 @@ COB_EXPIMP void	cob_decimal_alloc	(const cob_u32_t, ...);
 COB_EXPIMP void	cob_decimal_push	(const cob_u32_t, ...);
 COB_EXPIMP void	cob_decimal_pop		(const cob_u32_t, ...);
 
+COB_EXPIMP void	cob_gmp_free		(void *);
+
+
 /*******************************/
 /* Functions in call.c */
 

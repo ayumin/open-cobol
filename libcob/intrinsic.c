@@ -1029,7 +1029,7 @@ cob_decimal_set_mpf (cob_decimal *d, const mpf_t src)
 		++p;
 	}
 	len = (cob_sli_t)strlen (p);
-	cob_free (q);
+	cob_gmp_free (q);
 	len -= scale;
 	if (len >= 0) {
 		d->scale = len;
