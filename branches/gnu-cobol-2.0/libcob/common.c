@@ -1131,16 +1131,15 @@ cob_malloc (const size_t size)
 }
 
 COB_INLINE void
-cob_free(void * mptr)
+cob_free (void * mptr)
 {
 #ifdef _DEBUG
 	if (unlikely(!mptr)) {
 		cob_fatal_error (COB_FERROR_FREE);
 	}
-	else free(mptr);
-#else
-	free(mptr);
 #endif
+	free (mptr);
+
 }
 
 void *
