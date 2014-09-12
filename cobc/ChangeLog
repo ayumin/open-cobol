@@ -1,4 +1,13 @@
 
+2014-09-12  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* cobc.c [_MSC_VER] : correct handling of -l (add .lib and pass to linker)
+   * cobc.c, cobc.h, error.c : message style change according to C compiler,
+	  can be changed via COB_MSG_FORMAT (GCC/MSC)
+	* cobc.c (process) [_MSC_VER] : bugfix in output filter
+	* parser.y, reserved.c, typeck.c : Added parser support for OCCURS DYNAMIC
+	  along with CAPACITY clause as not implemented
+
 2014-09-08  Philipp Böhme <phi.boehme@googlemail.com>
 
 	* cobc.c (process) [_MSC_VER] : bugfix in output filter
@@ -9,8 +18,12 @@
 	  (Own freeing functions for debugging purposes. 
 	  (e.g. to locate heap crashes caused by malloc/free))	
 	* change all free() to cobc_free()
-	* cobc.c (process) [_MSC_VER]: cob_malloc() to cobc_malloc() 
+	* cobc.c (process) [_MSC_VER]: cob_malloc() to cobc_malloc()
 	* cobc.c: use COB_PIC_FLAGS for CB_LEVEL_ASSEMBLE
+
+2014-08-25  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* parser.y: never warn ENTRY as unreachable
 
 2014-07-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
@@ -19,18 +32,18 @@
 	* config.c, cobc.c, error.c (configuration_error): new function for errors
 	  concerning configuration options --conf / --cb_conf /
 	  configuration parsing, complete rewrite of configuration error messages
-	* parser.y, parser.c: Added WITH DEFAULT as alias for WITH UPDATE
-	* config.def, parser.y, parser.c: new configuration option accept-update
+	* parser.y : Added WITH DEFAULT as alias for WITH UPDATE
+	* config.def, parser.y : new configuration option accept-update
 	  for setting WITH UPDATE/DEFAULT clause as standard, adding new extension
 	  WITH NO UPDATE/DEFAULT to disable this behaviour explicit
-	* config.def, parser.y, parser.c: new configuration option accept-auto
+	* config.def, parser.y : new configuration option accept-auto
 	  for setting WITH AUTO clause as standard, adding new extension
 	  WITH TAB to disable this behaviour explicit
 
 2014-07-28  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* parser.y, parser.c: fix #88 false unreachable warning after
-	  END DECLARATIVES without main section/paragraph
+	* parser.y : fix #88 false unreachable warning after END DECLARATIVES
+	  without main section/paragraph
 
 2014-07-10  Philipp Böhme <phi.boehme@googlemail.com>
 
@@ -60,7 +73,7 @@
 2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* scanner.* : Fixing #71 Referencing GLOBAL 78/CONSTANT in SELECT
-	  causes internal error 
+	  causes internal error
 
 2014-05-26  Ron Norman <rjn@inglenet.com>
 
@@ -68,35 +81,35 @@
 
 2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* parser.* : Added extension "USE AT PROGRAM START/END" as not implemented
+	* parser.y : Added extension "USE AT PROGRAM START/END" as not implemented
 
 2014-05-14  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* cobc.c : Catch and treat error when no disc space is available for 
+	* cobc.c : Catch and treat error when no disc space is available for
 	  output files
 
 2014-04-30  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* parser.* : Added extension "GOBACK/EXIT PROGRAM RETURNING/GIVING x"
+	* parser.y : Added extension "GOBACK/EXIT PROGRAM RETURNING/GIVING x"
 
 2014-04-29  Philipp Böhme <phi.boehme@googlemail.com>
 
-	* codeoptim.c : Fixed bug in COB_ADD_PACKED_INT. 
-	  Computing COMP-3 failed in MSVC-build versions, 
+	* codeoptim.c : Fixed bug in COB_ADD_PACKED_INT.
+	  Computing COMP-3 failed in MSVC-build versions,
 	  in output_storage() calls '%' should be '%%'.
 
 2014-03-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* field.c : Added check for maximum size of group/alphanumeric items
 
-2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+2014-02-17  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* cobc.c : Tweaked --info for showing current settings (environment) along
 	  with settings hard-wired during build (COB_xyz)
 
-2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+2014-01-07  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* parser.* : Bugfix: no exception check for NULL address on FREE statement
+	* parser.y : Bugfix: no exception check for NULL address on FREE statement
 	  (as this is explicit allowed)
 
 2014-01-02  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
@@ -110,7 +123,7 @@
 
 201?-??-??  ??
 
-	* parser.* : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE
+	* parser.y : Added checks for RETURNING item: OCCURS, LOCAL-STORAGE
 
 
 2010-06-28  Roger While <simrw@sim-basis.de>
@@ -124,19 +137,19 @@
 	  --info with most important configuration/environment details
 	  --list-system for displaying all registered system routines
 
-20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* codegen.c : Simplify by handling stuff for different compilers
 	  by general define (COB_ALIGN)
 
 20??-??-??  Roger While <simrw@sim-basis.de>
 
-	* cobc.c, cobc.h, tree.h : Simplify by handling stuff for 
+	* cobc.c, cobc.h, tree.h : Simplify by handling stuff for
 	  different compilers by general defines (CB_COPT_x, COB_A_...),
 	  added parsing step and source name to verbose messages,
 	  added some comments
 
-20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+20??-??-??  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* cobc.c, cobc.h, tree.c, typeck.c : adjustments for MSC,
 	  fix some compiler warnings, support possible spaces in different
@@ -148,11 +161,11 @@
 	* typeck.c : Added validate_inspect for check of operands in
 	  INSPECT REPLACING/CONVERTING
 
-2009-10-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+2009-10-29  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* cobc.c : Warn if -Debug is used (because likely -debug was intended)
 
-2009-10-08  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+2009-10-08  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* error.c, field.c, typeck.c : Fix field names "WORK$"->"FILLER"
 	  in warning/error messages
@@ -170,7 +183,7 @@
 
 	* parser.y : exclude level 77 from "Item requires a data name" check
 
-2009-08-06  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net> 
+2009-08-06  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* parser.y : Add output of unreachable statement to -Wunreachable
 

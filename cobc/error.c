@@ -38,6 +38,9 @@ static struct cb_label	*last_paragraph = NULL;
 
 static unsigned int conf_error_displayed = 0;
 
+
+size_t				cb_msg_style;
+
 static void
 print_error (const char *file, int line, const char *prefix,
 	     const char *fmt, va_list ap)
@@ -70,7 +73,11 @@ print_error (const char *file, int line, const char *prefix,
 	}
 
 	/* Print the error */
-	fprintf (stderr, "%s: %d: %s", file, line, prefix);
+    if (cb_msg_style == CB_MSG_STYLE_MSC) {
+		fprintf (stderr, "%s (%d): %s", file, line, prefix);
+	} else {
+		fprintf (stderr, "%s: %d: %s", file, line, prefix);
+	}
 	vfprintf (stderr, fmt, ap);
 	putc ('\n', stderr);
 }

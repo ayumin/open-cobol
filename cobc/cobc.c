@@ -1656,6 +1656,14 @@ cobc_print_info (void)
 	if ((s = getenv ("COBCPY")) != NULL) {
 		cobc_var_print ("COBCPY",	s, 1);
 	}
+	if (cb_msg_style == CB_MSG_STYLE_MSC) {
+		cobc_var_print ("COB_MSG_FORMAT",	"MSC", 0);
+	} else {
+		cobc_var_print ("COB_MSG_FORMAT",	"GCC", 0);
+	}
+	if ((s = getenv ("COB_MSG_FORMAT")) != NULL) {
+		cobc_var_print ("COB_MSG_FORMAT",	s, 1);
+	}
 #if 0 /* Simon: only relevant for libcob */
 	if ((s = getenv ("COB_LIBRARY_PATH")) != NULL) {
 		cobc_var_print ("COB_LIBRARY_PATH",	s, 1);
@@ -2187,7 +2195,7 @@ process_command_line (const int argc, char **argv)
 				cobc_err_exit (COBC_INV_PAR, "-l");
 			}
 #ifdef	_MSC_VER
-			COBC_ADD_STR (cobc_libs, " \"", cob_optarg, "\"");
+			COBC_ADD_STR (cobc_libs, " \"", cob_optarg, ".lib\"");
 #else
 			COBC_ADD_STR (cobc_libs, " -l\"", cob_optarg, "\"");
 #endif
@@ -2949,6 +2957,8 @@ process (const char *cmd, struct filename *fn)
 	char* output_name_temp;
 	int i;
 
+	const char * sep = "|?|";
+
 	/* if we are verbose, we don't need to filter anything */
 	if (verbose_output) {
 		cobc_cmd_print (cmd);
@@ -2963,10 +2973,10 @@ process (const char *cmd, struct filename *fn)
 	if(output_name) output_name_temp = file_basename(output_name);
 	else output_name_temp = (char *) fn->demangle_source;
 
-	search_pattern = (char*) cobc_malloc(fn->translate_len - i + 1);
-	snprintf(search_pattern, fn->translate_len - i, "%s#", fn->translate + i + 1); 
-	search_pattern2 = (char*) cobc_malloc(2 * (strlen(output_name_temp) + 4) + 3);
-	sprintf(search_pattern2, "%s.lib#%s.exp#", output_name_temp, output_name_temp);
+	search_pattern = (char*) cobc_malloc(fn->translate_len - i + strlen (sep));
+	snprintf(search_pattern, fn->translate_len - i, "%s%s", fn->translate + i + 1, sep); 
+	search_pattern2 = (char*) cobc_malloc(2 * (strlen(output_name_temp) + 4) + 2 * strlen (sep) + 1);
+	sprintf(search_pattern2, "%s.lib%s%s.exp%s", output_name_temp, sep, output_name_temp, sep);
 
 	/* Open pipe to catch output of cl.exe */
 	pipe = _popen(cmd, "r");
@@ -2976,6 +2986,7 @@ process (const char *cmd, struct filename *fn)
 		/* prepare buffer and read from pipe */
 		read_buffer = (char*) cobc_malloc(COB_FILE_BUFF);
 		line_start = read_buffer;
+		line_end = 0;
 		
 		/* reading two lines to filter unnecessary outputs */
 		for(i = 0; i < 2; i++) {
@@ -2995,10 +3006,9 @@ process (const char *cmd, struct filename *fn)
 				fprintf(stdout, "%*s", line_end - line_start + 2, line_start);
 			}
 		}
-		line_start = line_end + 1;
 
 		/* print rest of buffer */
-		fprintf(stdout, line_start);
+		fprintf(stdout, line_end + 1);
 		fflush(stdout);
 
 		while(fgets(read_buffer, COB_FILE_BUFF - 1, pipe) != NULL) {
@@ -3528,8 +3538,8 @@ process_module_direct (struct filename *fn)
 		"%s %s %s /Od /MDd /LDd /Zi /FR /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s" :
 		"%s %s %s /MD /LD /Fe\"%s\" /Fo\"%s\" \"%s\" %s %s %s %s",
 			cobc_cc, cobc_cflags, cobc_include, name, name,
-			fn->translate, cobc_libs,
-			manilink, cobc_ldflags, cobc_lib_paths);
+			fn->translate,
+			manilink, cobc_ldflags, cobc_libs, cobc_lib_paths);
 	ret = process (cobc_buffer, fn);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3627,8 +3637,8 @@ process_module (struct filename *fn)
 	sprintf (cobc_buffer, gflag_set ?
 		"%s /Od /MDd /LDd /Zi /FR /Fe\"%s\" \"%s\" %s %s %s %s" :
 		"%s /MD /LD /Fe\"%s\" \"%s\" %s %s %s %s",
-		cobc_cc, name, fn->object, cobc_libs,
-		manilink, cobc_ldflags, cobc_lib_paths);
+		cobc_cc, name, fn->object,
+		manilink, cobc_ldflags, cobc_libs, cobc_lib_paths);
 	ret = process (cobc_buffer, fn);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3719,8 +3729,8 @@ process_library (struct filename *l)
 	sprintf (cobc_buffer, gflag_set ?
 		"%s /Od /MDd /LDd /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
 		"%s /MD /LD /Fe\"%s\" %s %s %s %s %s",
-		cobc_cc, name, cobc_objects_buffer, cobc_libs,
-		manilink, cobc_ldflags, cobc_lib_paths);
+		cobc_cc, name, cobc_objects_buffer,
+		manilink, cobc_ldflags, cobc_libs, cobc_lib_paths);
 	ret = process (cobc_buffer, l);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -3809,8 +3819,8 @@ process_link (struct filename *l)
 	sprintf (cobc_buffer, gflag_set ?
 		"%s /Od /MDd /Zi /FR /Fe\"%s\" %s %s %s %s %s" :
 		"%s /MD /Fe\"%s\" %s %s %s %s %s",
-		cobc_cc, name, cobc_objects_buffer, cobc_libs,
-		manilink, cobc_ldflags, cobc_lib_paths);
+		cobc_cc, name, cobc_objects_buffer,
+		manilink, cobc_ldflags, cobc_libs, cobc_lib_paths);
 	ret = process (cobc_buffer, l);
 #if	_MSC_VER >= 1400
 	/* Embedding manifest */
@@ -4088,6 +4098,22 @@ main (int argc, char **argv)
 	} else {
 		COBC_ADD_STR (cobc_lib_paths, " ", NULL, NULL);
 	}
+
+	/* Different styles for warning/error messages */
+	p = cobc_getenv ("COB_MSG_FORMAT");
+#if defined (_MSC_VER)
+	if (p && strcasecmp(p, "GCC") == 0) {
+		cb_msg_style = CB_MSG_STYLE_GCC;
+	} else {
+		cb_msg_style = CB_MSG_STYLE_MSC;
+	}
+#else
+	if (p && strcasecmp(p, "MSC") == 0) {
+		cb_msg_style = CB_MSG_STYLE_MSC;
+	} else {
+		cb_msg_style = CB_MSG_STYLE_GCC;
+	}
+#endif
 
 	/* Set default computed goto usage if appropriate */
 #if	defined(__GNUC__) && !defined(__clang__)

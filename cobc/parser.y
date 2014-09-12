@@ -798,6 +798,7 @@ check_headers_present (const unsigned int lev1, const unsigned int lev2,
 %token BYTE_LENGTH		"BYTE-LENGTH"
 %token CALL
 %token CANCEL
+%token CAPACITY
 %token CF
 %token CH
 %token CHAINING
@@ -4145,6 +4146,24 @@ occurs_clause:
 	}
 	current_field->flag_occurs = 1;
   }
+| OCCURS DYNAMIC capacity_in occurs_from_integer
+  occurs_to_integer occurs_initialized occurs_keys occurs_indexed
+  {
+	current_field->occurs_min = $4 ? cb_get_int ($4) : cb_int0;
+	PENDING("OCCURS with DYNAMIC capacity");
+	current_field->occurs_max = $5 ? cb_get_int ($5) : cb_int0;
+	current_field->indexes++;
+	if (current_field->indexes > COB_MAX_SUBSCRIPTS) {
+		cb_error (_("Maximum OCCURS depth exceeded (%d)"),
+			  COB_MAX_SUBSCRIPTS);
+	}
+	if (current_field->flag_item_based) {
+		cb_error (_("BASED and OCCURS are mutually exclusive"));
+	} else if (current_field->flag_external) {
+		cb_error (_("EXTERNAL and OCCURS are mutually exclusive"));
+	}
+	current_field->flag_occurs = 1;
+  }
 ;
 
 occurs_to_integer:
@@ -4152,10 +4171,30 @@ occurs_to_integer:
 | TO integer			{ $$ = $2; }
 ;
 
+occurs_from_integer:
+  /* empty */			{ $$ = NULL; }
+| FROM integer			{ $$ = $2; }
+;
+
 occurs_depending:
 | DEPENDING _on reference
   {
 	current_field->depending = $3;
+  }
+;
+
+capacity_in:
+| CAPACITY _in WORD
+  {
+	$$ = cb_build_index ($3, cb_zero, 0, current_field);
+	CB_FIELD_PTR ($$)->special_index = 1;
+  }
+;
+
+occurs_initialized:
+| INITIALIZED
+  {
+	/* current_field->initialized = 1; */
   }
 ;
 
@@ -6695,6 +6734,7 @@ end_divide:
 entry_statement:
   ENTRY
   {
+	check_unreached = 0;
 	begin_statement ("ENTRY", 0);
   }
   entry_body
@@ -6712,7 +6752,6 @@ entry_body:
 			emit_entry ((char *)(CB_LITERAL ($1)->data), 1, $2);
 		}
 	}
-	check_unreached = 0;
   }
 ;
 

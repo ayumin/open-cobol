@@ -418,6 +418,11 @@ extern size_t		suppress_warn;
 extern void		cob_gen_optim (const enum cb_optim);
 
 /* error.c */
+#define CB_MSG_STYLE_GCC	0
+#define CB_MSG_STYLE_MSC	1U
+
+extern size_t		cb_msg_style;
+
 extern void		cb_warning (const char *, ...) COB_A_FORMAT12;
 extern void		cb_error (const char *, ...) COB_A_FORMAT12;
 extern void		cb_plex_warning (const size_t,

@@ -228,7 +228,7 @@ static const struct cobc_reserved reserved_words[] = {
   { "AUTOTERMINATE",		0, 0, AUTO,			/* Extension */
 				0, 0
   },
-  { "AWAY-FROM-ZERO",		0, 1, AWAY_FROM_ZERO,		/* 2008 (C/S) */
+  { "AWAY-FROM-ZERO",		0, 1, AWAY_FROM_ZERO,		/* 2014 (C/S) */
 				0, CB_CS_ROUNDED
   },
   { "B-AND",			0, 0, -1,			/* 2002 */
@@ -315,14 +315,16 @@ static const struct cobc_reserved reserved_words[] = {
   { "CANCEL",			0, 0, CANCEL,			/* 2002 */
 				0, 0
   },
-  { "CAPACITY",			0, 1, -1,			/* 2008 (C/S) */
+  { "CAPACITY",			0, 1, CAPACITY,			/* 2014 (C/S) */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to OCCURS clause */
   },
   { "CD",			0, 0, 0,			/* 85 CM */
 				0, 0
   },
   { "CENTER",			0, 1, -1,			/* 2002 (C/S) */
 				0, 0
+	/* FIXME + Check: 2014 Context-sensitive to COLUMN clause */
   },
   { "CF",			0, 0, CF,			/* 2002 */
 				0, 0
@@ -848,7 +850,7 @@ static const struct cobc_reserved reserved_words[] = {
   { "FUNCTION-ID",		0, 0, FUNCTION_ID,		/* 2002 */
 				0, 0
   },
-  { "FUNCTION-POINTER",		0, 0, -1,			/* 2008 */
+  { "FUNCTION-POINTER",		0, 0, -1,			/* 2014 */
 				0, 0
   },
   { "GENERATE",			0, 0, GENERATE,			/* 2002 */
@@ -946,6 +948,7 @@ static const struct cobc_reserved reserved_words[] = {
   },
   { "INITIALIZED",		0, 0, INITIALIZED,		/* 2002 */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to ALLOCATE statement and OCCURS clause */
   },
   { "INITIATE",			0, 0, INITIATE,			/* 2002 */
 				0, 0
@@ -967,6 +970,7 @@ static const struct cobc_reserved reserved_words[] = {
   },
   { "INTERMEDIATE",		0, 1, -1,			/* 2008 (C/S) */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to OPTIONS paragraph */
   },
   { "INTO",			0, 0, INTO,			/* 2002 */
 				0, 0
@@ -1294,6 +1298,7 @@ static const struct cobc_reserved reserved_words[] = {
   },
   { "PREFIXED",			0, 1, -1,			/* 2008 (C/S) */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to ANY LENGTH STRUCTURE clause */
   },
   { "PRESENT",			0, 0, PRESENT,			/* 2002 */
 				0, 0
@@ -1483,6 +1488,7 @@ static const struct cobc_reserved reserved_words[] = {
   },
   { "ROUNDING",			0, 1, -1,			/* 2002 (C/S) */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to OPTIONS paragraph */
   },
   { "RUN",			0, 0, RUN,			/* 2002 */
 				0, 0
@@ -1544,11 +1550,18 @@ static const struct cobc_reserved reserved_words[] = {
   { "SHARING",			0, 0, SHARING,			/* 2002 */
 				0, 0
   },
+#if 0 /* FIXME: 2014 Context-sensitive to ANY LENGTH STRUCTURE clause */
+  { "SHORT",			0, 0, -1,			/* 2014 */
+				0, 0
+  },
+#endif  
   { "SIGN",			0, 0, SIGN,			/* 2002 */
 				0, 0
   },
   { "SIGNED",			0, 0, SIGNED,			/* 2002 (C/S) */
 				0, 0
+	/* FIXME: 2014 Context-sensitive to ANY LENGTH STRUCTURE clause
+	   and USAGE clause */
   },
   { "SIGNED-INT",		0, 0, SIGNED_INT,		/* Extension */
 				0, 0
@@ -1594,6 +1607,7 @@ static const struct cobc_reserved reserved_words[] = {
   },
 	/* Note EBCDIC! */
 #ifdef	COB_EBCDIC_MACHINE
+	/* FIXME: 2014 Both are Context-sensitive to ARITHMETIC clause */
   { "STANDARD-BINARY",		0, 1, -1,			/* 2008 (C/S) */
 				0, 0
   },
@@ -1736,10 +1750,10 @@ static const struct cobc_reserved reserved_words[] = {
   { "TOP",			0, 0, TOP,			/* 2002 */
 				0, 0
   },
-  { "TOWARD-GREATER",		0, 1, TOWARD_GREATER,		/* 2008 (C/S) */
+  { "TOWARD-GREATER",		0, 1, TOWARD_GREATER,		/* 2014 (C/S) */
 				0, CB_CS_ROUNDED
   },
-  { "TOWARD-LESSER",		0, 1, TOWARD_LESSER,		/* 2008 (C/S) */
+  { "TOWARD-LESSER",		0, 1, TOWARD_LESSER,		/* 2014 (C/S) */
 				0, CB_CS_ROUNDED
   },
   { "TRAILING",			0, 0, TRAILING,			/* 2002 */
@@ -1754,7 +1768,7 @@ static const struct cobc_reserved reserved_words[] = {
   { "TRUE",			0, 0, TOK_TRUE,			/* 2002 */
 				0, 0
   },
-  { "TRUNCATION",		0, 1, TRUNCATION,		/* 2008 (C/S) */
+  { "TRUNCATION",		0, 1, TRUNCATION,		/* 2014 (C/S) */
 				0, CB_CS_ROUNDED
   },
   { "TYPE",			0, 0, TYPE,			/* 2002 */
