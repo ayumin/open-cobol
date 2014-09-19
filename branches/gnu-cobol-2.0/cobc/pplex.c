@@ -28,7 +28,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_SUBMINOR_VERSION 37
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -161,15 +161,7 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
-#define YY_BUF_SIZE 32768
-#else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -181,7 +173,12 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int ppleng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t ppleng;
 
 extern FILE *ppin, *ppout;
 
@@ -207,11 +204,6 @@ extern FILE *ppin, *ppout;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -229,7 +221,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -299,8 +291,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when pptext is formed. */
 static char yy_hold_char;
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
-int ppleng;
+static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
+yy_size_t ppleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -328,7 +320,7 @@ static void pp_init_buffer (YY_BUFFER_STATE b,FILE *file  );
 
 YY_BUFFER_STATE pp_scan_buffer (char *base,yy_size_t size  );
 YY_BUFFER_STATE pp_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE pp_scan_bytes (yyconst char *bytes,int len  );
+YY_BUFFER_STATE pp_scan_bytes (yyconst char *bytes,yy_size_t len  );
 
 void *ppalloc (yy_size_t  );
 void *pprealloc (void *,yy_size_t  );
@@ -2168,7 +2160,7 @@ static void	check_comments		(const char *, const char *);
 
 
 
-#line 2172 "pplex.c"
+#line 2164 "pplex.c"
 
 #define INITIAL 0
 #define COPY_STATE 1
@@ -2242,12 +2234,7 @@ static int input (void );
     
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
-#else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -2357,7 +2344,7 @@ YY_DECL
 
 
 
-#line 2361 "pplex.c"
+#line 2348 "pplex.c"
 
 	if ( !(yy_init) )
 		{
@@ -3502,7 +3489,7 @@ YY_RULE_SETUP
 #line 715 "pplex.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3506 "pplex.c"
+#line 3493 "pplex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3687,21 +3674,21 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			int num_to_read =
+			yy_size_t num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
 
 			if ( b->yy_is_our_buffer )
 				{
-				int new_size = b->yy_buf_size * 2;
+				yy_size_t new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -3732,7 +3719,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), (size_t) num_to_read );
+			(yy_n_chars), num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -3828,7 +3815,7 @@ static int yy_get_next_buffer (void)
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 	yy_is_jam = (yy_current_state == 1081);
 
-	return yy_is_jam ? 0 : yy_current_state;
+		return yy_is_jam ? 0 : yy_current_state;
 }
 
     static void yyunput (int c, register char * yy_bp )
@@ -3843,7 +3830,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
+		register yy_size_t number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -3892,7 +3879,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (yy_c_buf_p) - (yytext_ptr);
+			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -4166,7 +4153,7 @@ void pppop_buffer_state (void)
  */
 static void ppensure_buffer_stack (void)
 {
-	int num_to_alloc;
+	yy_size_t num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -4675,6 +4662,7 @@ ppinput (char *buff, const size_t max_size)
 {
 	char	*bp;
 	size_t	gotcr;
+	size_t	line_overflow;
 	size_t	continuation;
 	int	ipchar;
 	int	i;
@@ -4689,7 +4677,7 @@ start:
 		     (newline_count + PPLEX_BUFF_LEN) >= max_size)) {
 		if (need_continuation || continuation) {
 			cb_plex_error (newline_count,
-					_("Buffer overrun - Literal too long - Aborting"));
+					_("Buffer overrun - Too much continuation lines"));
 			return YY_NULL;
 		}
 		if (newline_count < max_size) {
@@ -4708,8 +4696,14 @@ start:
 		return ipchar;
 	}
 	gotcr = 0;
+	line_overflow = 0;
 	ipchar = 0;
-	for (n = 0; n < PPLEX_BUFF_LEN && ipchar != '\n';) {
+	for (n = 0; ipchar != '\n';) {
+		if (unlikely(n == PPLEX_BUFF_LEN)) {
+			if (line_overflow != 2) {
+				line_overflow = 1;
+			}
+		}
 		ipchar = getc (ppin);
 		if (unlikely(ipchar == EOF)) {
 			if (n > 0) {
@@ -4733,7 +4727,11 @@ start:
 		if (unlikely(gotcr)) {
 			gotcr = 0;
 			if (ipchar != '\n') {
-				buff[n++] = '\r';
+				if (likely(line_overflow == 0)) {
+					buff[n++] = '\r';
+				} else {
+					line_overflow = 2;
+				}
 			}
 		}
 		if (unlikely(ipchar == '\r')) {
@@ -4741,22 +4739,46 @@ start:
 			continue;
 		}
 		if (unlikely(ipchar == '\t')) {
-			buff[n++] = ' ';
-			while (n % cb_tab_width != 0) {
+			if (likely(line_overflow == 0)) {
 				buff[n++] = ' ';
-			}
-			/* Prevent heap smash */
-			if (n > PPLEX_BUFF_LEN - 16) {
-				break;
+				while (n % cb_tab_width != 0) {
+					buff[n++] = ' ';
+				}
+				if (unlikely(n > PPLEX_BUFF_LEN)) {
+					n = PPLEX_BUFF_LEN;
+				}
 			}
 			continue;
 		}
-		buff[n++] = (char)ipchar;
+		if (likely(line_overflow == 0)) {
+			buff[n++] = (char)ipchar;
+		} else if ((char)ipchar != ' ' && (char)ipchar != '\n') {
+			line_overflow = 2;
+		}
 	}
 
 	if (buff[n - 1] != '\n') {
-		cb_plex_warning (newline_count,
-				 _("Line not terminated by a newline"));
+		/* FIXME: cb_source_line is one too low when CB_FORMAT_FREE is used
+		   [but only during ppinput() in pplex.l ?] - Workaround for now:
+		   Temporary newline_fixme
+		*/
+		if (cb_source_format == CB_FORMAT_FREE) {
+			if (line_overflow == 0) {
+				cb_plex_warning (newline_count + 1,
+						 _("Line not terminated by a newline"));
+			} else if (line_overflow == 2) {
+				cb_plex_warning (newline_count + 1,
+						 _("Source text exceeds %d bytes, will be truncated"), PPLEX_BUFF_LEN);
+			}
+		} else {
+			if (line_overflow == 0) {
+				cb_plex_warning (newline_count,
+						 _("Line not terminated by a newline"));
+			} else if (line_overflow == 2) {
+				cb_plex_warning (newline_count,
+						 _("Source text exceeds %d bytes, will be truncated"), PPLEX_BUFF_LEN);
+			}
+		}
 		buff[n++] = '\n';
 	}
 	buff[n] = 0;
@@ -4777,21 +4799,27 @@ start:
 
 		/* Check if text is longer than cb_text_column */
 		if (n > cb_text_column + 1) {
-			/* Show warning if it is not whitespace */
-			if (cb_warn_column_overflow) {
+			/* Show warning if it is not whitespace
+			   (postponed after checking for comments by setting
+			    line_overflow to first column that leads to
+				"source text too long")
+			*/
+			if (cb_warn_column_overflow && line_overflow == 0) {
 				for (coln = cb_text_column; coln < n; ++coln) {
 					if (buff[coln] != ' ' && buff[coln] != '\n') {
-						cb_plex_warning (newline_count,
-								 _("Source text after column %d"),
-							    cb_text_column);
+						line_overflow = coln;
 						break;
 					}
 				}
+			} else {
+				line_overflow = 0;
 			}
 			/* Remove it */
 			buff[cb_text_column] = '\n';
 			buff[cb_text_column + 1] = 0;
 			n = cb_text_column + 1;
+		} else {
+			line_overflow = 0;
 		}
 
 		memset (buff, ' ', (size_t)6);
@@ -4801,7 +4829,7 @@ start:
 		bp = buff;
 	}
 
-	/* Check for directives/floating comment */
+	/* Check for directives/floating comment at first non-space of line */
 	ipchar = 0;
 	i = 0;
 	for (; *bp; bp++) {
@@ -4838,8 +4866,8 @@ start:
 		goto start;
 	}
 
-	/* Return when free format */
-	if (cb_source_format != CB_FORMAT_FIXED) {
+	/* Return when free format (no floating comments removed!) */
+	if (cb_source_format == CB_FORMAT_FREE) {
 		within_comment = 0;
 		if (newline_count) {
 			memmove (buff + newline_count, buff, (size_t)(n + 1));
@@ -4959,12 +4987,17 @@ start:
 	/* Check if string literal is to be continued */
 	for (i = bp - buff; buff[i] != '\n'; ++i) {
 		/* Pick up floating comment and force loop exit */
-		if (buff[i] == '*' && buff[i + 1] == '>' && !quotation_mark) {
+		if (!quotation_mark && ((buff[i] == '*' && buff[i + 1] == '>') ||
+			                    (cb_flag_acucomment && buff[i] == '|') ) ) {
+			/* remove indicator "source text too long" if the column
+			   leading to the indicator comes after the floating comment
+			*/
+			if (i < cb_text_column) {
+				line_overflow = 0;
+			}
 			/* Set to null, 'i' is predecremented further below */
-#if	1	/* RXWRXW - Float comment */
 			buff[i] = 0;
 			break;
-#endif
 		} else if (buff[i] == '\'' || buff[i] == '"') {
 			if (quotation_mark == 0) {
 				/* Literal start */
@@ -5006,6 +5039,14 @@ start:
 		buff[i + 1] = 0;
 	}
 
+	/* Show warning if text is longer than cb_text_column
+	   and not whitespace (postponed here) */
+	if (line_overflow != 0) {
+		cb_plex_warning (newline_count,
+					_("Source text after column %d"),
+				cb_text_column);
+	}
+
 	if (unlikely(continuation)) {
 		gotcr = strlen (bp);
 		memmove (buff, bp, gotcr + 1);
@@ -5013,7 +5054,7 @@ start:
 	} else {
 		/* Insert newlines at the start of the buffer */
 		gotcr = strlen (buff);
-		if (newline_count) {
+		if (newline_count != 0) {
 			memmove (buff + newline_count, buff, gotcr + 1);
 			memset (buff, '\n', newline_count);
 			gotcr += newline_count;

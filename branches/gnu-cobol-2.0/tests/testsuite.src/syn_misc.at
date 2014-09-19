@@ -444,6 +444,837 @@ AT_CHECK([$COMPILE_ONLY -cb_conf=accept-auto:yes prog.cob], [0], [], [])
 AT_CLEANUP
 
 
+AT_SETUP([Source text after column 72 in Fixed-form])
+AT_KEYWORDS([misc fixed])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.                                       COMMENT
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -W prog.cob], [0], [],
+[prog.cob: 8: Warning: Source text after column 72
+])
+
+AT_CLEANUP
+
+
+AT_SETUP([Line overflow in Fixed-form / Free-form])
+AT_KEYWORDS([misc])
+
+# We're testing trailing tabs and whitespace (should not lead to warning)
+# along with comments after boundaries (col 72 / col 512)
+
+# AT_DATA removes trailing spaces, workaround: add "_" and
+# remove it later via sed
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.                                           																																																																																																																																		_
+       DATA             DIVISION.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  _
+       WORKING-STORAGE  SECTION.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   *> This is a real comment
+       PROCEDURE        DIVISION.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This is commentary only
+           CONTINUE.                                              *> comment after column 72
+      *    This is a very long comment that exceeds column 72 but doesn't exceed 512 bytes, therefore not leading to a line overflow. As it is a comment line there is no "Source text after column 72" warning
+           CONTINUE.                                                    CONTINUE.
+           CONTINUE.                                                                        _
+           STOP RUN.
+])
+
+# AT_DATA workaround via sed:
+AT_CHECK([sed -i -e 's/_$//' prog.cob], [0])
+
+AT_CHECK([$COMPILE_ONLY -fixed -W prog.cob], [0], [],
+[prog.cob: 7: Warning: Source text exceeds 512 bytes, will be truncated
+prog.cob: 8: Warning: Source text exceeds 512 bytes, will be truncated
+prog.cob: 11: Warning: Source text after column 72
+])
+
+AT_CHECK([$COMPILE_ONLY -free -W prog.cob], [1], [],
+[prog.cob: 7: Warning: Source text exceeds 512 bytes, will be truncated
+prog.cob: 8: Warning: Source text exceeds 512 bytes, will be truncated
+prog.cob: 8: Error: Unknown statement 'This'
+])
+
+AT_CLEANUP
+
+
+AT_SETUP([Continuation Indicator - Literal too long])
+AT_KEYWORDS([misc fixed])
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    ' ' END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -std=default prog.cob], [1], [],
+[prog.cob: 538: Error: Buffer overrun - Too much continuation lines
+])
+
+AT_CLEANUP
+
+
+AT_SETUP([Literal too long])
+AT_KEYWORDS([misc])
+
+# Currently not checked, see Feature Request #43
+AT_SKIP_IF(true)
+
+AT_DATA([prog.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    '
+      -    ' ' END-DISPLAY.
+           STOP RUN.
+])
+
+AT_DATA([prog2.cob], [
+       IDENTIFICATION   DIVISION.
+       PROGRAM-ID.      prog2.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       DATA             DIVISION.
+       WORKING-STORAGE  SECTION.
+       PROCEDURE        DIVISION.
+           DISPLAY '    '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           '                                                                                                                                                                                                                                             '-
+           ' ' END-DISPLAY.
+           STOP RUN.
+])
+
+AT_CHECK([$COMPILE_ONLY -std=default -fixed prog.cob], [1], [],
+[prog.cob: 148: Error: Literal too long, exceeds 8191 alphanumeric character positions.
+])
+
+AT_CHECK([$COMPILE_ONLY -std=default -free prog2.cob], [1], [],
+[prog.cob: 45: Error: Literal too long, exceeds 8191 alphanumeric character positions.
+])
+
+AT_CLEANUP
+
+
 AT_SETUP([Line and floating comments])
 AT_KEYWORDS([misc extensions])
 

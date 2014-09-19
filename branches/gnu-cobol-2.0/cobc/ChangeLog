@@ -1,8 +1,14 @@
 
+2014-09-18  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
+
+	* pplex.l : bug #96 prevent line overflow, add warning "Source text too long"
+	* pplex.l : only show warning "Source text after column ..." if no comment was
+	  started in this line before
+
 2014-09-12  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
 	* cobc.c [_MSC_VER] : correct handling of -l (add .lib and pass to linker)
-   * cobc.c, cobc.h, error.c : message style change according to C compiler,
+	* cobc.c, cobc.h, error.c : message style change according to C compiler,
 	  can be changed via COB_MSG_FORMAT (GCC/MSC)
 	* cobc.c (process) [_MSC_VER] : bugfix in output filter
 	* parser.y, reserved.c, typeck.c : Added parser support for OCCURS DYNAMIC
@@ -72,7 +78,7 @@
 
 2014-05-20  Simon 'sf-mensch/human' Sobisch <sf-mensch@users.sf.net>
 
-	* scanner.* : Fixing #71 Referencing GLOBAL 78/CONSTANT in SELECT
+	* scanner.l : Fixing #71 Referencing GLOBAL 78/CONSTANT in SELECT
 	  causes internal error
 
 2014-05-26  Ron Norman <rjn@inglenet.com>
@@ -133,7 +139,7 @@
 
 20??-??-??  Roger While <simrw@sim-basis.de>
 
-	* cobc.*, codegen.c, tree.h, typeck.c : Adding new commands to cobc
+	* cobc.c, cobc.h, codegen.c, tree.h, typeck.c : Adding new commands to cobc
 	  --info with most important configuration/environment details
 	  --list-system for displaying all registered system routines
 
