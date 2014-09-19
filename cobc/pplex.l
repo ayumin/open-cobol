@@ -1007,6 +1007,7 @@ ppinput (char *buff, const size_t max_size)
 {
 	char	*bp;
 	size_t	gotcr;
+	size_t	line_overflow;
 	size_t	continuation;
 	int	ipchar;
 	int	i;
@@ -1021,7 +1022,7 @@ start:
 		     (newline_count + PPLEX_BUFF_LEN) >= max_size)) {
 		if (need_continuation || continuation) {
 			cb_plex_error (newline_count,
-					_("Buffer overrun - Literal too long - Aborting"));
+					_("Buffer overrun - Too much continuation lines"));
 			return YY_NULL;
 		}
 		if (newline_count < max_size) {
@@ -1040,8 +1041,14 @@ start:
 		return ipchar;
 	}
 	gotcr = 0;
+	line_overflow = 0;
 	ipchar = 0;
-	for (n = 0; n < PPLEX_BUFF_LEN && ipchar != '\n';) {
+	for (n = 0; ipchar != '\n';) {
+		if (unlikely(n == PPLEX_BUFF_LEN)) {
+			if (line_overflow != 2) {
+				line_overflow = 1;
+			}
+		}
 		ipchar = getc (ppin);
 		if (unlikely(ipchar == EOF)) {
 			if (n > 0) {
@@ -1065,7 +1072,11 @@ start:
 		if (unlikely(gotcr)) {
 			gotcr = 0;
 			if (ipchar != '\n') {
-				buff[n++] = '\r';
+				if (likely(line_overflow == 0)) {
+					buff[n++] = '\r';
+				} else {
+					line_overflow = 2;
+				}
 			}
 		}
 		if (unlikely(ipchar == '\r')) {
@@ -1073,22 +1084,46 @@ start:
 			continue;
 		}
 		if (unlikely(ipchar == '\t')) {
-			buff[n++] = ' ';
-			while (n % cb_tab_width != 0) {
+			if (likely(line_overflow == 0)) {
 				buff[n++] = ' ';
-			}
-			/* Prevent heap smash */
-			if (n > PPLEX_BUFF_LEN - 16) {
-				break;
+				while (n % cb_tab_width != 0) {
+					buff[n++] = ' ';
+				}
+				if (unlikely(n > PPLEX_BUFF_LEN)) {
+					n = PPLEX_BUFF_LEN;
+				}
 			}
 			continue;
 		}
-		buff[n++] = (char)ipchar;
+		if (likely(line_overflow == 0)) {
+			buff[n++] = (char)ipchar;
+		} else if ((char)ipchar != ' ' && (char)ipchar != '\n') {
+			line_overflow = 2;
+		}
 	}
 
 	if (buff[n - 1] != '\n') {
-		cb_plex_warning (newline_count,
-				 _("Line not terminated by a newline"));
+		/* FIXME: cb_source_line is one too low when CB_FORMAT_FREE is used
+		   [but only during ppinput() in pplex.l ?] - Workaround for now:
+		   Temporary newline_fixme
+		*/
+		if (cb_source_format == CB_FORMAT_FREE) {
+			if (line_overflow == 0) {
+				cb_plex_warning (newline_count + 1,
+						 _("Line not terminated by a newline"));
+			} else if (line_overflow == 2) {
+				cb_plex_warning (newline_count + 1,
+						 _("Source text exceeds %d bytes, will be truncated"), PPLEX_BUFF_LEN);
+			}
+		} else {
+			if (line_overflow == 0) {
+				cb_plex_warning (newline_count,
+						 _("Line not terminated by a newline"));
+			} else if (line_overflow == 2) {
+				cb_plex_warning (newline_count,
+						 _("Source text exceeds %d bytes, will be truncated"), PPLEX_BUFF_LEN);
+			}
+		}
 		buff[n++] = '\n';
 	}
 	buff[n] = 0;
@@ -1109,21 +1144,27 @@ start:
 
 		/* Check if text is longer than cb_text_column */
 		if (n > cb_text_column + 1) {
-			/* Show warning if it is not whitespace */
-			if (cb_warn_column_overflow) {
+			/* Show warning if it is not whitespace
+			   (postponed after checking for comments by setting
+			    line_overflow to first column that leads to
+				"source text too long")
+			*/
+			if (cb_warn_column_overflow && line_overflow == 0) {
 				for (coln = cb_text_column; coln < n; ++coln) {
 					if (buff[coln] != ' ' && buff[coln] != '\n') {
-						cb_plex_warning (newline_count,
-								 _("Source text after column %d"),
-							    cb_text_column);
+						line_overflow = coln;
 						break;
 					}
 				}
+			} else {
+				line_overflow = 0;
 			}
 			/* Remove it */
 			buff[cb_text_column] = '\n';
 			buff[cb_text_column + 1] = 0;
 			n = cb_text_column + 1;
+		} else {
+			line_overflow = 0;
 		}
 
 		memset (buff, ' ', (size_t)6);
@@ -1133,7 +1174,7 @@ start:
 		bp = buff;
 	}
 
-	/* Check for directives/floating comment */
+	/* Check for directives/floating comment at first non-space of line */
 	ipchar = 0;
 	i = 0;
 	for (; *bp; bp++) {
@@ -1170,8 +1211,8 @@ start:
 		goto start;
 	}
 
-	/* Return when free format */
-	if (cb_source_format != CB_FORMAT_FIXED) {
+	/* Return when free format (no floating comments removed!) */
+	if (cb_source_format == CB_FORMAT_FREE) {
 		within_comment = 0;
 		if (newline_count) {
 			memmove (buff + newline_count, buff, (size_t)(n + 1));
@@ -1291,12 +1332,17 @@ start:
 	/* Check if string literal is to be continued */
 	for (i = bp - buff; buff[i] != '\n'; ++i) {
 		/* Pick up floating comment and force loop exit */
-		if (buff[i] == '*' && buff[i + 1] == '>' && !quotation_mark) {
+		if (!quotation_mark && ((buff[i] == '*' && buff[i + 1] == '>') ||
+			                    (cb_flag_acucomment && buff[i] == '|') ) ) {
+			/* remove indicator "source text too long" if the column
+			   leading to the indicator comes after the floating comment
+			*/
+			if (i < cb_text_column) {
+				line_overflow = 0;
+			}
 			/* Set to null, 'i' is predecremented further below */
-#if	1	/* RXWRXW - Float comment */
 			buff[i] = 0;
 			break;
-#endif
 		} else if (buff[i] == '\'' || buff[i] == '"') {
 			if (quotation_mark == 0) {
 				/* Literal start */
@@ -1338,6 +1384,14 @@ start:
 		buff[i + 1] = 0;
 	}
 
+	/* Show warning if text is longer than cb_text_column
+	   and not whitespace (postponed here) */
+	if (line_overflow != 0) {
+		cb_plex_warning (newline_count,
+					_("Source text after column %d"),
+				cb_text_column);
+	}
+
 	if (unlikely(continuation)) {
 		gotcr = strlen (bp);
 		memmove (buff, bp, gotcr + 1);
@@ -1345,7 +1399,7 @@ start:
 	} else {
 		/* Insert newlines at the start of the buffer */
 		gotcr = strlen (buff);
-		if (newline_count) {
+		if (newline_count != 0) {
 			memmove (buff + newline_count, buff, gotcr + 1);
 			memset (buff, '\n', newline_count);
 			gotcr += newline_count;
